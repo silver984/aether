@@ -1,0 +1,10 @@
+﻿{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "aether",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build"
+    }
+  ]
+}
