@@ -20,7 +20,9 @@ public:
 private:
     void start_draw() const;
     void end_draw() const;
+#ifdef AETHER_DEBUG
     void draw_debug(Context const& ctx) const;
+#endif
 };
 
 }

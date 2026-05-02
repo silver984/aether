@@ -20,6 +20,11 @@ target_include_directories(${aether}
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+target_compile_definitions(${aether}
+    PRIVATE
+        $<$<CONFIG:Debug>:AETHER_DEBUG>
+)
+
 include(cmake/dependencies.cmake)
 aether_fetch_dependencies(${aether})
 

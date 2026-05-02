@@ -36,7 +36,9 @@ void Funkin::run() {
 		renderer_.start_draw();
 		
 		if (!is_window_minimized) {
+#ifdef AETHER_DEBUG
 			renderer_.draw_debug(ctx);
+#endif
 		}
 
 		renderer_.end_draw();

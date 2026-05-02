@@ -23,11 +23,13 @@ void Renderer::end_draw() const {
 	EndDrawing();
 }
 
+#ifdef AETHER_DEBUG
 // private
 void Renderer::draw_debug(Context const& ctx) const {
 	static std::string debug_text;
 	debug_text = fmt::format("FPS: {}", ctx.running_fps());
 	DrawText(debug_text.c_str(), 5, 5, 10, WHITE);
 }
+#endif
 
 }
