@@ -5,5 +5,6 @@ target_sources(${aether}
 )
 
 add_subdirectory(common)
-add_subdirectory(systems)
 add_subdirectory(internal)
+add_subdirectory(math)
+add_subdirectory(systems)
