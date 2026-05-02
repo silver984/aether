@@ -4,7 +4,21 @@
     {
       "name": "aether",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build"
+      "binaryDir": "${sourceDir}/build/${presetName}"
+    },
+    {
+      "name": "aether-debug",
+      "inherits": "aether",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "aether-release",
+      "inherits": "aether",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
     }
   ]
 }

@@ -23,6 +23,15 @@ target_include_directories(${aether}
 include(cmake/dependencies.cmake)
 aether_fetch_dependencies(${aether})
 
+if (WIN32)
+    # only allow the console on debug
+    target_link_options(${aether}
+        PRIVATE
+            $<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>
+            $<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup>
+    )
+endif()
+
 # add_custom_command(TARGET ${aether} POST_BUILD
 #     COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:${aether}>/resources
 #     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${aether}>/resources
