@@ -1,4 +1,5 @@
 #pragma once
+#include <aether/common/Context.hh>
 
 namespace ae {
 
@@ -19,6 +20,7 @@ public:
 private:
     void start_draw() const;
     void end_draw() const;
+    void draw_debug(Context const& ctx) const;
 };
 
 }

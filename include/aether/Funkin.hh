@@ -22,7 +22,7 @@ public:
 	
 private:
 	void shutdown();
-	void update(Context& ctx);
+	void update_frame_ctx(Context& ctx);
 
 	Window window_;
 	Renderer renderer_;

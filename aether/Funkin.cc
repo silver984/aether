@@ -30,12 +30,14 @@ void Funkin::run() {
 		bool is_window_minimized = window_.is_minimized();
 
 		if (!is_window_minimized) {
-			update(ctx);
+			update_frame_ctx(ctx);
 		}
 		
 		renderer_.start_draw();
-
-
+		
+		if (!is_window_minimized) {
+			renderer_.draw_debug(ctx);
+		}
 
 		renderer_.end_draw();
 	}
@@ -55,7 +57,7 @@ void Funkin::shutdown() {
 }
 
 // private
-void Funkin::update(Context& ctx) {
+void Funkin::update_frame_ctx(Context& ctx) {
 	static uint32_t frame_count;
 	static float elapsed;
 
