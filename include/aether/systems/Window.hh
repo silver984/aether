@@ -21,13 +21,14 @@ public:
 
     [[nodiscard]] bool is_initialized() const;
     [[nodiscard]] bool should_close() const;
+    [[nodiscard]] bool is_minimized() const;
+    [[nodiscard]] std::string_view title() const;
 
 private:
     bool init(std::string_view title, size<int> const& resolution, int target_fps);
     void shutdown();
 
     std::string title_;
-    int target_fps_;
     bool is_initialized_;
 };
 

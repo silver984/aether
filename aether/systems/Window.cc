@@ -7,7 +7,6 @@ namespace ae {
 
 // private
 Window::Window() :
-	target_fps_(0),
 	is_initialized_(false)
 {}
 
@@ -19,7 +18,15 @@ bool Window::is_initialized() const {
 }
 
 bool Window::should_close() const {
-	return rl::should_window_close();
+	return WindowShouldClose();
+}
+
+bool Window::is_minimized() const {
+	return IsWindowMinimized();
+}
+
+std::string_view Window::title() const {
+	return title_;
 }
 
 // private
@@ -29,10 +36,9 @@ bool Window::init(std::string_view title, size<int> const& resolution, int targe
 	}
 
 	title_ = std::string(title);
-	target_fps_ = std::max(1, target_fps);
 	// TODO: clamp resolution
 
-	if (rl::init_window(title_.c_str(), resolution, target_fps_)) {
+	if (rl::init_window(title_.c_str(), resolution, std::max(1, target_fps))) {
 		is_initialized_ = true;
 		return true;
 	}

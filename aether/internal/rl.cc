@@ -30,11 +30,17 @@ void set_window_aspect_ratio(GLFWwindow* const& window, ae::size<int> const& res
 namespace ae::rl {
 
 bool init_window(char const* title, size<int> const& resolution, int fps) {
-	SetConfigFlags(ConfigFlags::FLAG_WINDOW_ALWAYS_RUN | ConfigFlags::FLAG_WINDOW_TRANSPARENT);
+	SetTraceLogCallback([](int, char const*, va_list) {});
+
+	SetConfigFlags(
+		ConfigFlags::FLAG_WINDOW_RESIZABLE |
+		ConfigFlags::FLAG_WINDOW_ALWAYS_RUN |
+		ConfigFlags::FLAG_WINDOW_TRANSPARENT
+	);
 
 	InitWindow(resolution.width, resolution.height, title);
 
-	if (!GetWindowHandle() || !IsWindowReady()) {
+	if (!IsWindowReady()) {
 		// TODO: log error
 		return false;
 	}
@@ -46,18 +52,8 @@ bool init_window(char const* title, size<int> const& resolution, int fps) {
 	return true;
 }
 
-bool should_window_close() {
-	if (GetWindowHandle()) {
-		return WindowShouldClose();
-	}
-
-	return true;
-}
-
-void close_window() {
-	if (GetWindowHandle()) {
-		CloseWindow();
-	}
+float delta_time() {
+	return GetFrameTime();
 }
 
 }

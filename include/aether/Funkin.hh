@@ -1,6 +1,7 @@
 #pragma once
 #include <aether/math/size.hh>
 #include <aether/systems/Window.hh>
+#include <aether/systems/Renderer.hh>
 #include <string_view>
 
 namespace ae {
@@ -19,8 +20,11 @@ public:
 	
 private:
 	void shutdown();
+	void update(float dt);
+	void draw() const;
 
 	Window window_;
+	Renderer renderer_;
 	bool is_initialized_;
 };
 

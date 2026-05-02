@@ -4,5 +4,6 @@ target_sources(${aether}
         Funkin.cc
 )
 
+add_subdirectory(common)
 add_subdirectory(systems)
 add_subdirectory(internal)

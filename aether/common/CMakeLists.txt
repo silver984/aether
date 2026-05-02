@@ -1,5 +1,4 @@
 target_sources(${aether}
     PRIVATE
-        Renderer.cc
-        Window.cc
+        EngineContext.cc
 )
