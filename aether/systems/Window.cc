@@ -25,6 +25,10 @@ bool Window::is_minimized() const {
 	return IsWindowMinimized();
 }
 
+bool Window::is_resized() const {
+	return IsWindowResized();
+}
+
 std::string_view Window::title() const {
 	return title_;
 }

@@ -13,6 +13,7 @@ Renderer::~Renderer() = default;
 // private
 void Renderer::start_draw() const {
 	BeginDrawing();
+	// clip bounds
 	BeginScissorMode(0, 0, GetRenderWidth(), GetRenderHeight());
 	ClearBackground(BLACK);
 }

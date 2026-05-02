@@ -1,5 +1,5 @@
 #pragma once
-#include <aether/math/numeric.hh>
+#include <aether/math/numeric_t.hh>
 #include <cstdint>
 
 namespace ae {

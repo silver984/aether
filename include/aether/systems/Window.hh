@@ -22,6 +22,7 @@ public:
     [[nodiscard]] bool is_initialized() const;
     [[nodiscard]] bool should_close() const;
     [[nodiscard]] bool is_minimized() const;
+    [[nodiscard]] bool is_resized() const;
     [[nodiscard]] std::string_view title() const;
 
 private:

@@ -213,7 +213,7 @@ void Node::base_update(Context const& ctx, float dt) {
 	}
 
 	alpha = std::clamp(alpha, 0.f, 1.f);
-	bool window_was_resized = ctx.window() ? ctx.window()->was_resized() : false;
+	bool window_was_resized = ctx.window() ? ctx.window()->is_resized() : false;
 
 	if (
 		window_was_resized ||
@@ -303,8 +303,8 @@ void Node::mark_dirty() {
 
 void Node::on_dirty(Context const& ctx) {
 	auto anchor_offset = vec2<float>(
-			anchor.x * bounds_.width,
-			anchor.y * bounds_.height
+		anchor.x * bounds_.width,
+		anchor.y * bounds_.height
 	);
 
 	auto skew_rad = vec2<float>(
@@ -326,8 +326,9 @@ void Node::on_dirty(Context const& ctx) {
 		world_transform_ = p->world_transform_ * local_transform_;
 		world_alpha_ = std::clamp(alpha * p->world_alpha_, 0.f, 1.f);
 	} else {
-		float ui_scale = ctx.window() ? ctx.window()->ui_scale() : 1.f;
-		mat3 UI = mat3::scale(vec2<float>(ui_scale, ui_scale));
+		// TODO: ui scale
+		// float ui_scale = ctx.window() ? ctx.window()->ui_scale() : 1.f;
+		mat3 UI = mat3::scale(vec2<float>(1.f, 1.f));
 		world_transform_ = UI * local_transform_;
 		world_alpha_ = alpha;
 	}
