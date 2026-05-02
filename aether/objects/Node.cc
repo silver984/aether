@@ -70,9 +70,7 @@ void Node::remove(sptr<Node> vessel) {
 		return;
 	}
 
-	auto self = shared_from_this();
-
-	if (vessel == self) {
+	if (vessel == shared_from_this()) {
 		// prevent self-remove
 		return;
 	}
@@ -101,6 +99,7 @@ void Node::destroy() {
 	while (!children_.empty()) {
 		auto child = children_.back();
 		children_.pop_back();
+
 		if (child) {
 			child->parent_.reset();
 			child->destroy();
@@ -322,13 +321,13 @@ void Node::on_dirty(Context const& ctx) {
 
 	local_transform_ = T * R * S * K * A;
 
-	if (auto p = parent_.lock()) {
-		world_transform_ = p->world_transform_ * local_transform_;
-		world_alpha_ = std::clamp(alpha * p->world_alpha_, 0.f, 1.f);
+	if (auto parent = parent_.lock()) {
+		world_transform_ = parent->world_transform_ * local_transform_;
+		world_alpha_ = std::clamp(alpha * parent->world_alpha_, 0.f, 1.f);
 	} else {
 		float dpi_scale = ctx.dpi_scale();
-		mat3 UI = mat3::scale(vec2<float>(dpi_scale, dpi_scale));
-		world_transform_ = UI * local_transform_;
+		mat3 dpi = mat3::scale(vec2<float>(dpi_scale, dpi_scale));
+		world_transform_ = dpi * local_transform_;
 		world_alpha_ = alpha;
 	}
 }

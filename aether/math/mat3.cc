@@ -16,12 +16,14 @@ mat3 mat3::rotation(float radians) {
 }
 
 mat3 mat3::skew(vec2<float> const& radians) {
-    float tx = std::tan(radians.x);
-    float ty = std::tan(radians.y);
+    vec2<float> tan = {
+        .x = std::tan(radians.x),
+        .y = std::tan(radians.y)
+    };
 
     return mat3(
-        1.f, tx, 0.f,
-        ty, 1.f, 0.f,
+        1.f, tan.x, 0.f,
+        tan.y, 1.f, 0.f,
         0.f, 0.f, 1.f
     );
 }
