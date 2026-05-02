@@ -1,5 +1,6 @@
 #pragma once
 #include <aether/common/Context.hh>
+#include <aether/math/size.hh>
 
 namespace ae {
 
@@ -16,6 +17,8 @@ public:
     Renderer(Renderer&&) = delete;
     Renderer& operator =(Renderer const&) = delete;
     Renderer& operator =(Renderer&&) = delete;
+
+    [[nodiscard]] size<int> draw_size() const;
 
 private:
     void start_draw() const;

@@ -24,12 +24,14 @@ public:
     [[nodiscard]] bool is_minimized() const;
     [[nodiscard]] bool is_resized() const;
     [[nodiscard]] std::string_view title() const;
+    [[nodiscard]] size<int> screen_size() const;
 
 private:
     bool init(std::string_view title, size<int> const& resolution, int target_fps);
     void shutdown();
 
     std::string title_;
+    size<int> screen_size_;
     bool is_initialized_;
 };
 

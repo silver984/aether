@@ -10,11 +10,19 @@ Renderer::Renderer() = default;
 // private
 Renderer::~Renderer() = default;
 
+size<int> Renderer::draw_size() const {
+	return {
+		.width = GetRenderWidth(),
+		.height = GetRenderHeight()
+	};
+}
+
 // private
 void Renderer::start_draw() const {
 	BeginDrawing();
 	// clip bounds
-	BeginScissorMode(0, 0, GetRenderWidth(), GetRenderHeight());
+	auto _draw_size_ = draw_size();
+	BeginScissorMode(0, 0, _draw_size_.width, _draw_size_.height);
 	ClearBackground(BLACK);
 }
 

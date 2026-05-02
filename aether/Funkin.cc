@@ -30,6 +30,7 @@ void Funkin::run() {
 		bool is_window_minimized = window_.is_minimized();
 
 		if (!is_window_minimized) {
+			update_dpi_scale(ctx);
 			update_frame_ctx(ctx);
 		}
 		
@@ -48,7 +49,7 @@ void Funkin::run() {
 }
 
 Context Funkin::context() {
-	return Context(&window_);
+	return Context(&window_, &renderer_);
 }
 
 // private
@@ -56,6 +57,27 @@ void Funkin::shutdown() {
 	if (window_.is_initialized()) {
 		window_.shutdown();
 	}
+}
+
+// private
+void Funkin::update_dpi_scale(Context& ctx) {
+	auto renderer = ctx.renderer();
+	auto window = ctx.window();
+
+	if (!renderer || !window) {
+		ctx.dpi_scale_ = 1.f;
+		return;
+	}
+
+	auto screen_size = window->screen_size();
+	auto draw_size = renderer->draw_size();
+	
+	size<float> ratio = {
+		.width = screen_size.width > 0 ? static_cast<float>(draw_size.width) / screen_size.width : 0.f,
+		.height = screen_size.height > 0 ? static_cast<float>(draw_size.height) / screen_size.height : 0.f
+	};
+
+	ctx.dpi_scale_ = std::min(ratio.width, ratio.height);
 }
 
 // private

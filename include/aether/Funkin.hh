@@ -22,6 +22,7 @@ public:
 	
 private:
 	void shutdown();
+	void update_dpi_scale(Context& ctx);
 	void update_frame_ctx(Context& ctx);
 
 	Window window_;

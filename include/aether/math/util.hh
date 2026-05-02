@@ -1,6 +1,7 @@
 #pragma once
 #include <aether/math/numeric_t.hh>
 #include <aether/math/vec2.hh>
+#include <aether/math/size.hh>
 #include <cmath>
 #include <numbers>
 #include <algorithm>
@@ -29,12 +30,36 @@ template <numeric_t T>
 
 template <numeric_t T>
 vec2<T> lerp(const vec2<T>& a, const vec2<T>& b, T t) {
-    return vec2<T>(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
+    return {
+        .x = a.x + (b.x - a.x) * t,
+        .y = a.y + (b.y - a.y) * t
+    };
 }
 
 template <numeric_t T>
 vec2<T> clamp(const vec2<T>& val, const vec2<T>& min_val, const vec2<T>& max_val) {
-    return vec2<T>(std::clamp(val.x, min_val.x, max_val.x), std::clamp(val.y, min_val.y, max_val.y));
+    return {
+        .x = std::clamp(val.x, min_val.x, max_val.x),
+        .y = std::clamp(val.y, min_val.y, max_val.y)
+    };
+}
+
+template <numeric_t T>
+size<T> clamp(const size<T>& val, const size<T>& min_val, const size<T>& max_val) {
+    return {
+        .width = std::clamp(val.width, min_val.width, max_val.width),
+        .height = std::clamp(val.height, min_val.height, max_val.height)
+    };
+}
+
+// TODO: min and max
+
+template <numeric_t T>
+size<T> max(const size<T>& left, const size<T>& right) {
+    return {
+        .width = std::max(left.width, right.width),
+        .height = std::max(left.height, right.height)
+    };
 }
 
 template <numeric_t T>

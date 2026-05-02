@@ -326,9 +326,8 @@ void Node::on_dirty(Context const& ctx) {
 		world_transform_ = p->world_transform_ * local_transform_;
 		world_alpha_ = std::clamp(alpha * p->world_alpha_, 0.f, 1.f);
 	} else {
-		// TODO: ui scale
-		// float ui_scale = ctx.window() ? ctx.window()->ui_scale() : 1.f;
-		mat3 UI = mat3::scale(vec2<float>(1.f, 1.f));
+		float dpi_scale = ctx.dpi_scale();
+		mat3 UI = mat3::scale(vec2<float>(dpi_scale, dpi_scale));
 		world_transform_ = UI * local_transform_;
 		world_alpha_ = alpha;
 	}

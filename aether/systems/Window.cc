@@ -1,4 +1,5 @@
 #include <aether/systems/Window.hh>
+#include <aether/math/util.hh>
 #include <aether/internal/rl.hh>
 #include <raylib.h>
 #include <algorithm>
@@ -33,6 +34,10 @@ std::string_view Window::title() const {
 	return title_;
 }
 
+size<int> Window::screen_size() const {
+	return screen_size_;
+}
+
 // private
 bool Window::init(std::string_view title, size<int> const& resolution, int target_fps) {
 	if (is_initialized_) {
@@ -40,9 +45,9 @@ bool Window::init(std::string_view title, size<int> const& resolution, int targe
 	}
 
 	title_ = std::string(title);
-	// TODO: clamp resolution
+	screen_size_ = math::max(size<int>(1, 1), resolution);
 
-	if (rl::init_window(title_.c_str(), resolution, std::max(1, target_fps))) {
+	if (rl::init_window(title_.c_str(), screen_size_, std::max(1, target_fps))) {
 		is_initialized_ = true;
 		return true;
 	}
