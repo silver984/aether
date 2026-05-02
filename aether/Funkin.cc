@@ -1,6 +1,6 @@
 #include <aether/Funkin.hh>
-#include <aether/internal/rl.hh>
 #include <fmt/format.h>
+#include <cstdint>
 
 namespace ae {
 
@@ -24,16 +24,27 @@ void Funkin::run() {
 		return;
 	}
 
-	while (!window_.should_close()) {
-		if (window_.is_minimized()) {
-			return;
-		}
+	Context ctx = context();
 
-		update(rl::delta_time());
-		draw();
+	while (!window_.should_close()) {
+		bool is_window_minimized = window_.is_minimized();
+
+		if (!is_window_minimized) {
+			update(ctx);
+		}
+		
+		renderer_.start_draw();
+
+
+
+		renderer_.end_draw();
 	}
 
 	shutdown();
+}
+
+Context Funkin::context() {
+	return Context(&window_);
 }
 
 // private
@@ -44,17 +55,20 @@ void Funkin::shutdown() {
 }
 
 // private
-void Funkin::update(float dt) {
-	static int frame_count;
+void Funkin::update(Context& ctx) {
+	static uint32_t frame_count;
 	static float elapsed;
-	frame_count++;
-	elapsed += dt;
-}
 
-// private
-void Funkin::draw() const {
-	renderer_.start_draw();
-	renderer_.end_draw();
+	float dt = ctx.delta_time();
+	elapsed += dt;
+	ctx.total_time_ += dt;
+	frame_count++;
+	
+	while (elapsed >= 1.f) {
+		ctx.running_fps_ = frame_count;
+		frame_count = 0;
+		elapsed -= 1.f;
+	}
 }
 
 }

@@ -1,5 +1,6 @@
 #include <aether/systems/Renderer.hh>
 #include <raylib.h>
+#include <fmt/format.h>
 
 namespace ae {
 
@@ -18,7 +19,6 @@ void Renderer::start_draw() const {
 
 // private
 void Renderer::end_draw() const {
-	// DrawText(debug_text.c_str(), text_border_padding, text_border_padding, text_size, WHITE);
 	EndScissorMode();
 	EndDrawing();
 }

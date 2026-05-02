@@ -2,6 +2,7 @@
 #include <aether/math/size.hh>
 #include <aether/systems/Window.hh>
 #include <aether/systems/Renderer.hh>
+#include <aether/common/Context.hh>
 #include <string_view>
 
 namespace ae {
@@ -17,11 +18,11 @@ public:
 
 	bool init(std::string_view game_title, size<int> const& game_resolution, int game_fps);
 	void run();
+	[[nodiscard]] Context context();
 	
 private:
 	void shutdown();
-	void update(float dt);
-	void draw() const;
+	void update(Context& ctx);
 
 	Window window_;
 	Renderer renderer_;
