@@ -1,18 +1,36 @@
 #pragma once
 #include <aether/math/size.hh>
+#include <aether/common/pointers.hh>
 #include <cstdint>
 
 namespace ae {
 
-struct texture final {
-    ~texture();
+class Texture final {
+public:
+    Texture();
+    ~Texture();
 
-    static texture load(char const* file_path);
+private:
+    explicit Texture(
+        uint32_t id,
+        size<int> const& bounds,
+        int mipmaps,
+        int format
+    );
 
-    uint32_t id = 0; // OpenGL texture id
-    size<int> bounds;
-    int mipmaps = 0;
-    int format = 0;
+public:
+    Texture(Texture const&) = delete;
+    Texture(Texture&&) noexcept = default;
+    Texture& operator =(Texture const&) = delete;
+    Texture& operator =(Texture&&) noexcept = default;
+
+    [[nodiscard]] static sptr<Texture> load_shared(char const* file_path);
+
+private:
+    uint32_t id_; // OpenGL Texture id
+    size<int> bounds_;
+    int mipmaps_;
+    int format_;
 };
 
 }

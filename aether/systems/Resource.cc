@@ -43,7 +43,7 @@ Resource::Resource() = default;
 // private
 Resource::~Resource() = default;
 
-sptr<texture> Resource::load_texture(std::string_view file) {
+sptr<Texture> Resource::load_shared_texture(std::string_view file) {
 	file_path path = file_path::parse(file);
 
 	// TODO: check format validity
@@ -52,10 +52,19 @@ sptr<texture> Resource::load_texture(std::string_view file) {
 		auto it = textures_.find(path.str);
 		it != textures_.end()
 	) {
-		return it->second;
+		// return the one found in the cache
+		if (auto ptr = it->second.lock()) {
+			return ptr;
+		}
 	}
 
-	return sptr<texture>();
+	auto tex = Texture::load_shared(path.str.c_str());
+	if (!tex) {
+		return nullptr;
+	}
+
+	textures_.insert_or_assign(path.str, tex);
+	return tex;
 }
 
 }

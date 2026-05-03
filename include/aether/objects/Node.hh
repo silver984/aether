@@ -35,59 +35,66 @@ public:
 	void add(sptr<Node> vessel);
 	void remove(sptr<Node> vessel);
 	void destroy();
+	void activate();
+	void deactivate();
+	void toggle_active(bool val);
+	[[nodiscard]] bool is_active() const;
 	[[nodiscard]] size_t count() const;
-	[[nodiscard]] float world_rotation() const;
-	[[nodiscard]] vec2<float> world_position() const;
-	[[nodiscard]] vec2<float> world_scale() const;
-	[[nodiscard]] size<float> world_size() const;
-	[[nodiscard]] float world_alpha() const;
-	[[nodiscard]] size<float> bounds() const;
 	[[nodiscard]] wptr<Node> parent() const;
 	void set_name(std::string_view name);
 	[[nodiscard]] std::string_view name() const;
 	[[nodiscard]] virtual std::string_view type() const;
-
-	rgb color;
-	vec2<float> pos;
-	vec2<float> anchor;
-	vec2<float> scale;
-	vec2<float> skew; // degrees
-	float rotation; // degrees
-	float alpha;
-	float time_scale;
-	bool is_visible;
-	bool is_active;
+	void set_bounds(size<float> const& val);
+	[[nodiscard]] size<float> bounds() const;
+	void set_position(vec2<float> const& val);
+	[[nodiscard]] vec2<float> position() const;
+	void set_anchor(vec2<float> const& val);
+	[[nodiscard]] vec2<float> anchor() const;
+	void set_scale(vec2<float> const& val);
+	[[nodiscard]] vec2<float> scale() const;
+	void set_skew(vec2<float> const& val);
+	[[nodiscard]] vec2<float> skew() const;
+	void set_rotation(float val);
+	[[nodiscard]] float rotation() const;
+	void set_color(rgb const& val);
+	[[nodiscard]] rgb color() const;
+	void set_alpha(float val);
+	[[nodiscard]] float alpha() const;
+	void toggle_visibility(bool val);
+	[[nodiscard]] bool is_visible() const;
+	void set_time_scale(float val);
+	[[nodiscard]] float time_scale() const;
 
 protected:
 	virtual bool init(Context const& ctx);
 	virtual void update(Context const& ctx, float dt);
-	virtual void draw(Context const& ctx) const;
-	mat3 world_transform() const;
-
-	size<float> bounds_;
+	virtual void draw(Context const& ctx, mat3 const& transform, float alpha) const;
 
 private:
 	bool base_init(Context const& ctx);
 	void base_update(Context const& ctx, float dt);
 	void base_draw(Context const& ctx) const;
-	bool has_ancestor(sptr<Node> const& vessel) const;
+	[[nodiscard]] bool has_ancestor(sptr<Node> const& vessel) const;
 	void mark_dirty();
 	void on_dirty(Context const& ctx);
 
 	wptr<Node> parent_;
 	std::vector<sptr<Node>> children_;
 	std::string name_;
-	mat3 local_transform_;
-	mat3 world_transform_;
+	rgb color_;
+	mat3 transform_;
+	size<float> bounds_;
+	vec2<float> position_;
+	vec2<float> anchor_;
+	vec2<float> scale_;
+	vec2<float> skew_; // degrees
+	float rotation_; // degrees
+	float alpha_;
 	float world_alpha_;
-	float last_rotation_;
-	float last_alpha_;
-	size<float> last_bounds_;
-	vec2<float> last_pos_;
-	vec2<float> last_anchor_;
-	vec2<float> last_scale_;
-	vec2<float> last_skew_;
+	float time_scale_;
 	bool is_dirty_;
+	bool is_active_;
+	bool is_visible_;
 	bool is_initialized_;
 };
 

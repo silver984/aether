@@ -1,7 +1,7 @@
 #pragma once
 #include <aether/common/string_map.hh>
 #include <aether/common/pointers.hh>
-#include <aether/graphics/texture.hh>
+#include <aether/graphics/Texture.hh>
 #include <string_view>
 
 namespace ae {
@@ -20,10 +20,10 @@ public:
     Resource& operator =(Resource const&) = delete;
     Resource& operator =(Resource&&) = delete;
 
-    [[nodiscard]] sptr<texture> load_texture(std::string_view file_path);
+    [[nodiscard]] sptr<Texture> load_shared_texture(std::string_view file_path);
 
 private:
-    string_map<sptr<texture>> textures_;
+    string_map<wptr<Texture>> textures_;
 };
 
 }

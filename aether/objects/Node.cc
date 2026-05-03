@@ -7,28 +7,20 @@
 namespace ae {
 
 Node::Node() :
-	color(255, 255, 255),
-	pos(0.f, 0.f),
-	anchor(0.5f, 0.5f),
-	scale(1.f, 1.f),
-	skew(0.f, 0.f),
-	rotation(0.f),
-	alpha(1.f),
-	time_scale(1.f),
-	is_visible(true),
-	is_active(true),
+	color_(255, 255, 255),
+	transform_(mat3::identity()),
 	bounds_(0.f, 0.f),
-	local_transform_(mat3::identity()),
-	world_transform_(mat3::identity()),
+	position_(0.f, 0.f),
+	anchor_(0.5f, 0.5f),
+	scale_(1.f, 1.f),
+	skew_(0.f, 0.f),
+	rotation_(0.f),
+	alpha_(1.f),
 	world_alpha_(1.f),
-	last_rotation_(-1.f),
-	last_alpha_(-1.f),
-	last_bounds_(-1.f, -1.f),
-	last_pos_(-1.f, -1.f),
-	last_anchor_(-1.f, -1.f),
-	last_scale_(-1.f, -1.f),
-	last_skew_(-1.f, -1.f),
+	time_scale_(1.f),
 	is_dirty_(false),
+	is_active_(false),
+	is_visible_(true),
 	is_initialized_(false)
 {}
 
@@ -107,6 +99,22 @@ void Node::destroy() {
 	}
 }
 
+void Node::activate() {
+	is_active_ = true;
+}
+
+void Node::deactivate() {
+	is_active_ = false;
+}
+
+void Node::toggle_active(bool val) {
+	is_active_ = val;
+}
+
+bool Node::is_active() const {
+	return is_active_;
+}
+
 size_t Node::count() const {
 	size_t c = children_.size();
 
@@ -119,43 +127,6 @@ size_t Node::count() const {
 	}
 
 	return c;
-}
-
-float Node::world_rotation() const {
-	return std::atan2(world_transform_.m[1][0], world_transform_.m[0][0]);
-}
-
-vec2<float> Node::world_position() const {
-	return world_transform_.translation();
-}
-
-vec2<float> Node::world_scale() const {
-	float sx = std::sqrt(
-		world_transform_.m[0][0] * world_transform_.m[0][0] +
-		world_transform_.m[0][1] * world_transform_.m[0][1]
-	);
-
-	float sy = std::sqrt(
-		world_transform_.m[1][0] * world_transform_.m[1][0] +
-		world_transform_.m[1][1] * world_transform_.m[1][1]
-	);
-
-	return vec2<float>(sx, sy);
-}
-
-size<float> Node::world_size() const {
-	return size<float>(
-		bounds_.width * world_scale().x,
-		bounds_.height * world_scale().y
-	);
-}
-
-float Node::world_alpha() const {
-	return world_alpha_;
-}
-
-size<float> Node::bounds() const {
-	return bounds_;
 }
 
 wptr<Node> Node::parent() const {
@@ -171,8 +142,94 @@ std::string_view Node::name() const {
 }
 
 std::string_view Node::type() const {
-	static constexpr std::string_view TYPE = "Node";
-	return TYPE;
+	return "Node";
+}
+
+void Node::set_bounds(size<float> const& val) {
+	bounds_ = val;
+	mark_dirty();
+}
+
+size<float> Node::bounds() const {
+	return bounds_;
+}
+
+void Node::set_position(vec2<float> const& val) {
+	position_ = val;
+	mark_dirty();
+}
+
+vec2<float> Node::position() const {
+	return position_;
+}
+
+void Node::set_anchor(vec2<float> const& val) {
+	anchor_ = val;
+	mark_dirty();
+}
+
+vec2<float> Node::anchor() const {
+	return anchor_;
+}
+
+void Node::set_scale(vec2<float> const& val) {
+	scale_ = val;
+	mark_dirty();
+}
+
+vec2<float> Node::scale() const {
+	return scale_;
+}
+
+void Node::set_skew(vec2<float> const& val) {
+	skew_ = val;
+	mark_dirty();
+}
+
+vec2<float> Node::skew() const {
+	return skew_;
+}
+
+void Node::set_rotation(float val) {
+	rotation_ = val;
+	mark_dirty();
+}
+
+float Node::rotation() const {
+	return rotation_;
+}
+
+void Node::set_color(rgb const& val) {
+	color_ = val;
+}
+
+rgb Node::color() const {
+	return color_;
+}
+
+void Node::set_alpha(float val) {
+	alpha_ = std::clamp(val, 0.f, 1.f);
+	mark_dirty();
+}
+
+float Node::alpha() const {
+	return alpha_;
+}
+
+void Node::toggle_visibility(bool val) {
+	is_visible_ = val;
+}
+
+bool Node::is_visible() const {
+	return is_visible_;
+}
+
+void Node::set_time_scale(float val) {
+	time_scale_ = std::max(0.f, val);
+}
+
+float Node::time_scale() const {
+	return time_scale_;
 }
 
 // protected
@@ -184,12 +241,7 @@ bool Node::init(Context const& ctx) {
 void Node::update(Context const& ctx, float dt) {}
 
 // protected
-void Node::draw(Context const& ctx) const {}
-
-// protected
-mat3 Node::world_transform() const {
-	return world_transform_;
-}
+void Node::draw(Context const& ctx, mat3 const& transform, float alpha) const {}
 
 // private
 bool Node::base_init(Context const& ctx) {
@@ -207,30 +259,16 @@ bool Node::base_init(Context const& ctx) {
 
 // private
 void Node::base_update(Context const& ctx, float dt) {
-	if (!is_initialized_ || !is_active) {
+	if (!is_initialized_ || !is_active_) {
 		return;
 	}
 
-	alpha = std::clamp(alpha, 0.f, 1.f);
-	bool window_was_resized = ctx.window() ? ctx.window()->is_resized() : false;
-
+	// TODO: move this somewhere
 	if (
-		window_was_resized ||
-		last_pos_ != pos ||
-		last_alpha_ != alpha ||
-		last_anchor_ != anchor ||
-		last_rotation_ != rotation ||
-		last_scale_ != scale ||
-		last_bounds_ != bounds_ ||
-		last_skew_ != skew
+		bool window_was_resized = ctx.window()
+		? ctx.window()->is_resized()
+		: false
 	) {
-		last_pos_ = pos;
-		last_alpha_ = alpha;
-		last_anchor_ = anchor;
-		last_rotation_ = rotation;
-		last_scale_ = scale;
-		last_bounds_ = bounds_;
-		last_skew_ = skew;
 		mark_dirty();
 	}
 
@@ -239,7 +277,7 @@ void Node::base_update(Context const& ctx, float dt) {
 		is_dirty_ = false;
 	}
 
-	float world_dt = dt * time_scale;
+	float world_dt = dt * time_scale_;
 	update(ctx, world_dt);
 
 	for (auto const& vessel : children_) {
@@ -261,7 +299,7 @@ void Node::base_draw(Context const& ctx) const {
 		return;
 	}
 
-	draw(ctx);
+	draw(ctx, transform_, world_alpha_);
 
 	for (auto const& v : children_) {
 		if (!v) {
@@ -289,46 +327,45 @@ bool Node::has_ancestor(sptr<Node> const& vessel) const {
 
 // private
 void Node::mark_dirty() {
-	if (!is_dirty_) {
-		is_dirty_ = true;
+	if (is_dirty_) {
+		// already dirty
+		return;
+	}
 
-		for (auto& child : children_) {
-			if (child) {
-				child->mark_dirty();
-			}
+	is_dirty_ = true;
+	
+	for (auto& child : children_) {
+		if (child) {
+			child->mark_dirty();
 		}
 	}
 }
 
 void Node::on_dirty(Context const& ctx) {
-	auto anchor_offset = vec2<float>(
-		anchor.x * bounds_.width,
-		anchor.y * bounds_.height
-	);
+	vec2<float> anchor_offset = {
+		.x = anchor_.x * bounds_.width,
+		.y = anchor_.y * bounds_.height
+	};
 
-	auto skew_rad = vec2<float>(
-		math::degrees_to_radians(skew.x),
-		math::degrees_to_radians(skew.y)
-	);
+	vec2<float> skew_rad = {
+		.x = math::degrees_to_radians(skew_.x),
+		.y = math::degrees_to_radians(skew_.y)
+	};
 
-	float rotation_rad = math::degrees_to_radians(rotation);
-
-	mat3 T = mat3::translation(pos);
-	mat3 R = mat3::rotation(rotation_rad);
-	mat3 S = mat3::scale(scale);
-	mat3 K = mat3::skew(skew_rad);
-	mat3 A = mat3::translation(-anchor_offset);
-
-	local_transform_ = T * R * S * K * A;
+	mat3 translation = mat3::translation(position_);
+	mat3 rotation = mat3::rotation(math::degrees_to_radians(rotation_));
+	mat3 scale = mat3::scale(scale_);
+	mat3 skew = mat3::skew(skew_rad);
+	mat3 anchor = mat3::translation(-anchor_offset);
+	mat3 local = translation * rotation * scale * skew * anchor;
 
 	if (auto parent = parent_.lock()) {
-		world_transform_ = parent->world_transform_ * local_transform_;
-		world_alpha_ = std::clamp(alpha * parent->world_alpha_, 0.f, 1.f);
+		transform_ = parent->transform_ * local;
+		world_alpha_ = std::clamp(alpha_ * parent->world_alpha_, 0.f, 1.f);
 	} else {
 		float dpi_scale = ctx.dpi_scale();
-		mat3 dpi = mat3::scale(vec2<float>(dpi_scale, dpi_scale));
-		world_transform_ = dpi * local_transform_;
-		world_alpha_ = alpha;
+		transform_ = mat3::scale(vec2<float>(dpi_scale, dpi_scale)) * local;
+		world_alpha_ = alpha_;
 	}
 }
 
