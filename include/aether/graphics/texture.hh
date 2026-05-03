@@ -5,7 +5,9 @@
 namespace ae {
 
 struct texture final {
-    static texture load(char const* file);
+    ~texture();
+
+    static texture load(char const* file_path);
 
     uint32_t id = 0; // OpenGL texture id
     size<int> bounds;

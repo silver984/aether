@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <filesystem>
 #include <string>
+#include <cctype>
 
 namespace {
 
@@ -16,7 +17,7 @@ struct file_path final {
 		}
 
 		// make extension lowercase
-		std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+		std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
 
 		return {
 			.str = abs.string(),
