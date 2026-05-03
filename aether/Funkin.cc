@@ -8,7 +8,9 @@ Funkin::Funkin() :
 	is_initialized_(false)
 {};
 
-Funkin::~Funkin() = default;
+Funkin::~Funkin() {
+	shutdown();
+}
 
 bool Funkin::init(std::string_view game_title, size<int> const& game_resolution, int game_fps) {
 	if (window_.init(game_title, game_resolution, game_fps)) {
@@ -54,9 +56,16 @@ Context Funkin::context() {
 
 // private
 void Funkin::shutdown() {
+	if (!is_initialized_) {
+		// already uninitialized
+		return;
+	}
+
 	if (window_.is_initialized()) {
 		window_.shutdown();
 	}
+
+	is_initialized_ = false;
 }
 
 // private
