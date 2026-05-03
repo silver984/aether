@@ -10,6 +10,7 @@ class Renderer;
 class Context final {
 	friend class Funkin;
 private:
+	Context() = delete;
 	explicit Context(Window* window_ptr, Renderer* renderer_ptr);
 	~Context();
 
