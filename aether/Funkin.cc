@@ -1,4 +1,5 @@
 #include <aether/Funkin.hh>
+#include <aether/math/vec2.hh>
 #include <fmt/format.h>
 #include <cstdint>
 
@@ -51,7 +52,7 @@ void Funkin::run() {
 }
 
 Context Funkin::context() {
-	return Context(&window_, &renderer_);
+	return Context(&window_, &renderer_, &resource_);
 }
 
 // private
@@ -79,14 +80,14 @@ void Funkin::update_dpi_scale(Context& ctx) {
 	}
 
 	auto screen_size = window->screen_size();
-	auto draw_size = renderer->draw_size();
+	auto render_bounds = renderer->bounds();
 	
-	size<float> ratio = {
-		.width = screen_size.width > 0 ? static_cast<float>(draw_size.width) / screen_size.width : 0.f,
-		.height = screen_size.height > 0 ? static_cast<float>(draw_size.height) / screen_size.height : 0.f
+	vec2<float> ratio = {
+		.x = screen_size.width > 0 ? static_cast<float>(render_bounds.width) / screen_size.width : 0.f,
+		.y = screen_size.height > 0 ? static_cast<float>(render_bounds.height) / screen_size.height : 0.f
 	};
 
-	ctx.dpi_scale_ = std::min(ratio.width, ratio.height);
+	ctx.dpi_scale_ = std::min(ratio.x, ratio.y);
 }
 
 // private

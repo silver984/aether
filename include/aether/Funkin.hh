@@ -2,6 +2,7 @@
 #include <aether/math/size.hh>
 #include <aether/systems/Window.hh>
 #include <aether/systems/Renderer.hh>
+#include <aether/systems/Resource.hh>
 #include <aether/common/Context.hh>
 #include <string_view>
 
@@ -27,6 +28,7 @@ private:
 
 	Window window_;
 	Renderer renderer_;
+	Resource resource_;
 	bool is_initialized_;
 };
 

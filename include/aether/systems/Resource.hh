@@ -20,7 +20,7 @@ public:
     Resource& operator =(Resource const&) = delete;
     Resource& operator =(Resource&&) = delete;
 
-    [[nodiscard]] sptr<Texture> load_shared_texture(std::string_view file_path);
+    [[nodiscard]] sptr<Texture> load_shared_texture(std::string_view file);
 
 private:
     string_map<wptr<Texture>> textures_;

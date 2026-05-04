@@ -20,31 +20,54 @@ Texture::~Texture() {
 
 // private
 Texture::Texture(
+	std::string_view file,
 	uint32_t id,
 	size<int> const& bounds,
 	int mipmaps,
 	int format
 ) :
+	file_(std::string(file)),
 	id_(id),
 	bounds_(bounds),
 	mipmaps_(mipmaps),
 	format_(format)
 {}
 
-sptr<Texture> Texture::load_shared(char const* file_path) {
+sptr<Texture> Texture::load_shared(char const* file) {
 	using raylib_texture = Texture2D;
-	raylib_texture tex = LoadTexture(file_path);
+	raylib_texture tex = LoadTexture(file);
 
 	if (tex.id == 0) {
 		return nullptr;
 	}
 
-	return shared<Texture>(Texture(
+	return shared<Texture>(
+		file,
 		tex.id,
 		size<int>(tex.width, tex.height),
 		tex.mipmaps,
 		tex.format
-	));
+	);
+}
+
+std::string_view Texture::file() const {
+	return file_;
+}
+
+uint32_t Texture::id() const {
+	return id_;
+}
+
+size<int> Texture::bounds() const {
+	return bounds_;
+}
+
+int Texture::mipmaps() const {
+	return mipmaps_;
+}
+
+int Texture::format() const {
+	return format_;
 }
 
 }

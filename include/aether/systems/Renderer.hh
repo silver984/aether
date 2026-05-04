@@ -1,6 +1,8 @@
 #pragma once
 #include <aether/common/Context.hh>
 #include <aether/math/size.hh>
+#include <aether/math/mat3.hh>
+#include <aether/graphics/Texture.hh>
 
 namespace ae {
 
@@ -18,7 +20,8 @@ public:
     Renderer& operator =(Renderer const&) = delete;
     Renderer& operator =(Renderer&&) = delete;
 
-    [[nodiscard]] size<int> draw_size() const;
+    [[nodiscard]] size<int> bounds() const;
+    void draw_texture(Texture const& texture, mat3 const& matrix, float alpha) const;
 
 private:
     void start_draw() const;
@@ -26,6 +29,7 @@ private:
 #ifdef AETHER_DEBUG
     void draw_debug(Context const& ctx) const;
 #endif
+    void push_matrix(mat3 const& matrix) const;
 };
 
 }

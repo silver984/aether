@@ -259,7 +259,7 @@ bool Node::base_init(Context const& ctx) {
 
 // private
 void Node::base_update(Context const& ctx, float dt) {
-	if (!is_initialized_ || !is_active_) {
+	if (!is_initialized_) {
 		return;
 	}
 
@@ -278,7 +278,10 @@ void Node::base_update(Context const& ctx, float dt) {
 	}
 
 	float world_dt = dt * time_scale_;
-	update(ctx, world_dt);
+
+	if (is_active_) {
+		update(ctx, world_dt);
+	}
 
 	for (auto const& vessel : children_) {
 		if (!vessel) {
@@ -293,7 +296,7 @@ void Node::base_update(Context const& ctx, float dt) {
 void Node::base_draw(Context const& ctx) const {
 	if (
 		!is_initialized_ ||
-		!is_visible ||
+		!is_visible_ ||
 		world_alpha_ == 0.f
 	) {
 		return;
@@ -333,7 +336,7 @@ void Node::mark_dirty() {
 	}
 
 	is_dirty_ = true;
-	
+
 	for (auto& child : children_) {
 		if (child) {
 			child->mark_dirty();
