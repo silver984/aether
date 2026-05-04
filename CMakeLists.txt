@@ -37,9 +37,7 @@ if (WIN32)
     )
 endif()
 
-# add_custom_command(TARGET ${aether} POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:${aether}>/resources
-#     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${aether}>/resources
-#     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:${aether}> $<TARGET_FILE_DIR:${aether}>
-#     COMMAND_EXPAND_LISTS
-# )
+add_custom_command(TARGET ${aether} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:${aether}>/resources
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${aether}>/resources
+)

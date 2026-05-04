@@ -10,9 +10,6 @@ namespace ae {
 class Texture final {
 public:
     Texture();
-    ~Texture();
-
-private:
     explicit Texture(
         std::string_view file,
         uint32_t id,
@@ -20,6 +17,8 @@ private:
         int mipmaps,
         int format
     );
+
+    ~Texture();
 
 public:
     Texture(Texture const&) = delete;

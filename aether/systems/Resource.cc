@@ -59,11 +59,13 @@ sptr<Texture> Resource::load_shared_texture(std::string_view file) {
 	}
 
 	auto tex = Texture::load_shared(path.str.c_str());
+	
 	if (!tex) {
 		return nullptr;
 	}
 
 	textures_.insert_or_assign(path.str, tex);
+	
 	return tex;
 }
 

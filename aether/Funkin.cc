@@ -34,12 +34,14 @@ void Funkin::run() {
 
 		if (!is_window_minimized) {
 			update_dpi_scale(ctx);
+			director_.update_current_state(ctx);
 			update_frame_ctx(ctx);
 		}
 		
 		renderer_.start_draw();
 		
 		if (!is_window_minimized) {
+			director_.draw_current_state(ctx);
 #ifdef AETHER_DEBUG
 			renderer_.draw_debug(ctx);
 #endif
@@ -52,7 +54,7 @@ void Funkin::run() {
 }
 
 Context Funkin::context() {
-	return Context(&window_, &renderer_, &resource_);
+	return Context(&window_, &renderer_, &resource_, &director_);
 }
 
 // private

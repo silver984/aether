@@ -3,6 +3,7 @@
 #include <aether/systems/Window.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Resource.hh>
+#include <aether/systems/Director.hh>
 #include <aether/common/Context.hh>
 #include <string_view>
 
@@ -29,6 +30,7 @@ private:
 	Window window_;
 	Renderer renderer_;
 	Resource resource_;
+	Director director_;
 	bool is_initialized_;
 };
 

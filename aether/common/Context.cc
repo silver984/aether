@@ -4,10 +4,16 @@
 namespace ae {
 
 // private
-Context::Context(Window* window_ptr, Renderer* renderer_ptr, Resource* resource_ptr) :
+Context::Context(
+	Window* window_ptr,
+	Renderer* renderer_ptr,
+	Resource* resource_ptr,
+	Director* director_ptr
+) :
 	window_(window_ptr),
 	renderer_(renderer_ptr),
 	resource_(resource_ptr),
+	director_(director_ptr),
 	total_time_(0.f),
 	dpi_scale_(1.f),
 	running_fps_(0)
@@ -26,6 +32,10 @@ Renderer* Context::renderer() const {
 
 Resource* Context::resource() const {
 	return resource_;
+}
+
+Director* Context::director() const {
+	return director_;
 }
 
 float Context::delta_time() const {
