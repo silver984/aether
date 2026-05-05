@@ -43,7 +43,7 @@ Resource::Resource() = default;
 // private
 Resource::~Resource() = default;
 
-sptr<Texture> Resource::load_shared_texture(std::string_view file) {
+std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 	file_path path = file_path::parse(file);
 
 	// TODO: check format validity

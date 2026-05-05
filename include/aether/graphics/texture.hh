@@ -1,6 +1,6 @@
 #pragma once
 #include <aether/math/size.hh>
-#include <aether/common/pointers.hh>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <cstdint>
@@ -26,7 +26,7 @@ public:
     Texture& operator=(Texture const&) = delete;
     Texture& operator=(Texture&&) noexcept = default;
 
-    [[nodiscard]] static sptr<Texture> load_shared(char const* file);
+    [[nodiscard]] static std::shared_ptr<Texture> load_shared(char const* file);
     [[nodiscard]] std::string_view file() const;
     [[nodiscard]] uint32_t id() const;
     [[nodiscard]] size<int> bounds() const;

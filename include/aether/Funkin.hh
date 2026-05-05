@@ -5,7 +5,9 @@
 #include <aether/systems/Resource.hh>
 #include <aether/systems/Director.hh>
 #include <aether/common/Context.hh>
+#include <memory>
 #include <string_view>
+#include <cstdint>
 
 namespace ae {
 
@@ -20,17 +22,17 @@ public:
 
 	bool init(std::string_view game_title, size<int> const& game_resolution, int game_fps);
 	void run();
-	[[nodiscard]] Context context();
+	[[nodiscard]] Context const& context();
 	
 private:
 	void shutdown();
-	void update_dpi_scale(Context& ctx);
-	void update_frame_ctx(Context& ctx);
+	void update_dpi_scale();
+	void update_frame_ctx();
 
-	Window window_;
-	Renderer renderer_;
-	Resource resource_;
-	Director director_;
+	std::shared_ptr<Window> window_;
+	std::shared_ptr<Renderer> renderer_;
+	std::shared_ptr<Resource> resource_;
+	std::shared_ptr<Director> director_;
 	Context ctx_;
 	bool is_initialized_;
 };

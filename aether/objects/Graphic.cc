@@ -30,7 +30,7 @@ void Graphic::toggle_antialiasing(bool val) const {
 
 // protected
 bool Graphic::init(Context const& ctx) {
-	auto resource = ctx.resource();
+	auto resource = ctx.resource().lock();
 
 	if (!resource) {
 		// TODO: log error
@@ -48,7 +48,7 @@ bool Graphic::init(Context const& ctx) {
 
 // protected
 void Graphic::draw(Context const& ctx, mat3 const& transform, float alpha) const {
-	auto renderer = ctx.renderer();
+	auto renderer = ctx.renderer().lock();
 
 	if (!renderer) {
 		return;

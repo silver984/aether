@@ -1,7 +1,7 @@
 #pragma once
 #include <aether/objects/Node.hh>
 #include <aether/graphics/Texture.hh>
-#include <aether/common/pointers.hh>
+#include <memory>
 #include <string_view>
 #include <string>
 #include <optional>
@@ -23,7 +23,7 @@ protected:
 
 private:
 	std::string file_arg_;
-	sptr<Texture> texture_;
+	std::shared_ptr<Texture> texture_;
 };
 
 }

@@ -11,11 +11,9 @@ class Funkin;
 
 class Renderer final {
     friend class Funkin;
-private:
+public:
     Renderer();
     ~Renderer();
-
-public:
     Renderer(Renderer const&) = delete;
     Renderer(Renderer&&) = delete;
     Renderer& operator=(Renderer const&) = delete;

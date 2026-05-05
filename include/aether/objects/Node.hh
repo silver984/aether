@@ -3,8 +3,8 @@
 #include <aether/math/size.hh>
 #include <aether/math/mat3.hh>
 #include <aether/graphics/rgb.hh>
-#include <aether/common/pointers.hh>
 #include <aether/common/Context.hh>
+#include <memory>
 #include <vector>
 #include <string>
 #include <string_view>
@@ -24,8 +24,8 @@ public:
 
 	template<typename T, typename... va>
 	requires std::is_base_of_v<Node, T>
-	static sptr<T> create(Context const& ctx, va&&... args) {
-		sptr<T> ptr = shared<T>(std::forward<va>(args)...);
+	static std::shared_ptr<T> create(Context const& ctx, va&&... args) {
+		std::shared_ptr<T> ptr = std::make_shared<T>(std::forward<va>(args)...);
 
 		if (!ptr->base_init(ctx)) {
 			ptr.reset();
@@ -35,15 +35,15 @@ public:
 		return ptr;
 	}
 
-	void add(sptr<Node> vessel);
-	void remove(sptr<Node> vessel);
+	void add(std::shared_ptr<Node> vessel);
+	void remove(std::shared_ptr<Node> vessel);
 	void destroy();
 	void activate();
 	void deactivate();
 	void toggle_active(bool val);
 	[[nodiscard]] bool is_active() const;
 	[[nodiscard]] size_t count() const;
-	[[nodiscard]] wptr<Node> parent() const;
+	[[nodiscard]] std::weak_ptr<Node> parent() const;
 	void set_name(std::string_view name);
 	[[nodiscard]] std::string_view name() const;
 	[[nodiscard]] virtual std::string_view type() const;
@@ -77,12 +77,12 @@ private:
 	bool base_init(Context const& ctx);
 	void base_update(Context const& ctx, float dt);
 	void base_draw(Context const& ctx) const;
-	[[nodiscard]] bool has_ancestor(sptr<Node> const& vessel) const;
+	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> const& vessel) const;
 	void mark_dirty();
 	void on_dirty(Context const& ctx);
 
-	wptr<Node> parent_;
-	std::vector<sptr<Node>> children_;
+	std::weak_ptr<Node> parent_;
+	std::vector<std::shared_ptr<Node>> children_;
 	std::string name_;
 	rgb color_;
 	mat3 transform_;

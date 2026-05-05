@@ -4,16 +4,7 @@
 namespace ae {
 
 // private
-Context::Context(
-	Window* window_ptr,
-	Renderer* renderer_ptr,
-	Resource* resource_ptr,
-	Director* director_ptr
-) :
-	window_(window_ptr),
-	renderer_(renderer_ptr),
-	resource_(resource_ptr),
-	director_(director_ptr),
+Context::Context() :
 	total_time_(0.f),
 	dpi_scale_(1.f),
 	running_fps_(0)
@@ -22,19 +13,19 @@ Context::Context(
 // private
 Context::~Context() = default;
 
-Window* Context::window() const {
+std::weak_ptr<Window> Context::window() const {
 	return window_;
 }
 
-Renderer* Context::renderer() const {
+std::weak_ptr<Renderer> Context::renderer() const {
 	return renderer_;
 }
 
-Resource* Context::resource() const {
+std::weak_ptr<Resource> Context::resource() const {
 	return resource_;
 }
 
-Director* Context::director() const {
+std::weak_ptr<Director> Context::director() const {
 	return director_;
 }
 
@@ -52,6 +43,19 @@ float Context::dpi_scale() const {
 
 uint32_t Context::running_fps() const {
 	return running_fps_;
+}
+
+// private
+void Context::store_refs(
+	std::weak_ptr<Window> window_ptr,
+	std::weak_ptr<Renderer> renderer_ptr,
+	std::weak_ptr<Resource> resource_ptr,
+	std::weak_ptr<Director> director_ptr
+) {
+	window_ = std::move(window_ptr);
+	renderer_ = std::move(renderer_ptr);
+	resource_ = std::move(resource_ptr);
+	director_ = std::move(director_ptr);
 }
 
 }

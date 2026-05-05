@@ -27,7 +27,7 @@ bool TestState2::init(Context const& ctx) {
 
 void TestState2::update(Context const& ctx, float dt) {
 	if (elapsed_ += dt; elapsed_ >= 4.f) {
-		if (auto director = ctx.director()) {
+		if (auto director = ctx.director().lock()) {
 			director->switch_state(Node::create<TestState>(ctx));
 		}
 	}

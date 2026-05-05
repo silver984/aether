@@ -26,16 +26,16 @@ bool Window::is_minimized() const {
 	return IsWindowMinimized();
 }
 
+bool Window::was_resized() const {
+	return IsWindowResized();
+}
+
 std::string_view Window::title() const {
 	return title_;
 }
 
 size<int> Window::screen_size() const {
 	return screen_size_;
-}
-
-void Window::on_resize(Callback&& fn) {
-	resize_callbacks_.emplace_back(std::move(fn));
 }
 
 // private
@@ -72,28 +72,6 @@ bool Window::init(std::string_view title, size<int> const& resolution, int targe
 void Window::shutdown() {
 	CloseWindow();
 	is_initialized_ = false;
-}
-
-// private
-void Window::update() {
-	if (!IsWindowResized()) {
-		return;
-	}
-
-	for (
-		auto it = resize_callbacks_.begin();
-		it != resize_callbacks_.end();
-	) {
-		if (it->is_expired()) {
-			fmt::print("freed a callback\n");
-			it = resize_callbacks_.erase(it);
-			continue;
-		}
-
-		(*it)(); // call it
-
-		++it;
-	}
 }
 
 }

@@ -26,7 +26,7 @@ Node::Node() :
 
 Node::~Node() = default;
 
-void Node::add(sptr<Node> vessel) {
+void Node::add(std::shared_ptr<Node> vessel) {
 	if (!vessel) {
 		return;
 	}
@@ -57,7 +57,7 @@ void Node::add(sptr<Node> vessel) {
 	children_.emplace_back(vessel);
 }
 
-void Node::remove(sptr<Node> vessel) {
+void Node::remove(std::shared_ptr<Node> vessel) {
 	if (!vessel) {
 		return;
 	}
@@ -129,7 +129,7 @@ size_t Node::count() const {
 	return c;
 }
 
-wptr<Node> Node::parent() const {
+std::weak_ptr<Node> Node::parent() const {
 	return parent_;
 }
 
@@ -305,7 +305,7 @@ void Node::base_draw(Context const& ctx) const {
 }
 
 // private
-bool Node::has_ancestor(sptr<Node> const& vessel) const {
+bool Node::has_ancestor(std::shared_ptr<Node> const& vessel) const {
 	auto p = parent().lock();
 
 	while (p) {
