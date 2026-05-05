@@ -88,7 +88,7 @@ void Window::shutdown() {
 	
 	is_initialized_ = false;
 	
-	log::info("Shut down");
+	log::debug("Done");
 }
 
 }

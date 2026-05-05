@@ -64,26 +64,58 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 
 	log::info(fmt::format("Loading {}", file));
 
-	auto tex = Texture::make_shared(path.str.c_str());
+	auto texture = Texture::make_shared(path.str.c_str());
 	
-	if (!tex) {
+	if (!texture) {
 		log::error("Failed");
 		return nullptr;
 	}
 
-	log::trace(fmt::format("Made shared texture ({})", fmt::ptr(tex.get())));
+	auto texture_bounds = texture->bounds();
+	log::trace(fmt::format("Made shared texture ({}) | id: {} | bounds: {}x{}",
+		fmt::ptr(texture.get()),
+		texture->id(),
+		texture_bounds.width,
+		texture_bounds.height
+	));
 
-	auto [it, placed] = textures_.emplace(path.str, tex);
+	auto [it, placed] = textures_.emplace(path.str, texture);
 
 	if (placed) {
 		log::debug("Stored to cache");
 		log::info("Loaded");
-		return tex;
+		return texture;
 	} else {
 		log::warn("Failed to store to cache");
 	}
 
-	return tex;
+	return texture;
+}
+
+void Resource::clean_cache() {
+	log::debug("Cleaning cache");
+
+	size_t erased = 0;
+
+	for (auto it = textures_.begin(); it != textures_.end();) {
+		auto& weak_ptr = it->second;
+
+		if (weak_ptr.expired()) {
+			auto name = it->first;
+
+			it = textures_.erase(it);
+
+			erased++;
+			
+			log::trace(fmt::format("Erased {}", name));
+
+			continue;
+		}
+
+		++it;
+	}
+
+	log::debug(fmt::format("Done | erased {} slot/s", erased));
 }
 
 }

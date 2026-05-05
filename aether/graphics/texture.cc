@@ -1,4 +1,6 @@
 #include <aether/graphics/Texture.hh>
+#include <aether/common/log.hh>
+#include <fmt/format.h>
 #include <raylib.h>
 
 namespace ae {
@@ -16,6 +18,8 @@ Texture::~Texture() {
 
 	using raylib_texture = Texture2D;
 	UnloadTexture(raylib_texture{.id = id_});
+
+	log::trace(fmt::format("Unloaded | id: {}", id_));
 }
 
 // private

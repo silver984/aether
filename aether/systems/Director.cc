@@ -1,5 +1,6 @@
 #include <aether/systems/Director.hh>
 #include <aether/systems/Window.hh>
+#include <aether/systems/Resource.hh>
 #include <aether/common/log.hh>
 #include <fmt/format.h>
 #include <utility>
@@ -23,10 +24,26 @@ void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 	log::debug("Switching states");
 }
 
+void Director::try_cleanup() {
+	log::debug("Attempting to cleanup");
+
+	if (pending_state_) {
+		pending_state_.reset();
+		pending_state_ = nullptr;
+		log::trace("Released pending state");
+	}
+
+	if (current_state_) {
+		current_state_.reset();
+		current_state_ = nullptr;
+		log::trace("Released current state");
+	}
+}
+
 // private
 void Director::update_current_state(Context const& ctx) {
 	if (pending_state_) {
-		move_pending_state();
+		move_pending_state(ctx);
 	}
 
 	if (!current_state_) {
@@ -51,12 +68,16 @@ void Director::draw_current_state(Context const& ctx) {
 }
 
 // private
-void Director::move_pending_state() {
+void Director::move_pending_state(Context const& ctx) {
 	if (current_state_) {
 		log::trace(fmt::format("Releasing current state ({})", fmt::ptr(current_state_.get())));
 
 		current_state_.reset();
 		current_state_ = nullptr;
+
+		if (auto resource = ctx.resource().lock()) {
+			resource->clean_cache();
+		}
 
 		log::trace("Current state released");
 	}

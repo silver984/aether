@@ -20,9 +20,10 @@ public:
     void switch_state(std::shared_ptr<Node>&& new_state);
 
 private:
+    void try_cleanup();
     void update_current_state(Context const& ctx);
     void draw_current_state(Context const& ctx);
-    void move_pending_state();
+    void move_pending_state(Context const& ctx);
 
     std::shared_ptr<Node> current_state_;
     std::shared_ptr<Node> pending_state_;

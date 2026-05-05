@@ -5,7 +5,6 @@
 #include <chrono>
 #include <cstdint>
 #include <functional>
-#include <raylib.h>
 
 namespace ae {
 
@@ -29,6 +28,9 @@ bool Funkin::init(std::string_view game_title, size<int> const& game_resolution,
 	if (!window_->init(game_title, game_resolution, game_fps)) {
 		window_.reset();
 		window_ = nullptr;
+
+		log::error("Failed");
+		
 		return false;
 	}
 
@@ -91,6 +93,14 @@ void Funkin::shutdown() {
 
 	const auto start_time = std::chrono::high_resolution_clock::now();
 
+	if (director_) {
+		director_->try_cleanup();
+	}
+
+	if (resource_) {
+		resource_->clean_cache();
+	}
+
 	if (window_ && window_->is_initialized_) {
 		window_->shutdown();
 	}
@@ -100,7 +110,7 @@ void Funkin::shutdown() {
 	const auto end_time = std::chrono::high_resolution_clock::now();
 	const auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 
-	log::info(fmt::format("Took {}ms", time.count()));
+	log::info(fmt::format("Done | took {}ms", time.count()));
 }
 
 // private

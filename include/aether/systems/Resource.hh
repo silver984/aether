@@ -7,9 +7,11 @@
 namespace ae {
 
 class Funkin;
+class Director;
 
 class Resource final {
     friend class Funkin;
+    friend class Director;
 public:
     Resource();
     ~Resource();
@@ -21,6 +23,8 @@ public:
     [[nodiscard]] std::shared_ptr<Texture> load_shared_texture(std::string_view file);
 
 private:
+    void clean_cache();
+
     string_map<std::weak_ptr<Texture>> textures_;
 };
 
