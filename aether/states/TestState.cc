@@ -18,10 +18,6 @@ bool TestState::init(Context const& ctx) {
 		this->add(grah);
 		this->activate();
 
-		if (auto renderer = ctx.renderer().lock()) {
-			renderer->set_background_rgba(renderer->background_rgba().first, 1.f);
-		}
-
 		return true;
 	}
 
@@ -29,10 +25,16 @@ bool TestState::init(Context const& ctx) {
 }
 
 void TestState::update(Context const& ctx, float dt) {
-	if (elapsed_ += dt; elapsed_ >= 2.f) {
-		if (auto director = ctx.director().lock()) {
-			director->switch_state(Node::create<TestState2>(ctx));
-		}
+	elapsed_ += dt;
+
+	float speed = 2.0f;
+	float oscillating = 0.5f * (std::sin(speed * elapsed_) + 1.f);
+
+	if (auto renderer = ctx.renderer().lock()) {
+		renderer->set_background_rgba(
+			renderer->background_rgba().first,
+			oscillating
+		);
 	}
 }
 
