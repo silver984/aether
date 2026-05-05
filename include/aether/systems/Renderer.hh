@@ -4,6 +4,7 @@
 #include <aether/math/mat3.hh>
 #include <aether/graphics/rgb.hh>
 #include <aether/graphics/Texture.hh>
+#include <utility>
 
 namespace ae {
 
@@ -20,6 +21,8 @@ public:
     Renderer& operator=(Renderer&&) = delete;
 
     [[nodiscard]] size<int> bounds() const;
+    void set_background_rgba(rgb const& color, float alpha);
+    [[nodiscard]] std::pair<rgb, float> background_rgba() const;
     void draw_texture(Texture const& texture, mat3 const& matrix, rgb const& color, float alpha) const;
 
 private:
@@ -29,6 +32,8 @@ private:
     void draw_debug(Context const& ctx) const;
 #endif
     void push_matrix(mat3 const& matrix) const;
+    rgb background_color_;
+    float background_alpha_;
 };
 
 }

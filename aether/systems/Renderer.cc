@@ -1,5 +1,6 @@
 #include <aether/systems/Renderer.hh>
 #include <aether/common/rl_adapter.hh>
+#include <algorithm>
 #include <raylib.h>
 #include <rlgl.h>
 #include <fmt/format.h>
@@ -7,7 +8,9 @@
 namespace ae {
 
 // private
-Renderer::Renderer() = default;
+Renderer::Renderer() :
+	background_alpha_(1.f)
+{}
 
 // private
 Renderer::~Renderer() = default;
@@ -16,6 +19,18 @@ size<int> Renderer::bounds() const {
 	return {
 		.width = GetRenderWidth(),
 		.height = GetRenderHeight()
+	};
+}
+
+void Renderer::set_background_rgba(rgb const& color, float alpha) {
+	background_color_ = color;
+	background_alpha_ = std::clamp(alpha, 0.f, 1.f);
+}
+
+std::pair<rgb, float> Renderer::background_rgba() const {
+	return {
+		background_color_,
+		background_alpha_
 	};
 }
 
@@ -31,7 +46,7 @@ void Renderer::start_draw() const {
 	// clip bounds
 	auto _bounds_ = bounds();
 	BeginScissorMode(0, 0, _bounds_.width, _bounds_.height);
-	ClearBackground(BLACK);
+	ClearBackground(rl::to_Color(background_color_, background_alpha_));
 }
 
 // private

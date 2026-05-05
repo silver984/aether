@@ -2,6 +2,7 @@
 #include <aether/states/TestState.hh>
 #include <aether/objects/Graphic.hh>
 #include <aether/systems/Director.hh>
+#include <aether/systems/Renderer.hh>
 #include <fmt/format.h>
 
 namespace ae {
@@ -17,6 +18,11 @@ bool TestState2::init(Context const& ctx) {
 		this->add(grah);
 		grah->set_scale(vec2<float>(0.5f, 0.5f));
 		this->activate();
+
+		if (auto renderer = ctx.renderer().lock()) {
+			renderer->set_background_rgba(renderer->background_rgba().first, 0.f);
+		}
+
 		return true;
 	}
 
@@ -24,7 +30,7 @@ bool TestState2::init(Context const& ctx) {
 }
 
 void TestState2::update(Context const& ctx, float dt) {
-	if (elapsed_ += dt; elapsed_ >= 4.f) {
+	if (elapsed_ += dt; elapsed_ >= 2.f) {
 		if (auto director = ctx.director().lock()) {
 			director->switch_state(Node::create<TestState>(ctx));
 		}
