@@ -10,7 +10,7 @@ Callback::Callback(void* owner, std::function<void(void*)>&& fn) :
 Callback::~Callback() = default;
 
 bool Callback::is_expired() const {
-    return owner_ == nullptr;
+    return !owner_;
 }
 
 void Callback::operator()() const {

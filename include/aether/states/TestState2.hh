@@ -3,10 +3,10 @@
 
 namespace ae {
 
-class TestState : public State {
+class TestState2 : public State {
 public:
-	TestState();
-	~TestState();
+	TestState2();
+	~TestState2();
 
 protected:
 	bool init(Context const& ctx) override;

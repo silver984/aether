@@ -85,8 +85,8 @@ void Window::update() {
 		it != resize_callbacks_.end();
 	) {
 		if (it->is_expired()) {
+			fmt::print("freed a callback\n");
 			it = resize_callbacks_.erase(it);
-			fmt::print("hehehaha\n");
 			continue;
 		}
 
