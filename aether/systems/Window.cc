@@ -1,4 +1,5 @@
 #include <aether/systems/Window.hh>
+#include <aether/common/log.hh>
 #include <aether/math/util.hh>
 #ifdef WIN32
 #include <aether/platforms/win32.hh>
@@ -16,10 +17,6 @@ Window::Window() :
 
 // private
 Window::~Window() = default;
-
-bool Window::is_initialized() const {
-	return is_initialized_;
-}
 
 bool Window::should_close() const {
 	return WindowShouldClose();
@@ -51,8 +48,9 @@ bool Window::init(std::string_view title, size<int> const& resolution, int targe
 	screen_size_ = math::max(size<int>(1, 1), resolution);
 
 #ifdef WIN32
-	// TODO: log warning if not successful
-	win32::enable_console_colors();
+	if (!win32::enable_console_colors()) {
+		log::warn("Couldn't enable console colors");
+	}
 #endif
 
 	SetTraceLogCallback([](int, char const*, va_list) {});
@@ -66,20 +64,31 @@ bool Window::init(std::string_view title, size<int> const& resolution, int targe
 	InitWindow(resolution.width, resolution.height, title_.c_str());
 
 	if (!IsWindowReady()) {
-		// TODO: log error
+		log::error("Not ready");
 		return false;
 	}
 
 	SetTargetFPS(target_fps);
 	SetExitKey(KeyboardKey::KEY_NULL);
 
+	is_initialized_ = true;
+
+	log::info("Initialized");
+
 	return true;
 }
 
 // private
 void Window::shutdown() {
+	log::debug("Shutting down");
+
 	CloseWindow();
+	
+	log::debug("Closed window");
+	
 	is_initialized_ = false;
+	
+	log::info("Shut down");
 }
 
 }

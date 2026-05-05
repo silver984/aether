@@ -19,7 +19,6 @@ public:
     Window& operator=(Window const&) = delete;
     Window& operator=(Window&&) = delete;
 
-    [[nodiscard]] bool is_initialized() const;
     [[nodiscard]] bool should_close() const;
     [[nodiscard]] bool is_minimized() const;
     [[nodiscard]] bool was_resized() const;

@@ -26,7 +26,7 @@ public:
     Texture& operator=(Texture const&) = delete;
     Texture& operator=(Texture&&) noexcept = default;
 
-    [[nodiscard]] static std::shared_ptr<Texture> load_shared(char const* file);
+    [[nodiscard]] static std::shared_ptr<Texture> make_shared(char const* file);
     [[nodiscard]] std::string_view file() const;
     [[nodiscard]] uint32_t id() const;
     [[nodiscard]] size<int> bounds() const;

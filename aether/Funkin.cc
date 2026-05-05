@@ -1,9 +1,11 @@
 #include <aether/Funkin.hh>
 #include <aether/math/vec2.hh>
 #include <aether/common/log.hh>
+#include <fmt/format.h>
+#include <chrono>
 #include <cstdint>
 #include <functional>
-#include <fmt/format.h>
+#include <raylib.h>
 
 namespace ae {
 
@@ -12,7 +14,9 @@ Funkin::Funkin() :
 {};
 
 Funkin::~Funkin() {
-	shutdown();
+	if (is_initialized_) {
+		shutdown();
+	}
 }
 
 bool Funkin::init(std::string_view game_title, size<int> const& game_resolution, int game_fps) {
@@ -23,7 +27,6 @@ bool Funkin::init(std::string_view game_title, size<int> const& game_resolution,
 	window_ = std::make_shared<Window>();
 
 	if (!window_->init(game_title, game_resolution, game_fps)) {
-		// TODO: log error
 		window_.reset();
 		window_ = nullptr;
 		return false;
@@ -46,7 +49,7 @@ void Funkin::run() {
 		return;
 	}
 
-	while (window_ && renderer_ && !window_->should_close()) {
+	while (window_ && renderer_ && window_->is_initialized_ && !window_->should_close()) {
 		bool is_window_minimized = window_->is_minimized();
 
 		if (!is_window_minimized) {
@@ -84,16 +87,20 @@ Context const& Funkin::context() {
 
 // private
 void Funkin::shutdown() {
-	if (!is_initialized_) {
-		// already uninitialized
-		return;
-	}
+	log::info("Shutting down");
 
-	if (window_ && window_->is_initialized()) {
+	const auto start_time = std::chrono::high_resolution_clock::now();
+
+	if (window_ && window_->is_initialized_) {
 		window_->shutdown();
 	}
 
 	is_initialized_ = false;
+
+	const auto end_time = std::chrono::high_resolution_clock::now();
+	const auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+
+	log::info(fmt::format("Took {}ms", time.count()));
 }
 
 // private
@@ -102,7 +109,7 @@ void Funkin::update_dpi_scale() {
 		return;
 	}
 
-	auto screen_size = window_->screen_size();
+	auto screen_size = window_->screen_size_;
 	auto render_bounds = renderer_->bounds();
 	
 	vec2<float> ratio = {

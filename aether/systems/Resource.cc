@@ -1,4 +1,6 @@
 #include <aether/systems/Resource.hh>
+#include <aether/common/log.hh>
+#include <fmt/format.h>
 #include <raylib.h>
 #include <filesystem>
 #include <string>
@@ -52,20 +54,35 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		auto it = textures_.find(path.str);
 		it != textures_.end()
 	) {
-		// return the one found in the cache
+		log::trace(fmt::format("Found cache for {}", path.str));
+
 		if (auto ptr = it->second.lock()) {
+			log::trace(fmt::format("Returning found cache ({})", fmt::ptr(ptr.get())));
 			return ptr;
 		}
 	}
 
-	auto tex = Texture::load_shared(path.str.c_str());
+	log::info(fmt::format("Loading {}", file));
+
+	auto tex = Texture::make_shared(path.str.c_str());
 	
 	if (!tex) {
+		log::error("Failed");
 		return nullptr;
 	}
 
-	textures_.insert_or_assign(path.str, tex);
-	
+	log::trace(fmt::format("Made shared texture ({})", fmt::ptr(tex.get())));
+
+	auto [it, placed] = textures_.emplace(path.str, tex);
+
+	if (placed) {
+		log::debug("Stored to cache");
+		log::info("Loaded");
+		return tex;
+	} else {
+		log::warn("Failed to store to cache");
+	}
+
 	return tex;
 }
 

@@ -10,9 +10,7 @@ TestState2::TestState2() :
 	elapsed_(0.f)
 {};
 
-TestState2::~TestState2() {
-	fmt::print("TestState2 destroyed\n");
-}
+TestState2::~TestState2() = default;
 
 bool TestState2::init(Context const& ctx) {
 	if (auto grah = Node::create<Graphic>(ctx, "resources/grah.png")) {

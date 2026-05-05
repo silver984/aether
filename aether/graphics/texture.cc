@@ -33,7 +33,7 @@ Texture::Texture(
 	format_(format)
 {}
 
-std::shared_ptr<Texture> Texture::load_shared(char const* file) {
+std::shared_ptr<Texture> Texture::make_shared(char const* file) {
 	using raylib_texture = Texture2D;
 	raylib_texture tex = LoadTexture(file);
 
