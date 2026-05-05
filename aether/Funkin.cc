@@ -1,12 +1,14 @@
 #include <aether/Funkin.hh>
 #include <aether/math/vec2.hh>
-#include <fmt/format.h>
+#include <aether/common/Callback.hh>
 #include <cstdint>
+#include <fmt/format.h>
 
 namespace ae {
 
 Funkin::Funkin() :
-	is_initialized_(false)
+	is_initialized_(false),
+	ctx_(&window_, &renderer_, &resource_, &director_)
 {};
 
 Funkin::~Funkin() {
@@ -14,12 +16,24 @@ Funkin::~Funkin() {
 }
 
 bool Funkin::init(std::string_view game_title, size<int> const& game_resolution, int game_fps) {
-	if (window_.init(game_title, game_resolution, game_fps)) {
-		is_initialized_ = true;
+	if (is_initialized_) {
 		return true;
 	}
 
-	return false;
+	if (!window_.init(game_title, game_resolution, game_fps)) {
+		// TODO: log error
+		return false;
+	}
+
+	window_.on_resize(Callback(this, [](void* s) {
+		if (Funkin* self = static_cast<Funkin*>(s)) {
+			self->update_dpi_scale(self->ctx_);
+		}
+		})
+	);
+
+	is_initialized_ = true;
+	return true;
 }
 
 void Funkin::run() {
@@ -27,23 +41,21 @@ void Funkin::run() {
 		return;
 	}
 
-	Context ctx = context();
-
 	while (!window_.should_close()) {
 		bool is_window_minimized = window_.is_minimized();
 
 		if (!is_window_minimized) {
-			update_dpi_scale(ctx);
-			director_.update_current_state(ctx);
-			update_frame_ctx(ctx);
+			window_.update();
+			director_.update_current_state(ctx_);
+			update_frame_ctx(ctx_);
 		}
 		
 		renderer_.start_draw();
 		
 		if (!is_window_minimized) {
-			director_.draw_current_state(ctx);
+			director_.draw_current_state(ctx_);
 #ifdef AETHER_DEBUG
-			renderer_.draw_debug(ctx);
+			renderer_.draw_debug(ctx_);
 #endif
 		}
 

@@ -8,35 +8,35 @@ struct vec2 final {
     T x = T{0};
     T y = T{0};
 
-    [[nodiscard]] constexpr vec2<T> operator +(vec2<T> const& rhs) const {
+    [[nodiscard]] constexpr vec2<T> operator+(vec2<T> const& rhs) const {
         return {
             .x = x + rhs.x,
             .y = y + rhs.y
         };
     }
 
-    [[nodiscard]] constexpr vec2<T> operator -(vec2<T> const& rhs) const {
+    [[nodiscard]] constexpr vec2<T> operator-(vec2<T> const& rhs) const {
         return {
             .x = x - rhs.x,
             .y = y - rhs.y
         };
     }
 
-    [[nodiscard]] constexpr vec2<T> operator -() const {
+    [[nodiscard]] constexpr vec2<T> operator-() const {
         return {
             .x = -x,
             .y = -y
         };
     }
 
-    [[nodiscard]] constexpr vec2<T> operator *(vec2<T> const& rhs) const {
+    [[nodiscard]] constexpr vec2<T> operator*(vec2<T> const& rhs) const {
         return {
             .x = x * rhs.x,
             .y = y * rhs.y
         };
     }
 
-    [[nodiscard]] constexpr vec2<T> operator /(vec2<T> const& rhs) const {
+    [[nodiscard]] constexpr vec2<T> operator/(vec2<T> const& rhs) const {
         return {
             .x = x / rhs.x,
             .y = y / rhs.y
@@ -44,7 +44,7 @@ struct vec2 final {
     }
 
     template<numeric_t U>
-    [[nodiscard]] constexpr vec2<T> operator +(U rhs) const {
+    [[nodiscard]] constexpr vec2<T> operator+(U rhs) const {
         return {
             .x = x + rhs,
             .y = y + rhs
@@ -52,7 +52,7 @@ struct vec2 final {
     }
 
     template<numeric_t U>
-    [[nodiscard]] constexpr vec2<T> operator -(U rhs) const {
+    [[nodiscard]] constexpr vec2<T> operator-(U rhs) const {
         return {
             .x = x - rhs,
             .y = y - rhs
@@ -60,7 +60,7 @@ struct vec2 final {
     }
 
     template<numeric_t U>
-    [[nodiscard]] constexpr vec2<T> operator *(U rhs) const {
+    [[nodiscard]] constexpr vec2<T> operator*(U rhs) const {
         return {
             .x = x * rhs,
             .y = y * rhs
@@ -68,97 +68,97 @@ struct vec2 final {
     }
 
     template<numeric_t U>
-    [[nodiscard]] constexpr vec2<T> operator /(U rhs) const {
+    [[nodiscard]] constexpr vec2<T> operator/(U rhs) const {
         return {
             .x = x / rhs,
             .y = y / rhs
         };
     }
 
-    constexpr vec2<T>& operator +=(vec2<T> const& rhs) {
+    constexpr vec2<T>& operator+=(vec2<T> const& rhs) {
         x += rhs.x;
         y += rhs.y;
         return *this;
     }
 
     template<numeric_t U>
-    constexpr vec2<T>& operator +=(U rhs) {
+    constexpr vec2<T>& operator+=(U rhs) {
         x += rhs;
         y += rhs;
         return *this;
     }
 
-    constexpr vec2<T>& operator -=(vec2<T> const& rhs) {
+    constexpr vec2<T>& operator-=(vec2<T> const& rhs) {
         x -= rhs.x;
         y -= rhs.y;
         return *this;
     }
 
     template<numeric_t U>
-    constexpr vec2<T>& operator -=(U rhs) {
+    constexpr vec2<T>& operator-=(U rhs) {
         x -= rhs;
         y -= rhs;
         return *this;
     }
 
-    constexpr vec2<T>& operator *=(vec2<T> const& rhs) {
+    constexpr vec2<T>& operator*=(vec2<T> const& rhs) {
         x *= rhs.x;
         y *= rhs.y;
         return *this;
     }
 
     template<numeric_t U>
-    constexpr vec2<T>& operator /=(U rhs) {
+    constexpr vec2<T>& operator/=(U rhs) {
         x /= rhs;
         y /= rhs;
         return *this;
     }
 
-    constexpr vec2<T>& operator ++() {
+    constexpr vec2<T>& operator++() {
         ++x;
         ++y;
         return *this;
     }
 
-    constexpr vec2<T> operator ++(int) {
+    constexpr vec2<T> operator++(int) {
         vec2<T> temp = *this;
         ++(*this);
         return temp;
     }
 
-    constexpr vec2<T>& operator --() {
+    constexpr vec2<T>& operator--() {
         --x;
         --y;
         return *this;
     }
 
-    constexpr vec2<T> operator --(int) {
+    constexpr vec2<T> operator--(int) {
         vec2<T> temp = *this;
         --(*this);
         return temp;
     }
 
-    constexpr bool operator ==(vec2<T> const& rhs) const {
+    constexpr bool operator==(vec2<T> const& rhs) const {
         return x == rhs.x && y == rhs.y;
     }
 
-    constexpr bool operator !=(vec2<T> const& rhs) const {
+    constexpr bool operator!=(vec2<T> const& rhs) const {
         return !(*this == rhs);
     }
 
-    constexpr bool operator <=(vec2<T> const& rhs) const {
+    constexpr bool operator<=(vec2<T> const& rhs) const {
         return x <= rhs.x && y <= rhs.y;
     }
 
-    constexpr bool operator >=(vec2<T> const& rhs) const {
+    constexpr bool operator>=(vec2<T> const& rhs) const {
         return x >= rhs.x && y >= rhs.y;
     }
 
-    constexpr bool operator <(vec2<T> const& rhs) const {
+    constexpr bool operator<(vec2<T> const& rhs) const {
         return x < rhs.x && y < rhs.y;
     }
 
-    constexpr bool operator >(vec2<T> const& rhs) const {
+    constexpr bool operator>(vec2<T> const& rhs) const {
         return x > rhs.x && y > rhs.y;
     }
 };

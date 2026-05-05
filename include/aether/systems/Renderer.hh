@@ -2,6 +2,7 @@
 #include <aether/common/Context.hh>
 #include <aether/math/size.hh>
 #include <aether/math/mat3.hh>
+#include <aether/graphics/rgb.hh>
 #include <aether/graphics/Texture.hh>
 
 namespace ae {
@@ -17,11 +18,11 @@ private:
 public:
     Renderer(Renderer const&) = delete;
     Renderer(Renderer&&) = delete;
-    Renderer& operator =(Renderer const&) = delete;
-    Renderer& operator =(Renderer&&) = delete;
+    Renderer& operator=(Renderer const&) = delete;
+    Renderer& operator=(Renderer&&) = delete;
 
     [[nodiscard]] size<int> bounds() const;
-    void draw_texture(Texture const& texture, mat3 const& matrix, float alpha) const;
+    void draw_texture(Texture const& texture, mat3 const& matrix, rgb const& color, float alpha) const;
 
 private:
     void start_draw() const;

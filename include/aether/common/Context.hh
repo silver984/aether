@@ -26,8 +26,8 @@ public:
 
 	Context(Context const&) = delete;
 	Context(Context&&) = delete;
-	Context& operator =(Context const&) = delete;
-	Context& operator =(Context&&) = delete;
+	Context& operator=(Context const&) = delete;
+	Context& operator=(Context&&) = delete;
 
 	[[nodiscard]] Window* window() const;
 	[[nodiscard]] Renderer* renderer() const;

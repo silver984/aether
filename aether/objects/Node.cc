@@ -264,13 +264,13 @@ void Node::base_update(Context const& ctx, float dt) {
 	}
 
 	// TODO: move this somewhere
-	if (
+	/*if (
 		bool window_was_resized = ctx.window()
 		? ctx.window()->is_resized()
 		: false
 	) {
 		mark_dirty();
-	}
+	}*/
 
 	if (is_dirty_) {
 		on_dirty(ctx);

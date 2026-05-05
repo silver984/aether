@@ -7,10 +7,12 @@ TestState::TestState() = default;
 TestState::~TestState() = default;
 
 bool TestState::init(Context const& ctx) {
-	auto grah = Node::create<Graphic>(ctx, "resources/grah.png");
-	add(grah);
+	if (auto grah = Node::create<Graphic>(ctx, "resources/grah.png")) {
+		this->add(grah);
+		return true;
+	}
 
-	return true;
+	return false;
 }
 
 }

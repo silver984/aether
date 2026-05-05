@@ -16,8 +16,8 @@ private:
 public:
     Director(Director const&) = delete;
     Director(Director&&) = delete;
-    Director& operator =(Director const&) = delete;
-    Director& operator =(Director&&) = delete;
+    Director& operator=(Director const&) = delete;
+    Director& operator=(Director&&) = delete;
 
     void switch_state(sptr<Node>&& new_state);
 

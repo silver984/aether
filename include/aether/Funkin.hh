@@ -15,8 +15,8 @@ public:
 	~Funkin();
 	Funkin(Funkin const&) = delete;
 	Funkin(Funkin&&) = delete;
-	Funkin& operator =(Funkin const&) = delete;
-	Funkin& operator =(Funkin&&) = delete;
+	Funkin& operator=(Funkin const&) = delete;
+	Funkin& operator=(Funkin&&) = delete;
 
 	bool init(std::string_view game_title, size<int> const& game_resolution, int game_fps);
 	void run();
@@ -31,6 +31,7 @@ private:
 	Renderer renderer_;
 	Resource resource_;
 	Director director_;
+	Context ctx_;
 	bool is_initialized_;
 };
 

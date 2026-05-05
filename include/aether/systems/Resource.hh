@@ -17,8 +17,8 @@ private:
 public:
     Resource(Resource const&) = delete;
     Resource(Resource&&) = delete;
-    Resource& operator =(Resource const&) = delete;
-    Resource& operator =(Resource&&) = delete;
+    Resource& operator=(Resource const&) = delete;
+    Resource& operator=(Resource&&) = delete;
 
     [[nodiscard]] sptr<Texture> load_shared_texture(std::string_view file);
 

@@ -23,8 +23,8 @@ public:
 public:
     Texture(Texture const&) = delete;
     Texture(Texture&&) noexcept = default;
-    Texture& operator =(Texture const&) = delete;
-    Texture& operator =(Texture&&) noexcept = default;
+    Texture& operator=(Texture const&) = delete;
+    Texture& operator=(Texture&&) noexcept = default;
 
     [[nodiscard]] static sptr<Texture> load_shared(char const* file);
     [[nodiscard]] std::string_view file() const;

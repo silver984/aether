@@ -1,5 +1,5 @@
 #include <aether/common/Context.hh>
-#include <aether/internal/rl.hh>
+#include <raylib.h>
 
 namespace ae {
 
@@ -39,7 +39,7 @@ Director* Context::director() const {
 }
 
 float Context::delta_time() const {
-	return rl::delta_time();
+	return GetFrameTime();
 }
 
 float Context::total_time() const {

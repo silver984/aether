@@ -28,7 +28,7 @@ struct mat3 final {
     [[nodiscard]] vec2<float> transform_point(vec2<float> const& p) const;
     [[nodiscard]] vec2<float> translation() const;
 
-    [[nodiscard]] constexpr mat3 operator *(const mat3& o) const {
+    [[nodiscard]] constexpr mat3 operator*(const mat3& o) const {
         mat3 r;
 
         for (size_t row = 0; row < 3; ++row) {

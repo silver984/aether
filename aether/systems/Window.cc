@@ -1,8 +1,8 @@
 #include <aether/systems/Window.hh>
 #include <aether/math/util.hh>
-#include <aether/internal/rl.hh>
 #include <raylib.h>
 #include <algorithm>
+#include <fmt/format.h>
 
 namespace ae {
 
@@ -26,16 +26,16 @@ bool Window::is_minimized() const {
 	return IsWindowMinimized();
 }
 
-bool Window::is_resized() const {
-	return IsWindowResized();
-}
-
 std::string_view Window::title() const {
 	return title_;
 }
 
 size<int> Window::screen_size() const {
 	return screen_size_;
+}
+
+void Window::on_resize(Callback&& fn) {
+	resize_callbacks_.emplace_back(std::move(fn));
 }
 
 // private
@@ -47,18 +47,53 @@ bool Window::init(std::string_view title, size<int> const& resolution, int targe
 	title_ = std::string(title);
 	screen_size_ = math::max(size<int>(1, 1), resolution);
 
-	if (rl::init_window(title_.c_str(), screen_size_, std::max(1, target_fps))) {
-		is_initialized_ = true;
-		return true;
+	SetTraceLogCallback([](int, char const*, va_list) {});
+
+	SetConfigFlags(
+		ConfigFlags::FLAG_WINDOW_RESIZABLE |
+		ConfigFlags::FLAG_WINDOW_ALWAYS_RUN |
+		ConfigFlags::FLAG_WINDOW_TRANSPARENT
+	);
+
+	InitWindow(resolution.width, resolution.height, title_.c_str());
+
+	if (!IsWindowReady()) {
+		// TODO: log error
+		return false;
 	}
 
-	return false;
+	SetTargetFPS(target_fps);
+	SetExitKey(KeyboardKey::KEY_NULL);
+
+	return true;
 }
 
 // private
 void Window::shutdown() {
 	CloseWindow();
 	is_initialized_ = false;
+}
+
+// private
+void Window::update() {
+	if (!IsWindowResized()) {
+		return;
+	}
+
+	for (
+		auto it = resize_callbacks_.begin();
+		it != resize_callbacks_.end();
+	) {
+		if (it->is_expired()) {
+			it = resize_callbacks_.erase(it);
+			fmt::print("hehehaha\n");
+			continue;
+		}
+
+		(*it)(); // call it
+
+		++it;
+	}
 }
 
 }

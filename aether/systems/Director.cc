@@ -1,4 +1,6 @@
 #include <aether/systems/Director.hh>
+#include <aether/systems/Window.hh>
+#include <aether/common/Callback.hh>
 #include <utility>
 
 namespace ae {
@@ -25,6 +27,15 @@ void Director::switch_state(sptr<Node>&& new_state) {
 void Director::update_current_state(Context const& ctx) {
 	if (pending_state_) {
 		current_state_ = std::move(pending_state_);
+
+		if (auto window = ctx.window()) {
+			window->on_resize(Callback(&current_state_, [](void* s) {
+				if (sptr<Node>* state = static_cast<sptr<Node>*>(s)) {
+					(*state)->mark_dirty();
+				}
+				})
+			);
+		}
 	}
 
 	if (current_state_) {

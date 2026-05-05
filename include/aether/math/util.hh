@@ -9,7 +9,7 @@
 namespace ae::math {
 
 template <numeric_t T>
-T lerp(T a, T b, T t) {
+[[nodiscard]] T lerp(T a, T b, T t) {
     return a + (b - a) * t;
 }
 
@@ -29,7 +29,7 @@ template <numeric_t T>
 }
 
 template <numeric_t T>
-vec2<T> lerp(const vec2<T>& a, const vec2<T>& b, T t) {
+[[nodiscard]] vec2<T> lerp(const vec2<T>& a, const vec2<T>& b, T t) {
     return {
         .x = a.x + (b.x - a.x) * t,
         .y = a.y + (b.y - a.y) * t
@@ -37,7 +37,7 @@ vec2<T> lerp(const vec2<T>& a, const vec2<T>& b, T t) {
 }
 
 template <numeric_t T>
-vec2<T> clamp(const vec2<T>& val, const vec2<T>& min_val, const vec2<T>& max_val) {
+[[nodiscard]] vec2<T> clamp(const vec2<T>& val, const vec2<T>& min_val, const vec2<T>& max_val) {
     return {
         .x = std::clamp(val.x, min_val.x, max_val.x),
         .y = std::clamp(val.y, min_val.y, max_val.y)
@@ -45,7 +45,7 @@ vec2<T> clamp(const vec2<T>& val, const vec2<T>& min_val, const vec2<T>& max_val
 }
 
 template <numeric_t T>
-size<T> clamp(const size<T>& val, const size<T>& min_val, const size<T>& max_val) {
+[[nodiscard]] size<T> clamp(const size<T>& val, const size<T>& min_val, const size<T>& max_val) {
     return {
         .width = std::clamp(val.width, min_val.width, max_val.width),
         .height = std::clamp(val.height, min_val.height, max_val.height)
@@ -55,7 +55,7 @@ size<T> clamp(const size<T>& val, const size<T>& min_val, const size<T>& max_val
 // TODO: min and max
 
 template <numeric_t T>
-size<T> max(const size<T>& left, const size<T>& right) {
+[[nodiscard]] size<T> max(const size<T>& left, const size<T>& right) {
     return {
         .width = std::max(left.width, right.width),
         .height = std::max(left.height, right.height)
@@ -84,7 +84,7 @@ template <numeric_t T>
 }
 
 template <numeric_t T>
-vec2<T> damp(const vec2<T>& current, const vec2<T>& target, T lambda, T dt) {
+[[nodiscard]] vec2<T> damp(const vec2<T>& current, const vec2<T>& target, T lambda, T dt) {
     T t = T{1} - std::exp(-lambda * dt);
     return lerp(current, target, t);
 }
@@ -100,16 +100,23 @@ template <numeric_t T>
 }
 
 template <numeric_t T>
-vec2<T> rotate_point(vec2<T> point, vec2<T> origin, T rotation_degree) {
+[[nodiscard]] vec2<T> rotate_point(vec2<T> point, vec2<T> origin, T rotation_degree) {
     T rad = degrees_to_radians(rotation_degree);
 
-    vec2<T> unrotated = vec2<T>(point.x - origin.x, point.y - origin.y);
-    vec2<T> rotated = vec2<T>(
-        unrotated.x * std::cos(rad) - unrotated.y * std::sin(rad),
-        unrotated.x * std::sin(rad) + unrotated.y * std::cos(rad)
-    );
+    vec2<T> unrotated = {
+        .x = point.x - origin.x,
+        .y = point.y - origin.y
+    };
 
-    return vec2<T>(rotated.x + origin.x, rotated.y + origin.y);
+    vec2<T> rotated = {
+        .x = unrotated.x * std::cos(rad) - unrotated.y * std::sin(rad),
+        .y = unrotated.x * std::sin(rad) + unrotated.y * std::cos(rad)
+    };
+
+    return {
+        .x = rotated.x + origin.x,
+        .y = rotated.y + origin.y
+    };
 }
 
 }

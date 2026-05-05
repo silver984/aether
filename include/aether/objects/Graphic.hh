@@ -4,6 +4,7 @@
 #include <aether/common/pointers.hh>
 #include <string_view>
 #include <string>
+#include <optional>
 
 namespace ae {
 
@@ -13,6 +14,8 @@ public:
 	~Graphic() override;
 
 	[[nodiscard]] std::string_view type() const override;
+	[[nodiscard]] std::optional<std::string_view> file_name() const;
+	void toggle_antialiasing(bool val) const;
 
 protected:
 	bool init(Context const& ctx) override;

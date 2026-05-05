@@ -1,31 +1,8 @@
 #include <aether/systems/Renderer.hh>
+#include <aether/common/rl_adapter.hh>
 #include <raylib.h>
 #include <rlgl.h>
 #include <fmt/format.h>
-
-namespace {
-
-Matrix raylib_matrix(ae::mat3 const& matrix) {
-	return {
-		.m0 = matrix.m[0][0], .m4 = matrix.m[0][1], .m8 = 0.f, .m12 = matrix.m[0][2],
-		.m1 = matrix.m[1][0], .m5 = matrix.m[1][1], .m9 = 0.f, .m13 = matrix.m[1][2],
-		.m2 = 0.f, .m6 = 0.f, .m10 = 1.f, .m14 = 0.f,
-		.m3 = 0.f, .m7 = 0.f, .m11 = 0.f, .m15 = 1.f
-	};
-}
-
-Texture raylib_texture(ae::Texture const& texture) {
-	auto texture_bounds = texture.bounds();
-	return {
-		.id = texture.id(),
-		.width = texture_bounds.width,
-		.height = texture_bounds.height,
-		.mipmaps = texture.mipmaps(),
-		.format = static_cast<int>(texture.format())
-	};
-}
-
-}
 
 namespace ae {
 
@@ -42,19 +19,9 @@ size<int> Renderer::bounds() const {
 	};
 }
 
-void Renderer::draw_texture(Texture const& texture, mat3 const& matrix, float alpha) const {
+void Renderer::draw_texture(Texture const& texture, mat3 const& matrix, rgb const& color, float alpha) const {
 	push_matrix(matrix);
-	
-	DrawTexture(
-		raylib_texture(texture), 0, 0,
-		Color{
-			.r = 255,
-			.g = 255,
-			.b = 255,
-			.a = static_cast<uint8_t>(255.f * alpha)
-		}
-	);
-
+	DrawTexture(rl::to_Texture2D(texture), 0, 0, rl::to_Color(color, alpha));
 	rlPopMatrix();
 }
 
@@ -85,7 +52,7 @@ void Renderer::draw_debug(Context const& ctx) const {
 // private
 void Renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
-	Matrix m = raylib_matrix(matrix);
+	Matrix m = rl::to_Matrix(matrix);
 	rlMultMatrixf(&m.m0);
 }
 
