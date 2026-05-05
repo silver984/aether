@@ -1,5 +1,8 @@
 #include <aether/systems/Window.hh>
 #include <aether/math/util.hh>
+#ifdef WIN32
+#include <aether/platforms/win32.hh>
+#endif
 #include <raylib.h>
 #include <algorithm>
 #include <fmt/format.h>
@@ -46,6 +49,11 @@ bool Window::init(std::string_view title, size<int> const& resolution, int targe
 
 	title_ = std::string(title);
 	screen_size_ = math::max(size<int>(1, 1), resolution);
+
+#ifdef WIN32
+	// TODO: log warning if not successful
+	win32::enable_console_colors();
+#endif
 
 	SetTraceLogCallback([](int, char const*, va_list) {});
 

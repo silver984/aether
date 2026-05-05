@@ -1,5 +1,6 @@
 #include <aether/Funkin.hh>
 #include <aether/math/vec2.hh>
+#include <aether/common/log.hh>
 #include <cstdint>
 #include <functional>
 #include <fmt/format.h>
@@ -35,6 +36,8 @@ bool Funkin::init(std::string_view game_title, size<int> const& game_resolution,
 
 	is_initialized_ = true;
 
+	log::info("Initialized");
+
 	return true;
 }
 
@@ -43,11 +46,7 @@ void Funkin::run() {
 		return;
 	}
 
-	if (!window_) {
-		return;
-	}
-
-	while (!window_->should_close()) {
+	while (window_ && renderer_ && !window_->should_close()) {
 		bool is_window_minimized = window_->is_minimized();
 
 		if (!is_window_minimized) {
@@ -60,10 +59,6 @@ void Funkin::run() {
 			}
 
 			update_frame_ctx();
-		}
-		
-		if (!renderer_) {
-			continue;
 		}
 
 		renderer_->start_draw();
