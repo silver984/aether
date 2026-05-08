@@ -22,15 +22,7 @@ jobs:
           - os: Windows
             runner: windows-latest
             preset: aether-release
-            
-          - os: Linux
-            runner: ubuntu-latest
-            preset: aether-debug
 
-          - os: Linux
-            runner: ubuntu-latest
-            preset: aether-release
-            
           - os: macOS
             runner: macos-latest
             preset: aether-debug
@@ -45,6 +37,10 @@ jobs:
         
       - name: Setup Ninja
         uses: seanmiddleditch/gha-setup-ninja@v5
+
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Configure CMake
         run: cmake --preset ${{ matrix.preset }}
