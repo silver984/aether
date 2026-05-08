@@ -3,4 +3,5 @@ target_sources(${aether}
         Context.cc
         log.cc
         rl_adapter.cc
+        timer.cc
 )

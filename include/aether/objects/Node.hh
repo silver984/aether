@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_OBJECTS_NODE_HH__
+#define __AETHER_OBJECTS_NODE_HH__
+
 #include <aether/math/vec2.hh>
 #include <aether/math/size.hh>
 #include <aether/math/mat3.hh>
@@ -35,8 +37,8 @@ public:
 		return ptr;
 	}
 
-	void add(std::shared_ptr<Node> vessel);
-	void remove(std::shared_ptr<Node> vessel);
+	void add(std::shared_ptr<Node> node);
+	void remove(std::shared_ptr<Node> node);
 	void destroy();
 	void activate();
 	void deactivate();
@@ -49,17 +51,17 @@ public:
 	[[nodiscard]] virtual std::string_view type() const;
 	void set_bounds(size<float> const& val);
 	[[nodiscard]] size<float> bounds() const;
-	void set_position(vec2<float> const& val);
+	void set_position(vec2<float> val);
 	[[nodiscard]] vec2<float> position() const;
-	void set_anchor(vec2<float> const& val);
+	void set_anchor(vec2<float> val);
 	[[nodiscard]] vec2<float> anchor() const;
-	void set_scale(vec2<float> const& val);
+	void set_scale(vec2<float> val);
 	[[nodiscard]] vec2<float> scale() const;
-	void set_skew(vec2<float> const& val);
+	void set_skew(vec2<float> val);
 	[[nodiscard]] vec2<float> skew() const;
 	void set_rotation(float val);
 	[[nodiscard]] float rotation() const;
-	void set_color(rgb const& val);
+	void set_color(rgb val);
 	[[nodiscard]] rgb color() const;
 	void set_alpha(float val);
 	[[nodiscard]] float alpha() const;
@@ -76,10 +78,10 @@ protected:
 private:
 	bool base_init(Context const& ctx);
 	void base_update(Context const& ctx, float dt);
-	void base_draw(Context const& ctx) const;
-	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> const& vessel) const;
+	void base_draw(Context const& ctx);
+	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> node) const;
 	void mark_dirty();
-	void on_dirty(Context const& ctx);
+	void update_transform(Context const& ctx, mat3& transform) const;
 
 	std::weak_ptr<Node> parent_;
 	std::vector<std::shared_ptr<Node>> children_;
@@ -102,3 +104,5 @@ private:
 };
 
 }
+
+#endif

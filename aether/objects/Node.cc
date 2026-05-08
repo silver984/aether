@@ -1,6 +1,9 @@
 #include <aether/objects/Node.hh>
 #include <aether/systems/Window.hh>
+#include <aether/systems/Renderer.hh>
 #include <aether/math/util.hh>
+#include <aether/common/log.hh>
+#include <fmt/format.h>
 #include <algorithm>
 #include <cmath>
 
@@ -26,54 +29,56 @@ Node::Node() :
 
 Node::~Node() = default;
 
-void Node::add(std::shared_ptr<Node> vessel) {
-	if (!vessel) {
+void Node::add(std::shared_ptr<Node> node) {
+	if (!node) {
 		return;
 	}
 
 	auto self = shared_from_this();
 
-	if (vessel == self) {
+	if (node == self) {
 		// prevent self-parenting
 		return;
 	}
 
-	if (vessel->has_ancestor(self)) {
+	if (node->has_ancestor(self)) {
 		// prevent hierarchy cycle
 		return;
 	}
 
-	if (std::find(children_.begin(), children_.end(), vessel) != children_.end()) {
+	if (std::find(children_.begin(), children_.end(), node) != children_.end()) {
 		// prevent duplicates
 		return;
 	}
 
-	if (auto old_parent = vessel->parent().lock()) {
+	if (auto old_parent = node->parent().lock()) {
 		// remove from old parent
-		old_parent->remove(vessel);
+		old_parent->remove(node);
 	}
 
-	vessel->parent_ = weak_from_this();
-	children_.emplace_back(vessel);
+	node->parent_ = weak_from_this();
+	children_.emplace_back(node);
+	node->mark_dirty();
 }
 
-void Node::remove(std::shared_ptr<Node> vessel) {
-	if (!vessel) {
+void Node::remove(std::shared_ptr<Node> node) {
+	if (!node) {
 		return;
 	}
 
-	if (vessel == shared_from_this()) {
+	if (node == shared_from_this()) {
 		// prevent self-remove
 		return;
 	}
 
-	auto it = std::find(children_.begin(), children_.end(), vessel);
+	auto it = std::find(children_.begin(), children_.end(), node);
 	if (it == children_.end()) {
 		return;
 	}
 
-	vessel->parent_.reset();
+	node->parent_.reset();
 	children_.erase(it);
+	node->mark_dirty();
 }
 
 void Node::destroy() {
@@ -154,7 +159,7 @@ size<float> Node::bounds() const {
 	return bounds_;
 }
 
-void Node::set_position(vec2<float> const& val) {
+void Node::set_position(vec2<float> val) {
 	position_ = val;
 	mark_dirty();
 }
@@ -163,7 +168,7 @@ vec2<float> Node::position() const {
 	return position_;
 }
 
-void Node::set_anchor(vec2<float> const& val) {
+void Node::set_anchor(vec2<float> val) {
 	anchor_ = val;
 	mark_dirty();
 }
@@ -172,7 +177,7 @@ vec2<float> Node::anchor() const {
 	return anchor_;
 }
 
-void Node::set_scale(vec2<float> const& val) {
+void Node::set_scale(vec2<float> val) {
 	scale_ = val;
 	mark_dirty();
 }
@@ -181,7 +186,7 @@ vec2<float> Node::scale() const {
 	return scale_;
 }
 
-void Node::set_skew(vec2<float> const& val) {
+void Node::set_skew(vec2<float> val) {
 	skew_ = val;
 	mark_dirty();
 }
@@ -199,7 +204,7 @@ float Node::rotation() const {
 	return rotation_;
 }
 
-void Node::set_color(rgb const& val) {
+void Node::set_color(rgb val) {
 	color_ = val;
 }
 
@@ -249,12 +254,7 @@ bool Node::base_init(Context const& ctx) {
 		return true;
 	}
 
-	if (!init(ctx)) {
-		return false;
-	}
-
-	is_initialized_ = true;
-	return true;
+	return is_initialized_ = init(ctx);
 }
 
 // private
@@ -263,34 +263,30 @@ void Node::base_update(Context const& ctx, float dt) {
 		return;
 	}
 
-	if (is_dirty_) {
-		on_dirty(ctx);
-		is_dirty_ = false;
-	}
-
 	float world_dt = dt * time_scale_;
 
 	if (is_active_) {
 		update(ctx, world_dt);
 	}
 
-	for (auto const& vessel : children_) {
-		if (!vessel) {
+	for (auto const& node : children_) {
+		if (!node) {
 			continue;
 		}
 
-		vessel->base_update(ctx, world_dt);
+		node->base_update(ctx, world_dt);
 	}
 }
 
 // private
-void Node::base_draw(Context const& ctx) const {
-	if (
-		!is_initialized_ ||
-		!is_visible_ ||
-		world_alpha_ == 0.f
-	) {
+void Node::base_draw(Context const& ctx) {
+	if (!is_initialized_ || !is_visible_ || world_alpha_ == 0.f) {
 		return;
+	}
+
+	if (is_dirty_) {
+		update_transform(ctx, transform_);
+		is_dirty_ = false;
 	}
 
 	draw(ctx, transform_, world_alpha_);
@@ -305,11 +301,11 @@ void Node::base_draw(Context const& ctx) const {
 }
 
 // private
-bool Node::has_ancestor(std::shared_ptr<Node> const& vessel) const {
+bool Node::has_ancestor(std::shared_ptr<Node> node) const {
 	auto p = parent().lock();
 
 	while (p) {
-		if (p == vessel) {
+		if (p == node) {
 			return true;
 		}
 
@@ -335,32 +331,13 @@ void Node::mark_dirty() {
 	}
 }
 
-void Node::on_dirty(Context const& ctx) {
-	vec2<float> anchor_offset = {
-		.x = anchor_.x * bounds_.width,
-		.y = anchor_.y * bounds_.height
-	};
+// private
+void Node::update_transform(Context const& ctx, mat3& transform) const {
+	mat3 t = mat3::translation(position_);
+	mat3 s = mat3::scale(scale_);
+	transform = t * s;
 
-	vec2<float> skew_rad = {
-		.x = math::degrees_to_radians(skew_.x),
-		.y = math::degrees_to_radians(skew_.y)
-	};
-
-	mat3 translation = mat3::translation(position_);
-	mat3 rotation = mat3::rotation(math::degrees_to_radians(rotation_));
-	mat3 scale = mat3::scale(scale_);
-	mat3 skew = mat3::skew(skew_rad);
-	mat3 anchor = mat3::translation(-anchor_offset);
-	mat3 local = translation * rotation * scale * skew * anchor;
-
-	if (auto parent = parent_.lock()) {
-		transform_ = parent->transform_ * local;
-		world_alpha_ = std::clamp(alpha_ * parent->world_alpha_, 0.f, 1.f);
-	} else {
-		float dpi_scale = ctx.dpi_scale();
-		transform_ = mat3::scale(vec2<float>(dpi_scale, dpi_scale)) * local;
-		world_alpha_ = alpha_;
-	}
+	log::info(fmt::format("{} {}", transform.translation().x, transform.translation().y));
 }
 
 }

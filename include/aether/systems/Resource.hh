@@ -3,6 +3,7 @@
 #include <memory>
 #include <aether/graphics/Texture.hh>
 #include <string_view>
+#include <cstdint>
 
 namespace ae {
 
@@ -23,9 +24,10 @@ public:
     [[nodiscard]] std::shared_ptr<Texture> load_shared_texture(std::string_view file);
 
 private:
-    void clean_cache();
+    void clean_refs();
+    size_t clean_texture_refs();
 
-    string_map<std::weak_ptr<Texture>> textures_;
+    string_map<std::weak_ptr<Texture>> textures_refs_;
 };
 
 }

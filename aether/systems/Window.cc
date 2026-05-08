@@ -12,6 +12,9 @@ namespace ae {
 
 // private
 Window::Window() :
+	was_resized_(false),
+	is_minimized_(false),
+	should_close_(false),
 	is_initialized_(false)
 {}
 
@@ -19,15 +22,15 @@ Window::Window() :
 Window::~Window() = default;
 
 bool Window::should_close() const {
-	return WindowShouldClose();
+	return should_close_;
 }
 
 bool Window::is_minimized() const {
-	return IsWindowMinimized();
+	return is_minimized_;
 }
 
 bool Window::was_resized() const {
-	return IsWindowResized();
+	return was_resized_;
 }
 
 std::string_view Window::title() const {
@@ -39,7 +42,7 @@ size<int> Window::screen_size() const {
 }
 
 // private
-bool Window::init(std::string_view title, size<int> const& resolution, int target_fps) {
+bool Window::init(std::string_view title, size<int> resolution, int target_fps) {
 	if (is_initialized_) {
 		return true;
 	}
@@ -89,6 +92,13 @@ void Window::shutdown() {
 	is_initialized_ = false;
 	
 	log::debug("Done");
+}
+
+// private
+void Window::update_state() {
+	should_close_ = WindowShouldClose();
+	was_resized_ = IsWindowResized();
+	is_minimized_ = IsWindowMinimized();
 }
 
 }

@@ -25,7 +25,9 @@ std::optional<std::string_view> Graphic::file_name() const {
 }
 
 void Graphic::toggle_antialiasing(bool val) const {
-	SetTextureFilter(rl::to_Texture2D(*texture_), val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
+	if (texture_) {
+		SetTextureFilter(rl::to_Texture2D(*texture_), val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
+	}
 }
 
 // protected
@@ -39,6 +41,8 @@ bool Graphic::init(Context const& ctx) {
 
 	if (texture_ = resource->load_shared_texture(file_arg_)) {
 		toggle_antialiasing(true);
+		auto texture_bounds = texture_->bounds();
+		set_bounds(size<float>(static_cast<float>(texture_bounds.width), static_cast<float>(texture_bounds.height)));
 		return true;
 	}
 
@@ -50,7 +54,7 @@ bool Graphic::init(Context const& ctx) {
 void Graphic::draw(Context const& ctx, mat3 const& transform, float alpha) const {
 	auto renderer = ctx.renderer().lock();
 
-	if (!renderer) {
+	if (!renderer || !texture_) {
 		return;
 	}
 

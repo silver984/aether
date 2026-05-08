@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 #include <string_view>
-#include <cstdint>
 
 namespace ae {
 
@@ -12,8 +11,8 @@ public:
     Texture();
     explicit Texture(
         std::string_view file,
-        uint32_t id,
-        size<int> const& bounds,
+        unsigned int id,
+        size<int> bounds,
         int mipmaps,
         int format
     );
@@ -28,14 +27,14 @@ public:
 
     [[nodiscard]] static std::shared_ptr<Texture> make_shared(char const* file);
     [[nodiscard]] std::string_view file() const;
-    [[nodiscard]] uint32_t id() const;
+    [[nodiscard]] unsigned int id() const;
     [[nodiscard]] size<int> bounds() const;
     [[nodiscard]] int mipmaps() const;
     [[nodiscard]] int format() const;
 
 private:
     std::string file_;
-    uint32_t id_; // OpenGL Texture id
+    unsigned int id_; // OpenGL Texture id
     size<int> bounds_;
     int mipmaps_;
     int format_;

@@ -29,7 +29,6 @@ public:
 	[[nodiscard]] std::weak_ptr<Director> director() const;
 	[[nodiscard]] float delta_time() const;
 	[[nodiscard]] float total_time() const;
-	[[nodiscard]] float dpi_scale() const;
 	[[nodiscard]] uint32_t running_fps() const;
 
 private:
@@ -45,7 +44,6 @@ private:
 	std::weak_ptr<Resource> resource_;
 	std::weak_ptr<Director> director_;
 	float total_time_;
-	float dpi_scale_;
 	uint32_t running_fps_;
 };
 

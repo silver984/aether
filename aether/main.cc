@@ -10,7 +10,7 @@ int main() {
 			auto& ctx = aether.context();
 			auto director = ctx.director().lock()
 		) {
-			director->switch_state(ae::State::create<ae::TestState>(ctx));
+			director->switch_state(ae::Node::create<TestState>(ctx));
 		}
 
 		aether.run();

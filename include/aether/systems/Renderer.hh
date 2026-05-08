@@ -1,5 +1,6 @@
 #pragma once
 #include <aether/common/Context.hh>
+#include <aether/math/vec2.hh>
 #include <aether/math/size.hh>
 #include <aether/math/mat3.hh>
 #include <aether/graphics/rgb.hh>
@@ -21,11 +22,14 @@ public:
     Renderer& operator=(Renderer&&) = delete;
 
     [[nodiscard]] size<int> bounds() const;
-    void set_background_rgba(rgb const& color, float alpha);
+    [[nodiscard]] float scale_factor() const;
+    [[nodiscard]] vec2<float> scale_ratio() const;
+    void set_background_rgba(rgb color, float alpha);
     [[nodiscard]] std::pair<rgb, float> background_rgba() const;
-    void draw_texture(Texture const& texture, mat3 const& matrix, rgb const& color, float alpha) const;
+    void draw_texture(Texture const& texture, mat3 const& matrix, rgb color, float alpha) const;
 
 private:
+    void update_math(Context const& ctx);
     void start_draw() const;
     void end_draw() const;
 #ifdef AETHER_DEBUG
@@ -34,6 +38,8 @@ private:
     void push_matrix(mat3 const& matrix) const;
     rgb background_color_;
     float background_alpha_;
+    float scale_factor_;
+    vec2<float> scale_ratio_;
 };
 
 }

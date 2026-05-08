@@ -1,5 +1,7 @@
 #include <aether/systems/Renderer.hh>
+#include <aether/systems/Window.hh>
 #include <aether/common/rl_adapter.hh>
+#include <aether/common/log.hh>
 #include <algorithm>
 #include <raylib.h>
 #include <rlgl.h>
@@ -9,7 +11,9 @@ namespace ae {
 
 // private
 Renderer::Renderer() :
-	background_alpha_(1.f)
+	background_alpha_(1.f),
+	scale_factor_(1.f),
+	scale_ratio_(1.f, 1.f)
 {}
 
 // private
@@ -22,7 +26,15 @@ size<int> Renderer::bounds() const {
 	};
 }
 
-void Renderer::set_background_rgba(rgb const& color, float alpha) {
+float Renderer::scale_factor() const {
+	return scale_factor_;
+}
+
+vec2<float> Renderer::scale_ratio() const {
+	return scale_ratio_;
+}
+
+void Renderer::set_background_rgba(rgb color, float alpha) {
 	background_color_ = color;
 	background_alpha_ = std::clamp(alpha, 0.f, 1.f);
 }
@@ -34,10 +46,55 @@ std::pair<rgb, float> Renderer::background_rgba() const {
 	};
 }
 
-void Renderer::draw_texture(Texture const& texture, mat3 const& matrix, rgb const& color, float alpha) const {
+void Renderer::draw_texture(Texture const& texture, mat3 const& matrix, rgb color, float alpha) const {
 	push_matrix(matrix);
-	DrawTexture(rl::to_Texture2D(texture), 0, 0, rl::to_Color(color, alpha));
+
+	// TODO: uh sources for texture atlases?
+
+	auto texture_bounds = texture.bounds();
+	Rectangle source = {
+		.x = 0,
+		.y = 0,
+		.width = (float)texture_bounds.width,
+		.height = (float)texture_bounds.height,
+	};
+
+	Rectangle dest = {
+		.x = 0,
+		.y = 0,
+		.width = source.width,
+		.height = source.height,
+	};
+
+	DrawTexturePro(
+		rl::to_Texture2D(texture),
+		source,
+		dest,
+		Vector2{.x = 0.f, .y = 0.f},
+		0.f,
+		rl::to_Color(color, alpha)
+	);
+
 	rlPopMatrix();
+}
+
+// private
+void Renderer::update_math(Context const& ctx) {
+	auto window = ctx.window().lock();
+
+	if (!window) {
+		return;
+	}
+
+	auto screen_size = window->screen_size();
+	auto render_bounds = bounds();
+
+	scale_ratio_ = {
+		.x = screen_size.width > 0 ? static_cast<float>(render_bounds.width) / screen_size.width : 0.f,
+		.y = screen_size.height > 0 ? static_cast<float>(render_bounds.height) / screen_size.height : 0.f
+	};
+
+	scale_factor_ = std::min(scale_ratio_.x, scale_ratio_.y);
 }
 
 // private
@@ -68,7 +125,7 @@ void Renderer::draw_debug(Context const& ctx) const {
 void Renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
 	Matrix m = rl::to_Matrix(matrix);
-	rlMultMatrixf(&m.m0);
+	rlMultMatrixf((const float*)&m);
 }
 
 }

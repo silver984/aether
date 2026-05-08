@@ -11,22 +11,10 @@ Texture::Texture() :
 	format_(0)
 {}
 
-Texture::~Texture() {
-	if (id_ == 0) {
-		return;
-	}
-
-	using raylib_texture = Texture2D;
-	UnloadTexture(raylib_texture{.id = id_});
-
-	log::trace(fmt::format("Unloaded | id: {}", id_));
-}
-
-// private
 Texture::Texture(
 	std::string_view file,
-	uint32_t id,
-	size<int> const& bounds,
+	unsigned int id,
+	size<int> bounds,
 	int mipmaps,
 	int format
 ) :
@@ -37,28 +25,42 @@ Texture::Texture(
 	format_(format)
 {}
 
+Texture::~Texture() {
+	if (id_ == 0) {
+		return;
+	}
+
+	UnloadTexture(Texture2D{.id = id_});
+
+	log::trace(fmt::format("Unloaded ({}) | id: {}", fmt::ptr(this), id_));
+}
+
 std::shared_ptr<Texture> Texture::make_shared(char const* file) {
-	using raylib_texture = Texture2D;
-	raylib_texture tex = LoadTexture(file);
+	Texture2D tex = LoadTexture(file);
 
 	if (tex.id == 0) {
 		return nullptr;
 	}
 
-	return std::make_shared<Texture>(
-		file,
-		tex.id,
-		size<int>(tex.width, tex.height),
-		tex.mipmaps,
-		tex.format
-	);
+	size<int> bounds = {
+		.width = tex.width,
+		.height = tex.height
+	};
+
+	auto ret = std::make_shared<Texture>(file, tex.id, bounds, tex.mipmaps, tex.format);
+
+	log::trace(fmt::format("Made shared texture ({}) | id: {} | bounds: {}x{}",
+		fmt::ptr(ret.get()), tex.id, bounds.width, bounds.height
+	));
+
+	return ret;
 }
 
 std::string_view Texture::file() const {
 	return file_;
 }
 
-uint32_t Texture::id() const {
+unsigned int Texture::id() const {
 	return id_;
 }
 

@@ -1,8 +1,8 @@
 #include <aether/Funkin.hh>
 #include <aether/math/vec2.hh>
 #include <aether/common/log.hh>
+#include <aether/common/timer.hh>
 #include <fmt/format.h>
-#include <chrono>
 #include <cstdint>
 #include <functional>
 
@@ -18,7 +18,7 @@ Funkin::~Funkin() {
 	}
 }
 
-bool Funkin::init(std::string_view game_title, size<int> const& game_resolution, int game_fps) {
+bool Funkin::init(std::string_view game_title, size<int> game_resolution, int game_fps) {
 	if (is_initialized_) {
 		return true;
 	}
@@ -52,11 +52,13 @@ void Funkin::run() {
 	}
 
 	while (window_ && renderer_ && window_->is_initialized_ && !window_->should_close()) {
+		window_->update_state();
+
 		bool is_window_minimized = window_->is_minimized();
 
 		if (!is_window_minimized) {
 			if (window_->was_resized()) {
-				update_dpi_scale();
+				renderer_->update_math(ctx_);
 			}
 			
 			if (director_) {
@@ -72,6 +74,7 @@ void Funkin::run() {
 			if (director_) {
 				director_->draw_current_state(ctx_);
 			}
+
 #ifdef AETHER_DEBUG
 			renderer_->draw_debug(ctx_);
 #endif
@@ -91,14 +94,14 @@ Context const& Funkin::context() {
 void Funkin::shutdown() {
 	log::info("Shutting down");
 
-	const auto start_time = std::chrono::high_resolution_clock::now();
+	auto start_time = timer::start();
 
 	if (director_) {
 		director_->try_cleanup();
 	}
 
 	if (resource_) {
-		resource_->clean_cache();
+		resource_->clean_refs();
 	}
 
 	if (window_ && window_->is_initialized_) {
@@ -107,27 +110,9 @@ void Funkin::shutdown() {
 
 	is_initialized_ = false;
 
-	const auto end_time = std::chrono::high_resolution_clock::now();
-	const auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+	auto end_time = timer::end(start_time);
 
-	log::info(fmt::format("Done | took {}ms", time.count()));
-}
-
-// private
-void Funkin::update_dpi_scale() {
-	if (!window_ || !renderer_) {
-		return;
-	}
-
-	auto screen_size = window_->screen_size_;
-	auto render_bounds = renderer_->bounds();
-	
-	vec2<float> ratio = {
-		.x = screen_size.width > 0 ? static_cast<float>(render_bounds.width) / screen_size.width : 0.f,
-		.y = screen_size.height > 0 ? static_cast<float>(render_bounds.height) / screen_size.height : 0.f
-	};
-
-	ctx_.dpi_scale_ = std::min(ratio.x, ratio.y);
+	log::info(fmt::format("Done | took {}ms", end_time));
 }
 
 // private

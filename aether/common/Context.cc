@@ -6,7 +6,6 @@ namespace ae {
 // private
 Context::Context() :
 	total_time_(0.f),
-	dpi_scale_(1.f),
 	running_fps_(0)
 {}
 
@@ -35,10 +34,6 @@ float Context::delta_time() const {
 
 float Context::total_time() const {
 	return total_time_;
-}
-
-float Context::dpi_scale() const {
-	return dpi_scale_;
 }
 
 uint32_t Context::running_fps() const {

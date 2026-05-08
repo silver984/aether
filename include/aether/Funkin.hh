@@ -20,13 +20,12 @@ public:
 	Funkin& operator=(Funkin const&) = delete;
 	Funkin& operator=(Funkin&&) = delete;
 
-	bool init(std::string_view game_title, size<int> const& game_resolution, int game_fps);
+	bool init(std::string_view game_title, size<int> game_resolution, int game_fps);
 	void run();
 	[[nodiscard]] Context const& context();
 	
 private:
 	void shutdown();
-	void update_dpi_scale();
 	void update_frame_ctx();
 
 	std::shared_ptr<Window> window_;
