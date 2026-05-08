@@ -20,5 +20,16 @@
         "CMAKE_BUILD_TYPE": "Release"
       }
     }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "aether-debug",
+      "configurePreset": "aether-debug"
+    },
+    {
+      "name": "aether-release",
+      "configurePreset": "aether-release"
+    }
   ]
 }
