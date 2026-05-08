@@ -12,11 +12,6 @@ public:
 
 protected:
 	bool init(ae::Context const& ctx) override;
-	void update(ae::Context const& ctx, float dt) override;
-
-private:
-	float elapsed_;
-	std::shared_ptr<ae::Graphic> grah_;
 };
 
 #endif

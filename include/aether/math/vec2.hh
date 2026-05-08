@@ -6,6 +6,9 @@
 namespace ae {
 
 template<numeric_t T>
+struct size;
+
+template<numeric_t T>
 struct vec2 final {
     T x = T{0};
     T y = T{0};
@@ -140,27 +143,43 @@ struct vec2 final {
         return temp;
     }
 
-    constexpr bool operator==(vec2<T> const& rhs) const {
+    template<numeric_t U>
+    [[nodiscard]] explicit constexpr operator vec2<U>() const {
+        return vec2<U>{
+            .x = static_cast<U>(x),
+            .y = static_cast<U>(y)
+        };
+    }
+
+    template<numeric_t U>
+    [[nodiscard]] constexpr operator size<U>() const {
+        return size<U>{
+            .width = static_cast<U>(x),
+            .height = static_cast<U>(y)
+        };
+    }
+
+    [[nodiscard]] constexpr bool operator==(vec2<T> const& rhs) const {
         return x == rhs.x && y == rhs.y;
     }
 
-    constexpr bool operator!=(vec2<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator!=(vec2<T> const& rhs) const {
         return !(*this == rhs);
     }
 
-    constexpr bool operator<=(vec2<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator<=(vec2<T> const& rhs) const {
         return x <= rhs.x && y <= rhs.y;
     }
 
-    constexpr bool operator>=(vec2<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator>=(vec2<T> const& rhs) const {
         return x >= rhs.x && y >= rhs.y;
     }
 
-    constexpr bool operator<(vec2<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator<(vec2<T> const& rhs) const {
         return x < rhs.x && y < rhs.y;
     }
 
-    constexpr bool operator>(vec2<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator>(vec2<T> const& rhs) const {
         return x > rhs.x && y > rhs.y;
     }
 };

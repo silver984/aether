@@ -21,8 +21,9 @@ Node::Node() :
 	skew_(0.f, 0.f),
 	rotation_(0.f),
 	alpha_(1.f),
+	combined_alpha_(1.f),
 	time_scale_(1.f),
-	is_dirty_(false),
+	is_transform_dirty_(false),
 	is_active_(false),
 	is_visible_(true),
 	is_initialized_(false)
@@ -59,7 +60,8 @@ void Node::add(std::shared_ptr<Node> node) {
 
 	node->parent_ = weak_from_this();
 	children_.emplace_back(node);
-	node->mark_dirty();
+	node->mark_transform_dirty();
+	node->mark_alpha_dirty();
 }
 
 void Node::remove(std::shared_ptr<Node> node) {
@@ -79,7 +81,8 @@ void Node::remove(std::shared_ptr<Node> node) {
 
 	node->parent_.reset();
 	children_.erase(it);
-	node->mark_dirty();
+	node->mark_transform_dirty();
+	node->mark_alpha_dirty();
 }
 
 void Node::destroy() {
@@ -153,7 +156,7 @@ std::string_view Node::type() const {
 
 void Node::set_bounds(size<float> const& val) {
 	bounds_ = val;
-	mark_dirty();
+	mark_transform_dirty();
 }
 
 size<float> Node::bounds() const {
@@ -162,7 +165,7 @@ size<float> Node::bounds() const {
 
 void Node::set_position(vec2<float> val) {
 	position_ = val;
-	mark_dirty();
+	mark_transform_dirty();
 }
 
 vec2<float> Node::position() const {
@@ -171,7 +174,7 @@ vec2<float> Node::position() const {
 
 void Node::set_anchor(vec2<float> val) {
 	anchor_ = val;
-	mark_dirty();
+	mark_transform_dirty();
 }
 
 vec2<float> Node::anchor() const {
@@ -180,7 +183,16 @@ vec2<float> Node::anchor() const {
 
 void Node::set_scale(vec2<float> val) {
 	scale_ = val;
-	mark_dirty();
+	mark_transform_dirty();
+}
+
+void Node::set_scale(float val) {
+	scale_ = {
+		.x = val,
+		.y = val
+	};
+
+	mark_transform_dirty();
 }
 
 vec2<float> Node::scale() const {
@@ -189,7 +201,7 @@ vec2<float> Node::scale() const {
 
 void Node::set_skew(vec2<float> val) {
 	skew_ = val;
-	mark_dirty();
+	mark_transform_dirty();
 }
 
 vec2<float> Node::skew() const {
@@ -198,7 +210,7 @@ vec2<float> Node::skew() const {
 
 void Node::set_rotation(float val) {
 	rotation_ = val;
-	mark_dirty();
+	mark_transform_dirty();
 }
 
 float Node::rotation() const {
@@ -215,6 +227,7 @@ rgb Node::color() const {
 
 void Node::set_alpha(float val) {
 	alpha_ = std::clamp(val, 0.f, 1.f);
+	mark_alpha_dirty();
 }
 
 float Node::alpha() const {
@@ -280,16 +293,25 @@ void Node::base_update(Context const& ctx, float dt) {
 
 // private
 void Node::base_draw(Context const& ctx) {
-	if (!is_initialized_ || !is_visible_ || alpha_ == 0.f) {
+	if (!is_initialized_ || !is_visible_) {
 		return;
 	}
 
-	if (is_dirty_) {
-		update_transform(transform_);
-		is_dirty_ = false;
+	if (is_alpha_dirty_) {
+		combined_alpha_ = calculate_combined_alpha(parent_);
+		is_alpha_dirty_ = false;
 	}
 
-	draw(ctx, transform_, alpha_);
+	if (combined_alpha_ == 0.f) {
+		return;
+	}
+
+	if (is_transform_dirty_) {
+		transform_ = calculate_transform(ctx, parent_);
+		is_transform_dirty_ = false;
+	}
+
+	draw(ctx, transform_, combined_alpha_);
 
 	for (auto const& node : children_) {
 		if (!node) {
@@ -316,33 +338,70 @@ bool Node::has_ancestor(std::shared_ptr<Node> node) const {
 }
 
 // private
-void Node::mark_dirty() {
-	if (is_dirty_) {
+void Node::mark_transform_dirty() {
+	if (is_transform_dirty_) {
 		// already dirty
 		return;
 	}
 
-	is_dirty_ = true;
+	is_transform_dirty_ = true;
 
 	for (auto& child : children_) {
 		if (child) {
-			child->mark_dirty();
+			child->mark_transform_dirty();
 		}
 	}
 }
 
 // private
-void Node::update_transform(mat3& transform) const {
+void Node::mark_alpha_dirty() {
+	if (is_alpha_dirty_) {
+		// already dirty
+		return;
+	}
+
+	is_alpha_dirty_ = true;
+
+	for (auto& child : children_) {
+		if (child) {
+			child->mark_alpha_dirty();
+		}
+	}
+}
+
+// private
+mat3 Node::calculate_transform(Context const& ctx, std::weak_ptr<Node> parent) const {
+	vec2<float> anchor_position = {
+		anchor_.x * bounds_.width,
+		anchor_.y * bounds_.height
+	};
+
 	vec2<float> skew_rad = {
 		math::degrees_to_radians(skew_.x),
 		math::degrees_to_radians(skew_.y)
 	};
 
-	transform =
-		mat3::translation(position_) *
-		mat3::rotation(math::degrees_to_radians(rotation_)) *
-		mat3::scale(scale_) *
-		mat3::skew(skew_rad);
+	mat3 t = mat3::translation(position_);
+	mat3 r = mat3::rotation(math::degrees_to_radians(rotation_));
+	mat3 s = mat3::scale(scale_);
+	mat3 k = mat3::skew(skew_rad);
+	mat3 a = mat3::translation(-anchor_position);
+	mat3 local = t * r * s * k * a;
+
+	if (auto p = parent.lock()) {
+		return p->transform_ * local;
+	}
+
+	return local;
+}
+
+// private
+float Node::calculate_combined_alpha(std::weak_ptr<Node> parent) const {
+	if (auto p = parent.lock()) {
+		return std::clamp(alpha_ * p->alpha(), 0.f, 1.f);
+	}
+
+	return alpha_;
 }
 
 }

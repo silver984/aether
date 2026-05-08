@@ -52,8 +52,6 @@ void Funkin::run() {
 	}
 
 	while (window_ && renderer_ && window_->is_initialized_ && !window_->should_close()) {
-		window_->update_state();
-
 		bool is_window_minimized = window_->is_minimized();
 
 		if (!is_window_minimized) {

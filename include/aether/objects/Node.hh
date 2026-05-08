@@ -56,6 +56,7 @@ public:
 	void set_anchor(vec2<float> val);
 	[[nodiscard]] vec2<float> anchor() const;
 	void set_scale(vec2<float> val);
+	void set_scale(float val);
 	[[nodiscard]] vec2<float> scale() const;
 	void set_skew(vec2<float> val);
 	[[nodiscard]] vec2<float> skew() const;
@@ -80,8 +81,10 @@ private:
 	void base_update(Context const& ctx, float dt);
 	void base_draw(Context const& ctx);
 	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> node) const;
-	void mark_dirty();
-	void update_transform(mat3& transform) const;
+	void mark_transform_dirty();
+	void mark_alpha_dirty();
+	[[nodiscard]] mat3 calculate_transform(Context const& ctx, std::weak_ptr<Node> parent) const;
+	[[nodiscard]] float calculate_combined_alpha(std::weak_ptr<Node> parent) const;
 
 	std::weak_ptr<Node> parent_;
 	std::vector<std::shared_ptr<Node>> children_;
@@ -95,8 +98,10 @@ private:
 	vec2<float> skew_; // degrees
 	float rotation_; // degrees
 	float alpha_;
+	float combined_alpha_;
 	float time_scale_;
-	bool is_dirty_;
+	bool is_transform_dirty_;
+	bool is_alpha_dirty_;
 	bool is_active_;
 	bool is_visible_;
 	bool is_initialized_;

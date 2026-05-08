@@ -1,5 +1,6 @@
 #include <aether/systems/Director.hh>
 #include <aether/systems/Resource.hh>
+#include <aether/systems/Window.hh>
 #include <aether/common/log.hh>
 #include <fmt/format.h>
 #include <utility>
@@ -46,6 +47,12 @@ void Director::update_current_state(Context const& ctx) {
 	}
 
 	if (current_state_) {
+		if (auto window = ctx.window().lock()) {
+			if (window->was_resized()) {
+				current_state_->mark_transform_dirty();
+			}
+		}
+
 		current_state_->base_update(ctx, ctx.delta_time());
 	}
 }
@@ -78,7 +85,6 @@ void Director::move_pending_state(Context const& ctx) {
 		log::trace("Moved pending state to current");
 
 		pending_state_ = nullptr;
-		current_state_->mark_dirty();
 
 		log::info("Switched state");
 	}

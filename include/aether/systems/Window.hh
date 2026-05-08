@@ -30,13 +30,9 @@ public:
 private:
     bool init(std::string_view title, size<int> resolution, int target_fps);
     void shutdown();
-    void update_state();
 
     std::string title_;
     size<int> screen_size_;
-    bool was_resized_;
-    bool is_minimized_;
-    bool should_close_;
     bool is_initialized_;
 };
 

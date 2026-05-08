@@ -1,37 +1,27 @@
 #include <aether/states/TestState.hh>
 #include <aether/states/TestState2.hh>
-#include <aether/systems/Director.hh>
+#include <aether/systems/Window.hh>
 #include <aether/systems/Renderer.hh>
 #include <cmath>
 
-TestState::TestState() :
-	elapsed_(0.f)
-{};
-
+TestState::TestState() = default;
 TestState::~TestState() = default;
 
 bool TestState::init(ae::Context const& ctx) {
-	if (grah_ = ae::Node::create<ae::Graphic>(ctx, "resources/grah.png")) {
-		add(grah_);
-		activate();
+	if (auto renderer = ctx.renderer().lock()) {
+		renderer->set_background_rgba(ae::rgb(202, 255, 77), 1.f);
+	}
+
+	if (auto grah = ae::Node::create<ae::Graphic>(ctx, "resources/grah.png")) {
+		if (auto window = ctx.window().lock()) {
+			grah->set_position((ae::vec2<float>)window->screen_size() / 2.f);
+		}
+
+		add(grah);
+		
 		return true;
 	}
 
 	return false;
 }
 
-void TestState::update(ae::Context const& ctx, float dt) {
-	elapsed_ += dt;
-
-	float speed = 2.0f;
-	float oscillating = 0.5f * (std::sin(speed * elapsed_) + 1.f);
-
-	if (auto renderer = ctx.renderer().lock()) {
-		renderer->set_background_rgba(renderer->background_rgba().first, oscillating);
-		grah_->set_scale(ae::vec2<float>(oscillating, oscillating));
-		grah_->set_skew(ae::vec2<float>(oscillating * 180.f, 0.f));
-	}
-
-	grah_->set_position(grah_->position() + (30.f * dt));
-	grah_->set_rotation(grah_->rotation() - (90.f * dt));
-}

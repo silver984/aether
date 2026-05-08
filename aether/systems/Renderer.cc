@@ -56,8 +56,8 @@ void Renderer::draw_texture(Texture const& texture, mat3 const& matrix, rgb colo
 	Rectangle source = {
 		.x = 0,
 		.y = 0,
-		.width = (float)texture_bounds.width,
-		.height = (float)texture_bounds.height,
+		.width = static_cast<float>(texture_bounds.width),
+		.height = static_cast<float>(texture_bounds.height),
 	};
 
 	Rectangle dest = {
