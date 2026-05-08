@@ -1,6 +1,6 @@
 # AetherEngine
 
-cmake_minimum_required(VERSION 4.3.1)
+cmake_minimum_required(VERSION 3.31.6)
 
 set(aether AetherEngine)
 project(${aether} VERSION 1.0.0 LANGUAGES CXX)
