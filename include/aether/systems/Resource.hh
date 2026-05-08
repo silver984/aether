@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_SYSTEMS_RESOURCE_HH__
+#define __AETHER_SYSTEMS_RESOURCE_HH__
+
 #include <aether/common/string_map.hh>
 #include <memory>
 #include <aether/graphics/Texture.hh>
@@ -31,3 +33,5 @@ private:
 };
 
 }
+
+#endif

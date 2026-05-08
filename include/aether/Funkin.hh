@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_FUNKIN_HH__
+#define __AETHER_FUNKIN_HH__
+
 #include <aether/math/size.hh>
 #include <aether/systems/Window.hh>
 #include <aether/systems/Renderer.hh>
@@ -37,3 +39,5 @@ private:
 };
 
 }
+
+#endif

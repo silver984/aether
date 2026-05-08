@@ -3,7 +3,7 @@
 
 #include <aether/math/mat3.hh>
 #include <aether/math/rect.hh>
-#include <aether/graphics/rgb.hh>
+#include <aether/math/rgb.hh>
 #include <aether/graphics/Texture.hh>
 #include <raylib.h>
 

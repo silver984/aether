@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_STATES_TESTSTATE2_HH__
+#define __AETHER_STATES_TESTSTATE2_HH__
+
 #include <aether/objects/abstract/State.hh>
 
 namespace ae {
@@ -17,3 +19,5 @@ private:
 };
 
 }
+
+#endif

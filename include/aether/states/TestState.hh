@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_STATES_TESTSTATE_HH__
+#define __AETHER_STATES_TESTSTATE_HH__
+
 #include <aether/objects/abstract/State.hh>
 #include <aether/objects/Graphic.hh>
 #include <memory>
@@ -16,3 +18,5 @@ private:
 	float elapsed_;
 	std::shared_ptr<ae::Graphic> grah_;
 };
+
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_OBJECTS_GRAPHIC_HH__
+#define __AETHER_OBJECTS_GRAPHIC_HH__
+
 #include <aether/objects/Node.hh>
 #include <aether/graphics/Texture.hh>
 #include <memory>
@@ -27,3 +29,5 @@ private:
 };
 
 }
+
+#endif

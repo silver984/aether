@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_MATH_UTIL_HH__
+#define __AETHER_MATH_UTIL_HH__
+
 #include <aether/math/numeric_t.hh>
 #include <aether/math/vec2.hh>
 #include <aether/math/size.hh>
@@ -120,3 +122,5 @@ template <numeric_t T>
 }
 
 }
+
+#endif

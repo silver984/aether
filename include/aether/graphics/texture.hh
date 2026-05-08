@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_GRAPHICS_TEXTURE_HH__
+#define __AETHER_GRAPHICS_TEXTURE_HH__
+
 #include <aether/math/size.hh>
 #include <memory>
 #include <string>
@@ -41,3 +43,5 @@ private:
 };
 
 }
+
+#endif

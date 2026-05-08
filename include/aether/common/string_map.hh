@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_COMMON_STRING_MAP_HH__
+#define __AETHER_COMMON_STRING_MAP_HH__
+
 #include <unordered_map>
 #include <string>
 #include <string_view>
@@ -35,3 +37,5 @@ template <typename T>
 using string_map = std::unordered_map<std::string, T, transparent_string_hash, transparent_string_equal>;
 
 }
+
+#endif

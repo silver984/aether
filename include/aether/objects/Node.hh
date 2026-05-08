@@ -4,7 +4,7 @@
 #include <aether/math/vec2.hh>
 #include <aether/math/size.hh>
 #include <aether/math/mat3.hh>
-#include <aether/graphics/rgb.hh>
+#include <aether/math/rgb.hh>
 #include <aether/common/Context.hh>
 #include <memory>
 #include <vector>

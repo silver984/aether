@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_COMMON_CONTEXT_HH__
+#define __AETHER_COMMON_CONTEXT_HH__
+
 #include <cstdint>
 #include <memory>
 
@@ -48,3 +50,5 @@ private:
 };
 
 }
+
+#endif

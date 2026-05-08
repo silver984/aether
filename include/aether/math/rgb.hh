@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_MATH_RGB_HH__
+#define __AETHER_MATH_RGB_HH__
+
 #include <aether/math/numeric_t.hh>
 #include <cstdint>
 
@@ -13,3 +15,5 @@ struct rgb final {
 };
 
 }
+
+#endif

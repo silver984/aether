@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_MATH_SIZE_HH__
+#define __AETHER_MATH_SIZE_HH__
+
 #include <aether/math/numeric_t.hh>
 
 namespace ae {
@@ -177,3 +179,5 @@ struct size final {
 };
 
 }
+
+#endif

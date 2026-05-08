@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_SYSTEMS_DIRECTOR_HH__
+#define __AETHER_SYSTEMS_DIRECTOR_HH__
+
 #include <memory>
 #include <aether/common/Context.hh>
 #include <aether/objects/Node.hh>
@@ -30,3 +32,5 @@ private:
 };
 
 }
+
+#endif

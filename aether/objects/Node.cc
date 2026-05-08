@@ -291,12 +291,12 @@ void Node::base_draw(Context const& ctx) {
 
 	draw(ctx, transform_, world_alpha_);
 
-	for (auto const& v : children_) {
-		if (!v) {
+	for (auto const& node : children_) {
+		if (!node) {
 			continue;
 		}
 
-		v->base_draw(ctx);
+		node->base_draw(ctx);
 	}
 }
 
@@ -335,9 +335,11 @@ void Node::mark_dirty() {
 void Node::update_transform(Context const& ctx, mat3& transform) const {
 	mat3 t = mat3::translation(position_);
 	mat3 s = mat3::scale(scale_);
-	transform = t * s;
+	mat3 r = mat3::rotation(math::degrees_to_radians(rotation_));
+	transform = t * r * s;
 
-	log::info(fmt::format("{} {}", transform.translation().x, transform.translation().y));
+	auto log = transform.translation();
+	log::info(fmt::format("{} {}", log.x, log.y));
 }
 
 }

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_COMMON_LOG_HH__
+#define __AETHER_COMMON_LOG_HH__
+
 #include <string_view>
 #include <source_location>
 
@@ -11,3 +13,5 @@ void warn(std::string_view msg, std::source_location const& loc = std::source_lo
 void error(std::string_view msg, std::source_location const& loc = std::source_location::current());
 
 }
+
+#endif

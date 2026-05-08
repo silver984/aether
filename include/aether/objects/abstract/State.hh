@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_OBJECTS_ABSTRACT_STATE_HH__
+#define __AETHER_OBJECTS_ABSTRACT_STATE_HH__
+
 #include <aether/objects/Node.hh>
 
 namespace ae {
@@ -8,3 +10,5 @@ namespace ae {
 using State = Node;
 
 }
+
+#endif

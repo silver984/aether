@@ -13,7 +13,6 @@ TestState::~TestState() = default;
 bool TestState::init(ae::Context const& ctx) {
 	if (grah_ = ae::Node::create<ae::Graphic>(ctx, "resources/grah.png")) {
 		add(grah_);
-		grah_->set_position(grah_->position() + 150.f);
 		activate();
 		return true;
 	}
@@ -29,9 +28,9 @@ void TestState::update(ae::Context const& ctx, float dt) {
 
 	if (auto renderer = ctx.renderer().lock()) {
 		renderer->set_background_rgba(renderer->background_rgba().first, oscillating);
-		// grah_->set_scale(vec2<float>(oscillating, oscillating));
+		grah_->set_scale(ae::vec2<float>(oscillating, oscillating));
 	}
 
-	// grah_->set_position(grah_->position() + (10.f * dt));
-	// grah_->set_rotation(grah_->rotation() + (90.f * dt));
+	grah_->set_position(grah_->position() + (10.f * dt));
+	grah_->set_rotation(grah_->rotation() - (90.f * dt));
 }

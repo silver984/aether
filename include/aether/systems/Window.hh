@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_SYSTEMS_WINDOW_HH__
+#define __AETHER_SYSTEMS_WINDOW_HH__
+
 #include <aether/math/size.hh>
 #include <string_view>
 #include <string>
@@ -39,3 +41,5 @@ private:
 };
 
 }
+
+#endif

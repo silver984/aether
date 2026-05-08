@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_MATH_MAT3_HH__
+#define __AETHER_MATH_MAT3_HH__
+
 #include <aether/math/vec2.hh>
 
 namespace ae {
@@ -24,3 +26,5 @@ struct mat3 final {
 };
 
 }
+
+#endif

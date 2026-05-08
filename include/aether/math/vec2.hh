@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __AETHER_MATH_VEC2_HH__
+#define __AETHER_MATH_VEC2_HH__
+
 #include <aether/math/numeric_t.hh>
 
 namespace ae {
@@ -164,3 +166,5 @@ struct vec2 final {
 };
 
 }
+
+#endif
