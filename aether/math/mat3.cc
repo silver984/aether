@@ -82,7 +82,7 @@ vec2<float> mat3::transform_point(vec2<float> p) const {
     };
 }
 
-mat3 mat3::operator*(const mat3& o) const {
+mat3 mat3::operator*(mat3 const& o) const {
     mat3 r;
 
     for (size_t row = 0; row < 3; ++row) {

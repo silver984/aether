@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cmath>
 
+// TODO: world alpha depending on parent alpha
+
 namespace ae {
 
 Node::Node() :
@@ -19,7 +21,6 @@ Node::Node() :
 	skew_(0.f, 0.f),
 	rotation_(0.f),
 	alpha_(1.f),
-	world_alpha_(1.f),
 	time_scale_(1.f),
 	is_dirty_(false),
 	is_active_(false),
@@ -214,7 +215,6 @@ rgb Node::color() const {
 
 void Node::set_alpha(float val) {
 	alpha_ = std::clamp(val, 0.f, 1.f);
-	mark_dirty();
 }
 
 float Node::alpha() const {
@@ -280,16 +280,16 @@ void Node::base_update(Context const& ctx, float dt) {
 
 // private
 void Node::base_draw(Context const& ctx) {
-	if (!is_initialized_ || !is_visible_ || world_alpha_ == 0.f) {
+	if (!is_initialized_ || !is_visible_ || alpha_ == 0.f) {
 		return;
 	}
 
 	if (is_dirty_) {
-		update_transform(ctx, transform_);
+		update_transform(transform_);
 		is_dirty_ = false;
 	}
 
-	draw(ctx, transform_, world_alpha_);
+	draw(ctx, transform_, alpha_);
 
 	for (auto const& node : children_) {
 		if (!node) {
@@ -332,14 +332,17 @@ void Node::mark_dirty() {
 }
 
 // private
-void Node::update_transform(Context const& ctx, mat3& transform) const {
-	mat3 t = mat3::translation(position_);
-	mat3 s = mat3::scale(scale_);
-	mat3 r = mat3::rotation(math::degrees_to_radians(rotation_));
-	transform = t * r * s;
+void Node::update_transform(mat3& transform) const {
+	vec2<float> skew_rad = {
+		math::degrees_to_radians(skew_.x),
+		math::degrees_to_radians(skew_.y)
+	};
 
-	auto log = transform.translation();
-	log::info(fmt::format("{} {}", log.x, log.y));
+	transform =
+		mat3::translation(position_) *
+		mat3::rotation(math::degrees_to_radians(rotation_)) *
+		mat3::scale(scale_) *
+		mat3::skew(skew_rad);
 }
 
 }

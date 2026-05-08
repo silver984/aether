@@ -81,7 +81,7 @@ private:
 	void base_draw(Context const& ctx);
 	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> node) const;
 	void mark_dirty();
-	void update_transform(Context const& ctx, mat3& transform) const;
+	void update_transform(mat3& transform) const;
 
 	std::weak_ptr<Node> parent_;
 	std::vector<std::shared_ptr<Node>> children_;
@@ -95,7 +95,6 @@ private:
 	vec2<float> skew_; // degrees
 	float rotation_; // degrees
 	float alpha_;
-	float world_alpha_;
 	float time_scale_;
 	bool is_dirty_;
 	bool is_active_;

@@ -29,8 +29,9 @@ void TestState::update(ae::Context const& ctx, float dt) {
 	if (auto renderer = ctx.renderer().lock()) {
 		renderer->set_background_rgba(renderer->background_rgba().first, oscillating);
 		grah_->set_scale(ae::vec2<float>(oscillating, oscillating));
+		grah_->set_skew(ae::vec2<float>(oscillating * 180.f, 0.f));
 	}
 
-	grah_->set_position(grah_->position() + (10.f * dt));
+	grah_->set_position(grah_->position() + (30.f * dt));
 	grah_->set_rotation(grah_->rotation() - (90.f * dt));
 }

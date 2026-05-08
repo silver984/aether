@@ -38,6 +38,7 @@ private:
     void draw_debug(Context const& ctx) const;
 #endif
     void push_matrix(mat3 const& matrix) const;
+
     rgb background_color_;
     float background_alpha_;
     float scale_factor_;

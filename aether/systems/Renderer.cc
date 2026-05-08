@@ -4,6 +4,7 @@
 #include <aether/common/log.hh>
 #include <algorithm>
 #include <raylib.h>
+#include <raymath.h>
 #include <rlgl.h>
 #include <fmt/format.h>
 
@@ -125,7 +126,7 @@ void Renderer::draw_debug(Context const& ctx) const {
 void Renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
 	Matrix m = rl::to_Matrix(matrix);
-	rlMultMatrixf((const float*)&m);
+	rlMultMatrixf(MatrixToFloat(m));
 }
 
 }

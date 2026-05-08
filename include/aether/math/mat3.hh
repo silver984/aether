@@ -20,7 +20,7 @@ struct mat3 final {
     [[nodiscard]] static mat3 scale(vec2<float> s);
     [[nodiscard]] vec2<float> transform_point(vec2<float> p) const;
     [[nodiscard]] vec2<float> translation() const;
-    [[nodiscard]] mat3 operator*(const mat3& o) const;
+    [[nodiscard]] mat3 operator*(mat3 const& o) const;
 
     float m[3][3];
 };
