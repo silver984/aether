@@ -63,7 +63,7 @@ void Renderer::draw_texture(Texture const& texture, mat3 const& transform, rgb c
 		dest,
 		Vector2{.x = 0.f, .y = 0.f},
 		0.f,
-		rl::to_Color(color, alpha)
+		rl::as_color(color, alpha)
 	);
 
 	rlPopMatrix();
@@ -75,7 +75,7 @@ void Renderer::start_draw(Context const& ctx) {
 	// clip bounds
 	auto _bounds_ = bounds();
 	BeginScissorMode(0, 0, _bounds_.width, _bounds_.height);
-	ClearBackground(rl::to_Color(background_color_, background_alpha_));
+	ClearBackground(rl::as_color(background_color_, background_alpha_));
 
 	if (auto window = ctx.window().lock()) {
 		if (window->was_resized()) {
@@ -110,7 +110,7 @@ void Renderer::draw_debug(Context const& ctx) const {
 // private
 void Renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
-	Matrix m = rl::to_Matrix(matrix);
+	Matrix m = rl::as_matrix(matrix);
 	rlMultMatrixf(MatrixToFloat(m));
 }
 

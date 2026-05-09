@@ -1,17 +1,17 @@
-#include <aether/common/rl_adapter.hh>
+#include <aether/common/rl_converter.hh>
 #include <raylib.h>
 #include <cstdint>
 
 namespace ae::rl {
 
-Vector2 to_Vector2(vec2<float> vec2) {
+Vector2 as_vector2(vec2<float> vec2) {
 	return {
 		.x = vec2.x,
 		.y = vec2.y
 	};
 }
 
-Matrix to_Matrix(mat3 const& matrix) {
+Matrix as_matrix(mat3 const& matrix) {
 	return {
 		.m0 = matrix.m[0][0],	.m4 = matrix.m[0][1],	.m8 = 0.f,	.m12 = matrix.m[0][2],
 		.m1 = matrix.m[1][0],	.m5 = matrix.m[1][1],	.m9 = 0.f,	.m13 = matrix.m[1][2],
@@ -20,7 +20,7 @@ Matrix to_Matrix(mat3 const& matrix) {
 	};
 }
 
-Color to_Color(rgb color, float alpha) {
+Color as_color(rgb color, float alpha) {
 	return {
 		.r = color.r,
 		.g = color.g,
@@ -29,7 +29,7 @@ Color to_Color(rgb color, float alpha) {
 	};
 }
 
-Rectangle to_Rectangle(rect<float> rectangle) {
+Rectangle as_rectangle(rect<float> rectangle) {
 	return {
 		.x = rectangle.x,
 		.y = rectangle.y,
