@@ -88,7 +88,11 @@ rect<float> Sprite::texture_source_rect() const {
 // protected
 bool Sprite::init(Context const& ctx) {
 	resource_wref_ = std::move(ctx.resource_wref());
+	return setup();
+}
 
+// protected
+bool Sprite::setup() {
 	if (!set_texture(file_arg_)) {
 		errorlog("Failed");
 		return false;
@@ -109,6 +113,11 @@ void Sprite::draw(Context const& ctx, mat3 const& transform, rgb color, float al
 	}
 
 	renderer->draw_texture(*texture_, transform, texture_source_rect_, color, alpha);
+}
+
+// protected
+std::weak_ptr<Resource> Sprite::resource_wref() const {
+	return resource_wref_;
 }
 
 }
