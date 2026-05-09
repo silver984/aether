@@ -13,14 +13,14 @@ struct size final {
     T width = T{0};
     T height = T{0};
 
-    [[nodiscard]] constexpr size<T> operator+(size<T> const& rhs) const {
+    [[nodiscard]] constexpr size<T> operator+(size<T> rhs) const {
         return {
             .width = width + rhs.width,
             .height = height + rhs.height
         };
     }
 
-    [[nodiscard]] constexpr size<T> operator-(size<T> const& rhs) const {
+    [[nodiscard]] constexpr size<T> operator-(size<T> rhs) const {
         return {
             .width = width - rhs.width,
             .height = height - rhs.height
@@ -34,14 +34,14 @@ struct size final {
         };
     }
 
-    [[nodiscard]] constexpr size<T> operator*(size<T> const& rhs) const {
+    [[nodiscard]] constexpr size<T> operator*(size<T> rhs) const {
         return {
             .width = width * rhs.width,
             .height = height * rhs.height
         };
     }
 
-    [[nodiscard]] constexpr size<T> operator/(size<T> const& rhs) const {
+    [[nodiscard]] constexpr size<T> operator/(size<T> rhs) const {
         return {
             .width = width / rhs.width,
             .height = height / rhs.height
@@ -80,7 +80,7 @@ struct size final {
         };
     }
 
-    constexpr size<T>& operator+=(size<T> const& rhs) {
+    constexpr size<T>& operator+=(size<T> rhs) {
         width += rhs.width;
         height += rhs.height;
         return *this;
@@ -93,7 +93,7 @@ struct size final {
         return *this;
     }
 
-    constexpr size<T>& operator-=(size<T> const& rhs) {
+    constexpr size<T>& operator-=(size<T> rhs) {
         width -= rhs.width;
         height -= rhs.height;
         return *this;
@@ -106,7 +106,7 @@ struct size final {
         return *this;
     }
 
-    constexpr size<T>& operator*=(size<T> const& rhs) {
+    constexpr size<T>& operator*=(size<T> rhs) {
         width *= rhs.width;
         height *= rhs.height;
         return *this;
@@ -119,7 +119,7 @@ struct size final {
         return *this;
     }
 
-    constexpr size<T>& operator/=(size<T> const& rhs) {
+    constexpr size<T>& operator/=(size<T> rhs) {
         width /= rhs.width;
         height /= rhs.height;
         return *this;
@@ -172,27 +172,27 @@ struct size final {
         };
     }
 
-    [[nodiscard]] constexpr bool operator==(size<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator==(size<T> rhs) const {
         return width == rhs.width && height == rhs.height;
     }
 
-    [[nodiscard]] constexpr bool operator!=(size<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator!=(size<T> rhs) const {
         return !(*this == rhs);
     }
 
-    [[nodiscard]] constexpr bool operator<=(size<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator<=(size<T> rhs) const {
         return width <= rhs.width && height <= rhs.height;
     }
 
-    [[nodiscard]] constexpr bool operator>=(size<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator>=(size<T> rhs) const {
         return width >= rhs.width && height >= rhs.height;
     }
 
-    [[nodiscard]] constexpr bool operator<(size<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator<(size<T> rhs) const {
         return width < rhs.width && height < rhs.height;
     }
 
-    [[nodiscard]] constexpr bool operator>(size<T> const& rhs) const {
+    [[nodiscard]] constexpr bool operator>(size<T> rhs) const {
         return width > rhs.width && height > rhs.height;
     }
 };

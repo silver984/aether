@@ -74,7 +74,7 @@ public:
 protected:
 	virtual bool init(Context const& ctx);
 	virtual void update(Context const& ctx, float dt);
-	virtual void draw(Context const& ctx, mat3 const& transform, float alpha) const;
+	virtual void draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const;
 
 private:
 	bool base_init(Context const& ctx);
@@ -83,13 +83,16 @@ private:
 	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> node) const;
 	void mark_transform_dirty();
 	void mark_alpha_dirty();
+	void mark_rgb_dirty();
 	[[nodiscard]] mat3 calculate_transform(Context const& ctx, std::weak_ptr<Node> parent) const;
 	[[nodiscard]] float calculate_combined_alpha(std::weak_ptr<Node> parent) const;
+	[[nodiscard]] rgb calculate_combined_rgb(std::weak_ptr<Node> parent) const;
 
 	std::weak_ptr<Node> parent_;
 	std::vector<std::shared_ptr<Node>> children_;
 	std::string name_;
 	rgb color_;
+	rgb combined_color_;
 	mat3 transform_;
 	size<float> bounds_;
 	vec2<float> position_;
@@ -102,6 +105,7 @@ private:
 	float time_scale_;
 	bool is_transform_dirty_;
 	bool is_alpha_dirty_;
+	bool is_rgb_dirty_;
 	bool is_active_;
 	bool is_visible_;
 	bool is_initialized_;

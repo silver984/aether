@@ -45,14 +45,14 @@ bool Graphic::init(Context const& ctx) {
 }
 
 // protected
-void Graphic::draw(Context const& ctx, mat3 const& transform, float alpha) const {
+void Graphic::draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const {
 	auto renderer = ctx.renderer().lock();
 
 	if (!renderer || !texture_) {
 		return;
 	}
 
-	renderer->draw_texture(*texture_, transform, color(), alpha);
+	renderer->draw_texture(*texture_, transform, color, alpha);
 }
 
 }

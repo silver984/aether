@@ -21,7 +21,7 @@ public:
 
 protected:
 	bool init(Context const& ctx) override;
-	void draw(Context const& ctx, mat3 const& transform, float alpha) const override;
+	void draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const override;
 
 private:
 	std::string file_arg_;

@@ -1,6 +1,6 @@
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Window.hh>
-#include <aether/common/rl_adapter.hh>
+#include <aether/common/rl_converter.hh>
 #include <aether/common/log.hh>
 #include <algorithm>
 #include <raylib.h>

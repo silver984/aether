@@ -1,6 +1,7 @@
 #include <aether/common/rl_converter.hh>
 #include <raylib.h>
 #include <cstdint>
+#include <cmath>
 
 namespace ae::rl {
 
@@ -22,10 +23,10 @@ Matrix as_matrix(mat3 const& matrix) {
 
 Color as_color(rgb color, float alpha) {
 	return {
-		.r = color.r,
-		.g = color.g,
-		.b = color.b,
-		.a = static_cast<uint8_t>(255.f * alpha),
+		.r = static_cast<uint8_t>(std::round(255.f * color.r())),
+		.g = static_cast<uint8_t>(std::round(255.f * color.g())),
+		.b = static_cast<uint8_t>(std::round(255.f * color.b())),
+		.a = static_cast<uint8_t>(std::round(255.f * alpha)),
 	};
 }
 

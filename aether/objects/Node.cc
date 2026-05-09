@@ -10,7 +10,8 @@
 namespace ae {
 
 Node::Node() :
-	color_(255, 255, 255),
+	color_(1.f, 1.f, 1.f),
+	combined_color_(color_.r(), color_.g(), color_.b()),
 	transform_(mat3::identity()),
 	bounds_(0.f, 0.f),
 	position_(0.f, 0.f),
@@ -19,10 +20,11 @@ Node::Node() :
 	skew_(0.f, 0.f),
 	rotation_(0.f),
 	alpha_(1.f),
-	combined_alpha_(1.f),
+	combined_alpha_(alpha_),
 	time_scale_(1.f),
 	is_transform_dirty_(false),
 	is_alpha_dirty_(false),
+	is_rgb_dirty_(false),
 	is_active_(false),
 	is_visible_(true),
 	is_initialized_(false)
@@ -218,6 +220,7 @@ float Node::rotation() const {
 
 void Node::set_color(rgb val) {
 	color_ = val;
+	mark_rgb_dirty();
 }
 
 rgb Node::color() const {
@@ -258,7 +261,7 @@ bool Node::init(Context const& ctx) {
 void Node::update(Context const& ctx, float dt) {}
 
 // protected
-void Node::draw(Context const& ctx, mat3 const& transform, float alpha) const {}
+void Node::draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const {}
 
 // private
 bool Node::base_init(Context const& ctx) {
@@ -305,12 +308,17 @@ void Node::base_draw(Context const& ctx) {
 		return;
 	}
 
+	if (is_rgb_dirty_) {
+		combined_color_ = calculate_combined_rgb(parent_);
+		is_rgb_dirty_ = true;
+	}
+
 	if (is_transform_dirty_) {
 		transform_ = calculate_transform(ctx, parent_);
 		is_transform_dirty_ = false;
 	}
 
-	draw(ctx, transform_, combined_alpha_);
+	draw(ctx, transform_, combined_color_, combined_alpha_);
 
 	for (auto const& node : children_) {
 		if (!node) {
@@ -369,6 +377,22 @@ void Node::mark_alpha_dirty() {
 }
 
 // private
+void Node::mark_rgb_dirty() {
+	if (is_rgb_dirty_) {
+		// already dirty
+		return;
+	}
+
+	is_rgb_dirty_ = true;
+
+	for (auto& child : children_) {
+		if (child) {
+			child->mark_rgb_dirty();
+		}
+	}
+}
+
+// private
 mat3 Node::calculate_transform(Context const& ctx, std::weak_ptr<Node> parent) const {
 	vec2<float> anchor_position = {
 		.x = anchor_.x * bounds_.width,
@@ -397,10 +421,19 @@ mat3 Node::calculate_transform(Context const& ctx, std::weak_ptr<Node> parent) c
 // private
 float Node::calculate_combined_alpha(std::weak_ptr<Node> parent) const {
 	if (auto p = parent.lock()) {
-		return std::clamp(alpha_ * p->alpha(), 0.f, 1.f);
+		return std::clamp(p->alpha() * alpha_, 0.f, 1.f);
 	}
 
 	return alpha_;
+}
+
+// private
+rgb Node::calculate_combined_rgb(std::weak_ptr<Node> parent) const {
+	if (auto p = parent.lock()) {
+		return p->color() * color_;
+	}
+
+	return color_;
 }
 
 }
