@@ -49,7 +49,7 @@ public:
 	void set_name(std::string_view name);
 	[[nodiscard]] std::string_view name() const;
 	[[nodiscard]] virtual std::string_view type() const;
-	void set_bounds(size<float> const& val);
+	void set_bounds(size<float> val);
 	[[nodiscard]] size<float> bounds() const;
 	void set_position(vec2<float> val);
 	[[nodiscard]] vec2<float> position() const;

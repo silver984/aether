@@ -16,17 +16,9 @@ std::string_view Graphic::type() const {
 	return "Graphic";
 }
 
-std::optional<std::string_view> Graphic::file_name() const {
-	if (texture_) {
-		return texture_->file();
-	}
-
-	return std::nullopt;
-}
-
 void Graphic::toggle_antialiasing(bool val) const {
 	if (texture_) {
-		SetTextureFilter(rl::to_Texture2D(*texture_), val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
+		SetTextureFilter(*texture_, val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
 	}
 }
 
@@ -41,8 +33,14 @@ bool Graphic::init(Context const& ctx) {
 
 	if (texture_ = resource->load_shared_texture(file_arg_)) {
 		toggle_antialiasing(true);
-		auto texture_bounds = texture_->bounds();
-		set_bounds(size<float>((float)texture_bounds.width, (float)texture_bounds.height));
+		
+		size<float> bounds = {
+			.width = static_cast<float>(texture_->width),
+			.height = static_cast<float>(texture_->height)
+		};
+
+		set_bounds(bounds);
+
 		return true;
 	}
 

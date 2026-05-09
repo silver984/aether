@@ -6,8 +6,9 @@
 #include <aether/math/size.hh>
 #include <aether/math/mat3.hh>
 #include <aether/math/rgb.hh>
-#include <aether/graphics/Texture.hh>
 #include <utility>
+
+struct Texture;
 
 namespace ae {
 
@@ -32,6 +33,7 @@ public:
 
 private:
     void update_math(Context const& ctx);
+    // void start_render() const;
     void start_draw() const;
     void end_draw() const;
 #ifdef AETHER_DEBUG

@@ -4,7 +4,6 @@
 #include <aether/common/timer.hh>
 #include <fmt/format.h>
 #include <cstdint>
-#include <functional>
 
 namespace ae {
 

@@ -2,11 +2,12 @@
 #define __AETHER_OBJECTS_GRAPHIC_HH__
 
 #include <aether/objects/Node.hh>
-#include <aether/graphics/Texture.hh>
 #include <memory>
 #include <string_view>
 #include <string>
 #include <optional>
+
+struct Texture;
 
 namespace ae {
 
@@ -16,7 +17,6 @@ public:
 	~Graphic() override;
 
 	[[nodiscard]] std::string_view type() const override;
-	[[nodiscard]] std::optional<std::string_view> file_name() const;
 	void toggle_antialiasing(bool val) const;
 
 protected:

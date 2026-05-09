@@ -154,7 +154,7 @@ std::string_view Node::type() const {
 	return "Node";
 }
 
-void Node::set_bounds(size<float> const& val) {
+void Node::set_bounds(size<float> val) {
 	bounds_ = val;
 	mark_transform_dirty();
 }

@@ -55,14 +55,10 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		auto it = textures_refs_.find(path.str);
 		it != textures_refs_.end()
 	) {
-		log::trace(fmt::format("Found stored reference for {}", path.str));
-
 		if (auto ptr = it->second.lock()) {
+			log::trace(fmt::format("Found stored reference for {}", path.str));
 			log::trace(fmt::format("Returning reference ({})", fmt::ptr(ptr.get())));
 			return ptr;
-		} else {
-			log::trace("Stored reference no longer exists | cleaning texture references");
-			clean_texture_refs();
 		}
 	}
 
@@ -70,26 +66,40 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 
 	auto start_time = timer::start();
 
-	auto texture = Texture::make_shared(path.str.c_str());
-	
-	if (!texture) {
-		log::error("Failed");
-		return nullptr;
+	auto shared = std::shared_ptr<Texture>(
+		new Texture(),
+		[](Texture* ptr) {
+			if (ptr->id > 0) {
+				UnloadTexture(Texture{.id = ptr->id});
+				log::trace(fmt::format("Unloaded texture ({}) | id: {}", fmt::ptr(ptr), ptr->id));
+			}
+			delete ptr;
+			ptr = nullptr;
+
+		});
+
+	{
+		Texture stack = LoadTexture(path.str.c_str());
+		
+		shared->id = stack.id;
+		shared->width = stack.width;
+		shared->height = stack.height;
+		shared->mipmaps = stack.mipmaps;
+		shared->format = stack.format;
+
+		log::trace(fmt::format("Loaded texture ({}) | id: {} | bounds: {}x{}",
+			fmt::ptr(shared.get()), shared->id, shared->width, shared->height
+		));
 	}
 
-	auto [it, placed] = textures_refs_.emplace(path.str, texture);
-
-	if (placed) {
-		log::trace(fmt::format("Stored to texture references | current size: {}", textures_refs_.size()));
-	} else {
-		log::warn("Failed to store to texture references");
-	}
+	textures_refs_[path.str] = shared;
+	log::trace(fmt::format("Stored to texture references | current size: {}", textures_refs_.size()));
 
 	auto end_time = timer::end(start_time);
 
 	log::info(fmt::format("Done | took {}ms", end_time));
 
-	return texture;
+	return shared;
 }
 
 void Resource::clean_refs() {

@@ -52,12 +52,11 @@ void Renderer::draw_texture(Texture const& texture, mat3 const& matrix, rgb colo
 
 	// TODO: uh sources for texture atlases?
 
-	auto texture_bounds = texture.bounds();
 	Rectangle source = {
 		.x = 0,
 		.y = 0,
-		.width = static_cast<float>(texture_bounds.width),
-		.height = static_cast<float>(texture_bounds.height),
+		.width = static_cast<float>(texture.width),
+		.height = static_cast<float>(texture.height),
 	};
 
 	Rectangle dest = {
@@ -68,7 +67,7 @@ void Renderer::draw_texture(Texture const& texture, mat3 const& matrix, rgb colo
 	};
 
 	DrawTexturePro(
-		rl::to_Texture2D(texture),
+		texture,
 		source,
 		dest,
 		Vector2{.x = 0.f, .y = 0.f},

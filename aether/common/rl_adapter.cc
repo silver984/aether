@@ -3,16 +3,16 @@
 
 namespace ae::rl {
 
-Texture2D to_Texture2D(Texture const& texture) {
-	auto texture_bounds = texture.bounds();
-	return Texture2D{
-		.id = texture.id(),
-		.width = texture_bounds.width,
-		.height = texture_bounds.height,
-		.mipmaps = texture.mipmaps(),
-		.format = static_cast<int>(texture.format())
-	};
-}
+//Texture2D to_Texture2D(Texture const& texture) {
+//	auto texture_bounds = texture.bounds();
+//	return Texture2D{
+//		.id = texture.id(),
+//		.width = texture_bounds.width,
+//		.height = texture_bounds.height,
+//		.mipmaps = texture.mipmaps(),
+//		.format = static_cast<int>(texture.format())
+//	};
+//}
 
 Matrix to_Matrix(mat3 const& matrix) {
 	return {

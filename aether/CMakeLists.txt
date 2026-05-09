@@ -5,7 +5,6 @@ target_sources(${aether}
 )
 
 add_subdirectory(common)
-add_subdirectory(graphics)
 add_subdirectory(math)
 add_subdirectory(objects)
 add_subdirectory(platforms)

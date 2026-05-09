@@ -3,9 +3,10 @@
 
 #include <aether/common/string_map.hh>
 #include <memory>
-#include <aether/graphics/Texture.hh>
 #include <string_view>
 #include <cstdint>
+
+struct Texture;
 
 namespace ae {
 
