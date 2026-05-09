@@ -13,29 +13,43 @@ Director::~Director() = default;
 
 void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 	if (!new_state) {
-		errorlog("Attempted to switch to a nullptr state");
+		debuglog("Attempted to switch to a nullptr state");
 		return;
 	}
 
 	pending_state_ = std::move(new_state);
 
-	debuglog("Switching states");
+	tracelog("Switching states | pending: {}", fmt::ptr(pending_state_.get()));
 }
 
 void Director::try_cleanup() {
-	debuglog("Attempting to cleanup");
-
 	if (pending_state_) {
-		pending_state_.reset();
-		pending_state_ = nullptr;
-		tracelog("Released pending state");
+		release_pending_state();
 	}
 
 	if (current_state_) {
-		current_state_.reset();
-		current_state_ = nullptr;
-		tracelog("Released current state");
+		release_current_state();
 	}
+}
+
+// private
+void Director::release_current_state() {
+	tracelog("Releasing current state ({})", fmt::ptr(current_state_.get()));
+
+	current_state_.reset();
+	current_state_ = nullptr;
+
+	tracelog("Current state released");
+}
+
+// private
+void Director::release_pending_state() {
+	tracelog("Releasing pending state ({})", fmt::ptr(pending_state_.get()));
+
+	pending_state_.reset();
+	pending_state_ = nullptr;
+
+	tracelog("Pending state released");
 }
 
 // private
@@ -59,26 +73,17 @@ void Director::draw_current_state(Context const& ctx) {
 // private
 void Director::move_pending_state(Context const& ctx) {
 	if (current_state_) {
-		tracelog("Releasing current state ({})", fmt::ptr(current_state_.get()));
-
-		current_state_.reset();
-		current_state_ = nullptr;
+		release_current_state();
 
 		if (auto resource = ctx.resource().lock()) {
 			resource->clean_refs();
 		}
-
-		tracelog("Current state released");
 	}
-
-	tracelog("Moving pending state ({})", fmt::ptr(pending_state_.get()));
 
 	if (current_state_ = std::move(pending_state_)) {
 		tracelog("Moved pending state to current");
 
 		pending_state_ = nullptr;
-
-		tracelog("Switched state");
 	}
 }
 

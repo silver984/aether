@@ -59,7 +59,7 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		}
 	}
 
-	infolog("Loading {}", file);
+	debuglog("Loading {}", path.str);
 
 	auto start_time = timer::start();
 
@@ -68,7 +68,7 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		[](Texture* ptr) {
 			if (ptr->id > 0) {
 				UnloadTexture(Texture{.id = ptr->id});
-				infolog("Unloaded texture ({}) | id: {}", fmt::ptr(ptr), ptr->id);
+				tracelog("Unloaded texture ({}) | id: {}", fmt::ptr(ptr), ptr->id);
 			}
 
 			delete ptr;
@@ -85,15 +85,15 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		shared->mipmaps = stack.mipmaps;
 		shared->format = stack.format;
 
-		debuglog("Loaded texture ({}) | id: {} | bounds: {}x{}", fmt::ptr(shared.get()), shared->id, shared->width, shared->height);
+		tracelog("Loaded texture ({}) | id: {} | bounds: {}x{}", fmt::ptr(shared.get()), shared->id, shared->width, shared->height);
 	}
 
 	textures_refs_[path.str] = shared;
-	debuglog("Stored to texture references | current size: {}", textures_refs_.size());
+	tracelog("Stored to texture references | current size: {}", textures_refs_.size());
 
 	auto end_time = timer::end(start_time);
 
-	infolog("Done | took {}ms", end_time);
+	debuglog("Done | took {}ms", end_time);
 
 	return shared;
 }
@@ -116,7 +116,7 @@ size_t Resource::clean_texture_refs() {
 		return 0;
 	}
 
-	tracelog("Cleaning texture references");
+	debuglog("Cleaning texture references");
 
 	auto start_time = timer::start();
 
@@ -142,7 +142,7 @@ size_t Resource::clean_texture_refs() {
 
 	auto end_time = timer::end(start_time);
 
-	tracelog("Done | erased {} ref/s | took {}ms", erased, end_time);
+	debuglog("Done | erased {} ref/s | took {}ms", erased, end_time);
 
 	return erased;
 }

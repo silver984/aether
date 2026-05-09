@@ -23,6 +23,8 @@ public:
 
 private:
     void try_cleanup();
+    void release_current_state();
+    void release_pending_state();
     void update_current_state(Context const& ctx);
     void draw_current_state(Context const& ctx);
     void move_pending_state(Context const& ctx);

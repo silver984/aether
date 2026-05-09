@@ -2,7 +2,6 @@
 #include <aether/math/vec2.hh>
 #include <aether/common/log.hh>
 #include <aether/common/timer.hh>
-#include <fmt/format.h>
 #include <cstdint>
 
 namespace ae {

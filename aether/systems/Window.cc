@@ -79,15 +79,11 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 
 // private
 void Window::shutdown() {
-	debuglog("Shutting down");
-
 	CloseWindow();
 	
-	tracelog("Closed window");
+	debuglog("Closed window");
 	
 	is_initialized_ = false;
-	
-	debuglog("Done");
 }
 
 }

@@ -1,7 +1,7 @@
 #include <aether/objects/Graphic.hh>
 #include <aether/systems/Resource.hh>
 #include <aether/systems/Renderer.hh>
-#include <aether/common/rl_adapter.hh>
+#include <aether/common/log.hh>
 #include <raylib.h>
 
 namespace ae {
@@ -27,25 +27,21 @@ bool Graphic::init(Context const& ctx) {
 	auto resource = ctx.resource().lock();
 
 	if (!resource) {
-		// TODO: log error
+		errorlog("Can't reference resource system");
 		return false;
 	}
 
-	if (texture_ = resource->load_shared_texture(file_arg_)) {
-		toggle_antialiasing(true);
+	texture_ = resource->load_shared_texture(file_arg_);
+	toggle_antialiasing(true);
 		
-		size<float> bounds = {
-			.width = static_cast<float>(texture_->width),
-			.height = static_cast<float>(texture_->height)
-		};
+	size<float> bounds = {
+		.width = static_cast<float>(texture_->width),
+		.height = static_cast<float>(texture_->height)
+	};
 
-		set_bounds(bounds);
+	set_bounds(bounds);
 
-		return true;
-	}
-
-	// TODO: log error
-	return false;
+	return true;
 }
 
 // protected
