@@ -80,11 +80,11 @@ void Director::move_pending_state(Context const& ctx) {
 		}
 	}
 
-	if (current_state_ = std::move(pending_state_)) {
-		tracelog("Moved pending state to current");
+	current_state_ = std::move(pending_state_);
+	
+	tracelog("Moved pending state to current");
 
-		pending_state_ = nullptr;
-	}
+	pending_state_ = nullptr;
 }
 
 }
