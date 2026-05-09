@@ -62,7 +62,7 @@ void Funkin::run() {
 				director_->update_current_state(ctx_);
 			}
 
-			update_frame_ctx();
+			ctx_.update_frame_ctx();
 		}
 
 		renderer_->start_draw();
@@ -110,23 +110,6 @@ void Funkin::shutdown() {
 	auto end_time = timer::end(start_time);
 
 	log::info(fmt::format("Done | took {}ms", end_time));
-}
-
-// private
-void Funkin::update_frame_ctx() {
-	static uint32_t frame_count;
-	static float elapsed;
-
-	float dt = ctx_.delta_time();
-	elapsed += dt;
-	ctx_.total_time_ += dt;
-	frame_count++;
-	
-	while (elapsed >= 1.f) {
-		ctx_.running_fps_ = frame_count;
-		frame_count = 0;
-		elapsed -= 1.f;
-	}
 }
 
 }

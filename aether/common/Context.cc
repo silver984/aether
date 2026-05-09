@@ -53,4 +53,21 @@ void Context::store_refs(
 	director_ = std::move(director_ptr);
 }
 
+// private
+void Context::update_frame_ctx() {
+	static uint32_t frame_count = 0;
+	static float elapsed = 0.f;
+
+	float dt = delta_time();
+	elapsed += dt;
+	total_time_ += dt;
+	frame_count++;
+
+	while (elapsed >= 1.f) {
+		running_fps_ = frame_count;
+		frame_count = 0;
+		elapsed -= 1.f;
+	}
+}
+
 }

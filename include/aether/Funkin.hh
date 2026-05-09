@@ -28,7 +28,6 @@ public:
 	
 private:
 	void shutdown();
-	void update_frame_ctx();
 
 	std::shared_ptr<Window> window_;
 	std::shared_ptr<Renderer> renderer_;

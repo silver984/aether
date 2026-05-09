@@ -1,18 +1,15 @@
 #include <aether/common/rl_adapter.hh>
+#include <raylib.h>
 #include <cstdint>
 
 namespace ae::rl {
 
-//Texture2D to_Texture2D(Texture const& texture) {
-//	auto texture_bounds = texture.bounds();
-//	return Texture2D{
-//		.id = texture.id(),
-//		.width = texture_bounds.width,
-//		.height = texture_bounds.height,
-//		.mipmaps = texture.mipmaps(),
-//		.format = static_cast<int>(texture.format())
-//	};
-//}
+Vector2 to_Vector2(vec2<float> vec2) {
+	return {
+		.x = vec2.x,
+		.y = vec2.y
+	};
+}
 
 Matrix to_Matrix(mat3 const& matrix) {
 	return {
@@ -24,7 +21,7 @@ Matrix to_Matrix(mat3 const& matrix) {
 }
 
 Color to_Color(rgb color, float alpha) {
-	return Color{
+	return {
 		.r = color.r,
 		.g = color.g,
 		.b = color.b,

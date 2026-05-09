@@ -372,13 +372,13 @@ void Node::mark_alpha_dirty() {
 // private
 mat3 Node::calculate_transform(Context const& ctx, std::weak_ptr<Node> parent) const {
 	vec2<float> anchor_position = {
-		anchor_.x * bounds_.width,
-		anchor_.y * bounds_.height
+		.x = anchor_.x * bounds_.width,
+		.y = anchor_.y * bounds_.height
 	};
 
 	vec2<float> skew_rad = {
-		math::degrees_to_radians(skew_.x),
-		math::degrees_to_radians(skew_.y)
+		.x = math::degrees_to_radians(skew_.x),
+		.y = math::degrees_to_radians(skew_.y)
 	};
 
 	mat3 t = mat3::translation(position_);

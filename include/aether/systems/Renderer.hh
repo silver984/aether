@@ -33,7 +33,6 @@ public:
 
 private:
     void update_math(Context const& ctx);
-    // void start_render() const;
     void start_draw() const;
     void end_draw() const;
 #ifdef AETHER_DEBUG

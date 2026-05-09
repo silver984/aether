@@ -41,6 +41,8 @@ private:
 		std::weak_ptr<Director> director_ptr
 	);
 
+	void update_frame_ctx();
+
 	std::weak_ptr<Window> window_;
 	std::weak_ptr<Renderer> renderer_;
 	std::weak_ptr<Resource> resource_;

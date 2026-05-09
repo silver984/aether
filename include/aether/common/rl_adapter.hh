@@ -4,11 +4,15 @@
 #include <aether/math/mat3.hh>
 #include <aether/math/rect.hh>
 #include <aether/math/rgb.hh>
-#include <raylib.h>
+
+struct Vector2;
+struct Matrix;
+struct Color;
+struct Rectangle;
 
 namespace ae::rl {
 
-// Texture2D to_Texture2D(Texture const& texture);
+Vector2 to_Vector2(vec2<float> vec2);
 Matrix to_Matrix(mat3 const& matrix);
 Color to_Color(rgb color, float alpha);
 Rectangle to_Rectangle(rect<float> rectangle);
