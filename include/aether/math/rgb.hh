@@ -19,12 +19,6 @@ struct rgb final {
         b_(std::clamp(b, 0.f, 1.f))
     {}
 
-    explicit constexpr rgb(uint8_t r, uint8_t g, uint8_t b) :
-        r_(static_cast<float>(r) / 255.f),
-        g_(static_cast<float>(g) / 255.f),
-        b_(static_cast<float>(b) / 255.f)
-    {}
-
     [[nodiscard]] constexpr float r() const {
         return r_;
     }
@@ -37,21 +31,17 @@ struct rgb final {
         return b_;
     }
 
+    [[nodiscard]] static constexpr float as_float(uint8_t val) {
+        return static_cast<float>(val) / 255.f;
+    }
+
     void set(float r, float g, float b);
-    void set(uint8_t r, uint8_t g, uint8_t b);
     void set_r(float val);
-    void set_r(uint8_t val);
     void set_g(float val);
-    void set_g(uint8_t val);
     void set_b(float val);
-    void set_b(uint8_t val);
 
     [[nodiscard]] constexpr rgb operator*(rgb rhs) const {
-        return rgb(
-            r_ * rhs.r_,
-            g_ * rhs.g_,
-            b_ * rhs.b_
-        );
+        return rgb(r_ * rhs.r_, g_ * rhs.g_, b_ * rhs.b_);
     }
 
 private:

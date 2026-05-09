@@ -9,13 +9,7 @@ TestState::~TestState() = default;
 
 bool TestState::init(ae::Context const& ctx) {
 	if (auto renderer = ctx.renderer_wref().lock()) {
-		renderer->set_background_rgba(
-			ae::rgb(
-				static_cast<uint8_t>(202),
-				static_cast<uint8_t>(255),
-				static_cast<uint8_t>(77)
-			), 1.f
-		);
+		renderer->set_background_rgba(ae::rgb(ae::rgb::as_float(202), ae::rgb::as_float(255), ae::rgb::as_float(77)), 1.f);
 	}
 
 	if (auto grah = ae::Node::create<ae::Sprite>(ctx, "resources/grah.png")) {
