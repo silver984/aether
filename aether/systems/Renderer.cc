@@ -123,10 +123,6 @@ mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
 	auto screen_size = window->screen_size();
 	auto render_bounds = bounds();
 
-	if (screen_size.width <= 0 || screen_size.height <= 0) {
-		return mat3::identity();
-	}
-
 	vec2<float> scale_ratio = {
 		.x = static_cast<float>(render_bounds.width) / screen_size.width,
 		.y = static_cast<float>(render_bounds.height) / screen_size.height
@@ -135,19 +131,19 @@ mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
 	float scale_factor = std::min(scale_ratio.x, scale_ratio.y);
 
 	vec2<float> scaled_size = {
-		screen_size.width * scale_factor,
-		screen_size.height * scale_factor
+		.x = screen_size.width * scale_factor,
+		.y = screen_size.height * scale_factor
 	};
 
 	vec2<float> offset = {
-		.x = (render_bounds.width - scaled_size.x) * 0.5f,
-		.y = (render_bounds.height - scaled_size.y) * 0.5f
+		.x = render_bounds.width - scaled_size.x,
+		.y = render_bounds.height - scaled_size.y
 	};
 
-	mat3 scale = mat3::scale(vec2<float>(scale_factor, scale_factor));
-	mat3 translate = mat3::translation(offset);
+	mat3 t = mat3::translation(offset / 2.f);
+	mat3 s = mat3::scale(vec2<float>(scale_factor, scale_factor));
 
-	return translate * scale;
+	return t * s;
 }
 
 }

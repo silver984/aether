@@ -1,7 +1,6 @@
 #include <aether/systems/Resource.hh>
 #include <aether/common/log.hh>
 #include <aether/common/timer.hh>
-#include <fmt/format.h>
 #include <raylib.h>
 #include <filesystem>
 #include <string>
@@ -56,13 +55,11 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		it != textures_refs_.end()
 	) {
 		if (auto ptr = it->second.lock()) {
-			log::trace(fmt::format("Found stored reference for {}", path.str));
-			log::trace(fmt::format("Returning reference ({})", fmt::ptr(ptr.get())));
 			return ptr;
 		}
 	}
 
-	log::info(fmt::format("Loading {}", file));
+	infolog("Loading {}", file);
 
 	auto start_time = timer::start();
 
@@ -71,12 +68,13 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		[](Texture* ptr) {
 			if (ptr->id > 0) {
 				UnloadTexture(Texture{.id = ptr->id});
-				log::trace(fmt::format("Unloaded texture ({}) | id: {}", fmt::ptr(ptr), ptr->id));
+				infolog("Unloaded texture ({}) | id: {}", fmt::ptr(ptr), ptr->id);
 			}
+
 			delete ptr;
 			ptr = nullptr;
-
-		});
+		}
+	);
 
 	{
 		Texture stack = LoadTexture(path.str.c_str());
@@ -87,23 +85,21 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		shared->mipmaps = stack.mipmaps;
 		shared->format = stack.format;
 
-		log::trace(fmt::format("Loaded texture ({}) | id: {} | bounds: {}x{}",
-			fmt::ptr(shared.get()), shared->id, shared->width, shared->height
-		));
+		debuglog("Loaded texture ({}) | id: {} | bounds: {}x{}", fmt::ptr(shared.get()), shared->id, shared->width, shared->height);
 	}
 
 	textures_refs_[path.str] = shared;
-	log::trace(fmt::format("Stored to texture references | current size: {}", textures_refs_.size()));
+	debuglog("Stored to texture references | current size: {}", textures_refs_.size());
 
 	auto end_time = timer::end(start_time);
 
-	log::info(fmt::format("Done | took {}ms", end_time));
+	infolog("Done | took {}ms", end_time);
 
 	return shared;
 }
 
 void Resource::clean_refs() {
-	log::debug("Cleaning references");
+	debuglog("Cleaning references");
 
 	auto start_time = timer::start();
 
@@ -112,7 +108,7 @@ void Resource::clean_refs() {
 
 	auto end_time = timer::end(start_time);
 
-	log::debug(fmt::format("Done | erased {} ref/s | took {}ms", erased, end_time));
+	debuglog("Done | erased {} ref/s | took {}ms", erased, end_time);
 }
 
 size_t Resource::clean_texture_refs() {
@@ -120,7 +116,7 @@ size_t Resource::clean_texture_refs() {
 		return 0;
 	}
 
-	log::trace("Cleaning texture references");
+	tracelog("Cleaning texture references");
 
 	auto start_time = timer::start();
 
@@ -136,7 +132,7 @@ size_t Resource::clean_texture_refs() {
 
 			erased++;
 
-			log::trace(fmt::format("Erased {}", name));
+			tracelog("Erased {}", name);
 
 			continue;
 		}
@@ -146,7 +142,7 @@ size_t Resource::clean_texture_refs() {
 
 	auto end_time = timer::end(start_time);
 
-	log::trace(fmt::format("Done | erased {} ref/s | took {}ms", erased, end_time));
+	tracelog("Done | erased {} ref/s | took {}ms", erased, end_time);
 
 	return erased;
 }

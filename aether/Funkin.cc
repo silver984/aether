@@ -28,7 +28,7 @@ bool Funkin::init(std::string_view game_title, size<int> game_resolution, int ga
 		window_.reset();
 		window_ = nullptr;
 
-		log::error("Failed");
+		errorlog("Failed");
 		
 		return false;
 	}
@@ -40,7 +40,7 @@ bool Funkin::init(std::string_view game_title, size<int> game_resolution, int ga
 
 	is_initialized_ = true;
 
-	log::info("Initialized");
+	infolog("Initialized");
 
 	return true;
 }
@@ -81,7 +81,7 @@ Context const& Funkin::context() {
 
 // private
 void Funkin::shutdown() {
-	log::info("Shutting down");
+	infolog("Shutting down");
 
 	auto start_time = timer::start();
 
@@ -101,7 +101,7 @@ void Funkin::shutdown() {
 
 	auto end_time = timer::end(start_time);
 
-	log::info(fmt::format("Done | took {}ms", end_time));
+	infolog("Done | took {}ms", end_time);
 }
 
 }

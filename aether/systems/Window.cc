@@ -6,7 +6,6 @@
 #endif
 #include <raylib.h>
 #include <algorithm>
-#include <fmt/format.h>
 
 namespace ae {
 
@@ -49,7 +48,7 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 
 #ifdef WIN32
 	if (!win32::enable_console_colors()) {
-		log::warn("Couldn't enable console colors");
+		warninglog("Couldn't enable console colors");
 	}
 #endif
 
@@ -64,7 +63,7 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 	InitWindow(resolution.width, resolution.height, title_.c_str());
 
 	if (!IsWindowReady()) {
-		log::error("Not ready");
+		errorlog("Not ready");
 		return false;
 	}
 
@@ -73,22 +72,22 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 
 	is_initialized_ = true;
 
-	log::info("Initialized");
+	infolog("Initialized");
 
 	return true;
 }
 
 // private
 void Window::shutdown() {
-	log::debug("Shutting down");
+	debuglog("Shutting down");
 
 	CloseWindow();
 	
-	log::debug("Closed window");
+	tracelog("Closed window");
 	
 	is_initialized_ = false;
 	
-	log::debug("Done");
+	debuglog("Done");
 }
 
 }

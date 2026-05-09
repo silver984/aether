@@ -1,13 +1,11 @@
 #include <aether/common/log.hh>
-#include <fmt/format.h>
-#include <fmt/color.h>
 #include <fmt/chrono.h>
 #include <chrono>
 
 namespace {
 
-std::string_view function_name(std::source_location const& location) {
-	std::string_view func = location.function_name();
+std::string_view function_name(std::source_location const& loc) {
+	std::string_view func = loc.function_name();
 
 	// remove params
 	// cut at '(' first
@@ -42,39 +40,14 @@ std::string time_str() {
 	return fmt::format("{:%H:%M:%S}.{:03}", seconds, ms);
 }
 
-void print_helper(
-	std::string_view msg,
-	std::string_view level,
-	fmt::color level_color,
-	std::source_location const& loc
-) {
+}
+
+namespace ae::log::impl {
+
+void print(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
 	fmt::print(fmt::fg(fmt::color::gray), "{:<12} {} ", time_str(), function_name(loc));
 	fmt::print(fmt::fg(level_color), "[{}] ", level);
 	fmt::print("{}\n", msg);
-}
-
-}
-
-namespace ae::log {
-
-void trace(std::string_view msg, std::source_location const& loc) {
-	print_helper(msg, "TRACE", fmt::color::dark_turquoise, loc);
-}
-
-void debug(std::string_view msg, std::source_location const& loc) {
-	print_helper(msg, "DEBUG", fmt::color::medium_violet_red, loc);
-}
-
-void info(std::string_view msg, std::source_location const& loc) {
-	print_helper(msg, "INFO", fmt::color::green_yellow, loc);
-}
-
-void warn(std::string_view msg, std::source_location const& loc) {
-	print_helper(msg, "WARNING", fmt::color::gold, loc);
-}
-
-void error(std::string_view msg, std::source_location const& loc) {
-	print_helper(msg, "WARNING", fmt::color::crimson, loc);
 }
 
 }

@@ -1,17 +1,66 @@
 #ifndef __AETHER_COMMON_LOG_HH__
 #define __AETHER_COMMON_LOG_HH__
 
+#include <fmt/format.h>
+#include <fmt/color.h>
+#include <string>
 #include <string_view>
 #include <source_location>
+#include <utility>
+
+namespace ae::log::impl {
+
+void print(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc);
+
+}
 
 namespace ae::log {
 
-void trace(std::string_view msg, std::source_location const& loc = std::source_location::current());
-void debug(std::string_view msg, std::source_location const& loc = std::source_location::current());
-void info(std::string_view msg, std::source_location const& loc = std::source_location::current());
-void warn(std::string_view msg, std::source_location const& loc = std::source_location::current());
-void error(std::string_view msg, std::source_location const& loc = std::source_location::current());
+template <typename... va>
+void trace(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "TRACE", fmt::color::dark_turquoise, loc);
+}
+
+template <typename... va>
+void debug(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "DEBUG", fmt::color::medium_violet_red, loc);
+}
+
+template <typename... va>
+void info(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "INFO", fmt::color::green_yellow, loc);
+}
+
+template <typename... va>
+void warning(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "WARNING", fmt::color::gold, loc);
+}
+
+template <typename... va>
+void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "ERROR", fmt::color::crimson, loc);
+}
 
 }
+
+#ifndef tracelog
+#define tracelog(fmt_str, ...) ae::log::trace(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+#endif
+
+#ifndef debuglog
+#define debuglog(fmt_str, ...) ae::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+#endif
+
+#ifndef infolog
+#define infolog(fmt_str, ...) ae::log::info(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+#endif
+
+#ifndef warninglog
+#define warninglog(fmt_str, ...) ae::log::warning(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+#endif
+
+#ifndef errorlog
+#define errorlog(fmt_str, ...) ae::log::error(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+#endif
 
 #endif

@@ -2,8 +2,6 @@
 #include <aether/systems/Window.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/math/util.hh>
-#include <aether/common/log.hh>
-#include <fmt/format.h>
 #include <algorithm>
 #include <cmath>
 
