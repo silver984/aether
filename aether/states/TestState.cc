@@ -1,5 +1,5 @@
 #include <aether/states/TestState.hh>
-#include <aether/states/TestState2.hh>
+#include <aether/objects/Sprite.hh>
 #include <aether/systems/Window.hh>
 #include <aether/systems/Renderer.hh>
 #include <cmath>
@@ -18,7 +18,7 @@ bool TestState::init(ae::Context const& ctx) {
 		);
 	}
 
-	if (auto grah = ae::Node::create<ae::Graphic>(ctx, "resources/grah.png")) {
+	if (auto grah = ae::Node::create<ae::Sprite>(ctx, "resources/grah.png")) {
 		if (auto window = ctx.window().lock()) {
 			grah->set_position((ae::vec2<float>)window->screen_size() / 2.f);
 		}

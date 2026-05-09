@@ -2,7 +2,6 @@
 #define __AETHER_STATES_TESTSTATE_HH__
 
 #include <aether/objects/abstract/State.hh>
-#include <aether/objects/Graphic.hh>
 #include <memory>
 
 class TestState : public ae::Node {

@@ -1,4 +1,4 @@
-#include <aether/objects/Graphic.hh>
+#include <aether/objects/Sprite.hh>
 #include <aether/systems/Resource.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/common/log.hh>
@@ -6,24 +6,24 @@
 
 namespace ae {
 
-Graphic::Graphic(std::string_view file) :
+Sprite::Sprite(std::string_view file) :
 	file_arg_(std::string(file))
 {}
 
-Graphic::~Graphic() = default;
+Sprite::~Sprite() = default;
 
-std::string_view Graphic::type() const {
-	return "Graphic";
+std::string_view Sprite::type() const {
+	return "Sprite";
 }
 
-void Graphic::toggle_antialiasing(bool val) const {
+void Sprite::toggle_antialiasing(bool val) const {
 	if (texture_) {
 		SetTextureFilter(*texture_, val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
 	}
 }
 
 // protected
-bool Graphic::init(Context const& ctx) {
+bool Sprite::init(Context const& ctx) {
 	auto resource = ctx.resource().lock();
 
 	if (!resource) {
@@ -32,6 +32,7 @@ bool Graphic::init(Context const& ctx) {
 	}
 
 	texture_ = resource->load_shared_texture(file_arg_);
+
 	toggle_antialiasing(true);
 		
 	size<float> bounds = {
@@ -45,7 +46,7 @@ bool Graphic::init(Context const& ctx) {
 }
 
 // protected
-void Graphic::draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const {
+void Sprite::draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const {
 	auto renderer = ctx.renderer().lock();
 
 	if (!renderer || !texture_) {
