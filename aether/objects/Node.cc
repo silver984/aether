@@ -24,6 +24,7 @@ Node::Node() :
 	combined_alpha_(1.f),
 	time_scale_(1.f),
 	is_transform_dirty_(false),
+	is_alpha_dirty_(false),
 	is_active_(false),
 	is_visible_(true),
 	is_initialized_(false)

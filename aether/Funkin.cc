@@ -54,10 +54,6 @@ void Funkin::run() {
 		bool is_window_minimized = window_->is_minimized();
 
 		if (!is_window_minimized) {
-			if (window_->was_resized()) {
-				renderer_->update_math(ctx_);
-			}
-			
 			if (director_) {
 				director_->update_current_state(ctx_);
 			}
@@ -65,19 +61,15 @@ void Funkin::run() {
 			ctx_.update_frame_ctx();
 		}
 
-		renderer_->start_draw();
+		renderer_->start_draw(ctx_);
 		
 		if (!is_window_minimized) {
 			if (director_) {
 				director_->draw_current_state(ctx_);
 			}
-
-#ifdef AETHER_DEBUG
-			renderer_->draw_debug(ctx_);
-#endif
 		}
 
-		renderer_->end_draw();
+		renderer_->end_draw(ctx_);
 	}
 
 	shutdown();

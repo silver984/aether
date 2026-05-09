@@ -13,8 +13,7 @@ namespace ae {
 // private
 Renderer::Renderer() :
 	background_alpha_(1.f),
-	scale_factor_(1.f),
-	scale_ratio_(1.f, 1.f)
+	transform_(mat3::identity())
 {}
 
 // private
@@ -25,14 +24,6 @@ size<int> Renderer::bounds() const {
 		.width = GetRenderWidth(),
 		.height = GetRenderHeight()
 	};
-}
-
-float Renderer::scale_factor() const {
-	return scale_factor_;
-}
-
-vec2<float> Renderer::scale_ratio() const {
-	return scale_ratio_;
 }
 
 void Renderer::set_background_rgba(rgb color, float alpha) {
@@ -47,8 +38,8 @@ std::pair<rgb, float> Renderer::background_rgba() const {
 	};
 }
 
-void Renderer::draw_texture(Texture const& texture, mat3 const& matrix, rgb color, float alpha) const {
-	push_matrix(matrix);
+void Renderer::draw_texture(Texture const& texture, mat3 const& transform, rgb color, float alpha) const {
+	push_matrix(transform);
 
 	// TODO: uh sources for texture atlases?
 
@@ -79,35 +70,30 @@ void Renderer::draw_texture(Texture const& texture, mat3 const& matrix, rgb colo
 }
 
 // private
-void Renderer::update_math(Context const& ctx) {
-	auto window = ctx.window().lock();
-
-	if (!window) {
-		return;
-	}
-
-	auto screen_size = window->screen_size();
-	auto render_bounds = bounds();
-
-	scale_ratio_ = {
-		.x = screen_size.width > 0 ? static_cast<float>(render_bounds.width) / screen_size.width : 0.f,
-		.y = screen_size.height > 0 ? static_cast<float>(render_bounds.height) / screen_size.height : 0.f
-	};
-
-	scale_factor_ = std::min(scale_ratio_.x, scale_ratio_.y);
-}
-
-// private
-void Renderer::start_draw() const {
+void Renderer::start_draw(Context const& ctx) {
 	BeginDrawing();
 	// clip bounds
 	auto _bounds_ = bounds();
 	BeginScissorMode(0, 0, _bounds_.width, _bounds_.height);
 	ClearBackground(rl::to_Color(background_color_, background_alpha_));
+
+	if (auto window = ctx.window().lock()) {
+		if (window->was_resized()) {
+			transform_ = calculate_transform(window);
+		}
+	}
+
+	push_matrix(transform_);
 }
 
 // private
-void Renderer::end_draw() const {
+void Renderer::end_draw(Context const& ctx) const {
+	rlPopMatrix();
+
+#ifdef AETHER_DEBUG
+	draw_debug(ctx);
+#endif
+
 	EndScissorMode();
 	EndDrawing();
 }
@@ -126,6 +112,42 @@ void Renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
 	Matrix m = rl::to_Matrix(matrix);
 	rlMultMatrixf(MatrixToFloat(m));
+}
+
+// private
+mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
+	if (!window) {
+		return mat3::identity();
+	}
+
+	auto screen_size = window->screen_size();
+	auto render_bounds = bounds();
+
+	if (screen_size.width <= 0 || screen_size.height <= 0) {
+		return mat3::identity();
+	}
+
+	vec2<float> scale_ratio = {
+		.x = static_cast<float>(render_bounds.width) / screen_size.width,
+		.y = static_cast<float>(render_bounds.height) / screen_size.height
+	};
+
+	float scale_factor = std::min(scale_ratio.x, scale_ratio.y);
+
+	vec2<float> scaled_size = {
+		screen_size.width * scale_factor,
+		screen_size.height * scale_factor
+	};
+
+	vec2<float> offset = {
+		.x = (render_bounds.width - scaled_size.x) * 0.5f,
+		.y = (render_bounds.height - scaled_size.y) * 0.5f
+	};
+
+	mat3 scale = mat3::scale(vec2<float>(scale_factor, scale_factor));
+	mat3 translate = mat3::translation(offset);
+
+	return translate * scale;
 }
 
 }
