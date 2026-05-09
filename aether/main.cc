@@ -6,10 +6,9 @@ int main() {
 	ae::Funkin aether;
 
 	if (aether.init("FNF: Aether Engine", ae::size<int>(1280, 720), 240)) {
-		if (
-			auto& ctx = aether.context();
-			auto director = ctx.director().lock()
-		) {
+		auto& ctx = aether.context();
+
+		if (auto director = ctx.director_wref().lock()) {
 			director->switch_state(ae::Node::create<TestState>(ctx));
 		}
 

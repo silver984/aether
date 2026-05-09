@@ -113,6 +113,19 @@ struct vec2 final {
     }
 
     template<numeric_t U>
+    constexpr vec2<T>& operator*=(U rhs) {
+        x *= rhs;
+        y *= rhs;
+        return *this;
+    }
+
+    constexpr vec2<T>& operator/=(vec2<T> rhs) {
+        x /= rhs.x;
+        y /= rhs.y;
+        return *this;
+    }
+
+    template<numeric_t U>
     constexpr vec2<T>& operator/=(U rhs) {
         x /= rhs;
         y /= rhs;

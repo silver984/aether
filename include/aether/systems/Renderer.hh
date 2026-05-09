@@ -4,6 +4,7 @@
 #include <aether/common/Context.hh>
 #include <aether/math/vec2.hh>
 #include <aether/math/size.hh>
+#include <aether/math/rect.hh>
 #include <aether/math/mat3.hh>
 #include <aether/math/rgb.hh>
 #include <cstdint>
@@ -29,7 +30,7 @@ public:
     [[nodiscard]] size<int> bounds() const;
     void set_background_rgba(rgb color, float alpha);
     [[nodiscard]] std::pair<rgb, float> background_rgba() const;
-    void draw_texture(Texture const& texture, mat3 const& transform, rgb color, float alpha) const;
+    void draw_texture(Texture const& texture, mat3 const& transform, rect<float> source_rect, rgb color, float alpha) const;
 
 private:
     void start_draw(Context const& ctx);

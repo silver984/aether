@@ -50,6 +50,11 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 
 	// TODO: check format validity
 
+	if (!std::filesystem::exists(path.str)) {
+		errorlog("\"{}\" doesn't exist", file);
+		return nullptr;
+	}
+
 	if (
 		auto it = textures_refs_.find(path.str);
 		it != textures_refs_.end()
@@ -59,9 +64,16 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		}
 	}
 
-	debuglog("Loading {}", path.str);
+	debuglog("Loading \"{}\"", path.str);
 
 	auto start_time = timer::start();
+
+	Texture stack = LoadTexture(path.str.c_str());
+
+	if (stack.id == 0) {
+		errorlog("Failed");
+		return nullptr;
+	}
 
 	auto shared = std::shared_ptr<Texture>(
 		new Texture(),
@@ -76,17 +88,13 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		}
 	);
 
-	{
-		Texture stack = LoadTexture(path.str.c_str());
-		
-		shared->id = stack.id;
-		shared->width = stack.width;
-		shared->height = stack.height;
-		shared->mipmaps = stack.mipmaps;
-		shared->format = stack.format;
+	shared->id = stack.id;
+	shared->width = stack.width;
+	shared->height = stack.height;
+	shared->mipmaps = stack.mipmaps;
+	shared->format = stack.format;
 
-		tracelog("Loaded texture ({}) | id: {} | bounds: {}x{}", fmt::ptr(shared.get()), shared->id, shared->width, shared->height);
-	}
+	tracelog("Loaded texture ({}) | id: {} | bounds: {}x{}", fmt::ptr(shared.get()), shared->id, shared->width, shared->height);
 
 	textures_refs_[path.str] = shared;
 	tracelog("Stored to texture references | current size: {}", textures_refs_.size());

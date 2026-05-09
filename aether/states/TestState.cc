@@ -8,7 +8,7 @@ TestState::TestState() = default;
 TestState::~TestState() = default;
 
 bool TestState::init(ae::Context const& ctx) {
-	if (auto renderer = ctx.renderer().lock()) {
+	if (auto renderer = ctx.renderer_wref().lock()) {
 		renderer->set_background_rgba(
 			ae::rgb(
 				static_cast<uint8_t>(202),
@@ -19,8 +19,8 @@ bool TestState::init(ae::Context const& ctx) {
 	}
 
 	if (auto grah = ae::Node::create<ae::Sprite>(ctx, "resources/grah.png")) {
-		if (auto window = ctx.window().lock()) {
-			grah->set_position((ae::vec2<float>)window->screen_size() / 2.f);
+		if (auto window = ctx.window_wref().lock()) {
+			grah->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
 		}
 
 		add(grah);

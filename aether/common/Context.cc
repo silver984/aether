@@ -12,20 +12,20 @@ Context::Context() :
 // private
 Context::~Context() = default;
 
-std::weak_ptr<Window> Context::window() const {
-	return window_;
+std::weak_ptr<Window> Context::window_wref() const {
+	return window_wref_;
 }
 
-std::weak_ptr<Renderer> Context::renderer() const {
-	return renderer_;
+std::weak_ptr<Renderer> Context::renderer_wref() const {
+	return renderer_wref_;
 }
 
-std::weak_ptr<Resource> Context::resource() const {
-	return resource_;
+std::weak_ptr<Resource> Context::resource_wref() const {
+	return resource_wref_;
 }
 
-std::weak_ptr<Director> Context::director() const {
-	return director_;
+std::weak_ptr<Director> Context::director_wref() const {
+	return director_wref_;
 }
 
 float Context::delta_time() const {
@@ -42,15 +42,15 @@ uint32_t Context::running_fps() const {
 
 // private
 void Context::store_refs(
-	std::weak_ptr<Window> window_ptr,
-	std::weak_ptr<Renderer> renderer_ptr,
-	std::weak_ptr<Resource> resource_ptr,
-	std::weak_ptr<Director> director_ptr
+	std::weak_ptr<Window> window,
+	std::weak_ptr<Renderer> renderer,
+	std::weak_ptr<Resource> resource,
+	std::weak_ptr<Director> director
 ) {
-	window_ = std::move(window_ptr);
-	renderer_ = std::move(renderer_ptr);
-	resource_ = std::move(resource_ptr);
-	director_ = std::move(director_ptr);
+	window_wref_ = std::move(window);
+	renderer_wref_ = std::move(renderer);
+	resource_wref_ = std::move(resource);
+	director_wref_ = std::move(director);
 }
 
 // private

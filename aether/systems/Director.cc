@@ -75,7 +75,7 @@ void Director::move_pending_state(Context const& ctx) {
 	if (current_state_) {
 		release_current_state();
 
-		if (auto resource = ctx.resource().lock()) {
+		if (auto resource = ctx.resource_wref().lock()) {
 			resource->clean_refs();
 		}
 	}

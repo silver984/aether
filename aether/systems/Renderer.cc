@@ -38,30 +38,22 @@ std::pair<rgb, float> Renderer::background_rgba() const {
 	};
 }
 
-void Renderer::draw_texture(Texture const& texture, mat3 const& transform, rgb color, float alpha) const {
+void Renderer::draw_texture(Texture const& texture, mat3 const& transform, rect<float> source_rect, rgb color, float alpha) const {
 	push_matrix(transform);
-
-	// TODO: uh sources for texture atlases?
-
-	Rectangle source = {
-		.x = 0,
-		.y = 0,
-		.width = static_cast<float>(texture.width),
-		.height = static_cast<float>(texture.height),
-	};
-
-	Rectangle dest = {
-		.x = 0,
-		.y = 0,
-		.width = source.width,
-		.height = source.height,
-	};
 
 	DrawTexturePro(
 		texture,
-		source,
-		dest,
-		Vector2{.x = 0.f, .y = 0.f},
+		rl::as_rectangle(source_rect),
+		Rectangle{
+			.x = 0,
+			.y = 0,
+			.width = source_rect.width,
+			.height = source_rect.height,
+		},
+		Vector2{
+			.x = 0.f,
+			.y = 0.f
+		},
 		0.f,
 		rl::as_color(color, alpha)
 	);
@@ -77,7 +69,7 @@ void Renderer::start_draw(Context const& ctx) {
 	BeginScissorMode(0, 0, _bounds_.width, _bounds_.height);
 	ClearBackground(rl::as_color(background_color_, background_alpha_));
 
-	if (auto window = ctx.window().lock()) {
+	if (auto window = ctx.window_wref().lock()) {
 		if (window->was_resized()) {
 			transform_ = calculate_transform(window);
 		}
