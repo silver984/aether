@@ -123,9 +123,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 	{ // top right
 		vec2<float> coord = source_rect.position<float>();
 
-		if (flip_x) {
-			coord.x -= source_rect.width;
-		} else {
+		if (!flip_x) {
 			coord.x += source_rect.width;
 		}
 
