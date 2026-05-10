@@ -6,11 +6,33 @@
 namespace ae {
 
 template<numeric_t T>
+struct vec2;
+
+template<numeric_t T>
+struct size;
+
+template<numeric_t T>
 struct rect {
     T x = T{0};
     T y = T{0};
     T width = T{0};
     T height = T{0};
+
+    template<numeric_t U>
+    [[nodiscard]] constexpr vec2<U> position() const {
+        return {
+            .x = x,
+            .y = y
+        };
+    };
+
+    template<numeric_t U>
+    [[nodiscard]] constexpr size<U> bounds() const {
+        return {
+            .width = width,
+            .height = height
+        };
+    };
 
     [[nodiscard]] constexpr rect<T> operator+(rect<T> rhs) const {
         return {

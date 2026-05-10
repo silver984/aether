@@ -70,7 +70,7 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 
 	Texture stack = LoadTexture(path.str.c_str());
 
-	if (stack.id == 0) {
+	if (stack.id < 1) {
 		errorlog("Failed");
 		return nullptr;
 	}

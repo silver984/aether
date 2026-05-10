@@ -3,6 +3,7 @@
 #include <aether/systems/Renderer.hh>
 #include <aether/common/log.hh>
 #include <raylib.h>
+#include <rlgl.h>
 
 namespace ae {
 
@@ -112,7 +113,7 @@ void Sprite::draw(Context const& ctx, mat3 const& transform, rgb color, float al
 		return;
 	}
 
-	renderer->draw_texture(*texture_, transform, texture_source_rect_, color, alpha);
+	renderer->draw_texture(*texture_, texture_source_rect_, transform, color, alpha);
 }
 
 // protected

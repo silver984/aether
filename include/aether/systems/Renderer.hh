@@ -30,7 +30,7 @@ public:
     [[nodiscard]] size<int> bounds() const;
     void set_background_rgba(rgb color, float alpha);
     [[nodiscard]] std::pair<rgb, float> background_rgba() const;
-    void draw_texture(Texture const& texture, mat3 const& transform, rect<float> source_rect, rgb color, float alpha) const;
+    void draw_texture(Texture const& texture, rect<float> source_rect, mat3 const& transform, rgb color, float alpha) const;
 
 private:
     void start_draw(Context const& ctx);
@@ -39,6 +39,9 @@ private:
     void draw_debug(Context const& ctx) const;
 #endif
     void push_matrix(mat3 const& matrix) const;
+    void define_color_vertex(rgb color, float alpha) const;
+    void define_vertex(vec2<float> position) const;
+    void define_texture_coord(vec2<float> position) const;
     mat3 calculate_transform(std::shared_ptr<Window> window) const;
 
     rgb background_color_;
