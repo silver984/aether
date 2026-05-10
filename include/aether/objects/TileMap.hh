@@ -16,6 +16,9 @@ public:
 	[[nodiscard]] std::string_view type() const override;
 	void toggle_antialiasing(bool val) const;
 
+protected:
+	bool init() override;
+
 private:
 	std::shared_ptr<Texture> texture_;
 	rect<float> texture_source_rect_;

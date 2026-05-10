@@ -60,7 +60,7 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 	);
 
 	title_ = std::string(title);
-	screen_size_ = math::max(size<int>(1, 1), resolution);
+	screen_size_ = math::max(resolution / 2, resolution);
 
 	InitWindow(screen_size_.width, screen_size_.height, title_.c_str());
 
