@@ -43,8 +43,7 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 		return true;
 	}
 
-	title_ = std::string(title);
-	screen_size_ = math::max(size<int>(1, 1), resolution);
+	log::impl::create_log_file();
 
 #ifdef WIN32
 	if (!win32::enable_console_colors()) {
@@ -60,14 +59,17 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 		ConfigFlags::FLAG_WINDOW_TRANSPARENT
 	);
 
-	InitWindow(resolution.width, resolution.height, title_.c_str());
+	title_ = std::string(title);
+	screen_size_ = math::max(size<int>(1, 1), resolution);
+
+	InitWindow(screen_size_.width, screen_size_.height, title_.c_str());
 
 	if (!IsWindowReady()) {
 		errorlog("Not ready");
 		return false;
 	}
 
-	SetTargetFPS(target_fps);
+	SetTargetFPS(std::max(1, target_fps));
 	SetExitKey(KeyboardKey::KEY_NULL);
 
 	infolog("Initialized");

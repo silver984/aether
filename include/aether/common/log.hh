@@ -11,6 +11,7 @@
 namespace ae::log::impl {
 
 void print(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc);
+void create_log_file();
 
 }
 
