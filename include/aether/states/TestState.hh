@@ -11,8 +11,8 @@ public:
 	~TestState();
 
 protected:
-	bool init(ae::Context const& ctx) override;
-	void update(ae::Context const& ctx, float dt) override;
+	bool init() override;
+	void update(float dt) override;
 
 private:
 	void update_long_trail();

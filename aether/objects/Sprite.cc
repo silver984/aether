@@ -24,7 +24,14 @@ void Sprite::toggle_antialiasing(bool val) const {
 }
 
 bool Sprite::set_texture(std::string_view file) {
-	auto resource = resource_wref_.lock();
+	auto ctx = context();
+
+	if (!ctx) {
+		errorlog("Can't reference engine context");
+		return false;
+	}
+
+	auto resource = ctx->resource_wref().lock();
 
 	if (!resource) {
 		errorlog("Can't reference resource system");
@@ -91,13 +98,7 @@ rect<float> Sprite::texture_source_rect() const {
 }
 
 // protected
-bool Sprite::init(Context const& ctx) {
-	resource_wref_ = std::move(ctx.resource_wref());
-	return setup();
-}
-
-// protected
-bool Sprite::setup() {
+bool Sprite::init() {
 	if (!set_texture(file_arg_)) {
 		errorlog("Failed");
 		return false;
@@ -110,19 +111,20 @@ bool Sprite::setup() {
 }
 
 // protected
-void Sprite::draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const {
-	auto renderer = ctx.renderer_wref().lock();
+void Sprite::draw(mat3 const& transform, rgb color, float alpha) const {
+	auto ctx = context();
+
+	if (!ctx) {
+		return;
+	}
+
+	auto renderer = ctx->renderer_wref().lock();
 
 	if (!renderer || !texture_) {
 		return;
 	}
 
 	renderer->draw_texture(*texture_, texture_source_rect_, transform, color, alpha);
-}
-
-// protected
-std::weak_ptr<Resource> Sprite::resource_wref() const {
-	return resource_wref_;
 }
 
 }

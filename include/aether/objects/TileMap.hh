@@ -21,8 +21,6 @@ public:
 	[[nodiscard]] std::string_view type() const override;
 
 protected:
-	bool setup() override;
-
 	size<float> tile_bounds_arg_;
 };
 

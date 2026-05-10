@@ -72,22 +72,24 @@ public:
 	[[nodiscard]] float time_scale() const;
 
 protected:
-	virtual bool init(Context const& ctx);
-	virtual void update(Context const& ctx, float dt);
-	virtual void draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const;
+	virtual bool init();
+	virtual void update(float dt);
+	virtual void draw(mat3 const& transform, rgb color, float alpha) const;
+	[[nodiscard]] Context const* context() const;
 
 private:
 	bool base_init(Context const& ctx);
-	void base_update(Context const& ctx, float dt);
-	void base_draw(Context const& ctx);
+	void base_update(float dt);
+	void base_draw();
 	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> node) const;
 	void mark_transform_dirty();
 	void mark_alpha_dirty();
 	void mark_rgb_dirty();
-	[[nodiscard]] mat3 calculate_transform(Context const& ctx, std::weak_ptr<Node> parent) const;
+	[[nodiscard]] mat3 calculate_transform(std::weak_ptr<Node> parent) const;
 	[[nodiscard]] float calculate_combined_alpha(std::weak_ptr<Node> parent) const;
 	[[nodiscard]] rgb calculate_combined_rgb(std::weak_ptr<Node> parent) const;
 
+	Context const* context_;
 	std::weak_ptr<Node> parent_;
 	std::vector<std::shared_ptr<Node>> children_;
 	std::string name_;

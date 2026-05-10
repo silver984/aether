@@ -30,17 +30,12 @@ public:
 	[[nodiscard]] rect<float> texture_source_rect() const;
 
 protected:
-	bool init(Context const& ctx) override;
-	virtual bool setup();
-	void draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const override;
-	[[nodiscard]] std::weak_ptr<Resource> resource_wref() const;
+	bool init() override;
+	void draw(mat3 const& transform, rgb color, float alpha) const override;
 
 	std::shared_ptr<Texture> texture_;
 	rect<float> texture_source_rect_;
 	std::string file_arg_;
-
-private:
-	std::weak_ptr<Resource> resource_wref_;
 };
 
 }

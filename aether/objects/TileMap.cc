@@ -13,9 +13,4 @@ std::string_view ae::TileMap::type() const {
 	return "TileMap";
 }
 
-// protected
-bool TileMap::setup() {
-	return true;
-}
-
 }

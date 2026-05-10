@@ -10,6 +10,7 @@
 namespace ae {
 
 Node::Node() :
+	context_(nullptr),
 	color_(1.f, 1.f, 1.f),
 	combined_color_(color_.r(), color_.g(), color_.b()),
 	transform_(mat3::identity()),
@@ -301,15 +302,32 @@ float Node::time_scale() const {
 }
 
 // protected
-bool Node::init(Context const& ctx) {
+bool Node::init() {
+	if (!context_) {
+		return false;
+	}
+
 	return true;
 }
 
 // protected
-void Node::update(Context const& ctx, float dt) {}
+void Node::update(float dt) {
+	if (!context_) {
+		return;
+	}
+}
 
 // protected
-void Node::draw(Context const& ctx, mat3 const& transform, rgb color, float alpha) const {}
+void Node::draw(mat3 const& transform, rgb color, float alpha) const {
+	if (!context_) {
+		return;
+	}
+}
+
+// protected
+Context const* Node::context() const {
+	return context_;
+}
 
 // private
 bool Node::base_init(Context const& ctx) {
@@ -317,11 +335,13 @@ bool Node::base_init(Context const& ctx) {
 		return true;
 	}
 
-	return is_initialized_ = init(ctx);
+	context_ = &ctx;
+
+	return is_initialized_ = init();
 }
 
 // private
-void Node::base_update(Context const& ctx, float dt) {
+void Node::base_update(float dt) {
 	if (!is_initialized_) {
 		return;
 	}
@@ -329,7 +349,7 @@ void Node::base_update(Context const& ctx, float dt) {
 	float world_dt = dt * time_scale_;
 
 	if (is_active_) {
-		update(ctx, world_dt);
+		update(world_dt);
 	}
 
 	for (auto const& node : children_) {
@@ -337,12 +357,12 @@ void Node::base_update(Context const& ctx, float dt) {
 			continue;
 		}
 
-		node->base_update(ctx, world_dt);
+		node->base_update(world_dt);
 	}
 }
 
 // private
-void Node::base_draw(Context const& ctx) {
+void Node::base_draw() {
 	if (!is_initialized_ || !is_visible_) {
 		return;
 	}
@@ -362,18 +382,18 @@ void Node::base_draw(Context const& ctx) {
 	}
 
 	if (is_transform_dirty_) {
-		transform_ = calculate_transform(ctx, parent_);
+		transform_ = calculate_transform(parent_);
 		is_transform_dirty_ = false;
 	}
 
-	draw(ctx, transform_, combined_color_, combined_alpha_);
+	draw(transform_, combined_color_, combined_alpha_);
 
 	for (auto const& node : children_) {
 		if (!node) {
 			continue;
 		}
 
-		node->base_draw(ctx);
+		node->base_draw();
 	}
 }
 
@@ -441,7 +461,7 @@ void Node::mark_rgb_dirty() {
 }
 
 // private
-mat3 Node::calculate_transform(Context const& ctx, std::weak_ptr<Node> parent) const {
+mat3 Node::calculate_transform(std::weak_ptr<Node> parent) const {
 	vec2<float> anchor_position = {
 		.x = anchor_.x * bounds_.width,
 		.y = anchor_.y * bounds_.height

@@ -59,14 +59,14 @@ void Director::update_current_state(Context const& ctx) {
 	}
 
 	if (current_state_) {
-		current_state_->base_update(ctx, ctx.delta_time());
+		current_state_->base_update(ctx.delta_time());
 	}
 }
 
 // private
 void Director::draw_current_state(Context const& ctx) {
 	if (current_state_) {
-		current_state_->base_draw(ctx);
+		current_state_->base_draw();
 	}
 }
 
