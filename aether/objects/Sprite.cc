@@ -78,8 +78,12 @@ void Sprite::set_texture_wrap(texture_wrap type) {
 	}
 }
 
-void Sprite::set_texture_source_rect(rect<float> val) {
+void Sprite::set_texture_source_rect(rect<float> val, bool update_bounds) {
 	texture_source_rect_ = val;
+	
+	if (update_bounds) {
+		set_bounds(val.bounds<float>());
+	}
 }
 
 rect<float> Sprite::texture_source_rect() const {

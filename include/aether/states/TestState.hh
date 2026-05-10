@@ -2,6 +2,7 @@
 #define __AETHER_STATES_TESTSTATE_HH__
 
 #include <aether/objects/abstract/State.hh>
+#include <aether/objects/Sprite.hh>
 #include <memory>
 
 class TestState : public ae::Node {
@@ -11,6 +12,15 @@ public:
 
 protected:
 	bool init(ae::Context const& ctx) override;
+	void update(ae::Context const& ctx, float dt) override;
+
+private:
+	void update_long_trail();
+
+	std::shared_ptr<ae::Sprite> long_;
+	std::shared_ptr<ae::Sprite> long_tail_;
+	float long_height_;
+	float elapsed_;
 };
 
 #endif
