@@ -1,10 +1,8 @@
 #include <aether/states/TestState.hh>
-#include <aether/objects/Sprite.hh>
 // #include <aether/objects/TileMap.hh>
-#include <aether/systems/Window.hh>
+// #include <aether/systems/Window.hh>
 #include <aether/systems/Renderer.hh>
 // #include <aether/common/log.hh>
-#include <cmath>
 
 TestState::TestState() :
 	elapsed_(0.f),
@@ -20,11 +18,14 @@ bool TestState::init(ae::Context const& ctx) {
 	}
 
 	if (long_ = ae::Node::create<ae::Sprite>(ctx, "resources/long.png")) {
-		if (auto window = ctx.window_wref().lock()) {
+		/*if (auto window = ctx.window_wref().lock()) {
 			long_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
-		}
+		}*/
 
+		long_->set_position(ae::vec2<float>(400.f, 50.f));
+		long_->set_anchor(ae::vec2<float>(0.5f, 0.f));
 		add(long_);
+
 		long_height_ = long_->texture_source_rect().height;
 
 		if (long_tail_ = ae::Node::create<ae::Sprite>(ctx, "resources/long-tail.png")) {
@@ -43,19 +44,20 @@ bool TestState::init(ae::Context const& ctx) {
 
 // protected
 void TestState::update(ae::Context const& ctx, float dt) {
-	elapsed_ += dt;
+	if (long_) {
+		auto v = long_->texture_source_rect();
+		v.height += 80.f * dt;
+		long_->set_texture_source_rect(v, true);
+	}
+
+	update_long_trail();
+
+	/*elapsed_ += dt;
 
 	while (elapsed_ >= 1.f) {
-		if (long_) {
-			auto v = long_->texture_source_rect();
-			v.height += long_height_;
-			long_->set_texture_source_rect(v, true);
-		}
-
-		update_long_trail();
 
 		elapsed_ -= 1.f;
-	}
+	}*/
 }
 
 // private

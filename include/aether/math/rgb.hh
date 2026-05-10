@@ -44,6 +44,10 @@ struct rgb final {
         return rgb(r_ * rhs.r_, g_ * rhs.g_, b_ * rhs.b_);
     }
 
+    [[nodiscard]] constexpr bool operator==(rgb rhs) const {
+        return r_ == rhs.r_ && g_ == rhs.g_ && b_ == rhs.b_;
+    }
+
 private:
     float r_;
     float g_;

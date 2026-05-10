@@ -144,6 +144,10 @@ std::weak_ptr<Node> Node::parent() const {
 }
 
 void Node::set_name(std::string_view name) {
+	if (name_ == name) {
+		return;
+	}
+
 	name_ = std::string(name);
 }
 
@@ -156,7 +160,12 @@ std::string_view Node::type() const {
 }
 
 void Node::set_bounds(size<float> val) {
+	if (bounds_ == val) {
+		return;
+	}
+
 	bounds_ = val;
+	
 	mark_transform_dirty();
 }
 
@@ -165,7 +174,12 @@ size<float> Node::bounds() const {
 }
 
 void Node::set_position(vec2<float> val) {
+	if (position_ == val) {
+		return;
+	}
+
 	position_ = val;
+	
 	mark_transform_dirty();
 }
 
@@ -174,7 +188,12 @@ vec2<float> Node::position() const {
 }
 
 void Node::set_anchor(vec2<float> val) {
+	if (anchor_ == val) {
+		return;
+	}
+	
 	anchor_ = val;
+	
 	mark_transform_dirty();
 }
 
@@ -183,11 +202,20 @@ vec2<float> Node::anchor() const {
 }
 
 void Node::set_scale(vec2<float> val) {
+	if (scale_ == val) {
+		return;
+	}
+	
 	scale_ = val;
+	
 	mark_transform_dirty();
 }
 
 void Node::set_scale(float val) {
+	if (scale_.x == val && scale_.y == val) {
+		return;
+	}
+
 	scale_ = {
 		.x = val,
 		.y = val
@@ -201,7 +229,12 @@ vec2<float> Node::scale() const {
 }
 
 void Node::set_skew(vec2<float> val) {
+	if (skew_ == val) {
+		return;
+	}
+	
 	skew_ = val;
+	
 	mark_transform_dirty();
 }
 
@@ -210,7 +243,12 @@ vec2<float> Node::skew() const {
 }
 
 void Node::set_rotation(float val) {
+	if (rotation_ == val) {
+		return;
+	}
+
 	rotation_ = val;
+	
 	mark_transform_dirty();
 }
 
@@ -219,7 +257,12 @@ float Node::rotation() const {
 }
 
 void Node::set_color(rgb val) {
+	if (color_ == val) {
+		return;
+	}
+	
 	color_ = val;
+	
 	mark_rgb_dirty();
 }
 
@@ -228,7 +271,12 @@ rgb Node::color() const {
 }
 
 void Node::set_alpha(float val) {
+	if (alpha_ == val) {
+		return;
+	}
+
 	alpha_ = std::clamp(val, 0.f, 1.f);
+
 	mark_alpha_dirty();
 }
 
