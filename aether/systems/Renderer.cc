@@ -12,7 +12,8 @@
 namespace ae {
 
 // private
-Renderer::Renderer() :
+Renderer::Renderer(Context const& ctx) :
+	context_(&ctx),
 	background_alpha_(1.f),
 	transform_(mat3::identity())
 {}
@@ -137,13 +138,13 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 }
 
 // private
-void Renderer::start_draw(Context const& ctx) {
+void Renderer::start_draw() {
 	BeginDrawing();
 	auto _bounds_ = bounds();
 	BeginScissorMode(0, 0, _bounds_.width, _bounds_.height);
 	ClearBackground(rl::as_color(background_color_, background_alpha_));
 
-	if (auto window = ctx.window_wref().lock()) {
+	if (auto window = (*context_).window_wref().lock()) {
 		if (window->was_resized()) {
 			transform_ = calculate_transform(window);
 		}
@@ -153,11 +154,11 @@ void Renderer::start_draw(Context const& ctx) {
 }
 
 // private
-void Renderer::end_draw(Context const& ctx) const {
+void Renderer::end_draw() const {
 	rlPopMatrix();
 
 #ifdef AETHER_DEBUG
-	draw_debug(ctx);
+	draw_debug();
 #endif
 
 	EndScissorMode();
@@ -166,9 +167,9 @@ void Renderer::end_draw(Context const& ctx) const {
 
 #ifdef AETHER_DEBUG
 // private
-void Renderer::draw_debug(Context const& ctx) const {
+void Renderer::draw_debug() const {
 	static std::string debug_text;
-	debug_text = fmt::format("FPS: {}", ctx.running_fps());
+	debug_text = fmt::format("FPS: {}", (*context_).running_fps());
 	DrawText(debug_text.c_str(), 5, 5, 10, WHITE);
 }
 #endif
@@ -198,10 +199,6 @@ void Renderer::define_texture_coord(vec2<float> position) const {
 
 // private
 mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
-	if (!window) {
-		return mat3::identity();
-	}
-
 	auto screen_size = window->screen_size();
 	auto render_bounds = bounds();
 

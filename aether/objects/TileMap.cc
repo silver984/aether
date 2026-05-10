@@ -2,8 +2,8 @@
 
 namespace ae {
 
-TileMap::TileMap(std::string_view file, size<float> tile_bounds) :
-	Sprite(file),
+TileMap::TileMap(Context const& ctx, std::string_view file, size<float> tile_bounds) :
+	Sprite(ctx, file),
 	tile_bounds_arg_(tile_bounds)
 {}
 

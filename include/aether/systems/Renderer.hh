@@ -20,7 +20,7 @@ class Window;
 class Renderer final {
     friend class Funkin;
 public:
-    Renderer();
+    Renderer(Context const& ctx);
     ~Renderer();
     Renderer(Renderer const&) = delete;
     Renderer(Renderer&&) = delete;
@@ -33,10 +33,10 @@ public:
     void draw_texture(Texture const& texture, rect<float> source_rect, mat3 const& transform, rgb color, float alpha) const;
 
 private:
-    void start_draw(Context const& ctx);
-    void end_draw(Context const& ctx) const;
+    void start_draw();
+    void end_draw() const;
 #ifdef AETHER_DEBUG
-    void draw_debug(Context const& ctx) const;
+    void draw_debug() const;
 #endif
     void push_matrix(mat3 const& matrix) const;
     void define_color_vertex(rgb color, float alpha) const;
@@ -44,6 +44,7 @@ private:
     void define_texture_coord(vec2<float> position) const;
     mat3 calculate_transform(std::shared_ptr<Window> window) const;
 
+    Context const* const context_;
     rgb background_color_;
     float background_alpha_;
     mat3 transform_;

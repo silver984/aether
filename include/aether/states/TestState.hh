@@ -7,7 +7,7 @@
 
 class TestState : public ae::Node {
 public:
-	TestState();
+	TestState(ae::Context const& ctx);
 	~TestState();
 
 protected:

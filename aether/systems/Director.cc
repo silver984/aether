@@ -6,7 +6,9 @@
 namespace ae {
 
 // private
-Director::Director() = default;
+Director::Director(Context const& ctx) :
+	context_(&ctx)
+{}
 
 // private
 Director::~Director() = default;
@@ -53,29 +55,29 @@ void Director::release_pending_state() {
 }
 
 // private
-void Director::update_current_state(Context const& ctx) {
+void Director::update_current_state() {
 	if (pending_state_) {
-		move_pending_state(ctx);
+		move_pending_state();
 	}
 
 	if (current_state_) {
-		current_state_->base_update(ctx.delta_time());
+		current_state_->base_update((*context_).delta_time());
 	}
 }
 
 // private
-void Director::draw_current_state(Context const& ctx) {
+void Director::draw_current_state() {
 	if (current_state_) {
 		current_state_->base_draw();
 	}
 }
 
 // private
-void Director::move_pending_state(Context const& ctx) {
+void Director::move_pending_state() {
 	if (current_state_) {
 		release_current_state();
 
-		if (auto resource = ctx.resource_wref().lock()) {
+		if (auto resource = (*context_).resource_wref().lock()) {
 			resource->clean_refs();
 		}
 	}

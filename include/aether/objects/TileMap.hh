@@ -10,7 +10,7 @@ namespace ae {
 
 class TileMap : public Sprite {
 public:
-	TileMap(std::string_view file, size<float> tile_bounds);
+	TileMap(Context const& ctx, std::string_view file, size<float> tile_bounds);
 	~TileMap() override;
 
 	bool set_texture(std::string_view) = delete;

@@ -4,7 +4,8 @@
 #include <aether/systems/Renderer.hh>
 // #include <aether/common/log.hh>
 
-TestState::TestState() :
+TestState::TestState(ae::Context const& ctx) :
+	ae::Node(ctx),
 	elapsed_(0.f),
 	long_height_(0.f)
 {}

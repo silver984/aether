@@ -9,8 +9,8 @@
 
 namespace ae {
 
-Node::Node() :
-	context_(nullptr),
+Node::Node(Context const& ctx) :
+	context_(&ctx),
 	color_(1.f, 1.f, 1.f),
 	combined_color_(color_.r(), color_.g(), color_.b()),
 	transform_(mat3::identity()),
@@ -318,12 +318,10 @@ Context const& Node::context() const {
 }
 
 // private
-bool Node::base_init(Context const& ctx) {
+bool Node::base_init() {
 	if (is_initialized_) {
 		return true;
 	}
-
-	context_ = &ctx;
 
 	return is_initialized_ = init();
 }

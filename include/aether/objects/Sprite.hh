@@ -19,7 +19,7 @@ class Resource;
 
 class Sprite : public Node {
 public:
-	Sprite(std::string_view file);
+	Sprite(Context const& ctx, std::string_view file);
 	~Sprite() override;
 
 	[[nodiscard]] std::string_view type() const override;

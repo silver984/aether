@@ -21,15 +21,15 @@ class Director;
 class Node : public std::enable_shared_from_this<Node> {
 	friend class Director;
 public:
-	Node();
+	Node(Context const& ctx);
 	virtual ~Node();
 
 	template<typename T, typename... va>
 	requires std::is_base_of_v<Node, T>
 	static std::shared_ptr<T> create(Context const& ctx, va&&... args) {
-		std::shared_ptr<T> ptr = std::make_shared<T>(std::forward<va>(args)...);
+		std::shared_ptr<T> ptr = std::make_shared<T>(ctx, std::forward<va>(args)...);
 
-		if (!ptr->base_init(ctx)) {
+		if (!ptr->base_init()) {
 			ptr.reset();
 			return nullptr;
 		}
@@ -78,7 +78,7 @@ protected:
 	[[nodiscard]] Context const& context() const;
 
 private:
-	bool base_init(Context const& ctx);
+	bool base_init();
 	void base_update(float dt);
 	void base_draw();
 	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> node) const;
@@ -89,7 +89,7 @@ private:
 	[[nodiscard]] float calculate_combined_alpha(std::weak_ptr<Node> parent) const;
 	[[nodiscard]] rgb calculate_combined_rgb(std::weak_ptr<Node> parent) const;
 
-	Context const* context_;
+	Context const* const context_;
 	std::weak_ptr<Node> parent_;
 	std::vector<std::shared_ptr<Node>> children_;
 	std::string name_;

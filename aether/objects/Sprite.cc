@@ -7,7 +7,8 @@
 
 namespace ae {
 
-Sprite::Sprite(std::string_view file) :
+Sprite::Sprite(Context const& ctx, std::string_view file) :
+	Node(ctx),
 	file_arg_(std::string(file))
 {}
 

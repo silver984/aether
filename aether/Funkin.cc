@@ -32,9 +32,9 @@ bool Funkin::init(std::string_view game_title, size<int> game_resolution, int ga
 		return false;
 	}
 
-	renderer_ = std::make_shared<Renderer>();
+	renderer_ = std::make_shared<Renderer>(ctx_);
 	resource_ = std::make_shared<Resource>();
-	director_ = std::make_shared<Director>();
+	director_ = std::make_shared<Director>(ctx_);
 	ctx_.store_refs(window_, renderer_, resource_, director_);
 
 	is_initialized_ = true;
@@ -53,22 +53,22 @@ void Funkin::run() {
 		bool is_window_minimized = window_->is_minimized();
 
 		if (!is_window_minimized) {
-			if (director_) {
-				director_->update_current_state(ctx_);
-			}
-
 			ctx_.update_frame_ctx();
+
+			if (director_) {
+				director_->update_current_state();
+			}
 		}
 
-		renderer_->start_draw(ctx_);
+		renderer_->start_draw();
 		
 		if (!is_window_minimized) {
 			if (director_) {
-				director_->draw_current_state(ctx_);
+				director_->draw_current_state();
 			}
 		}
 
-		renderer_->end_draw(ctx_);
+		renderer_->end_draw();
 	}
 
 	shutdown();
