@@ -303,30 +303,18 @@ float Node::time_scale() const {
 
 // protected
 bool Node::init() {
-	if (!context_) {
-		return false;
-	}
-
 	return true;
 }
 
 // protected
-void Node::update(float dt) {
-	if (!context_) {
-		return;
-	}
-}
+void Node::update(float dt) {}
 
 // protected
-void Node::draw(mat3 const& transform, rgb color, float alpha) const {
-	if (!context_) {
-		return;
-	}
-}
+void Node::draw(mat3 const& transform, rgb color, float alpha) const {}
 
 // protected
-Context const* Node::context() const {
-	return context_;
+Context const& Node::context() const {
+	return *context_;
 }
 
 // private

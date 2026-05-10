@@ -24,14 +24,7 @@ void Sprite::toggle_antialiasing(bool val) const {
 }
 
 bool Sprite::set_texture(std::string_view file) {
-	auto ctx = context();
-
-	if (!ctx) {
-		errorlog("Can't reference engine context");
-		return false;
-	}
-
-	auto resource = ctx->resource_wref().lock();
+	auto resource = context().resource_wref().lock();
 
 	if (!resource) {
 		errorlog("Can't reference resource system");
@@ -112,13 +105,7 @@ bool Sprite::init() {
 
 // protected
 void Sprite::draw(mat3 const& transform, rgb color, float alpha) const {
-	auto ctx = context();
-
-	if (!ctx) {
-		return;
-	}
-
-	auto renderer = ctx->renderer_wref().lock();
+	auto renderer = context().renderer_wref().lock();
 
 	if (!renderer || !texture_) {
 		return;

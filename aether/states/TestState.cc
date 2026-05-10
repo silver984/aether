@@ -13,28 +13,23 @@ TestState::~TestState() = default;
 
 // protected
 bool TestState::init() {
-	auto ctx = context();
-
-	if (!ctx) {
-		return false;
-	}
-
-	if (auto renderer = ctx->renderer_wref().lock()) {
+	if (auto renderer = context().renderer_wref().lock()) {
 		renderer->set_background_rgba(ae::rgb(ae::rgb::as_float(202), ae::rgb::as_float(255), ae::rgb::as_float(77)), 1.f);
 	}
 
-	if (long_ = ae::Node::create<ae::Sprite>(*ctx, "resources/long.png")) {
+	if (long_ = ae::Node::create<ae::Sprite>(context(), "resources/long.png")) {
 		/*if (auto window = ctx.window_wref().lock()) {
 			long_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
 		}*/
 
+		long_->set_texture_wrap(ae::texture_wrap::repeat);
 		long_->set_position(ae::vec2<float>(400.f, 50.f));
 		long_->set_anchor(ae::vec2<float>(0.5f, 0.f));
 		add(long_);
 
 		long_height_ = long_->texture_source_rect().height;
 
-		if (long_tail_ = ae::Node::create<ae::Sprite>(*ctx, "resources/long-tail.png")) {
+		if (long_tail_ = ae::Node::create<ae::Sprite>(context(), "resources/long-tail.png")) {
 			long_tail_->set_anchor(ae::vec2<float>(0.5f, 0.f));
 			long_->add(long_tail_);
 			update_long_trail();

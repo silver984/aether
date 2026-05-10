@@ -75,7 +75,7 @@ protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void draw(mat3 const& transform, rgb color, float alpha) const;
-	[[nodiscard]] Context const* context() const;
+	[[nodiscard]] Context const& context() const;
 
 private:
 	bool base_init(Context const& ctx);
