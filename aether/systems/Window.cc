@@ -70,11 +70,9 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 	SetTargetFPS(target_fps);
 	SetExitKey(KeyboardKey::KEY_NULL);
 
-	is_initialized_ = true;
-
 	infolog("Initialized");
 
-	return true;
+	return is_initialized_ = true;
 }
 
 // private

@@ -1,6 +1,7 @@
 #include <aether/systems/Director.hh>
 #include <aether/systems/Resource.hh>
 #include <aether/common/log.hh>
+#include <aether/common/timer.hh>
 #include <utility>
 
 namespace ae {
@@ -25,6 +26,10 @@ void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 }
 
 void Director::try_cleanup() {
+	debuglog("Attempting to clean up");
+
+	auto start_time = timer::start();
+
 	if (pending_state_) {
 		release_pending_state();
 	}
@@ -32,6 +37,10 @@ void Director::try_cleanup() {
 	if (current_state_) {
 		release_current_state();
 	}
+
+	auto end_time = timer::end(start_time);
+
+	debuglog("Done | took {}ms", end_time);
 }
 
 // private
@@ -78,7 +87,7 @@ void Director::move_pending_state() {
 		release_current_state();
 
 		if (auto resource = (*context_).resource_wref().lock()) {
-			resource->clean_refs();
+			resource->try_clean_refs();
 		}
 	}
 

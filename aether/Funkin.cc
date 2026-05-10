@@ -89,7 +89,7 @@ void Funkin::shutdown() {
 	}
 
 	if (resource_) {
-		resource_->clean_refs();
+		resource_->try_clean_refs();
 	}
 
 	if (window_ && window_->is_initialized_) {

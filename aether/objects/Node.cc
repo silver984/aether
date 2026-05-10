@@ -193,7 +193,7 @@ void Node::set_anchor(vec2<float> val) {
 		return;
 	}
 	
-	anchor_ = val;
+	anchor_ = math::clamp(val, vec2<float>(0.f, 0.f), vec2<float>(1.f, 1.f));
 	
 	mark_transform_dirty();
 }

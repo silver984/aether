@@ -3,7 +3,6 @@
 #include <aether/systems/Renderer.hh>
 #include <aether/common/log.hh>
 #include <raylib.h>
-#include <rlgl.h>
 
 namespace ae {
 
@@ -49,8 +48,8 @@ bool Sprite::set_texture(std::string_view file) {
 	texture_source_rect_ = {
 		.x = 0.f,
 		.y = 0.f,
-		.width = static_cast<float>(texture_->width),
-		.height = static_cast<float>(texture_->height)
+		.width = new_bounds.width,
+		.height = new_bounds.height
 	};
 
 	return true;

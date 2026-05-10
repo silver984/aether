@@ -106,8 +106,8 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 	return shared;
 }
 
-void Resource::clean_refs() {
-	debuglog("Cleaning references");
+void Resource::try_clean_refs() {
+	debuglog("Attempting to clean references");
 
 	auto start_time = timer::start();
 

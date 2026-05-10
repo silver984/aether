@@ -49,11 +49,11 @@ public:
 	void set_name(std::string_view name);
 	[[nodiscard]] std::string_view name() const;
 	[[nodiscard]] virtual std::string_view type() const;
-	void set_bounds(size<float> val);
+	void set_bounds(size<float> val); // TODO: set_width, set_height
 	[[nodiscard]] size<float> bounds() const;
-	void set_position(vec2<float> val);
+	void set_position(vec2<float> val); // TODO: set_position_x, set_position_y
 	[[nodiscard]] vec2<float> position() const;
-	void set_anchor(vec2<float> val);
+	void set_anchor(vec2<float> val); // TODO: set_anchor_x, set_anchor_y
 	[[nodiscard]] vec2<float> anchor() const;
 	void set_scale(vec2<float> val);
 	void set_scale(float val);

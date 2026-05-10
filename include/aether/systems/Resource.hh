@@ -27,7 +27,7 @@ public:
     [[nodiscard]] std::shared_ptr<Texture> load_shared_texture(std::string_view file);
 
 private:
-    void clean_refs();
+    void try_clean_refs();
     size_t clean_texture_refs();
 
     string_map<std::weak_ptr<Texture>> textures_refs_;

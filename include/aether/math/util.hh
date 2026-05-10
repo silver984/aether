@@ -31,7 +31,7 @@ template <numeric_t T>
 }
 
 template <numeric_t T>
-[[nodiscard]] vec2<T> lerp(const vec2<T>& a, const vec2<T>& b, T t) {
+[[nodiscard]] vec2<T> lerp(vec2<T> a, vec2<T> b, T t) {
     return {
         .x = a.x + (b.x - a.x) * t,
         .y = a.y + (b.y - a.y) * t
@@ -39,7 +39,7 @@ template <numeric_t T>
 }
 
 template <numeric_t T>
-[[nodiscard]] vec2<T> clamp(const vec2<T>& val, const vec2<T>& min_val, const vec2<T>& max_val) {
+[[nodiscard]] vec2<T> clamp(vec2<T> val, vec2<T> min_val, vec2<T> max_val) {
     return {
         .x = std::clamp(val.x, min_val.x, max_val.x),
         .y = std::clamp(val.y, min_val.y, max_val.y)
@@ -47,7 +47,7 @@ template <numeric_t T>
 }
 
 template <numeric_t T>
-[[nodiscard]] size<T> clamp(const size<T>& val, const size<T>& min_val, const size<T>& max_val) {
+[[nodiscard]] size<T> clamp(size<T> val, size<T> min_val, size<T> max_val) {
     return {
         .width = std::clamp(val.width, min_val.width, max_val.width),
         .height = std::clamp(val.height, min_val.height, max_val.height)
@@ -57,7 +57,7 @@ template <numeric_t T>
 // TODO: min and max
 
 template <numeric_t T>
-[[nodiscard]] size<T> max(const size<T>& left, const size<T>& right) {
+[[nodiscard]] size<T> max(size<T> left, size<T> right) {
     return {
         .width = std::max(left.width, right.width),
         .height = std::max(left.height, right.height)
@@ -65,28 +65,28 @@ template <numeric_t T>
 }
 
 template <numeric_t T>
-[[nodiscard]] vec2<T> normalize(const vec2<T>& val) {
+[[nodiscard]] vec2<T> normalize(vec2<T> val) {
     T len = std::sqrt(val.x * val.x + val.y * val.y);
     return len == T{0} ? vec2<T>(T{0}, T{0}) : vec2<T>(val.x / len, val.y / len);
 }
 
 template <numeric_t T>
-[[nodiscard]] T length(const vec2<T>& val) {
+[[nodiscard]] T length(vec2<T> val) {
     return std::sqrt(val.x * val.x + val.y * val.y);
 }
 
 template <numeric_t T>
-[[nodiscard]] T distance(const vec2<T>& a, const vec2<T>& b) {
+[[nodiscard]] T distance(vec2<T> a, vec2<T> b) {
     return std::sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
 }
 
 template <numeric_t T>
-[[nodiscard]] T dot(const vec2<T>& a, const vec2<T>& b) {
+[[nodiscard]] T dot(vec2<T> a, vec2<T> b) {
     return a.x * b.x + a.y * b.y;
 }
 
 template <numeric_t T>
-[[nodiscard]] vec2<T> damp(const vec2<T>& current, const vec2<T>& target, T lambda, T dt) {
+[[nodiscard]] vec2<T> damp(vec2<T> current, vec2<T> target, T lambda, T dt) {
     T t = T{1} - std::exp(-lambda * dt);
     return lerp(current, target, t);
 }

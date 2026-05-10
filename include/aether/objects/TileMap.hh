@@ -1,27 +1,26 @@
 #ifndef __AETHER_OBJECTS_TILEMAP_HH__
 #define __AETHER_OBJECTS_TILEMAP_HH__
 
-#include <aether/objects/Sprite.hh>
+#include <aether/objects/Node.hh>
 #include <aether/math/rect.hh>
-#include <aether/math/size.hh>
-#include <string_view>
+
+struct Texture;
 
 namespace ae {
 
-class TileMap : public Sprite {
+class TileMap : public Node {
 public:
 	TileMap(Context const& ctx, std::string_view file, size<float> tile_bounds);
 	~TileMap() override;
 
-	bool set_texture(std::string_view) = delete;
-	void set_texture_wrap(texture_wrap) = delete;
-	void set_texture_source_rect(rect<float>) = delete;
-	rect<float> texture_source_rect() const = delete;
-
 	[[nodiscard]] std::string_view type() const override;
+	void toggle_antialiasing(bool val) const;
 
-protected:
-	size<float> tile_bounds_arg_;
+private:
+	std::shared_ptr<Texture> texture_;
+	rect<float> texture_source_rect_;
+	std::string const file_arg_;
+	size<float> const tile_bounds_arg_;
 };
 
 }
