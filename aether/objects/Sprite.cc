@@ -99,6 +99,7 @@ bool Sprite::init() {
 
 	set_texture_wrap(texture_wrap::clamp);
 	toggle_antialiasing(true);
+	enable_draw();
 
 	return true;
 }

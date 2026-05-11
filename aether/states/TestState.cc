@@ -2,7 +2,7 @@
 // #include <aether/objects/TileMap.hh>
 // #include <aether/systems/Window.hh>
 #include <aether/systems/Renderer.hh>
-// #include <aether/common/log.hh>
+#include <aether/common/log.hh>
 
 TestState::TestState(ae::Context const& ctx) :
 	ae::Node(ctx),
@@ -18,30 +18,44 @@ bool TestState::init() {
 		renderer->set_background_rgba(ae::rgb(ae::rgb::as_float(202), ae::rgb::as_float(255), ae::rgb::as_float(77)), 1.f);
 	}
 
-	if (long_ = ae::Node::create<ae::Sprite>(context(), "resources/long.png")) {
-		/*if (auto window = ctx.window_wref().lock()) {
-			long_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
-		}*/
-
-		long_->set_texture_wrap(ae::texture_wrap::repeat);
-		long_->set_position(ae::vec2<float>(400.f, 50.f));
-		long_->set_anchor(ae::vec2<float>(0.5f, 0.f));
-		add(long_);
-
-		long_height_ = long_->texture_source_rect().height;
-
-		if (long_tail_ = ae::Node::create<ae::Sprite>(context(), "resources/long-tail.png")) {
-			long_tail_->set_anchor(ae::vec2<float>(0.5f, 0.f));
-			long_->add(long_tail_);
-			update_long_trail();
-		}
-
-		activate();
-
-		return true;
+	long_ = ae::Node::create<ae::Sprite>(context(), "resources/long.png");
+	if (!long_) {
+		return false;
 	}
 
-	return false;
+	/*if (auto window = ctx.window_wref().lock()) {
+		long_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
+	}*/
+
+	long_->set_texture_wrap(ae::texture_wrap::repeat);
+	long_->set_position(ae::vec2<float>(400.f, 50.f));
+	long_->set_anchor(ae::vec2<float>(0.5f, 0.f));
+	long_->set_scale(0.5f);
+	add(long_);
+
+	long_height_ = long_->texture_source_rect().height;
+
+	long_tail_ = ae::Node::create<ae::Sprite>(context(), "resources/long-tail.png");
+	if (!long_tail_) {
+		return false;
+	}
+
+	long_tail_->set_anchor(ae::vec2<float>(0.5f, 0.f));
+	long_->add(long_tail_);
+	update_long_trail();
+
+	icon_ = ae::Node::create<ae::TileMap>(context(), "resources/bf-old.png", ae::size<float>(150.f, 150.f));
+	if (!icon_) {
+		return false;
+	}
+
+	icon_->set_position(icon_->position() + 150.f);
+	infolog("tile count | x: {} y: {}", tile_count.x, tile_count.y);
+	add(icon_);
+
+	activate();
+
+	return true;
 }
 
 // protected
@@ -50,16 +64,24 @@ void TestState::update(float dt) {
 		auto v = long_->texture_source_rect();
 		v.height += 80.f * dt;
 		long_->set_texture_source_rect(v, true);
+		long_->set_rotation(long_->rotation() + (90.f * dt));
 	}
 
 	update_long_trail();
 
-	/*elapsed_ += dt;
+	elapsed_ += dt;
 
 	while (elapsed_ >= 1.f) {
+		if (icon_) {
+			if (icon_->tile_index() == ae::vec2<int>(0, 0)) {
+				icon_->seek_tile(ae::vec2<int>(1, 0));
+			} else if (icon_->tile_index() == ae::vec2<int>(1, 0)) {
+				icon_->seek_tile(ae::vec2<int>(0, 0));
+			}
+		}
 
 		elapsed_ -= 1.f;
-	}*/
+	}
 }
 
 // private

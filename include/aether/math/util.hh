@@ -57,6 +57,14 @@ template <numeric_t T>
 // TODO: min and max
 
 template <numeric_t T>
+[[nodiscard]] vec2<T> max(vec2<T> left, vec2<T> right) {
+    return {
+        .x = std::max(left.x, right.x),
+        .y = std::max(left.y, right.y)
+    };
+}
+
+template <numeric_t T>
 [[nodiscard]] size<T> max(size<T> left, size<T> right) {
     return {
         .width = std::max(left.width, right.width),

@@ -75,6 +75,12 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		return nullptr;
 	}
 
+	if (stack.width < 1 || stack.height < 1) {
+		UnloadTexture(Texture{.id = stack.id});
+		errorlog("Invalid bounds");
+		return nullptr;
+	}
+
 	auto shared = std::shared_ptr<Texture>(
 		new Texture(),
 		[](Texture* ptr) {

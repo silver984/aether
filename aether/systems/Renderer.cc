@@ -63,23 +63,6 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		.height = static_cast<float>(texture.height)
 	};
 
-	vec2<float> top_left = source_rect.position<float>();
-
-	vec2<float> bottom_left = {
-		.x = source_rect.x,
-		.y = source_rect.height
-	};
-
-	vec2<float> bottom_right = {
-		.x = source_rect.width,
-		.y = source_rect.height
-	};
-
-	vec2<float> top_right = {
-		.x = source_rect.width,
-		.y = source_rect.y
-	};
-
 	push_matrix(transform);
 	rlSetTexture(texture.id);
 	rlBegin(RL_QUADS);
@@ -94,7 +77,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(top_left);
+		define_vertex(vec2<float>(0.f, 0.f));
 	}
 
 	{ // bottom left
@@ -106,7 +89,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(bottom_left);
+		define_vertex(vec2<float>(0.f, source_rect.height));
 	}
 
 	{ // bottom right
@@ -118,7 +101,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(bottom_right);
+		define_vertex(vec2<float>(source_rect.width, source_rect.height));
 	}
 
 	{ // top right
@@ -129,7 +112,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(top_right);
+		define_vertex(vec2<float>(source_rect.width, 0.f));
 	}
 
 	rlEnd();

@@ -44,6 +44,10 @@ public:
 	void deactivate();
 	void toggle_active(bool val);
 	[[nodiscard]] bool is_active() const;
+	void enable_draw();
+	void disable_draw();
+	void toggle_draw(bool val);
+	[[nodiscard]] bool is_draw_enabled() const;
 	[[nodiscard]] size_t count() const;
 	[[nodiscard]] std::weak_ptr<Node> parent() const;
 	void set_name(std::string_view name);
@@ -109,6 +113,7 @@ private:
 	bool is_alpha_dirty_;
 	bool is_rgb_dirty_;
 	bool is_active_;
+	bool is_draw_enabled_;
 	bool is_visible_;
 	bool is_initialized_;
 };

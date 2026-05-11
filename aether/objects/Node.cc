@@ -27,6 +27,7 @@ Node::Node(Context const& ctx) :
 	is_alpha_dirty_(false),
 	is_rgb_dirty_(false),
 	is_active_(false),
+	is_draw_enabled_(false),
 	is_visible_(true),
 	is_initialized_(false)
 {}
@@ -124,6 +125,22 @@ void Node::toggle_active(bool val) {
 
 bool Node::is_active() const {
 	return is_active_;
+}
+
+void Node::enable_draw() {
+	is_draw_enabled_ = true;
+}
+
+void Node::disable_draw() {
+	is_draw_enabled_ = false;
+}
+
+void Node::toggle_draw(bool val) {
+	is_draw_enabled_ = val;
+}
+
+bool Node::is_draw_enabled() const {
+	return is_draw_enabled_;
 }
 
 size_t Node::count() const {
@@ -364,7 +381,7 @@ void Node::base_draw() {
 
 	if (is_rgb_dirty_) {
 		combined_color_ = calculate_combined_rgb(parent_);
-		is_rgb_dirty_ = true;
+		is_rgb_dirty_ = false;
 	}
 
 	if (is_transform_dirty_) {
@@ -372,7 +389,9 @@ void Node::base_draw() {
 		is_transform_dirty_ = false;
 	}
 
-	draw(transform_, combined_color_, combined_alpha_);
+	if (is_draw_enabled_) {
+		draw(transform_, combined_color_, combined_alpha_);
+	}
 
 	for (auto const& node : children_) {
 		if (!node) {

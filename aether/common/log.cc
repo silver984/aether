@@ -69,8 +69,7 @@ void print(std::string_view msg, std::string_view level, fmt::color level_color,
 		std::ofstream file(log_file_path, std::ios::app);
 
 		if (file.is_open()) {
-			std::string stitched_str = fmt::format("{}{}{}\n", time_and_loc_str, level_str, msg);
-			file << stitched_str;
+			file << fmt::format("{}{}{}\n", time_and_loc_str, level_str, msg);
 		}
 	}
 

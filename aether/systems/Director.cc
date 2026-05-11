@@ -17,6 +17,11 @@ Director::~Director() = default;
 void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 	if (!new_state) {
 		debuglog("Attempted to switch to a nullptr state");
+		
+		if (auto resource = (*context_).resource_wref().lock()) {
+			resource->try_clean_refs();
+		}
+
 		return;
 	}
 

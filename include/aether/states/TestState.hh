@@ -3,6 +3,7 @@
 
 #include <aether/objects/abstract/State.hh>
 #include <aether/objects/Sprite.hh>
+#include <aether/objects/TileMap.hh>
 #include <memory>
 
 class TestState : public ae::Node {
@@ -19,6 +20,7 @@ private:
 
 	std::shared_ptr<ae::Sprite> long_;
 	std::shared_ptr<ae::Sprite> long_tail_;
+	std::shared_ptr<ae::TileMap> icon_;
 	float long_height_;
 	float elapsed_;
 };
