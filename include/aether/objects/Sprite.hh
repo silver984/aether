@@ -23,16 +23,16 @@ public:
 	void toggle_antialiasing(bool val) const;
 	bool set_texture(std::string_view file);
 	void set_texture_wrap(texture_wrap type);
-	void set_texture_source_rect(rect<float> val, bool update_bounds = false); // TODO: pos, bounds, x, y, width, height
-	[[nodiscard]] rect<float> texture_source_rect() const;
+	void set_texture_source_rect(rect<int> val, bool update_bounds = false); // TODO: pos, bounds, x, y, width, height
+	[[nodiscard]] rect<int> texture_source_rect() const;
 
 protected:
 	bool init() override;
-	void draw(mat3 const& transform, rgb color, float alpha) const override;
+	void draw(mat3 const& transform, rgba color) const override;
 
 private:
 	std::shared_ptr<Texture> texture_;
-	rect<float> texture_source_rect_;
+	rect<int> texture_source_rect_;
 	std::string const file_arg_;
 };
 

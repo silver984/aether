@@ -4,7 +4,7 @@
 #include <aether/math/vec2.hh>
 #include <aether/math/size.hh>
 #include <aether/math/mat3.hh>
-#include <aether/math/rgb.hh>
+#include <aether/math/rgba.hh>
 #include <aether/common/Context.hh>
 #include <memory>
 #include <vector>
@@ -53,8 +53,8 @@ public:
 	void set_name(std::string_view name);
 	[[nodiscard]] std::string_view name() const;
 	[[nodiscard]] virtual std::string_view type() const;
-	void set_bounds(size<float> val); // TODO: set_width, set_height
-	[[nodiscard]] size<float> bounds() const;
+	void set_bounds(size<int> val); // TODO: set_width, set_height
+	[[nodiscard]] size<int> bounds() const;
 	void set_position(vec2<float> val); // TODO: set_position_x, set_position_y
 	[[nodiscard]] vec2<float> position() const;
 	void set_anchor(vec2<float> val); // TODO: set_anchor_x, set_anchor_y
@@ -66,8 +66,8 @@ public:
 	[[nodiscard]] vec2<float> skew() const;
 	void set_rotation(float val);
 	[[nodiscard]] float rotation() const;
-	void set_color(rgb val);
-	[[nodiscard]] rgb color() const;
+	void set_color(rgba val);
+	[[nodiscard]] rgba color() const;
 	void set_alpha(float val);
 	[[nodiscard]] float alpha() const;
 	void toggle_visibility(bool val);
@@ -78,7 +78,7 @@ public:
 protected:
 	virtual bool init();
 	virtual void update(float dt);
-	virtual void draw(mat3 const& transform, rgb color, float alpha) const;
+	virtual void draw(mat3 const& transform, rgba color) const;
 	[[nodiscard]] Context const& context() const;
 
 private:
@@ -87,31 +87,27 @@ private:
 	void base_draw();
 	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> node) const;
 	void mark_transform_dirty();
-	void mark_alpha_dirty();
-	void mark_rgb_dirty();
+	void mark_rgba_dirty();
 	[[nodiscard]] mat3 calculate_transform(std::weak_ptr<Node> parent) const;
 	[[nodiscard]] float calculate_combined_alpha(std::weak_ptr<Node> parent) const;
-	[[nodiscard]] rgb calculate_combined_rgb(std::weak_ptr<Node> parent) const;
+	[[nodiscard]] rgba calculate_combined_rgba(std::weak_ptr<Node> parent) const;
 
 	Context const* const context_;
 	std::weak_ptr<Node> parent_;
 	std::vector<std::shared_ptr<Node>> children_;
 	std::string name_;
-	rgb color_;
-	rgb combined_color_;
+	rgba color_;
+	rgba combined_color_;
 	mat3 transform_;
-	size<float> bounds_;
+	size<int> bounds_;
 	vec2<float> position_;
 	vec2<float> anchor_;
 	vec2<float> scale_;
 	vec2<float> skew_; // degrees
 	float rotation_; // degrees
-	float alpha_;
-	float combined_alpha_;
 	float time_scale_;
 	bool is_transform_dirty_;
-	bool is_alpha_dirty_;
-	bool is_rgb_dirty_;
+	bool is_rgba_dirty_;
 	bool is_active_;
 	bool is_draw_enabled_;
 	bool is_visible_;

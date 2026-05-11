@@ -21,12 +21,12 @@ Matrix as_matrix(mat3 const& matrix) {
 	};
 }
 
-Color as_color(rgb color, float alpha) {
+Color as_color(rgba color) {
 	return {
 		.r = static_cast<uint8_t>(std::round(255.f * color.r())),
 		.g = static_cast<uint8_t>(std::round(255.f * color.g())),
 		.b = static_cast<uint8_t>(std::round(255.f * color.b())),
-		.a = static_cast<uint8_t>(std::round(255.f * alpha)),
+		.a = static_cast<uint8_t>(std::round(255.f * color.a())),
 	};
 }
 

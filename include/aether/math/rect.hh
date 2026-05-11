@@ -21,16 +21,16 @@ struct rect {
     template<numeric_t U>
     [[nodiscard]] constexpr vec2<U> position() const {
         return {
-            .x = x,
-            .y = y
+            .x = static_cast<U>(x),
+            .y = static_cast<U>(y)
         };
     };
 
     template<numeric_t U>
     [[nodiscard]] constexpr size<U> bounds() const {
         return {
-            .width = width,
-            .height = height
+            .width = static_cast<U>(width),
+            .height = static_cast<U>(height)
         };
     };
 

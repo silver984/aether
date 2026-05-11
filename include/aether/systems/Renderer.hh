@@ -6,9 +6,8 @@
 #include <aether/math/size.hh>
 #include <aether/math/rect.hh>
 #include <aether/math/mat3.hh>
-#include <aether/math/rgb.hh>
+#include <aether/math/rgba.hh>
 #include <cstdint>
-#include <utility>
 
 struct Texture;
 
@@ -28,9 +27,9 @@ public:
     Renderer& operator=(Renderer&&) = delete;
 
     [[nodiscard]] size<int> bounds() const;
-    void set_background_rgba(rgb color, float alpha);
-    [[nodiscard]] std::pair<rgb, float> background_rgba() const;
-    void draw_texture(Texture const& texture, rect<float> source_rect, mat3 const& transform, rgb color, float alpha) const;
+    void set_background_rgba(rgba color);
+    [[nodiscard]] rgba background_rgba() const;
+    void draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color) const;
 
 private:
     void start_draw();
@@ -39,14 +38,13 @@ private:
     void draw_debug() const;
 #endif
     void push_matrix(mat3 const& matrix) const;
-    void define_color_vertex(rgb color, float alpha) const;
+    void define_color_vertex(rgba color) const;
     void define_vertex(vec2<float> position) const;
     void define_texture_coord(vec2<float> position) const;
     mat3 calculate_transform(std::shared_ptr<Window> window) const;
 
     Context const* const context_;
-    rgb background_color_;
-    float background_alpha_;
+    rgba background_rgba_;
     mat3 transform_;
 };
 

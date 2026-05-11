@@ -21,7 +21,6 @@ private:
 	std::shared_ptr<ae::Sprite> long_;
 	std::shared_ptr<ae::Sprite> long_tail_;
 	std::shared_ptr<ae::TileMap> icon_;
-	float long_height_;
 	float elapsed_;
 };
 

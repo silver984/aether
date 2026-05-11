@@ -14,7 +14,7 @@ namespace ae {
 // private
 Renderer::Renderer(Context const& ctx) :
 	context_(&ctx),
-	background_alpha_(1.f),
+	background_rgba_(0.f, 0.f, 0.f, 1.f),
 	transform_(mat3::identity())
 {}
 
@@ -30,43 +30,39 @@ size<int> Renderer::bounds() const {
 	};
 }
 
-void Renderer::set_background_rgba(rgb color, float alpha) {
-	background_color_ = color;
-	background_alpha_ = std::clamp(alpha, 0.f, 1.f);
+void Renderer::set_background_rgba(rgba color) {
+	background_rgba_ = color;
 }
 
-std::pair<rgb, float> Renderer::background_rgba() const {
-	return {
-		background_color_,
-		background_alpha_
-	};
+rgba Renderer::background_rgba() const {
+	return background_rgba_;
 }
 
-void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat3 const& transform, rgb color, float alpha) const {
+void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color) const {
 	if (texture.id < 1) {
 		return;
 	}
 
 	bool flip_x = false;
 
-	if (source_rect.width < 0.f) {
+	if (source_rect.width < 0) {
 		flip_x = true;
 		source_rect.width = std::abs(source_rect.width);
 	}
 
-	if (source_rect.height < 0.f) {
+	if (source_rect.height < 0) {
 		source_rect.y -= source_rect.height;
 	}
 
-	size<float> texture_bounds = {
-		.width = static_cast<float>(texture.width),
-		.height = static_cast<float>(texture.height)
+	size<int> texture_bounds = {
+		.width = texture.width,
+		.height = texture.height
 	};
 
 	push_matrix(transform);
 	rlSetTexture(texture.id);
 	rlBegin(RL_QUADS);
-	define_color_vertex(color, alpha);
+	define_color_vertex(color);
 	rlNormal3f(0.0f, 0.0f, 1.0f);
 
 	{ // top left
@@ -89,7 +85,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(vec2<float>(0.f, source_rect.height));
+		define_vertex(vec2<float>(0.f, static_cast<float>(source_rect.height)));
 	}
 
 	{ // bottom right
@@ -101,7 +97,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(vec2<float>(source_rect.width, source_rect.height));
+		define_vertex(vec2<float>(static_cast<float>(source_rect.width), static_cast<float>(source_rect.height)));
 	}
 
 	{ // top right
@@ -112,7 +108,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(vec2<float>(source_rect.width, 0.f));
+		define_vertex(vec2<float>(static_cast<float>(source_rect.width), 0.f));
 	}
 
 	rlEnd();
@@ -123,11 +119,11 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 // private
 void Renderer::start_draw() {
 	BeginDrawing();
-	auto _bounds_ = bounds();
-	BeginScissorMode(0, 0, _bounds_.width, _bounds_.height);
-	ClearBackground(rl::as_color(background_color_, background_alpha_));
+	auto b = bounds();
+	BeginScissorMode(0, 0, b.width, b.height);
+	ClearBackground(rl::as_color(background_rgba_));
 
-	if (auto window = (*context_).window_wref().lock()) {
+	if (auto window = context_->window_wref().lock()) {
 		if (window->was_resized()) {
 			transform_ = calculate_transform(window);
 		}
@@ -152,7 +148,7 @@ void Renderer::end_draw() const {
 // private
 void Renderer::draw_debug() const {
 	static std::string debug_text;
-	debug_text = fmt::format("FPS: {}", (*context_).running_fps());
+	debug_text = fmt::format("FPS: {}", context_->running_fps());
 	DrawText(debug_text.c_str(), 5, 5, 10, WHITE);
 }
 #endif
@@ -165,8 +161,8 @@ void Renderer::push_matrix(mat3 const& matrix) const {
 }
 
 // private
-void Renderer::define_color_vertex(rgb color, float alpha) const {
-	Color v = rl::as_color(color, alpha);
+void Renderer::define_color_vertex(rgba color) const {
+	Color v = rl::as_color(color);
 	rlColor4ub(v.r, v.g, v.b, v.a);
 }
 

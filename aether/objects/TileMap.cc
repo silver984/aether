@@ -8,10 +8,10 @@
 
 namespace ae {
 
-TileMap::TileMap(Context const& ctx, std::string_view file, size<float> tile_bounds) :
+TileMap::TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds) :
 	Node(ctx),
 	file_arg_(std::string(file)),
-	tile_bounds_arg_(math::max(size<float>(1.f, 1.f), tile_bounds))
+	tile_bounds_arg_(math::max(size<int>(1, 1), tile_bounds))
 {}
 
 TileMap::~TileMap() = default;
@@ -34,7 +34,7 @@ vec2<int> TileMap::tile_count() const {
 		};
 	}
 
-	auto helper = [](int left, float right) -> int {
+	auto helper = [](int left, int right) -> int {
 		return static_cast<int>(std::floor(static_cast<float>(left) / right));
 		};
 
@@ -73,13 +73,13 @@ bool TileMap::init() {
 	}
 
 	texture_source_rect_ = {
-		.x = 0.f,
-		.y = 0.f,
+		.x = 0,
+		.y = 0,
 		.width = tile_bounds_arg_.width,
 		.height = tile_bounds_arg_.height
 	};
 
-	set_bounds(texture_source_rect_.bounds<float>());
+	set_bounds(texture_source_rect_.bounds<int>());
 	toggle_antialiasing(true);
 	enable_draw();
 
@@ -87,14 +87,14 @@ bool TileMap::init() {
 }
 
 // protected
-void TileMap::draw(mat3 const& transform, rgb color, float alpha) const {
+void TileMap::draw(mat3 const& transform, rgba color) const {
 	auto renderer = context().renderer_wref().lock();
 
 	if (!renderer || !texture_) {
 		return;
 	}
 
-	renderer->draw_texture(*texture_, texture_source_rect_, transform, color, alpha);
+	renderer->draw_texture(*texture_, texture_source_rect_, transform, color);
 }
 
 }

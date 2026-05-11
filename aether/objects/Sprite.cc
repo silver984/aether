@@ -38,16 +38,16 @@ bool Sprite::set_texture(std::string_view file) {
 		return false;
 	}
 
-	size<float> new_bounds = {
-		.width = static_cast<float>(texture_->width),
-		.height = static_cast<float>(texture_->height)
+	size<int> new_bounds = {
+		.width = texture_->width,
+		.height = texture_->height
 	};
 
 	set_bounds(new_bounds);
 
 	texture_source_rect_ = {
-		.x = 0.f,
-		.y = 0.f,
+		.x = 0,
+		.y = 0,
 		.width = new_bounds.width,
 		.height = new_bounds.height
 	};
@@ -78,15 +78,15 @@ void Sprite::set_texture_wrap(texture_wrap type) {
 	}
 }
 
-void Sprite::set_texture_source_rect(rect<float> val, bool update_bounds) {
+void Sprite::set_texture_source_rect(rect<int> val, bool update_bounds) {
 	texture_source_rect_ = val;
 	
 	if (update_bounds) {
-		set_bounds(val.bounds<float>());
+		set_bounds(val.bounds<int>());
 	}
 }
 
-rect<float> Sprite::texture_source_rect() const {
+rect<int> Sprite::texture_source_rect() const {
 	return texture_source_rect_;
 }
 
@@ -105,14 +105,14 @@ bool Sprite::init() {
 }
 
 // protected
-void Sprite::draw(mat3 const& transform, rgb color, float alpha) const {
+void Sprite::draw(mat3 const& transform, rgba color) const {
 	auto renderer = context().renderer_wref().lock();
 
 	if (!renderer || !texture_) {
 		return;
 	}
 
-	renderer->draw_texture(*texture_, texture_source_rect_, transform, color, alpha);
+	renderer->draw_texture(*texture_, texture_source_rect_, transform, color);
 }
 
 }

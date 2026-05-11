@@ -11,21 +11,18 @@ namespace ae {
 
 Node::Node(Context const& ctx) :
 	context_(&ctx),
-	color_(1.f, 1.f, 1.f),
-	combined_color_(color_.r(), color_.g(), color_.b()),
+	color_(1.f, 1.f, 1.f, 1.f),
+	combined_color_(color_.r(), color_.g(), color_.b(), color_.a()),
 	transform_(mat3::identity()),
-	bounds_(0.f, 0.f),
+	bounds_(0, 0),
 	position_(0.f, 0.f),
 	anchor_(0.5f, 0.5f),
 	scale_(1.f, 1.f),
 	skew_(0.f, 0.f),
 	rotation_(0.f),
-	alpha_(1.f),
-	combined_alpha_(alpha_),
 	time_scale_(1.f),
 	is_transform_dirty_(false),
-	is_alpha_dirty_(false),
-	is_rgb_dirty_(false),
+	is_rgba_dirty_(false),
 	is_active_(false),
 	is_draw_enabled_(false),
 	is_visible_(true),
@@ -64,7 +61,7 @@ void Node::add(std::shared_ptr<Node> node) {
 	node->parent_ = weak_from_this();
 	children_.emplace_back(node);
 	node->mark_transform_dirty();
-	node->mark_alpha_dirty();
+	node->mark_rgba_dirty();
 }
 
 void Node::remove(std::shared_ptr<Node> node) {
@@ -85,7 +82,7 @@ void Node::remove(std::shared_ptr<Node> node) {
 	node->parent_.reset();
 	children_.erase(it);
 	node->mark_transform_dirty();
-	node->mark_alpha_dirty();
+	node->mark_rgba_dirty();
 }
 
 void Node::destroy() {
@@ -177,7 +174,7 @@ std::string_view Node::type() const {
 	return "Node";
 }
 
-void Node::set_bounds(size<float> val) {
+void Node::set_bounds(size<int> val) {
 	if (bounds_ == val) {
 		return;
 	}
@@ -187,7 +184,7 @@ void Node::set_bounds(size<float> val) {
 	mark_transform_dirty();
 }
 
-size<float> Node::bounds() const {
+size<int> Node::bounds() const {
 	return bounds_;
 }
 
@@ -274,32 +271,32 @@ float Node::rotation() const {
 	return rotation_;
 }
 
-void Node::set_color(rgb val) {
+void Node::set_color(rgba val) {
 	if (color_ == val) {
 		return;
 	}
 	
 	color_ = val;
 	
-	mark_rgb_dirty();
+	mark_rgba_dirty();
 }
 
-rgb Node::color() const {
+rgba Node::color() const {
 	return color_;
 }
 
 void Node::set_alpha(float val) {
-	if (alpha_ == val) {
+	if (color_.a() == val) {
 		return;
 	}
 
-	alpha_ = std::clamp(val, 0.f, 1.f);
+	color_.set_a(val);
 
-	mark_alpha_dirty();
+	mark_rgba_dirty();
 }
 
 float Node::alpha() const {
-	return alpha_;
+	return color_.a();
 }
 
 void Node::toggle_visibility(bool val) {
@@ -327,7 +324,7 @@ bool Node::init() {
 void Node::update(float dt) {}
 
 // protected
-void Node::draw(mat3 const& transform, rgb color, float alpha) const {}
+void Node::draw(mat3 const& transform, rgba color) const {}
 
 // protected
 Context const& Node::context() const {
@@ -370,18 +367,13 @@ void Node::base_draw() {
 		return;
 	}
 
-	if (is_alpha_dirty_) {
-		combined_alpha_ = calculate_combined_alpha(parent_);
-		is_alpha_dirty_ = false;
+	if (is_rgba_dirty_) {
+		combined_color_ = calculate_combined_rgba(parent_);
+		is_rgba_dirty_ = false;
 	}
 
-	if (combined_alpha_ == 0.f) {
+	if (combined_color_.a() <= 0.f) {
 		return;
-	}
-
-	if (is_rgb_dirty_) {
-		combined_color_ = calculate_combined_rgb(parent_);
-		is_rgb_dirty_ = false;
 	}
 
 	if (is_transform_dirty_) {
@@ -390,7 +382,7 @@ void Node::base_draw() {
 	}
 
 	if (is_draw_enabled_) {
-		draw(transform_, combined_color_, combined_alpha_);
+		draw(transform_, combined_color_);
 	}
 
 	for (auto const& node : children_) {
@@ -434,33 +426,17 @@ void Node::mark_transform_dirty() {
 }
 
 // private
-void Node::mark_alpha_dirty() {
-	if (is_alpha_dirty_) {
+void Node::mark_rgba_dirty() {
+	if (is_rgba_dirty_) {
 		// already dirty
 		return;
 	}
 
-	is_alpha_dirty_ = true;
+	is_rgba_dirty_ = true;
 
 	for (auto& child : children_) {
 		if (child) {
-			child->mark_alpha_dirty();
-		}
-	}
-}
-
-// private
-void Node::mark_rgb_dirty() {
-	if (is_rgb_dirty_) {
-		// already dirty
-		return;
-	}
-
-	is_rgb_dirty_ = true;
-
-	for (auto& child : children_) {
-		if (child) {
-			child->mark_rgb_dirty();
+			child->mark_rgba_dirty();
 		}
 	}
 }
@@ -492,16 +468,7 @@ mat3 Node::calculate_transform(std::weak_ptr<Node> parent) const {
 }
 
 // private
-float Node::calculate_combined_alpha(std::weak_ptr<Node> parent) const {
-	if (auto p = parent.lock()) {
-		return std::clamp(p->alpha() * alpha_, 0.f, 1.f);
-	}
-
-	return alpha_;
-}
-
-// private
-rgb Node::calculate_combined_rgb(std::weak_ptr<Node> parent) const {
+rgba Node::calculate_combined_rgba(std::weak_ptr<Node> parent) const {
 	if (auto p = parent.lock()) {
 		return p->color() * color_;
 	}

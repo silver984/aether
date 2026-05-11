@@ -10,7 +10,7 @@ namespace ae {
 
 class TileMap : public Node {
 public:
-	TileMap(Context const& ctx, std::string_view file, size<float> tile_bounds);
+	TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds);
 	~TileMap() override;
 
 	[[nodiscard]] std::string_view type() const override;
@@ -21,14 +21,14 @@ public:
 
 protected:
 	bool init() override;
-	void draw(mat3 const& transform, rgb color, float alpha) const override;
+	void draw(mat3 const& transform, rgba color) const override;
 
 private:
 	std::shared_ptr<Texture> texture_;
-	rect<float> texture_source_rect_;
+	rect<int> texture_source_rect_;
 	vec2<int> tile_index_;
 	std::string const file_arg_;
-	size<float> const tile_bounds_arg_;
+	size<int> const tile_bounds_arg_;
 };
 
 }
