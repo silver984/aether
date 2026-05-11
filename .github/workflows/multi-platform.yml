@@ -57,7 +57,15 @@ jobs:
         working-directory: ${{ github.workspace }}
         shell: bash
         run: |
-          VERSION=$(cmake -P get_version.cmake 2>/dev/null | tail -1)
+          echo "Checking files..."
+          ls -la cmake/version.cmake
+          ls -la get_version.cmake
+    
+          VERSION=$(cmake -P get_version.cmake)
+          echo "Raw version output: '$VERSION'"
+    
+          VERSION=$(echo "$VERSION" | tail -1 | tr -d '[:space:]')
+          echo "Cleaned version: '$VERSION'"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Checkout repository
