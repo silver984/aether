@@ -52,6 +52,17 @@ jobs:
             cmake_preset: aether-release
 
     steps:
+      - name: Debug repository state
+        run: |
+          echo "PWD:"
+          pwd
+
+          echo "Root contents:"
+          ls -R
+
+          echo "Version file check:"
+          ls cmake/version.cmake || true
+
       - name: Extract version
         id: version
         shell: bash
