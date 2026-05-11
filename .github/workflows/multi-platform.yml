@@ -56,7 +56,7 @@ jobs:
         id: version
         shell: bash
         run: |
-          source cmake/version.cmake
+          source "${GITHUB_WORKSPACE}/cmake/version.cmake"
           echo "version=${AETHER_VERSION_MAJOR}.${AETHER_VERSION_MINOR}.${AETHER_VERSION_PATCH}" >> $GITHUB_OUTPUT
 
       - name: Checkout repository
