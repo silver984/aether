@@ -89,7 +89,6 @@ private:
 	void mark_transform_dirty();
 	void mark_rgba_dirty();
 	[[nodiscard]] mat3 calculate_transform(std::weak_ptr<Node> parent) const;
-	[[nodiscard]] float calculate_combined_alpha(std::weak_ptr<Node> parent) const;
 	[[nodiscard]] rgba calculate_combined_rgba(std::weak_ptr<Node> parent) const;
 
 	Context const* const context_;

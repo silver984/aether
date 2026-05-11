@@ -13,6 +13,7 @@ add_executable(${aether})
 
 # source files
 add_subdirectory(aether)
+add_subdirectory(external)
 
 # includes
 target_include_directories(${aether}

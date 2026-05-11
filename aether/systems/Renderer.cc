@@ -1,13 +1,12 @@
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Window.hh>
 #include <aether/common/rl_converter.hh>
-#include <aether/common/log.hh>
-#include <algorithm>
-#include <cmath>
+#include <fmt/format.h>
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
-#include <fmt/format.h>
+#include <algorithm>
+#include <cmath>
 
 namespace ae {
 
@@ -119,8 +118,8 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 // private
 void Renderer::start_draw() {
 	BeginDrawing();
-	auto b = bounds();
-	BeginScissorMode(0, 0, b.width, b.height);
+	auto lbounds = bounds();
+	BeginScissorMode(0, 0, lbounds.width, lbounds.height);
 	ClearBackground(rl::as_color(background_rgba_));
 
 	if (auto window = context_->window_wref().lock()) {

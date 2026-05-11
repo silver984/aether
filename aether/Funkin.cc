@@ -99,7 +99,6 @@ void Funkin::shutdown() {
 	is_initialized_ = false;
 
 	auto end_time = timer::end(start_time);
-
 	infolog("Done | took {}ms", end_time);
 }
 

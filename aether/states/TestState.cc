@@ -64,7 +64,7 @@ void TestState::update(float dt) {
 		auto v = long_->texture_source_rect();
 		v.height += static_cast<int>(80.f * dt);
 		long_->set_texture_source_rect(v, true);
-		long_->set_rotation(long_->rotation() + (90.f * dt));
+		long_->set_rotation(long_->rotation() + (360.f * dt));
 	}
 
 	update_long_trail();

@@ -18,6 +18,7 @@ public:
 	[[nodiscard]] vec2<int> tile_count() const;
 	void seek_tile(vec2<int> tile_index);
 	[[nodiscard]] vec2<int> tile_index() const;
+	// TODO: set_texture
 
 protected:
 	bool init() override;

@@ -43,12 +43,13 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 		return true;
 	}
 
+#ifdef AETHER_DEBUG
 	log::impl::create_log_file();
-
 #ifdef WIN32
 	if (!win32::enable_console_colors()) {
 		warninglog("Couldn't enable console colors");
 	}
+#endif
 #endif
 
 	SetTraceLogCallback([](int, char const*, va_list) {});

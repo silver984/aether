@@ -1,6 +1,8 @@
 #ifndef __AETHER_COMMON_LOG_HH__
 #define __AETHER_COMMON_LOG_HH__
 
+#ifdef AETHER_DEBUG
+
 #include <fmt/format.h>
 #include <fmt/color.h>
 #include <string>
@@ -44,24 +46,29 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 
 }
 
-#ifndef tracelog
-#define tracelog(fmt_str, ...) ae::log::trace(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-#endif
+#define tracelog(fmt_str, ...)\
+	ae::log::trace(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 
-#ifndef debuglog
-#define debuglog(fmt_str, ...) ae::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-#endif
+#define debuglog(fmt_str, ...)\
+	ae::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 
-#ifndef infolog
-#define infolog(fmt_str, ...) ae::log::info(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-#endif
+#define infolog(fmt_str, ...)\
+	ae::log::info(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 
-#ifndef warninglog
-#define warninglog(fmt_str, ...) ae::log::warning(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-#endif
+#define warninglog(fmt_str, ...)\
+	ae::log::warning(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 
-#ifndef errorlog
-#define errorlog(fmt_str, ...) ae::log::error(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+#define errorlog(fmt_str, ...)\
+	ae::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+
+#else
+
+#define tracelog(...) ((void)0)
+#define debuglog(...) ((void)0)
+#define infolog(...) ((void)0)
+#define warninglog(...) ((void)0)
+#define errorlog(...) ((void)0)
+
 #endif
 
 #endif
