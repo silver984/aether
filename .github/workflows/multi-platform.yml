@@ -26,6 +26,7 @@ jobs:
           - os: Windows
             runner: windows-latest
             cmake_preset: aether-release
+            artifact_name: windows
 
           - os: Linux
             runner: ubuntu-latest
@@ -38,6 +39,7 @@ jobs:
           - os: Linux
             runner: ubuntu-latest
             cmake_preset: aether-release
+            artifact_name: linux-ubuntu
 
           - os: macOS
             runner: macos-latest
@@ -50,6 +52,7 @@ jobs:
           - os: macOS
             runner: macos-latest
             cmake_preset: aether-release
+            artifact_name: macos
 
     steps:
       - name: Checkout repository
@@ -100,5 +103,5 @@ jobs:
         if: contains(matrix.cmake_preset, 'release')
         uses: actions/upload-artifact@v4
         with:
-          name: aether-v${{ steps.version.outputs.version }}-${{ matrix.os }}
+          name: aether-${{ steps.version.outputs.version }}-${{ matrix.artifact_name }}
           path: build/${{ matrix.cmake_preset }}/bin

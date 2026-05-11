@@ -52,7 +52,7 @@ std::string file_date_str() {
 std::string file_time_str() {
 	auto const now = std::chrono::system_clock::now();
 	auto const seconds = std::chrono::floor<std::chrono::seconds>(now);
-	return fmt::format("{:%H-%M-%S}", seconds);
+	return fmt::format("{:%H.%M.%S}", seconds);
 }
 
 std::filesystem::path log_file_path;
