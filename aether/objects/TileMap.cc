@@ -4,7 +4,6 @@
 #include <aether/common/log.hh>
 #include <aether/math/util.hh>
 #include <raylib.h>
-#include <cmath>
 
 namespace ae {
 
@@ -34,20 +33,19 @@ vec2<int> TileMap::tile_count() const {
 		};
 	}
 
-	auto helper = [](int left, int right) -> int {
-		return static_cast<int>(std::floor(static_cast<float>(left) / right));
-		};
-
-	vec2<int> count = {
-		.x = helper(texture_->width, tile_bounds_arg_.width),
-		.y = helper(texture_->height, tile_bounds_arg_.height)
+	return {
+		.x = texture_->width / tile_bounds_arg_.width,
+		.y = texture_->height / tile_bounds_arg_.height
 	};
-
-	return count;
 }
 
 void TileMap::seek_tile(vec2<int> tile_index) {
-	tile_index_ = math::max(vec2<int>(0, 0), tile_index);
+	if (!texture_) {
+		debuglog("Attempted to seek tile with nullptr texture");
+		return;
+	}
+
+	tile_index_ = math::clamp(tile_index, vec2<int>(0, 0), tile_count() - 1);
 	texture_source_rect_.x = tile_bounds_arg_.width * tile_index_.x;
 	texture_source_rect_.y = tile_bounds_arg_.height * tile_index_.y;
 }

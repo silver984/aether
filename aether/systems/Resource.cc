@@ -146,7 +146,7 @@ size_t Resource::clean_texture_refs() {
 
 			erased++;
 
-			tracelog("Erased {}", name);
+			tracelog("Erased \"{}\"", name);
 
 			continue;
 		}
