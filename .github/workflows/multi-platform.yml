@@ -59,8 +59,11 @@ jobs:
         id: version
         shell: bash
         run: |
-          source cmake/version.cmake
-          VERSION="${AETHER_VERSION_MAJOR}.${AETHER_VERSION_MINOR}.${AETHER_VERSION_PATCH}"
+          VERSION=$(cmake -P - <<'EOF'
+          include("cmake/version.cmake")
+          message("${AETHER_VERSION_MAJOR}.${AETHER_VERSION_MINOR}.${AETHER_VERSION_PATCH}")
+          EOF
+          )
           echo "version=$VERSION" >> $GITHUB_OUTPUT
         
       - name: Setup Ninja
