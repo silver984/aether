@@ -57,14 +57,13 @@ jobs:
 
       - name: Extract version
         id: version
+        working-directory: ${{ github.workspace }}
         shell: bash
         run: |
-          VERSION=$(cmake -P - <<'EOF'
-          include("cmake/version.cmake")
-          message("${AETHER_VERSION_MAJOR}.${AETHER_VERSION_MINOR}.${AETHER_VERSION_PATCH}")
-          EOF
-          )
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          MAJOR=$(grep -Po '(?<=set\(AETHER_VERSION_MAJOR )\d+' cmake/version.cmake)
+          MINOR=$(grep -Po '(?<=set\(AETHER_VERSION_MINOR )\d+' cmake/version.cmake)
+          PATCH=$(grep -Po '(?<=set\(AETHER_VERSION_PATCH )\d+' cmake/version.cmake)
+          echo "version=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
         
       - name: Setup Ninja
         uses: seanmiddleditch/gha-setup-ninja@v5
