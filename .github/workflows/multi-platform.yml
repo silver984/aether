@@ -57,10 +57,10 @@ jobs:
 
       - name: Extract version
         id: version
-        working-directory: ${{ github.workspace }}
         shell: bash
         run: |
-          VERSION=$(grep -oP 'VERSION\s+\K[0-9]+\.[0-9]+\.[0-9]+' CMakeLists.txt)
+          source cmake/version.cmake
+          VERSION="${AETHER_VERSION_MAJOR}.${AETHER_VERSION_MINOR}.${AETHER_VERSION_PATCH}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
         
       - name: Setup Ninja
