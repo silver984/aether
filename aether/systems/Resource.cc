@@ -37,7 +37,7 @@ struct file_path final {
 	std::string ext;
 };
 
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 template <typename T>
 size_t cleaning_helper(ae::string_map<T>& map) {
 	size_t erased = 0;
@@ -287,6 +287,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 	auto parse_end_time = timer::end(parse_start_time);
 	debuglog("Parsing done | took {}ms", parse_end_time);
+
 	tracelog("Loaded texture atlas ({}) | texture: {} | animation count: {} | frame count: {}",
 		fmt::ptr(shared.get()), fmt::ptr(shared->texture.get()), shared->subtextures.size(), frame_count
 	);
@@ -301,7 +302,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 }
 
 void Resource::try_clean_refs() {
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 	debuglog("Attempting to clean references");
 
 	auto start_time = timer::start();
@@ -319,7 +320,7 @@ void Resource::try_clean_refs() {
 #endif
 }
 
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 size_t Resource::clean_texture_refs() {
 	if (texture_wrefs_.empty()) {
 		return 0;

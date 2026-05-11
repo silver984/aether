@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.os }} / ${{ matrix.preset }}
+    name: ${{ matrix.os }} / ${{ matrix.cmake_preset }}
     runs-on: ${{ matrix.runner }}
 
     strategy:
@@ -17,29 +17,48 @@ jobs:
         include:
           - os: Windows
             runner: windows-latest
-            preset: aether-debug
+            cmake_preset: aether-debug
 
           - os: Windows
             runner: windows-latest
-            preset: aether-release
+            cmake_preset: aether-debug-verbose
+
+          - os: Windows
+            runner: windows-latest
+            cmake_preset: aether-release
 
           - os: Linux
             runner: ubuntu-latest
-            preset: aether-debug
+            cmake_preset: aether-debug
 
           - os: Linux
             runner: ubuntu-latest
-            preset: aether-release
+            cmake_preset: aether-debug-verbose
+
+          - os: Linux
+            runner: ubuntu-latest
+            cmake_preset: aether-release
 
           - os: macOS
             runner: macos-latest
-            preset: aether-debug
+            cmake_preset: aether-debug
 
           - os: macOS
             runner: macos-latest
-            preset: aether-release
+            cmake_preset: aether-debug-verbose
+
+          - os: macOS
+            runner: macos-latest
+            cmake_preset: aether-release
 
     steps:
+      - name: Extract version
+        id: version
+        shell: bash
+        run: |
+          source cmake/version.cmake
+          echo "version=${AETHER_VERSION_MAJOR}.${AETHER_VERSION_MINOR}.${AETHER_VERSION_PATCH}" >> $GITHUB_OUTPUT
+
       - name: Checkout repository
         uses: actions/checkout@v4
         
@@ -63,14 +82,14 @@ jobs:
             libgl1-mesa-dev
 
       - name: Configure CMake
-        run: cmake --preset ${{ matrix.preset }}
+        run: cmake --preset ${{ matrix.cmake_preset }}
 
       - name: Build
-        run: cmake --build --preset ${{ matrix.preset }}
+        run: cmake --build --preset ${{ matrix.cmake_preset }}
         
       - name: Upload artifact
-        if: contains(matrix.preset, 'release')
+        if: contains(matrix.cmake_preset, 'release')
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-${{ matrix.preset }}
-          path: build/${{ matrix.preset }}/bin
+          name: aether-v${{ steps.version.outputs.version }}-${{ matrix.os }}
+          path: build/${{ matrix.cmake_preset }}/bin

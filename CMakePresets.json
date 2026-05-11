@@ -14,6 +14,13 @@
       }
     },
     {
+      "name": "aether-debug-verbose",
+      "inherits": "aether-debug",
+      "cacheVariables": {
+        "AETHER_VERBOSE_LOGS": "ON"
+      }
+    },
+    {
       "name": "aether-release",
       "inherits": "aether",
       "cacheVariables": {
@@ -26,6 +33,10 @@
     {
       "name": "aether-debug",
       "configurePreset": "aether-debug"
+    },
+    {
+      "name": "aether-debug-verbose",
+      "configurePreset": "aether-debug-verbose"
     },
     {
       "name": "aether-release",

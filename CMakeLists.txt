@@ -3,11 +3,14 @@
 cmake_minimum_required(VERSION 3.31.6)
 
 set(aether AetherEngine)
-project(${aether} VERSION 1.0.0 LANGUAGES CXX)
+include(cmake/version.cmake)
+project(${aether} VERSION ${AETHER_VERSION} LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+option(AETHER_VERBOSE_LOGS "Enable verbose debug logs" OFF)
 
 add_executable(${aether})
 
@@ -15,15 +18,23 @@ add_executable(${aether})
 add_subdirectory(aether)
 add_subdirectory(external)
 
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/aether/version.h
+    @ONLY
+)
+
 # includes
 target_include_directories(${aether}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_BINARY_DIR}/generated
 )
 
 target_compile_definitions(${aether}
     PRIVATE
         $<$<CONFIG:Debug>:AETHER_DEBUG>
+        $<$<BOOL:${AETHER_VERBOSE_LOGS}>:AETHER_VERBOSE_LOGS>
 )
 
 include(cmake/dependencies.cmake)

@@ -30,7 +30,7 @@ public:
 
 private:
     void try_clean_refs();
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
     size_t clean_texture_refs();
     size_t clean_texture_atlas_refs();
 #else

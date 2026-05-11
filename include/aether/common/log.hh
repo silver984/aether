@@ -19,6 +19,7 @@ void create_log_file();
 
 namespace ae::log {
 
+#ifdef AETHER_VERBOSE_LOGS
 template <typename... va>
 void trace(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
 	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "TRACE", fmt::color::dark_turquoise, loc);
@@ -28,6 +29,7 @@ template <typename... va>
 void debug(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
 	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "DEBUG", fmt::color::medium_violet_red, loc);
 }
+#endif
 
 template <typename... va>
 void info(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
@@ -46,11 +48,16 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 
 }
 
+#ifdef AETHER_VERBOSE_LOGS
 #define tracelog(fmt_str, ...)\
 	ae::log::trace(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 
 #define debuglog(fmt_str, ...)\
 	ae::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+#else
+#define tracelog(...) ((void)0)
+#define debuglog(...) ((void)0)
+#endif
 
 #define infolog(fmt_str, ...)\
 	ae::log::info(std::source_location::current(), fmt_str, ##__VA_ARGS__)
@@ -59,7 +66,7 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 	ae::log::warning(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 
 #define errorlog(fmt_str, ...)\
-	ae::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+	ae::log::error(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 
 #else
 
