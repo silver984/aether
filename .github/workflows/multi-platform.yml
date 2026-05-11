@@ -60,10 +60,16 @@ jobs:
         working-directory: ${{ github.workspace }}
         shell: bash
         run: |
-          MAJOR=$(sed -n 's/^[[:space:]]*set(AETHER_VERSION_MAJOR[[:space:]]\+\([0-9]\+\)).*$/\1/p' cmake/version.cmake)
-          MINOR=$(sed -n 's/^[[:space:]]*set(AETHER_VERSION_MINOR[[:space:]]\+\([0-9]\+\)).*$/\1/p' cmake/version.cmake)
-          PATCH=$(sed -n 's/^[[:space:]]*set(AETHER_VERSION_PATCH[[:space:]]\+\([0-9]\+\)).*$/\1/p' cmake/version.cmake)
-          echo "version=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+          VERSION=$(python3 -c "
+          import re
+          with open('cmake/version.cmake', 'r') as f:
+              content = f.read()
+              major = re.search(r'set\(AETHER_VERSION_MAJOR\s+(\d+)', content).group(1)
+              minor = re.search(r'set\(AETHER_VERSION_MINOR\s+(\d+)', content).group(1)
+              patch = re.search(r'set\(AETHER_VERSION_PATCH\s+(\d+)', content).group(1)
+              print(f'{major}.{minor}.{patch}')
+          ")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
         
       - name: Setup Ninja
         uses: seanmiddleditch/gha-setup-ninja@v5
