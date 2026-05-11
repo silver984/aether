@@ -57,10 +57,8 @@ jobs:
         working-directory: ${{ github.workspace }}
         shell: bash
         run: |
-          MAJOR=$(grep -Po '(?<=set\(AETHER_VERSION_MAJOR )\d+' cmake/version.cmake)
-          MINOR=$(grep -Po '(?<=set\(AETHER_VERSION_MINOR )\d+' cmake/version.cmake)
-          PATCH=$(grep -Po '(?<=set\(AETHER_VERSION_PATCH )\d+' cmake/version.cmake)
-          echo "version=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+          VERSION=$(cmake -P get_version.cmake 2>/dev/null | tail -1)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Checkout repository
         uses: actions/checkout@v4
