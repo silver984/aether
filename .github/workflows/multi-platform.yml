@@ -52,24 +52,16 @@ jobs:
             cmake_preset: aether-release
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Extract version
         id: version
         working-directory: ${{ github.workspace }}
         shell: bash
         run: |
-          echo "Checking files..."
-          ls -la cmake/version.cmake
-          ls -la get_version.cmake
-    
-          VERSION=$(cmake -P get_version.cmake)
-          echo "Raw version output: '$VERSION'"
-    
-          VERSION=$(echo "$VERSION" | tail -1 | tr -d '[:space:]')
-          echo "Cleaned version: '$VERSION'"
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
+          VERSION=$(grep -oP 'VERSION\s+\K[0-9]+\.[0-9]+\.[0-9]+' CMakeLists.txt)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
         
       - name: Setup Ninja
         uses: seanmiddleditch/gha-setup-ninja@v5
