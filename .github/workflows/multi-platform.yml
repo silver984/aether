@@ -60,7 +60,6 @@ jobs:
 
       - name: Extract version
         id: version
-        working-directory: ${{ github.workspace }}
         shell: bash
         run: |
           VERSION=$(python3 -c "
