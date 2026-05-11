@@ -60,9 +60,9 @@ jobs:
         working-directory: ${{ github.workspace }}
         shell: bash
         run: |
-          MAJOR=$(grep -Po '(?<=set\(AETHER_VERSION_MAJOR )\d+' cmake/version.cmake)
-          MINOR=$(grep -Po '(?<=set\(AETHER_VERSION_MINOR )\d+' cmake/version.cmake)
-          PATCH=$(grep -Po '(?<=set\(AETHER_VERSION_PATCH )\d+' cmake/version.cmake)
+          MAJOR=$(sed -n 's/^[[:space:]]*set(AETHER_VERSION_MAJOR[[:space:]]\+\([0-9]\+\)).*$/\1/p' cmake/version.cmake)
+          MINOR=$(sed -n 's/^[[:space:]]*set(AETHER_VERSION_MINOR[[:space:]]\+\([0-9]\+\)).*$/\1/p' cmake/version.cmake)
+          PATCH=$(sed -n 's/^[[:space:]]*set(AETHER_VERSION_PATCH[[:space:]]\+\([0-9]\+\)).*$/\1/p' cmake/version.cmake)
           echo "version=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
         
       - name: Setup Ninja
