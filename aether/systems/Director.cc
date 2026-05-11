@@ -18,7 +18,7 @@ void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 	if (!new_state) {
 		debuglog("Attempted to switch to a nullptr state");
 		
-		if (auto resource = (*context_).resource_wref().lock()) {
+		if (auto resource = context_->resource_wref().lock()) {
 			resource->try_clean_refs();
 		}
 
@@ -75,7 +75,7 @@ void Director::update_current_state() {
 	}
 
 	if (current_state_) {
-		current_state_->base_update((*context_).delta_time());
+		current_state_->base_update(context_->delta_time());
 	}
 }
 
@@ -91,7 +91,7 @@ void Director::move_pending_state() {
 	if (current_state_) {
 		release_current_state();
 
-		if (auto resource = (*context_).resource_wref().lock()) {
+		if (auto resource = context_->resource_wref().lock()) {
 			resource->try_clean_refs();
 		}
 	}

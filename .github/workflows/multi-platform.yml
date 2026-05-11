@@ -69,6 +69,7 @@ jobs:
         run: cmake --build --preset ${{ matrix.preset }}
         
       - name: Upload artifact
+        if: contains(matrix.preset, 'release')
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-${{ matrix.preset }}
