@@ -107,6 +107,8 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		if (auto ptr = it->second.lock()) {
 			return ptr;
 		}
+
+		texture_wrefs_.erase(it);
 	}
 
 	debuglog("Loading texture | file: \"{}\"", lfile.str);
@@ -150,6 +152,8 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 		if (auto ptr = it->second.lock()) {
 			return ptr;
 		}
+
+		texture_atlas_wrefs_.erase(it);
 	}
 
 	debuglog("Loading texture atlas | path: \"{}\"", lpath.str);
@@ -253,7 +257,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 		}
 
 		if (
-			txml::XMLError res = elem->QueryIntAttribute("height", &tmp.source_rect.width);
+			txml::XMLError res = elem->QueryIntAttribute("height", &tmp.source_rect.height);
 			res != txml::XMLError::XML_SUCCESS
 		) {
 			tracelog("Skipping subtexture with no height attribute | name: \"{}\"", full_anim_name);
@@ -269,7 +273,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 	size_t frame_count = 0; // just for logging
 
 	for (auto& [_, vec] : shared->subtextures) {
-		frame_count = vec.size();
+		frame_count += vec.size();
 
 		std::sort(vec.begin(), vec.end(),
 			[](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
@@ -347,7 +351,7 @@ size_t Resource::clean_texture_atlas_refs() {
 #else
 void Resource::clean_texture_refs() {
 	if (texture_wrefs_.empty()) {
-		return ;
+		return;
 	}
 
 	cleaning_helper(texture_wrefs_);

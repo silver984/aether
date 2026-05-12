@@ -37,7 +37,7 @@ rgba Renderer::background_rgba() const {
 	return background_rgba_;
 }
 
-void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color) const {
+void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color, vec2<int> offsets) const {
 	if (texture.id < 1) {
 		return;
 	}
@@ -58,6 +58,8 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		.height = texture.height
 	};
 
+	vec2<float> offsetsf = static_cast<vec2<float>>(offsets);
+
 	push_matrix(transform);
 	rlSetTexture(texture.id);
 	rlBegin(RL_QUADS);
@@ -72,7 +74,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(vec2<float>(0.f, 0.f));
+		define_vertex(offsetsf);
 	}
 
 	{ // bottom left
@@ -84,7 +86,13 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(vec2<float>(0.f, static_cast<float>(source_rect.height)));
+
+		vec2<float> v_pos = {
+			.x = 0.f,
+			.y = static_cast<float>(source_rect.height)
+		};
+
+		define_vertex(v_pos + offsetsf);
 	}
 
 	{ // bottom right
@@ -96,7 +104,13 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(vec2<float>(static_cast<float>(source_rect.width), static_cast<float>(source_rect.height)));
+		
+		vec2<float> v_pos = {
+			.x = static_cast<float>(source_rect.width),
+			.y = static_cast<float>(source_rect.height)
+		};
+		
+		define_vertex(v_pos + offsetsf);
 	}
 
 	{ // top right
@@ -107,7 +121,13 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(vec2<float>(static_cast<float>(source_rect.width), 0.f));
+
+		vec2<float> v_pos = {
+			.x = static_cast<float>(source_rect.width),
+			.y = 0.f
+		};
+
+		define_vertex(v_pos + offsetsf);
 	}
 
 	rlEnd();

@@ -21,7 +21,19 @@ bool TestState::init() {
 		));
 	}
 
-	long_ = ae::Node::create<ae::Sprite>(context(), "resources/long.png");
+	animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/bf", "png", "xml", 24);
+	if (!animated_) {
+		return false;
+	}
+
+	if (auto window = context().window_wref().lock()) {
+		animated_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
+	}
+
+	// animated_->play_anim("BF idle dance");
+	add(animated_);
+
+	/*long_ = ae::Node::create<ae::Sprite>(context(), "resources/long.png");
 	if (!long_) {
 		return false;
 	}
@@ -31,7 +43,6 @@ bool TestState::init() {
 	}
 
 	long_->set_texture_wrap(ae::texture_wrap::repeat);
-	// long_->set_position(ae::vec2<float>(400.f, 50.f));
 	long_->set_anchor(ae::vec2<float>(0.5f, 0.f));
 	long_->set_scale(0.5f);
 	add(long_);
@@ -43,7 +54,7 @@ bool TestState::init() {
 
 	long_tail_->set_anchor(ae::vec2<float>(0.5f, 0.f));
 	long_->add(long_tail_);
-	update_long_trail();
+	update_long_trail();*/
 
 	icon_ = ae::Node::create<ae::TileMap>(context(), "resources/bf-old.png", ae::size<int>(150, 150));
 	if (!icon_) {
@@ -60,14 +71,14 @@ bool TestState::init() {
 
 // protected
 void TestState::update(float dt) {
-	if (long_) {
+	/*if (long_) {
 		auto v = long_->texture_source_rect();
 		v.height += static_cast<int>(80.f * dt);
 		long_->set_texture_source_rect(v, true);
 		long_->set_rotation(long_->rotation() + (360.f * dt));
 	}
 
-	update_long_trail();
+	update_long_trail();*/
 
 	elapsed_ += dt;
 

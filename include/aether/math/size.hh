@@ -50,33 +50,37 @@ struct size final {
 
     template<numeric_t U>
     [[nodiscard]] constexpr size<T> operator+(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .width = width + rhs,
-            .height = height + rhs
+            .width = width + s,
+            .height = height + s
         };
     }
 
     template<numeric_t U>
     [[nodiscard]] constexpr size<T> operator-(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .width = width - rhs,
-            .height = height - rhs
+            .width = width - s,
+            .height = height - s
         };
     }
 
     template<numeric_t U>
     [[nodiscard]] constexpr size<T> operator*(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .width = width * rhs,
-            .height = height * rhs
+            .width = width * s,
+            .height = height * s
         };
     }
 
     template<numeric_t U>
     [[nodiscard]] constexpr size<T> operator/(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .width = width / rhs,
-            .height = height / rhs
+            .width = width / s,
+            .height = height / s
         };
     }
 
@@ -88,8 +92,9 @@ struct size final {
 
     template<numeric_t U>
     constexpr size<T>& operator+=(U rhs) {
-        width += rhs;
-        height += rhs;
+        T const s = static_cast<T>(rhs);
+        width += s;
+        height += s;
         return *this;
     }
 
@@ -101,8 +106,9 @@ struct size final {
 
     template<numeric_t U>
     constexpr size<T>& operator-=(U rhs) {
-        width -= rhs;
-        height -= rhs;
+        T const s = static_cast<T>(rhs);
+        width -= s;
+        height -= s;
         return *this;
     }
 
@@ -114,8 +120,9 @@ struct size final {
 
     template<numeric_t U>
     constexpr size<T>& operator*=(U rhs) {
-        width *= rhs;
-        height *= rhs;
+        T const s = static_cast<T>(rhs);
+        width *= s;
+        height *= s;
         return *this;
     }
 
@@ -127,8 +134,9 @@ struct size final {
 
     template<numeric_t U>
     constexpr size<T>& operator/=(U rhs) {
-        width /= rhs;
-        height /= rhs;
+        T const s = static_cast<T>(rhs);
+        width /= s;
+        height /= s;
         return *this;
     }
 

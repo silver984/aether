@@ -50,33 +50,37 @@ struct vec2 final {
 
     template<numeric_t U>
     [[nodiscard]] constexpr vec2<T> operator+(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .x = x + rhs,
-            .y = y + rhs
+            .x = x + s,
+            .y = y + s
         };
     }
 
     template<numeric_t U>
     [[nodiscard]] constexpr vec2<T> operator-(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .x = x - rhs,
-            .y = y - rhs
+            .x = x - s,
+            .y = y - s
         };
     }
 
     template<numeric_t U>
     [[nodiscard]] constexpr vec2<T> operator*(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .x = x * rhs,
-            .y = y * rhs
+            .x = x * s,
+            .y = y * s
         };
     }
 
     template<numeric_t U>
     [[nodiscard]] constexpr vec2<T> operator/(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .x = x / rhs,
-            .y = y / rhs
+            .x = x / s,
+            .y = y / s
         };
     }
 
@@ -88,8 +92,9 @@ struct vec2 final {
 
     template<numeric_t U>
     constexpr vec2<T>& operator+=(U rhs) {
-        x += rhs;
-        y += rhs;
+        T const s = static_cast<T>(rhs);
+        x += s;
+        y += s;
         return *this;
     }
 
@@ -101,8 +106,9 @@ struct vec2 final {
 
     template<numeric_t U>
     constexpr vec2<T>& operator-=(U rhs) {
-        x -= rhs;
-        y -= rhs;
+        T const s = static_cast<T>(rhs);
+        x -= s;
+        y -= s;
         return *this;
     }
 
@@ -114,8 +120,9 @@ struct vec2 final {
 
     template<numeric_t U>
     constexpr vec2<T>& operator*=(U rhs) {
-        x *= rhs;
-        y *= rhs;
+        T const s = static_cast<T>(rhs);
+        x *= s;
+        y *= s;
         return *this;
     }
 
@@ -127,8 +134,9 @@ struct vec2 final {
 
     template<numeric_t U>
     constexpr vec2<T>& operator/=(U rhs) {
-        x /= rhs;
-        y /= rhs;
+        T const s = static_cast<T>(rhs);
+        x /= s;
+        y /= s;
         return *this;
     }
 

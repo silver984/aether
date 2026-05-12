@@ -2,6 +2,7 @@
 #define __AETHER_STATES_TESTSTATE_HH__
 
 #include <aether/objects/abstract/State.hh>
+#include <aether/objects/AnimatedSprite.hh>
 #include <aether/objects/Sprite.hh>
 #include <aether/objects/TileMap.hh>
 #include <memory>
@@ -18,6 +19,7 @@ protected:
 private:
 	void update_long_trail();
 
+	std::shared_ptr<ae::AnimatedSprite> animated_;
 	std::shared_ptr<ae::Sprite> long_;
 	std::shared_ptr<ae::Sprite> long_tail_;
 	std::shared_ptr<ae::TileMap> icon_;

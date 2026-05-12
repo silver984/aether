@@ -81,41 +81,45 @@ struct rect {
 
     template<numeric_t U>
     [[nodiscard]] constexpr rect<T> operator+(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .x = x + rhs,
-            .y = y + rhs,
-            .width = width + rhs,
-            .height = height + rhs
+            .x = x + s,
+            .y = y + s,
+            .width = width + s,
+            .height = height + s
         };
     }
 
     template<numeric_t U>
     [[nodiscard]] constexpr rect<T> operator-(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .x = x - rhs,
-            .y = y - rhs,
-            .width = width - rhs,
-            .height = height - rhs
+            .x = x - s,
+            .y = y - s,
+            .width = width - s,
+            .height = height - s
         };
     }
 
     template<numeric_t U>
     [[nodiscard]] constexpr rect<T> operator*(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .x = x * rhs,
-            .y = y * rhs,
-            .width = width * rhs,
-            .height = height * rhs
+            .x = x * s,
+            .y = y * s,
+            .width = width * s,
+            .height = height * s
         };
     }
 
     template<numeric_t U>
     [[nodiscard]] constexpr rect<T> operator/(U rhs) const {
+        T const s = static_cast<T>(rhs);
         return {
-            .x = x / rhs,
-            .y = y / rhs,
-            .width = width / rhs,
-            .height = height / rhs
+            .x = x / s,
+            .y = y / s,
+            .width = width / s,
+            .height = height / s
         };
     }
 
@@ -129,10 +133,11 @@ struct rect {
 
     template<numeric_t U>
     constexpr rect<T>& operator+=(U rhs) {
-        x += rhs;
-        y += rhs;
-        width += rhs;
-        height += rhs;
+        T const s = static_cast<T>(rhs);
+        x += s;
+        y += s;
+        width += s;
+        height += s;
         return *this;
     }
 
@@ -146,10 +151,11 @@ struct rect {
 
     template<numeric_t U>
     constexpr rect<T>& operator-=(U rhs) {
-        x -= rhs;
-        y -= rhs;
-        width -= rhs;
-        height -= rhs;
+        T const s = static_cast<T>(rhs);
+        x -= s;
+        y -= s;
+        width -= s;
+        height -= s;
         return *this;
     }
 
@@ -163,10 +169,11 @@ struct rect {
 
     template<numeric_t U>
     constexpr rect<T>& operator*=(U rhs) {
-        x *= rhs;
-        y *= rhs;
-        width *= rhs;
-        height *= rhs;
+        T const s = static_cast<T>(rhs);
+        x *= s;
+        y *= s;
+        width *= s;
+        height *= s;
         return *this;
     }
 
@@ -180,10 +187,11 @@ struct rect {
 
     template<numeric_t U>
     constexpr rect<T>& operator/=(U rhs) {
-        x /= rhs;
-        y /= rhs;
-        width /= rhs;
-        height /= rhs;
+        T const s = static_cast<T>(rhs);
+        x /= s;
+        y /= s;
+        width /= s;
+        height /= s;
         return *this;
     }
 

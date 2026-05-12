@@ -29,7 +29,7 @@ public:
     [[nodiscard]] size<int> bounds() const;
     void set_background_rgba(rgba color);
     [[nodiscard]] rgba background_rgba() const;
-    void draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color) const;
+    void draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color, vec2<int> offsets = {}) const;
 
 private:
     void start_draw();
