@@ -1,4 +1,4 @@
-target_sources(${aether}
+target_sources(${AETHER}
     PRIVATE
         Director.cc
         Renderer.cc

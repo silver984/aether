@@ -14,7 +14,7 @@ function(aether_fetch_dependencies aether)
     fetch(raylib https://github.com/raysan5/raylib.git 6.0)
     fetch(fmt https://github.com/fmtlib/fmt.git 12.1.0)
     
-    target_link_libraries(${aether}
+    target_link_libraries(${AETHER}
         PRIVATE
             raylib
             fmt::fmt

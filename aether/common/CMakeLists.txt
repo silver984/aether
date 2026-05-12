@@ -1,4 +1,4 @@
-target_sources(${aether}
+target_sources(${AETHER}
     PRIVATE
         Context.cc
         rl_converter.cc
@@ -6,7 +6,7 @@ target_sources(${aether}
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_sources(${aether}
+    target_sources(${AETHER}
         PRIVATE
             log.cc
     )

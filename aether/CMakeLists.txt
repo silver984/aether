@@ -1,4 +1,4 @@
-target_sources(${aether}
+target_sources(${AETHER}
     PRIVATE
         main.cc
         Funkin.cc
