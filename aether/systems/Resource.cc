@@ -1,7 +1,6 @@
 #include <aether/systems/Resource.hh>
 #include <aether/common/log.hh>
 #include <aether/common/timer.hh>
-#include <aether/graphic/texture_deleter.hh>
 #include <external/tinyxml2.h>
 #include <fmt/format.h>
 #include <raylib.h>
@@ -11,6 +10,17 @@
 #include <cctype>
 
 namespace {
+
+struct texture_deleter {
+	void operator()(Texture* ptr) const {
+		if (ptr && ptr->id > 0) {
+			UnloadTexture(*ptr);
+			tracelog("Unloaded texture ({}) | OpenGL id: {}", fmt::ptr(ptr), ptr->id);
+		}
+
+		delete ptr;
+	}
+};
 
 struct file_path final {
 	static file_path parse(std::string_view file) {
