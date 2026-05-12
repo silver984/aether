@@ -1,11 +1,12 @@
 #include <aether/Funkin.hh>
 #include <aether/systems/Director.hh>
 #include <aether/states/TestState.hh>
+#include <aether/version.h>
 
 int main() {
 	ae::Funkin aether;
 
-	if (aether.init("FNF: Aether Engine", ae::size<int>(1280, 720), 240)) {
+	if (aether.init("FNF: Aether Engine " AETHER_VERSION, ae::size<int>(1280, 720), 240)) {
 		auto& ctx = aether.context();
 
 		if (auto director = ctx.director_wref().lock()) {
