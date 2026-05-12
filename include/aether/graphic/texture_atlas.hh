@@ -11,19 +11,23 @@ struct Texture;
 
 namespace ae {
 
-struct texture_atlas_subtexture final {
-	constexpr explicit texture_atlas_subtexture(int i) :
-		reference_index(i)
-	{}
-
-	int reference_index;
-	rect<int> source_rect;
-	vec2<int> transform_offset;
-};
-
 struct texture_atlas final {
+	struct subtexture final {
+		constexpr explicit subtexture(int i) :
+			reference_index(i)
+		{}
+
+		int reference_index;
+		rect<int> source_rect;
+		vec2<int> transform_offset;
+	};
+
+	struct deleter {
+		void operator()(texture_atlas* ptr) const;
+	};
+
 	std::shared_ptr<Texture> texture;
-	string_map<std::vector<texture_atlas_subtexture>> subtextures;
+	string_map<std::vector<subtexture>> subtextures;
 };
 
 }

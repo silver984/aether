@@ -1,10 +1,12 @@
 #include <aether/systems/Resource.hh>
 #include <aether/common/log.hh>
 #include <aether/common/timer.hh>
+#include <aether/graphic/texture_deleter.hh>
 #include <external/tinyxml2.h>
 #include <fmt/format.h>
 #include <raylib.h>
 #include <filesystem>
+#include <utility>
 #include <string>
 #include <cctype>
 
@@ -97,7 +99,7 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 		}
 	}
 
-	debuglog("Allocating texture | file: \"{}\"", lfile.str);
+	debuglog("Loading texture | file: \"{}\"", lfile.str);
 
 	if (!std::filesystem::exists(lfile.str)) {
 		errorlog("File doesn't exist");
@@ -106,35 +108,21 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 
 	auto start_time = timer::start();
 
-	Texture stack = LoadTexture(lfile.str.c_str());
+	Texture tmp = LoadTexture(lfile.str.c_str());
 
-	if (stack.id < 1) {
+	if (tmp.id < 1) {
 		errorlog("Failed");
 		return nullptr;
 	}
 
-	if (stack.width < 1 || stack.height < 1) {
-		UnloadTexture(Texture{.id = stack.id});
+	if (tmp.width < 1 || tmp.height < 1) {
+		UnloadTexture(tmp);
 		errorlog("Invalid bounds");
 		return nullptr;
 	}
 
-	auto shared = std::shared_ptr<Texture>(new Texture(),
-		[](Texture* ptr) {
-			UnloadTexture(Texture{.id = ptr->id});
-			delete ptr;
-			tracelog("Freed texture ({}) | OpenGL id: {}", fmt::ptr(ptr), ptr->id);
-		});
-
-	shared->id = stack.id;
-	shared->width = stack.width;
-	shared->height = stack.height;
-	shared->mipmaps = stack.mipmaps;
-	shared->format = stack.format;
-
-	tracelog("Allocated texture ({}) | OpenGL id: {} | bounds: {}x{}",
-		fmt::ptr(shared.get()), shared->id, shared->width, shared->height
-	);
+	auto shared = std::shared_ptr<Texture>(new Texture(std::move(tmp)), texture_deleter{});
+	tracelog("Loaded texture ({}) | OpenGL id: {} | bounds: {}x{}", fmt::ptr(shared.get()), shared->id, shared->width, shared->height);
 
 	texture_wrefs_[lfile.str] = shared;
 	tracelog("Stored to texture references | current size: {}", texture_wrefs_.size());
@@ -158,13 +146,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 	auto load_start_time = timer::start();
 
-	auto shared = std::shared_ptr<texture_atlas>(new texture_atlas(),
-		[](texture_atlas* ptr) {
-			delete ptr;
-			ptr = nullptr;
-			tracelog("Freed texture atlas ({})", fmt::ptr(ptr));
-		});
-
+	auto shared = std::shared_ptr<texture_atlas>(new texture_atlas(), texture_atlas::deleter{});
 	shared->texture = load_shared_texture(fmt::format("{}.{}", path, image_format));
 
 	if (!shared->texture) {
@@ -234,7 +216,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 			continue;
 		}
 
-		texture_atlas_subtexture tmp(index);
+		texture_atlas::subtexture tmp(index);
 
 		if (
 			txml::XMLError res = elem->QueryIntAttribute("x", &tmp.source_rect.x);
@@ -280,7 +262,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 		frame_count = vec.size();
 
 		std::sort(vec.begin(), vec.end(),
-			[](texture_atlas_subtexture const& a, texture_atlas_subtexture const& b) {
+			[](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
 				return a.reference_index < b.reference_index;
 			});
 	}
