@@ -72,7 +72,13 @@ jobs:
               print(f'{major}.{minor}.{patch}')
           ")
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-        
+          
+      - name: Extract git hash
+        id: git
+        shell: bash
+        run: |
+          echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
       - name: Setup Ninja
         uses: seanmiddleditch/gha-setup-ninja@v5
 
@@ -102,5 +108,5 @@ jobs:
         if: contains(matrix.cmake_preset, 'release')
         uses: actions/upload-artifact@v4
         with:
-          name: aether-${{ steps.version.outputs.version }}-${{ matrix.artifact_name }}
+          name: aether${{ steps.git.outputs.short_sha }}-${{ steps.version.outputs.version }}-${{ matrix.artifact_name }}
           path: build/${{ matrix.cmake_preset }}/bin
