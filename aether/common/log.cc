@@ -45,20 +45,20 @@ std::string_view function_name(std::source_location const& loc) {
 }
 
 std::string time_str() {
-	auto const now = std::chrono::system_clock::now();
+	auto const now     = std::chrono::system_clock::now();
 	auto const seconds = std::chrono::floor<std::chrono::seconds>(now);
-	auto const ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - seconds).count();
+	auto const ms      = std::chrono::duration_cast<std::chrono::milliseconds>(now - seconds).count();
 	return fmt::format("{:%H:%M:%S}.{:03}", seconds, ms);
 }
 
 std::string file_date_str() {
-	auto const now = std::chrono::system_clock::now();
+	auto const now  = std::chrono::system_clock::now();
 	auto const days = std::chrono::floor<std::chrono::days>(now);
 	return fmt::format("{:%Y-%m-%d}", days);
 }
 
 std::string file_time_str() {
-	auto const now = std::chrono::system_clock::now();
+	auto const now     = std::chrono::system_clock::now();
 	auto const seconds = std::chrono::floor<std::chrono::seconds>(now);
 	return fmt::format("{:%H.%M.%S}", seconds);
 }
@@ -71,7 +71,7 @@ namespace ae::log::impl {
 
 void print(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
 	std::string time_and_loc_str = fmt::format("{:<12} {} ", time_str(), function_name(loc));
-	std::string level_str = fmt::format("[{}] ", level);
+	std::string level_str        = fmt::format("[{}] ", level);
 
 	if (!log_file_path.empty()) {
 		std::ofstream file(log_file_path, std::ios::app);
@@ -91,7 +91,7 @@ void print(std::string_view msg, std::string_view level, fmt::color level_color,
 void create_log_file() {
 	std::filesystem::create_directory("logs");
 	std::string file_name = fmt::format("logs/aether-{}-{}.log", file_date_str(), file_time_str());
-	log_file_path = std::filesystem::absolute(file_name);
+	log_file_path         = std::filesystem::absolute(file_name);
 	std::ofstream file(log_file_path);
 	file.close();
 }

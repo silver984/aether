@@ -40,7 +40,7 @@ uint32_t Context::running_fps() const {
 // private
 void Context::store_refs(std::weak_ptr<Window> window, std::weak_ptr<Renderer> renderer,
                          std::weak_ptr<Resource> resource, std::weak_ptr<Director> director) {
-	window_wref_ = std::move(window);
+	window_wref_   = std::move(window);
 	renderer_wref_ = std::move(renderer);
 	resource_wref_ = std::move(resource);
 	director_wref_ = std::move(director);
@@ -49,7 +49,7 @@ void Context::store_refs(std::weak_ptr<Window> window, std::weak_ptr<Renderer> r
 // private
 void Context::update_frame_ctx() {
 	static uint32_t frame_count = 0;
-	static float elapsed = 0.f;
+	static float elapsed        = 0.f;
 
 	float dt = delta_time();
 	elapsed += dt;
@@ -58,7 +58,7 @@ void Context::update_frame_ctx() {
 
 	while (elapsed >= 1.f) {
 		running_fps_ = frame_count;
-		frame_count = 0;
+		frame_count  = 0;
 		elapsed -= 1.f;
 	}
 }

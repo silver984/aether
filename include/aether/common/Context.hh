@@ -20,7 +20,6 @@ private:
 
 public:
 	~Context();
-
 	Context(Context const&)            = delete;
 	Context(Context&&)                 = delete;
 	Context& operator=(Context const&) = delete;
