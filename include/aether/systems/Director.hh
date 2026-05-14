@@ -12,7 +12,7 @@ class Funkin;
 class Director final {
 	friend class Funkin;
 
-  public:
+public:
 	Director(Context const& ctx);
 	~Director();
 	Director(Director const&)            = delete;
@@ -22,7 +22,7 @@ class Director final {
 
 	void switch_state(std::shared_ptr<Node>&& new_state);
 
-  private:
+private:
 	void try_cleanup();
 	void release_current_state();
 	void release_pending_state();

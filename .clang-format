@@ -1,13 +1,23 @@
-BasedOnStyle: LLVM
+Standard: c++20
+
+# === Indentation & Whitespace ===
 UseTab: ForIndentation
 IndentWidth: 4
 TabWidth: 4
+AccessModifierOffset: -4
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: None
+
+# === Line Breaking ===
 ColumnLimit: 0
 BreakBeforeBraces: Attach
+
+# === Pointer & Qualifier Alignment ===
 DerivePointerAlignment: false
 PointerAlignment: Left
 QualifierAlignment: Right
-NamespaceIndentation: None
+
+# === Short Statements (AllowShort*) ===
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
@@ -15,8 +25,16 @@ AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortLambdasOnASingleLine: Empty
 AllowShortEnumsOnASingleLine: true
+
+# === Consecutive Alignments ===
 AlignConsecutiveAssignments: Consecutive
-IndentPPDirectives: BeforeHash
+AlignAfterOpenBracket: Align
 AlignConsecutiveMacros: true
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 1
+
+# === Preprocessor Directives ===
+IndentPPDirectives: BeforeHash
 AlignEscapedNewlines: Right
 SortIncludes: true

@@ -15,8 +15,7 @@ std::string_view Sprite::type() const {
 
 void Sprite::toggle_antialiasing(bool val) const {
 	if (texture_) {
-		SetTextureFilter(*texture_,
-		                 val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
+		SetTextureFilter(*texture_, val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
 	}
 }
 

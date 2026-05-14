@@ -18,7 +18,7 @@ enum class texture_wrap : int {
 class Resource;
 
 class Sprite : public Node {
-  public:
+public:
 	Sprite(Context const& ctx, std::string_view file);
 	~Sprite() override;
 
@@ -29,11 +29,11 @@ class Sprite : public Node {
 	void set_texture_source_rect(rect<int> val, bool update_bounds = false); // TODO: pos, bounds, x, y, width, height
 	[[nodiscard]] rect<int> texture_source_rect() const;
 
-  protected:
+protected:
 	bool init() override;
 	void draw(mat3 const& transform, rgba color) const override;
 
-  private:
+private:
 	std::shared_ptr<Texture> texture_;
 	rect<int> texture_source_rect_;
 	std::string const file_arg_;

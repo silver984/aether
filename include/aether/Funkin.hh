@@ -14,7 +14,7 @@
 namespace ae {
 
 class Funkin final {
-  public:
+public:
 	Funkin();
 	~Funkin();
 	Funkin(Funkin const&)            = delete;
@@ -26,7 +26,7 @@ class Funkin final {
 	void run();
 	[[nodiscard]] Context const& context();
 
-  private:
+private:
 	void shutdown();
 
 	std::shared_ptr<Window> window_;

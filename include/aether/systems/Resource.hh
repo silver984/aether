@@ -18,7 +18,7 @@ class Resource final {
 	friend class Funkin;
 	friend class Director;
 
-  public:
+public:
 	Resource();
 	~Resource();
 	Resource(Resource const&)            = delete;
@@ -31,7 +31,7 @@ class Resource final {
 	                                                                       std::string_view image_format,
 	                                                                       std::string_view data_format);
 
-  private:
+private:
 	void try_clean_refs();
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 	size_t clean_texture_refs();

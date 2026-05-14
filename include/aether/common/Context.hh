@@ -15,16 +15,16 @@ class Director;
 class Context final {
 	friend class Funkin;
 
-  private:
+private:
 	Context();
 
-  public:
+public:
 	~Context();
 
-	Context(Context const&) = delete;
-	Context(Context&&) = delete;
+	Context(Context const&)            = delete;
+	Context(Context&&)                 = delete;
 	Context& operator=(Context const&) = delete;
-	Context& operator=(Context&&) = delete;
+	Context& operator=(Context&&)      = delete;
 
 	[[nodiscard]] std::weak_ptr<Window> window_wref() const;
 	[[nodiscard]] std::weak_ptr<Renderer> renderer_wref() const;
@@ -34,7 +34,7 @@ class Context final {
 	[[nodiscard]] float total_time() const;
 	[[nodiscard]] uint32_t running_fps() const;
 
-  private:
+private:
 	void store_refs(std::weak_ptr<Window> window, std::weak_ptr<Renderer> renderer, std::weak_ptr<Resource> resource,
 	                std::weak_ptr<Director> director);
 	void update_frame_ctx();

@@ -8,15 +8,15 @@
 #include <memory>
 
 class TestState : public ae::Node {
-  public:
+public:
 	TestState(ae::Context const& ctx);
 	~TestState();
 
-  protected:
+protected:
 	bool init() override;
 	void update(float dt) override;
 
-  private:
+private:
 	void update_long_trail();
 
 	std::shared_ptr<ae::AnimatedSprite> animated_;

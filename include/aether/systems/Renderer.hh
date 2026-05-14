@@ -19,7 +19,7 @@ class Window;
 class Renderer final {
 	friend class Funkin;
 
-  public:
+public:
 	Renderer(Context const& ctx);
 	~Renderer();
 	Renderer(Renderer const&)            = delete;
@@ -33,7 +33,7 @@ class Renderer final {
 	void draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color,
 	                  vec2<int> offsets = {}) const;
 
-  private:
+private:
 	void start_draw();
 	void end_draw() const;
 #ifdef AETHER_DEBUG

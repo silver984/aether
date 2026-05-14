@@ -21,7 +21,7 @@ class Director;
 class Node : public std::enable_shared_from_this<Node> {
 	friend class Director;
 
-  public:
+public:
 	Node(Context const& ctx);
 	virtual ~Node();
 
@@ -54,11 +54,11 @@ class Node : public std::enable_shared_from_this<Node> {
 	void set_name(std::string_view name);
 	[[nodiscard]] std::string_view name() const;
 	[[nodiscard]] virtual std::string_view type() const;
-	void set_bounds(size<int> val); // TODO: set_width, set_height
+	void set_bounds(size<int> val);     // TODO: set_width, set_height
 	[[nodiscard]] size<int> bounds() const;
 	void set_position(vec2<float> val); // TODO: set_position_x, set_position_y
 	[[nodiscard]] vec2<float> position() const;
-	void set_anchor(vec2<float> val); // TODO: set_anchor_x, set_anchor_y
+	void set_anchor(vec2<float> val);   // TODO: set_anchor_x, set_anchor_y
 	[[nodiscard]] vec2<float> anchor() const;
 	void set_scale(vec2<float> val);
 	void set_scale(float val);
@@ -76,13 +76,13 @@ class Node : public std::enable_shared_from_this<Node> {
 	void set_time_scale(float val);
 	[[nodiscard]] float time_scale() const;
 
-  protected:
+protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void draw(mat3 const& transform, rgba color) const;
 	[[nodiscard]] Context const& context() const;
 
-  private:
+private:
 	bool base_init();
 	void base_update(float dt);
 	void base_draw();

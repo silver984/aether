@@ -307,7 +307,7 @@ struct math_t {
 		return r;
 	}
 
-  private:
+private:
 	[[nodiscard]] constexpr derived<T> const& self() const {
 		return static_cast<derived<T> const&>(*this);
 	}

@@ -22,8 +22,8 @@ std::string_view AnimatedSprite::type() const {
 
 void AnimatedSprite::toggle_antialiasing(bool val) const {
 	if (texture_atlas_ && texture_atlas_->texture) {
-		SetTextureFilter(*texture_atlas_->texture,
-		                 val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
+		SetTextureFilter(*texture_atlas_->texture, val ? TextureFilter::TEXTURE_FILTER_BILINEAR
+		                                               : TextureFilter::TEXTURE_FILTER_POINT);
 	}
 }
 
@@ -39,7 +39,7 @@ void AnimatedSprite::play_anim(std::string_view anim_name, int fps, bool should_
 
 	// reset state
 	cur_frame_index_ = 0;
-	frame_elapsed_ = 0.f;
+	frame_elapsed_   = 0.f;
 
 	// change fps if arg is not default
 	if (fps != 0) {
@@ -65,10 +65,10 @@ bool AnimatedSprite::init() {
 
 	// set default animation
 	auto const first_animation = texture_atlas_->subtextures.begin();
-	auto const& first_frame = first_animation->second.begin();
-	texture_source_rect_ = first_frame->source_rect;
-	cur_frame_offsets_ = first_frame->transform_offset;
-	cur_anim_name_ = first_animation->first;
+	auto const& first_frame    = first_animation->second.begin();
+	texture_source_rect_       = first_frame->source_rect;
+	cur_frame_offsets_         = first_frame->transform_offset;
+	cur_anim_name_             = first_animation->first;
 
 	toggle_antialiasing(true);
 	set_bounds(calculate_bounds());
@@ -84,7 +84,7 @@ void AnimatedSprite::update(float dt) {
 		return;
 	}
 
-	auto const& cur_anim_frames = texture_atlas_->subtextures[cur_anim_name_];
+	auto const& cur_anim_frames   = texture_atlas_->subtextures[cur_anim_name_];
 	float const target_frame_time = 1.f / fps_arg_;
 	frame_elapsed_ += dt;
 
@@ -94,8 +94,8 @@ void AnimatedSprite::update(float dt) {
 		cur_frame_index_ = (cur_frame_index_ + 1) % cur_anim_frames.size();
 
 		auto const& cur_anim_frame = cur_anim_frames[cur_frame_index_];
-		texture_source_rect_ = cur_anim_frame.source_rect;
-		cur_frame_offsets_ = cur_anim_frame.transform_offset;
+		texture_source_rect_       = cur_anim_frame.source_rect;
+		cur_frame_offsets_         = cur_anim_frame.transform_offset;
 
 		frame_elapsed_ -= target_frame_time;
 	}

@@ -14,7 +14,7 @@ class Funkin;
 class Window final {
 	friend class Funkin;
 
-  public:
+public:
 	Window();
 	~Window();
 	Window(Window const&)            = delete;
@@ -28,7 +28,7 @@ class Window final {
 	[[nodiscard]] std::string_view title() const;
 	[[nodiscard]] size<int> screen_size() const;
 
-  private:
+private:
 	bool init(std::string_view title, size<int> resolution, int target_fps);
 	void shutdown();
 
