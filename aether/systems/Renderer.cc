@@ -1,32 +1,25 @@
+#include <aether/common/rl_converter.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Window.hh>
-#include <aether/common/rl_converter.hh>
+#include <algorithm>
+#include <cmath>
 #include <fmt/format.h>
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
-#include <algorithm>
-#include <cmath>
 
 namespace ae {
 
 // private
-Renderer::Renderer(Context const& ctx) :
-	context_(&ctx),
-	background_rgba_(0.f, 0.f, 0.f, 1.f),
-	transform_(mat3::identity())
-{}
+Renderer::Renderer(Context const& ctx) : context_(&ctx),
+                                         background_rgba_(0.f, 0.f, 0.f, 1.f),
+                                         transform_(mat3::identity()) {}
 
 // private
 Renderer::~Renderer() = default;
 
-
-
 size<int> Renderer::bounds() const {
-	return {
-		.width = GetRenderWidth(),
-		.height = GetRenderHeight()
-	};
+	return {GetRenderWidth(), GetRenderHeight()};
 }
 
 void Renderer::set_background_rgba(rgba color) {
@@ -53,12 +46,9 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		source_rect.y -= source_rect.height;
 	}
 
-	size<int> texture_bounds = {
-		.width = texture.width,
-		.height = texture.height
-	};
+	size<int> texture_bounds = {texture.width, texture.height};
 
-	vec2<float> offsetsf = static_cast<vec2<float>>(offsets);
+	vec2<float> offsetsf = {static_cast<float>(offsets.x), static_cast<float>(offsets.y)};
 
 	push_matrix(transform);
 	rlSetTexture(texture.id);
@@ -87,10 +77,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 
 		define_texture_coord(coord / texture_bounds);
 
-		vec2<float> v_pos = {
-			.x = 0.f,
-			.y = static_cast<float>(source_rect.height)
-		};
+		vec2<float> v_pos = {0.f, static_cast<float>(source_rect.height)};
 
 		define_vertex(v_pos + offsetsf);
 	}
@@ -104,12 +91,10 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		
-		vec2<float> v_pos = {
-			.x = static_cast<float>(source_rect.width),
-			.y = static_cast<float>(source_rect.height)
-		};
-		
+
+		vec2<float> v_pos = {static_cast<float>(source_rect.width),
+		                     static_cast<float>(source_rect.height)};
+
 		define_vertex(v_pos + offsetsf);
 	}
 
@@ -122,10 +107,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 
 		define_texture_coord(coord / texture_bounds);
 
-		vec2<float> v_pos = {
-			.x = static_cast<float>(source_rect.width),
-			.y = 0.f
-		};
+		vec2<float> v_pos = {static_cast<float>(source_rect.width), 0.f};
 
 		define_vertex(v_pos + offsetsf);
 	}
@@ -200,22 +182,16 @@ mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
 	auto screen_size = window->screen_size();
 	auto render_bounds = bounds();
 
-	vec2<float> scale_ratio = {
-		.x = static_cast<float>(render_bounds.width) / screen_size.width,
-		.y = static_cast<float>(render_bounds.height) / screen_size.height
-	};
+	vec2<float> scale_ratio = {static_cast<float>(render_bounds.width) / screen_size.width,
+	                           static_cast<float>(render_bounds.height) / screen_size.height};
 
 	float scale_factor = std::min(scale_ratio.x, scale_ratio.y);
 
-	vec2<float> scaled_size = {
-		.x = screen_size.width * scale_factor,
-		.y = screen_size.height * scale_factor
-	};
+	vec2<float> scaled_size = {screen_size.width * scale_factor,
+	                           screen_size.height * scale_factor};
 
-	vec2<float> offset = {
-		.x = render_bounds.width - scaled_size.x,
-		.y = render_bounds.height - scaled_size.y
-	};
+	vec2<float> offset = {render_bounds.width - scaled_size.x,
+	                      render_bounds.height - scaled_size.y};
 
 	mat3 t = mat3::translation(offset / 2.f);
 	mat3 s = mat3::scale(vec2<float>(scale_factor, scale_factor));
@@ -223,4 +199,4 @@ mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
 	return t * s;
 }
 
-}
+} // namespace ae

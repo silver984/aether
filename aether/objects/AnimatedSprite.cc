@@ -1,20 +1,22 @@
-#include <aether/objects/AnimatedSprite.hh>
-#include <aether/systems/Resource.hh>
-#include <aether/systems/Renderer.hh>
 #include <aether/common/log.hh>
+#include <aether/objects/AnimatedSprite.hh>
+#include <aether/systems/Renderer.hh>
+#include <aether/systems/Resource.hh>
 #include <raylib.h>
 
 namespace ae {
 
-AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format, std::string_view data_format, int fps) :
-	Node(ctx),
-	frame_elapsed_(0.f),
-	cur_frame_index_(0),
-	path_arg_(std::string(path)),
-	image_format_arg_(std::string(image_format)),
-	data_format_arg_(std::string(data_format)),
-	fps_arg_(std::max(1, fps))
-{}
+AnimatedSprite::AnimatedSprite(Context const& ctx,
+                               std::string_view path,
+                               std::string_view image_format,
+                               std::string_view data_format,
+                               int fps) : Node(ctx),
+                                          frame_elapsed_(0.f),
+                                          cur_frame_index_(0),
+                                          path_arg_(std::string(path)),
+                                          image_format_arg_(std::string(image_format)),
+                                          data_format_arg_(std::string(data_format)),
+                                          fps_arg_(std::max(1, fps)) {}
 
 AnimatedSprite::~AnimatedSprite() = default;
 
@@ -24,7 +26,8 @@ std::string_view AnimatedSprite::type() const {
 
 void AnimatedSprite::toggle_antialiasing(bool val) const {
 	if (texture_atlas_ && texture_atlas_->texture) {
-		SetTextureFilter(*texture_atlas_->texture, val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
+		SetTextureFilter(*texture_atlas_->texture,
+		                 val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
 	}
 }
 
@@ -42,6 +45,7 @@ void AnimatedSprite::play_anim(std::string_view anim_name, int fps, bool should_
 	cur_frame_index_ = 0;
 	frame_elapsed_ = 0.f;
 
+	// change fps if arg is not default
 	if (fps != 0) {
 		fps_arg_ = std::max(1, fps);
 	}
@@ -108,7 +112,7 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) const {
 	if (!renderer || !texture_atlas_ || !texture_atlas_->texture) {
 		return;
 	}
-	
+
 	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, transform, color, -cur_frame_offsets_);
 }
 
@@ -119,13 +123,13 @@ size<int> AnimatedSprite::calculate_bounds() const {
 	}
 
 	size<int> avg;
-	size_t count = 0;
+	int count = 0;
 
 	for (auto const& [_, second] : texture_atlas_->subtextures) {
-		count += second.size();
+		count += static_cast<int>(second.size());
 
 		for (auto const& vec : second) {
-			avg += vec.source_rect.bounds<int>();
+			avg += size<int>(vec.source_rect.width, vec.source_rect.height);
 		}
 	}
 
@@ -136,4 +140,4 @@ size<int> AnimatedSprite::calculate_bounds() const {
 	return {};
 }
 
-}
+} // namespace ae

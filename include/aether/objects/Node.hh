@@ -1,18 +1,18 @@
 #ifndef __AETHER_OBJECTS_NODE_HH__
 #define __AETHER_OBJECTS_NODE_HH__
 
-#include <aether/math/vec2.hh>
-#include <aether/math/size.hh>
+#include <aether/common/Context.hh>
 #include <aether/math/mat3.hh>
 #include <aether/math/rgba.hh>
-#include <aether/common/Context.hh>
+#include <aether/math/size.hh>
+#include <aether/math/vec2.hh>
+#include <cstddef>
 #include <memory>
-#include <vector>
 #include <string>
 #include <string_view>
-#include <utility>
-#include <cstddef>
 #include <type_traits>
+#include <utility>
+#include <vector>
 
 namespace ae {
 
@@ -20,12 +20,13 @@ class Director;
 
 class Node : public std::enable_shared_from_this<Node> {
 	friend class Director;
-public:
+
+  public:
 	Node(Context const& ctx);
 	virtual ~Node();
 
-	template<typename T, typename... va>
-	requires std::is_base_of_v<Node, T>
+	template <typename T, typename... va>
+		requires std::is_base_of_v<Node, T>
 	static std::shared_ptr<T> create(Context const& ctx, va&&... args) {
 		std::shared_ptr<T> ptr = std::make_shared<T>(ctx, std::forward<va>(args)...);
 
@@ -75,13 +76,13 @@ public:
 	void set_time_scale(float val);
 	[[nodiscard]] float time_scale() const;
 
-protected:
+  protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void draw(mat3 const& transform, rgba color) const;
 	[[nodiscard]] Context const& context() const;
 
-private:
+  private:
 	bool base_init();
 	void base_update(float dt);
 	void base_draw();
@@ -103,7 +104,7 @@ private:
 	vec2<float> anchor_;
 	vec2<float> scale_;
 	vec2<float> skew_; // degrees
-	float rotation_; // degrees
+	float rotation_;   // degrees
 	float time_scale_;
 	bool is_transform_dirty_;
 	bool is_rgba_dirty_;
@@ -113,6 +114,6 @@ private:
 	bool is_initialized_;
 };
 
-}
+} // namespace ae
 
 #endif

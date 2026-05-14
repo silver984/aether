@@ -1,6 +1,6 @@
 #include <aether/Funkin.hh>
-#include <aether/systems/Director.hh>
 #include <aether/states/TestState.hh>
+#include <aether/systems/Director.hh>
 #include <aether/version.h>
 
 int main() {

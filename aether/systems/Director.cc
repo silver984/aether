@@ -1,15 +1,13 @@
-#include <aether/systems/Director.hh>
-#include <aether/systems/Resource.hh>
 #include <aether/common/log.hh>
 #include <aether/common/timer.hh>
+#include <aether/systems/Director.hh>
+#include <aether/systems/Resource.hh>
 #include <utility>
 
 namespace ae {
 
 // private
-Director::Director(Context const& ctx) :
-	context_(&ctx)
-{}
+Director::Director(Context const& ctx) : context_(&ctx) {}
 
 // private
 Director::~Director() = default;
@@ -17,7 +15,7 @@ Director::~Director() = default;
 void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 	if (!new_state) {
 		debuglog("Attempted to switch to a nullptr state");
-		
+
 		if (auto resource = context_->resource_wref().lock()) {
 			resource->try_clean_refs();
 		}
@@ -51,13 +49,13 @@ void Director::try_cleanup() {
 // private
 void Director::release_current_state() {
 	current_state_.reset();
-	tracelog("Current state released ({})", fmt::ptr(current_state_.get()));
+	tracelog("Current state released");
 }
 
 // private
 void Director::release_pending_state() {
 	pending_state_.reset();
-	tracelog("Pending state released ({})", fmt::ptr(pending_state_.get()));
+	tracelog("Pending state released");
 }
 
 // private
@@ -92,4 +90,4 @@ void Director::move_pending_state() {
 	tracelog("Moved pending state to current");
 }
 
-}
+} // namespace ae

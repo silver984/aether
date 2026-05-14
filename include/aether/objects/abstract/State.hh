@@ -9,6 +9,6 @@ namespace ae {
 // its just a node
 using State = Node;
 
-}
+} // namespace ae
 
 #endif

@@ -1,13 +1,13 @@
-#include <aether/systems/Resource.hh>
 #include <aether/common/log.hh>
 #include <aether/common/timer.hh>
+#include <aether/systems/Resource.hh>
+#include <cctype>
 #include <external/tinyxml2.h>
+#include <filesystem>
 #include <fmt/format.h>
 #include <raylib.h>
-#include <filesystem>
-#include <utility>
 #include <string>
-#include <cctype>
+#include <utility>
 
 namespace {
 
@@ -34,12 +34,10 @@ struct file_path final {
 		// make extension lowercase
 		std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
 
-		return {
-			.str = abs.string(),
-			.dir = abs.parent_path().string(),
-			.name = abs.stem().string(),
-			.ext = ext
-		};
+		return {.str = abs.string(),
+				.dir = abs.parent_path().string(),
+				.name = abs.stem().string(),
+				.ext = ext};
 	}
 
 	std::string str;
@@ -83,7 +81,7 @@ void cleaning_helper(ae::string_map<T>& map) {
 }
 #endif
 
-}
+} // namespace
 
 namespace ae {
 
@@ -177,16 +175,14 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 	txml::XMLDocument doc;
 
-	if (
-		txml::XMLError res = doc.LoadFile(data_path.str.c_str());
-		res != txml::XMLError::XML_SUCCESS
-	) {
+	if (txml::XMLError res = doc.LoadFile(data_path.str.c_str());
+		res != txml::XMLError::XML_SUCCESS) {
 		errorlog("Failed to load XML file");
 		return nullptr;
 	}
 
 	txml::XMLElement* root = doc.FirstChildElement("TextureAtlas");
-	
+
 	if (!root) {
 		errorlog("XML is corrupted or is in an invalid format");
 		return nullptr;
@@ -196,10 +192,8 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 	auto parse_start_time = timer::start();
 
-	for (
-		tinyxml2::XMLElement* elem = root->FirstChildElement("SubTexture");
-		elem != nullptr; elem = elem->NextSiblingElement("SubTexture")
-	) {
+	for (tinyxml2::XMLElement* elem = root->FirstChildElement("SubTexture");
+		 elem != nullptr; elem = elem->NextSiblingElement("SubTexture")) {
 		char const* full_anim_name_ccptr = elem->Attribute("name");
 
 		if (!full_anim_name_ccptr) {
@@ -208,16 +202,16 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 		}
 
 		std::string full_anim_name = full_anim_name_ccptr;
-		
+
 		if (full_anim_name.size() < 4) {
 			tracelog("Skipping subtexture with insufficient name size | name: \"{}\"", full_anim_name);
 			continue;
 		}
-		
+
 		std::string anim_name = full_anim_name.substr(0, full_anim_name.size() - 4);
 
 		int index{};
-		
+
 		try {
 			index = std::stoi(full_anim_name.substr(full_anim_name.size() - 4));
 		} catch (...) {
@@ -227,34 +221,26 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 		texture_atlas::subtexture tmp(index);
 
-		if (
-			txml::XMLError res = elem->QueryIntAttribute("x", &tmp.source_rect.x);
-			res != txml::XMLError::XML_SUCCESS
-		) {
+		if (txml::XMLError res = elem->QueryIntAttribute("x", &tmp.source_rect.x);
+			res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no x attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
-		if (
-			txml::XMLError res = elem->QueryIntAttribute("y", &tmp.source_rect.y);
-			res != txml::XMLError::XML_SUCCESS
-		) {
+		if (txml::XMLError res = elem->QueryIntAttribute("y", &tmp.source_rect.y);
+			res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no y attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
-		if (
-			txml::XMLError res = elem->QueryIntAttribute("width", &tmp.source_rect.width);
-			res != txml::XMLError::XML_SUCCESS
-		) {
+		if (txml::XMLError res = elem->QueryIntAttribute("width", &tmp.source_rect.width);
+			res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no width attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
-		if (
-			txml::XMLError res = elem->QueryIntAttribute("height", &tmp.source_rect.height);
-			res != txml::XMLError::XML_SUCCESS
-		) {
+		if (txml::XMLError res = elem->QueryIntAttribute("height", &tmp.source_rect.height);
+			res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no height attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
@@ -271,17 +257,16 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 		frame_count += vec.size();
 
 		std::sort(vec.begin(), vec.end(),
-			[](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
-				return a.reference_index < b.reference_index;
-			});
+				  [](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
+					  return a.reference_index < b.reference_index;
+				  });
 	}
 
 	auto parse_end_time = timer::end(parse_start_time);
 	debuglog("Parsing done | took {}ms", parse_end_time);
 
 	tracelog("Loaded texture atlas ({}) | texture: {} | animation count: {} | frame count: {}",
-		fmt::ptr(shared.get()), fmt::ptr(shared->texture.get()), shared->subtextures.size(), frame_count
-	);
+			 fmt::ptr(shared.get()), fmt::ptr(shared->texture.get()), shared->subtextures.size(), frame_count);
 
 	texture_atlas_wrefs_[lpath.str] = shared;
 	tracelog("Stored to texture atlas references | current size: {}", texture_atlas_wrefs_.size());
@@ -356,9 +341,9 @@ void Resource::clean_texture_atlas_refs() {
 	if (texture_atlas_wrefs_.empty()) {
 		return;
 	}
-	
+
 	cleaning_helper(texture_atlas_wrefs_);
 }
 #endif
 
-}
+} // namespace ae

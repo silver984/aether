@@ -4,19 +4,19 @@
 namespace ae::win32 {
 
 bool enable_console_colors() {
-    HANDLE h_out = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (h_out == INVALID_HANDLE_VALUE) {
-        return false;
-    }
+	HANDLE h_out = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (h_out == INVALID_HANDLE_VALUE) {
+		return false;
+	}
 
-    DWORD dw_mode = 0;
-    if (!GetConsoleMode(h_out, &dw_mode)) {
-        return false;
-    }
+	DWORD dw_mode = 0;
+	if (!GetConsoleMode(h_out, &dw_mode)) {
+		return false;
+	}
 
-    dw_mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(h_out, dw_mode);
-    return true;
+	dw_mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+	SetConsoleMode(h_out, dw_mode);
+	return true;
 }
 
-}
+} // namespace ae::win32

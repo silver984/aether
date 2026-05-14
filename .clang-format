@@ -1,0 +1,12 @@
+BasedOnStyle: LLVM
+UseTab: ForIndentation
+IndentWidth: 4
+TabWidth: 4
+ColumnLimit: 0
+BreakBeforeBraces: Attach
+DerivePointerAlignment: false
+PointerAlignment: Left
+QualifierAlignment: Right
+NamespaceIndentation: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false

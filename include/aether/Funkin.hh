@@ -1,20 +1,20 @@
 #ifndef __AETHER_FUNKIN_HH__
 #define __AETHER_FUNKIN_HH__
 
+#include <aether/common/Context.hh>
 #include <aether/math/size.hh>
-#include <aether/systems/Window.hh>
+#include <aether/systems/Director.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Resource.hh>
-#include <aether/systems/Director.hh>
-#include <aether/common/Context.hh>
+#include <aether/systems/Window.hh>
+#include <cstdint>
 #include <memory>
 #include <string_view>
-#include <cstdint>
 
 namespace ae {
 
 class Funkin final {
-public:
+  public:
 	Funkin();
 	~Funkin();
 	Funkin(Funkin const&) = delete;
@@ -25,8 +25,8 @@ public:
 	bool init(std::string_view game_title, size<int> game_resolution, int game_fps);
 	void run();
 	[[nodiscard]] Context const& context();
-	
-private:
+
+  private:
 	void shutdown();
 
 	std::shared_ptr<Window> window_;
@@ -37,6 +37,6 @@ private:
 	bool is_initialized_;
 };
 
-}
+} // namespace ae
 
 #endif

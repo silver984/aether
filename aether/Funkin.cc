@@ -1,14 +1,12 @@
 #include <aether/Funkin.hh>
-#include <aether/math/vec2.hh>
 #include <aether/common/log.hh>
 #include <aether/common/timer.hh>
+#include <aether/math/vec2.hh>
 #include <cstdint>
 
 namespace ae {
 
-Funkin::Funkin() :
-	is_initialized_(false)
-{};
+Funkin::Funkin() : is_initialized_(false) {}
 
 Funkin::~Funkin() {
 	if (is_initialized_) {
@@ -28,7 +26,7 @@ bool Funkin::init(std::string_view game_title, size<int> game_resolution, int ga
 		window_ = nullptr;
 
 		errorlog("Failed");
-		
+
 		return false;
 	}
 
@@ -61,7 +59,7 @@ void Funkin::run() {
 		}
 
 		renderer_->start_draw();
-		
+
 		if (!is_window_minimized) {
 			if (director_) {
 				director_->draw_current_state();
@@ -102,4 +100,4 @@ void Funkin::shutdown() {
 	infolog("Done | took {}ms", end_time);
 }
 
-}
+} // namespace ae

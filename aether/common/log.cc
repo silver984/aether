@@ -1,47 +1,46 @@
 #include <aether/common/log.hh>
-#include <fmt/chrono.h>
-#include <chrono>
 #include <algorithm>
-#include <fstream>
+#include <chrono>
 #include <filesystem>
+#include <fmt/chrono.h>
+#include <fstream>
 
 namespace {
 
 std::string_view function_name(std::source_location const& loc) {
 #ifdef _MSC_VER
-    std::string_view func = loc.function_name();
+	std::string_view func = loc.function_name();
 
-    // cut at '(' early
-    if (auto end = func.find('('); end != std::string_view::npos) {
-        func = func.substr(0, end);
-    }
+	// cut at '(' early
+	if (auto end = func.find('('); end != std::string_view::npos) {
+		func = func.substr(0, end);
+	}
 
-    // remove trailing spaces
-    while (!func.empty() && func.back() == ' ') {
-        func.remove_suffix(1);
-    }
+	// remove trailing spaces
+	while (!func.empty() && func.back() == ' ') {
+		func.remove_suffix(1);
+	}
 
-    // remove calling conventions
-    constexpr std::string_view cc_tokens[] = {
-        "__cdecl", "__stdcall", "__fastcall", "__vectorcall"
-    };
+	// remove calling conventions
+	constexpr std::string_view cc_tokens[] = {
+		"__cdecl", "__stdcall", "__fastcall", "__vectorcall"};
 
-    for (auto cc : cc_tokens) {
-        if (auto pos = func.find(cc); pos != std::string_view::npos) {
-            // erase token + surrounding space if present
-            auto after = pos + cc.size();
-            func.remove_prefix(after < func.size() ? after + 1 : after);
-        }
-    }
+	for (auto cc : cc_tokens) {
+		if (auto pos = func.find(cc); pos != std::string_view::npos) {
+			// erase token + surrounding space if present
+			auto after = pos + cc.size();
+			func.remove_prefix(after < func.size() ? after + 1 : after);
+		}
+	}
 
-    // 5. trim again (msvc sometimes leaves leading space)
-    while (!func.empty() && func.front() == ' ') {
-        func.remove_prefix(1);
-    }
+	// 5. trim again (msvc sometimes leaves leading space)
+	while (!func.empty() && func.front() == ' ') {
+		func.remove_prefix(1);
+	}
 
-    return func;
+	return func;
 #else
-    return loc.function_name();
+	return loc.function_name();
 #endif
 }
 
@@ -66,11 +65,12 @@ std::string file_time_str() {
 
 std::filesystem::path log_file_path;
 
-}
+} // namespace
 
 namespace ae::log::impl {
 
-void print(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
+void print(std::string_view msg, std::string_view level,
+		   fmt::color level_color, std::source_location const& loc) {
 	std::string time_and_loc_str = fmt::format("{:<12} {} ", time_str(), function_name(loc));
 	std::string level_str = fmt::format("[{}] ", level);
 
@@ -97,4 +97,4 @@ void create_log_file() {
 	file.close();
 }
 
-}
+} // namespace ae::log::impl

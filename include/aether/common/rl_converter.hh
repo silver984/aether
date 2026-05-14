@@ -17,6 +17,6 @@ Matrix as_matrix(mat3 const& matrix);
 Color as_color(rgba color);
 Rectangle as_rectangle(rect<float> rectangle);
 
-}
+} // namespace ae::rl
 
 #endif

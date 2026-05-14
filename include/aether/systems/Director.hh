@@ -1,39 +1,40 @@
 #ifndef __AETHER_SYSTEMS_DIRECTOR_HH__
 #define __AETHER_SYSTEMS_DIRECTOR_HH__
 
-#include <memory>
 #include <aether/common/Context.hh>
 #include <aether/objects/Node.hh>
+#include <memory>
 
 namespace ae {
 
 class Funkin;
 
 class Director final {
-    friend class Funkin;
-public:
-    Director(Context const& ctx);
-    ~Director();
-    Director(Director const&) = delete;
-    Director(Director&&) = delete;
-    Director& operator=(Director const&) = delete;
-    Director& operator=(Director&&) = delete;
+	friend class Funkin;
 
-    void switch_state(std::shared_ptr<Node>&& new_state);
+  public:
+	Director(Context const& ctx);
+	~Director();
+	Director(Director const&) = delete;
+	Director(Director&&) = delete;
+	Director& operator=(Director const&) = delete;
+	Director& operator=(Director&&) = delete;
 
-private:
-    void try_cleanup();
-    void release_current_state();
-    void release_pending_state();
-    void update_current_state();
-    void draw_current_state();
-    void move_pending_state();
+	void switch_state(std::shared_ptr<Node>&& new_state);
 
-    Context const* const context_;
-    std::shared_ptr<Node> current_state_;
-    std::shared_ptr<Node> pending_state_;
+  private:
+	void try_cleanup();
+	void release_current_state();
+	void release_pending_state();
+	void update_current_state();
+	void draw_current_state();
+	void move_pending_state();
+
+	Context const* const context_;
+	std::shared_ptr<Node> current_state_;
+	std::shared_ptr<Node> pending_state_;
 };
 
-}
+} // namespace ae
 
 #endif

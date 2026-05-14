@@ -1,17 +1,15 @@
-#include <aether/objects/TileMap.hh>
-#include <aether/systems/Resource.hh>
-#include <aether/systems/Renderer.hh>
 #include <aether/common/log.hh>
 #include <aether/math/util.hh>
+#include <aether/objects/TileMap.hh>
+#include <aether/systems/Renderer.hh>
+#include <aether/systems/Resource.hh>
 #include <raylib.h>
 
 namespace ae {
 
-TileMap::TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds) :
-	Node(ctx),
-	file_arg_(std::string(file)),
-	tile_bounds_arg_(math::max(size<int>(1, 1), tile_bounds))
-{}
+TileMap::TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds) : Node(ctx),
+                                                                                     file_arg_(std::string(file)),
+                                                                                     tile_bounds_arg_(math::max(size<int>(1, 1), tile_bounds)) {}
 
 TileMap::~TileMap() = default;
 
@@ -21,22 +19,20 @@ std::string_view ae::TileMap::type() const {
 
 void TileMap::toggle_antialiasing(bool val) const {
 	if (texture_) {
-		SetTextureFilter(*texture_, val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
+		SetTextureFilter(*texture_,
+		                 val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
 	}
 }
 
 vec2<int> TileMap::tile_count() const {
 	if (!texture_) {
 		return {
-			.x = 0,
-			.y = 0
-		};
+		    0,
+		    0};
 	}
 
-	return {
-		.x = texture_->width / tile_bounds_arg_.width,
-		.y = texture_->height / tile_bounds_arg_.height
-	};
+	return {texture_->width / tile_bounds_arg_.width,
+	        texture_->height / tile_bounds_arg_.height};
 }
 
 void TileMap::seek_tile(vec2<int> tile_index) {
@@ -70,14 +66,8 @@ bool TileMap::init() {
 		return false;
 	}
 
-	texture_source_rect_ = {
-		.x = 0,
-		.y = 0,
-		.width = tile_bounds_arg_.width,
-		.height = tile_bounds_arg_.height
-	};
-
-	set_bounds(texture_source_rect_.bounds<int>());
+	texture_source_rect_ = {0, 0, tile_bounds_arg_.width, tile_bounds_arg_.height};
+	set_bounds(size<int>(tile_bounds_arg_.width, tile_bounds_arg_.height));
 	toggle_antialiasing(true);
 	enable_draw();
 
@@ -95,4 +85,4 @@ void TileMap::draw(mat3 const& transform, rgba color) const {
 	renderer->draw_texture(*texture_, texture_source_rect_, transform, color);
 }
 
-}
+} // namespace ae

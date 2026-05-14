@@ -1,15 +1,13 @@
-#include <aether/objects/Sprite.hh>
-#include <aether/systems/Resource.hh>
-#include <aether/systems/Renderer.hh>
 #include <aether/common/log.hh>
+#include <aether/objects/Sprite.hh>
+#include <aether/systems/Renderer.hh>
+#include <aether/systems/Resource.hh>
 #include <raylib.h>
 
 namespace ae {
 
-Sprite::Sprite(Context const& ctx, std::string_view file) :
-	Node(ctx),
-	file_arg_(std::string(file))
-{}
+Sprite::Sprite(Context const& ctx, std::string_view file) : Node(ctx),
+                                                            file_arg_(std::string(file)) {}
 
 Sprite::~Sprite() = default;
 
@@ -19,7 +17,8 @@ std::string_view Sprite::type() const {
 
 void Sprite::toggle_antialiasing(bool val) const {
 	if (texture_) {
-		SetTextureFilter(*texture_, val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
+		SetTextureFilter(*texture_,
+		                 val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
 	}
 }
 
@@ -38,19 +37,9 @@ bool Sprite::set_texture(std::string_view file) {
 		return false;
 	}
 
-	size<int> new_bounds = {
-		.width = texture_->width,
-		.height = texture_->height
-	};
-
+	size<int> new_bounds = {texture_->width, texture_->height};
+	texture_source_rect_ = {0, 0, new_bounds.width, new_bounds.height};
 	set_bounds(new_bounds);
-
-	texture_source_rect_ = {
-		.x = 0,
-		.y = 0,
-		.width = new_bounds.width,
-		.height = new_bounds.height
-	};
 
 	return true;
 }
@@ -80,9 +69,9 @@ void Sprite::set_texture_wrap(texture_wrap type) {
 
 void Sprite::set_texture_source_rect(rect<int> val, bool update_bounds) {
 	texture_source_rect_ = val;
-	
+
 	if (update_bounds) {
-		set_bounds(val.bounds<int>());
+		set_bounds(size<int>(texture_source_rect_.width, texture_source_rect_.height));
 	}
 }
 
@@ -115,4 +104,4 @@ void Sprite::draw(mat3 const& transform, rgba color) const {
 	renderer->draw_texture(*texture_, texture_source_rect_, transform, color);
 }
 
-}
+} // namespace ae

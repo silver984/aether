@@ -6,7 +6,7 @@
 
 namespace ae {
 
-template<typename T>
+template <typename T>
 concept numeric_t = std::is_arithmetic_v<T>;
 
 }

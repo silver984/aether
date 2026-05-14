@@ -1,18 +1,16 @@
-#include <aether/systems/Window.hh>
 #include <aether/common/log.hh>
 #include <aether/math/util.hh>
+#include <aether/systems/Window.hh>
 #ifdef WIN32
 #include <aether/platforms/win32.hh>
 #endif
-#include <raylib.h>
 #include <algorithm>
+#include <raylib.h>
 
 namespace ae {
 
 // private
-Window::Window() :
-	is_initialized_(false)
-{}
+Window::Window() : is_initialized_(false) {}
 
 // private
 Window::~Window() = default;
@@ -54,11 +52,9 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 
 	SetTraceLogCallback([](int, char const*, va_list) {});
 
-	SetConfigFlags(
-		ConfigFlags::FLAG_WINDOW_RESIZABLE |
-		ConfigFlags::FLAG_WINDOW_ALWAYS_RUN |
-		ConfigFlags::FLAG_WINDOW_TRANSPARENT
-	);
+	SetConfigFlags(ConfigFlags::FLAG_WINDOW_RESIZABLE |
+				   ConfigFlags::FLAG_WINDOW_ALWAYS_RUN |
+				   ConfigFlags::FLAG_WINDOW_TRANSPARENT);
 
 	title_ = std::string(title);
 	screen_size_ = math::max(resolution / 2, resolution);
@@ -81,10 +77,10 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 // private
 void Window::shutdown() {
 	CloseWindow();
-	
+
 	debuglog("Closed window");
-	
+
 	is_initialized_ = false;
 }
 
-}
+} // namespace ae

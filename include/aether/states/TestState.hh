@@ -1,22 +1,22 @@
 #ifndef __AETHER_STATES_TESTSTATE_HH__
 #define __AETHER_STATES_TESTSTATE_HH__
 
-#include <aether/objects/abstract/State.hh>
 #include <aether/objects/AnimatedSprite.hh>
 #include <aether/objects/Sprite.hh>
 #include <aether/objects/TileMap.hh>
+#include <aether/objects/abstract/State.hh>
 #include <memory>
 
 class TestState : public ae::Node {
-public:
+  public:
 	TestState(ae::Context const& ctx);
 	~TestState();
 
-protected:
+  protected:
 	bool init() override;
 	void update(float dt) override;
 
-private:
+  private:
 	void update_long_trail();
 
 	std::shared_ptr<ae::AnimatedSprite> animated_;

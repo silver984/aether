@@ -1,28 +1,31 @@
 #ifndef __AETHER_OBJECTS_ANIMATEDSPRITE_HH__
 #define __AETHER_OBJECTS_ANIMATEDSPRITE_HH__
 
-#include <aether/objects/Node.hh>
 #include <aether/graphic/texture_atlas.hh>
 #include <aether/math/rect.hh>
+#include <aether/objects/Node.hh>
 #include <cstddef>
 
 namespace ae {
 
 class AnimatedSprite : public Node {
-public:
-	AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format, std::string_view data_format, int fps);
+  public:
+	AnimatedSprite(Context const& ctx,
+				   std::string_view path,
+				   std::string_view image_format,
+				   std::string_view data_format, int fps);
 	~AnimatedSprite() override;
 
 	[[nodiscard]] std::string_view type() const override;
 	void toggle_antialiasing(bool val) const;
 	void play_anim(std::string_view anim_name, int fps = 0, bool should_loop = false);
 
-protected:
+  protected:
 	bool init() override;
 	void update(float dt) override;
 	void draw(mat3 const& transform, rgba color) const override;
 
-private:
+  private:
 	[[nodiscard]] size<int> calculate_bounds() const;
 
 	std::shared_ptr<texture_atlas> texture_atlas_;
@@ -38,6 +41,6 @@ private:
 	int fps_arg_; // purposefully modifiable
 };
 
-}
+} // namespace ae
 
 #endif

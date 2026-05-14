@@ -1,7 +1,7 @@
-#include <aether/objects/Node.hh>
-#include <aether/systems/Window.hh>
-#include <aether/systems/Renderer.hh>
 #include <aether/math/util.hh>
+#include <aether/objects/Node.hh>
+#include <aether/systems/Renderer.hh>
+#include <aether/systems/Window.hh>
 #include <algorithm>
 #include <cmath>
 
@@ -9,25 +9,23 @@
 
 namespace ae {
 
-Node::Node(Context const& ctx) :
-	context_(&ctx),
-	color_(1.f, 1.f, 1.f, 1.f),
-	combined_color_(color_.r(), color_.g(), color_.b(), color_.a()),
-	transform_(mat3::identity()),
-	bounds_(0, 0),
-	position_(0.f, 0.f),
-	anchor_(0.5f, 0.5f),
-	scale_(1.f, 1.f),
-	skew_(0.f, 0.f),
-	rotation_(0.f),
-	time_scale_(1.f),
-	is_transform_dirty_(false),
-	is_rgba_dirty_(false),
-	is_active_(false),
-	is_draw_enabled_(false),
-	is_visible_(true),
-	is_initialized_(false)
-{}
+Node::Node(Context const& ctx) : context_(&ctx),
+                                 color_(1.f, 1.f, 1.f, 1.f),
+                                 combined_color_(color_.r(), color_.g(), color_.b(), color_.a()),
+                                 transform_(mat3::identity()),
+                                 bounds_(0, 0),
+                                 position_(0.f, 0.f),
+                                 anchor_(0.5f, 0.5f),
+                                 scale_(1.f, 1.f),
+                                 skew_(0.f, 0.f),
+                                 rotation_(0.f),
+                                 time_scale_(1.f),
+                                 is_transform_dirty_(false),
+                                 is_rgba_dirty_(false),
+                                 is_active_(false),
+                                 is_draw_enabled_(false),
+                                 is_visible_(true),
+                                 is_initialized_(false) {}
 
 Node::~Node() = default;
 
@@ -75,6 +73,7 @@ void Node::remove(std::shared_ptr<Node> node) {
 	}
 
 	auto it = std::find(children_.begin(), children_.end(), node);
+
 	if (it == children_.end()) {
 		return;
 	}
@@ -180,7 +179,7 @@ void Node::set_bounds(size<int> val) {
 	}
 
 	bounds_ = val;
-	
+
 	mark_transform_dirty();
 }
 
@@ -194,7 +193,7 @@ void Node::set_position(vec2<float> val) {
 	}
 
 	position_ = val;
-	
+
 	mark_transform_dirty();
 }
 
@@ -206,9 +205,9 @@ void Node::set_anchor(vec2<float> val) {
 	if (anchor_ == val) {
 		return;
 	}
-	
+
 	anchor_ = math::clamp(val, vec2<float>(0.f, 0.f), vec2<float>(1.f, 1.f));
-	
+
 	mark_transform_dirty();
 }
 
@@ -220,9 +219,9 @@ void Node::set_scale(vec2<float> val) {
 	if (scale_ == val) {
 		return;
 	}
-	
+
 	scale_ = val;
-	
+
 	mark_transform_dirty();
 }
 
@@ -231,10 +230,7 @@ void Node::set_scale(float val) {
 		return;
 	}
 
-	scale_ = {
-		.x = val,
-		.y = val
-	};
+	scale_ = {val, val};
 
 	mark_transform_dirty();
 }
@@ -247,9 +243,9 @@ void Node::set_skew(vec2<float> val) {
 	if (skew_ == val) {
 		return;
 	}
-	
+
 	skew_ = val;
-	
+
 	mark_transform_dirty();
 }
 
@@ -263,7 +259,7 @@ void Node::set_rotation(float val) {
 	}
 
 	rotation_ = val;
-	
+
 	mark_transform_dirty();
 }
 
@@ -275,9 +271,9 @@ void Node::set_color(rgba val) {
 	if (color_ == val) {
 		return;
 	}
-	
+
 	color_ = val;
-	
+
 	mark_rgba_dirty();
 }
 
@@ -328,7 +324,7 @@ void Node::draw(mat3 const& transform, rgba color) const {}
 
 // protected
 Context const& Node::context() const {
-	return *context_;
+	return static_cast<Context const&>(*context_);
 }
 
 // private
@@ -443,15 +439,11 @@ void Node::mark_rgba_dirty() {
 
 // private
 mat3 Node::calculate_transform(std::weak_ptr<Node> parent) const {
-	vec2<float> anchor_position = {
-		.x = anchor_.x * bounds_.width,
-		.y = anchor_.y * bounds_.height
-	};
+	vec2<float> anchor_position = {anchor_.x * bounds_.width,
+	                               anchor_.y * bounds_.height};
 
-	vec2<float> skew_rad = {
-		.x = math::degrees_to_radians(skew_.x),
-		.y = math::degrees_to_radians(skew_.y)
-	};
+	vec2<float> skew_rad = {math::degrees_to_radians(skew_.x),
+	                        math::degrees_to_radians(skew_.y)};
 
 	mat3 t = mat3::translation(position_);
 	mat3 r = mat3::rotation(math::degrees_to_radians(rotation_));
@@ -476,4 +468,4 @@ rgba Node::calculate_combined_rgba(std::weak_ptr<Node> parent) const {
 	return color_;
 }
 
-}
+} // namespace ae
