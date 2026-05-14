@@ -12,7 +12,6 @@ mat3::mat3(float m00, float m01, float m02, float m10, float m11, float m12, flo
 mat3 mat3::rotation(float radians) {
 	float c = std::cos(radians);
 	float s = std::sin(radians);
-
 	return mat3(c, -s, 0.f, s, c, 0.f, 0.f, 0.f, 1.f);
 }
 

@@ -51,7 +51,7 @@ bool TestState::init() {
 	// long_->add(long_tail_);
 	// update_long_trail();
 
-	icon_ = ae::Node::create<ae::TileMap>(context(), "resources/bf-old.png", ae::size<int>(150, 150));
+	icon_ = ae::Node::create<ae::TileMap>(context(), "resources/bf-old.png", ae::size<int>{150, 150});
 
 	if (!icon_) {
 		return false;
@@ -80,10 +80,10 @@ void TestState::update(float dt) {
 
 	while (elapsed_ >= 1.f) {
 		if (icon_) {
-			if (icon_->tile_index() == ae::vec2<int>(0, 0)) {
-				icon_->seek_tile(ae::vec2<int>(1, 0));
-			} else if (icon_->tile_index() == ae::vec2<int>(1, 0)) {
-				icon_->seek_tile(ae::vec2<int>(0, 0));
+			if (icon_->tile_index() == ae::vec2<int>{0, 0}) {
+				icon_->seek_tile(ae::vec2<int>{1, 0});
+			} else if (icon_->tile_index() == ae::vec2<int>{1, 0}) {
+				icon_->seek_tile(ae::vec2<int>{0, 0});
 			}
 		}
 
@@ -104,6 +104,5 @@ void TestState::update_long_trail() {
 	}
 
 	ae::vec2<float> v = {p->bounds().width / 2.f, static_cast<float>(p->bounds().height)};
-
 	long_tail_->set_position(v);
 }

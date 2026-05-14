@@ -82,12 +82,13 @@ void AnimatedSprite::update(float dt) {
 		return;
 	}
 
-	auto const& cur_anim_frames   = texture_atlas_->subtextures[cur_anim_name_];
 	float const target_frame_time = 1.f / fps_arg_;
 	frame_elapsed_ += dt;
 
 	// advance a frame
 	while (frame_elapsed_ >= target_frame_time) {
+		auto const& cur_anim_frames = texture_atlas_->subtextures[cur_anim_name_];
+
 		// TODO: non looping animation
 		cur_frame_index_ = (cur_frame_index_ + 1) % cur_anim_frames.size();
 
@@ -117,13 +118,13 @@ size<int> AnimatedSprite::calculate_bounds() const {
 	}
 
 	size<int> avg;
-	int count = 0;
+	size_t count = 0;
 
 	for (auto const& [_, second] : texture_atlas_->subtextures) {
-		count += static_cast<int>(second.size());
+		count += second.size();
 
 		for (auto const& vec : second) {
-			avg += size<int>(vec.source_rect.width, vec.source_rect.height);
+			avg += {vec.source_rect.width, vec.source_rect.height};
 		}
 	}
 

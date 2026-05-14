@@ -23,10 +23,7 @@ bool Funkin::init(std::string_view game_title, size<int> game_resolution, int ga
 
 	if (!window_->init(game_title, game_resolution, game_fps)) {
 		window_.reset();
-		window_ = nullptr;
-
 		errorlog("Failed");
-
 		return false;
 	}
 
@@ -35,15 +32,13 @@ bool Funkin::init(std::string_view game_title, size<int> game_resolution, int ga
 	director_ = std::make_shared<Director>(ctx_);
 	ctx_.store_refs(window_, renderer_, resource_, director_);
 
-	is_initialized_ = true;
-
 	infolog("Initialized");
-
-	return true;
+	return is_initialized_ = true;
 }
 
 void Funkin::run() {
 	if (!is_initialized_) {
+		debuglog("Attempted to run loop uninitialized");
 		return;
 	}
 

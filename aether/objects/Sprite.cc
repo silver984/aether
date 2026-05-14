@@ -60,7 +60,7 @@ void Sprite::set_texture_source_rect(rect<int> val, bool update_bounds) {
 	texture_source_rect_ = val;
 
 	if (update_bounds) {
-		set_bounds(size<int>(texture_source_rect_.width, texture_source_rect_.height));
+		set_bounds({texture_source_rect_.width, texture_source_rect_.height});
 	}
 }
 

@@ -6,7 +6,7 @@
 int main() {
 	ae::Funkin aether;
 
-	if (aether.init("FNF: Aether Engine " AETHER_VERSION, ae::size<int>(1280, 720), 240)) {
+	if (aether.init("FNF: Aether Engine " AETHER_VERSION, {1280, 720}, 240)) {
 		auto& ctx = aether.context();
 
 		if (auto director = ctx.director_wref().lock()) {
