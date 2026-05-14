@@ -32,7 +32,7 @@ class Renderer final {
 	[[nodiscard]] rgba background_rgba() const;
 	void draw_texture(Texture const& texture, rect<int> source_rect,
 	                  mat3 const& transform, rgba color,
-	                  vec2<int> offsets = vec2<int>()) const;
+	                  vec2<int> offsets = {}) const;
 
   private:
 	void start_draw();

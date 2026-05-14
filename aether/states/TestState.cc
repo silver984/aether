@@ -1,4 +1,5 @@
 #include <aether/common/log.hh>
+#include <aether/math/rect.hh>
 #include <aether/states/TestState.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Window.hh>
@@ -11,10 +12,8 @@ TestState::~TestState() = default;
 // protected
 bool TestState::init() {
 	if (auto renderer = context().renderer_wref().lock()) {
-		renderer->set_background_rgba(ae::rgba(ae::rgba::as_float(202),
-		                                       ae::rgba::as_float(255),
-		                                       ae::rgba::as_float(77),
-		                                       ae::rgba::as_float(255)));
+		renderer->set_background_rgba(ae::rgba(ae::rgba::as_float(202), ae::rgba::as_float(255),
+		                                       ae::rgba::as_float(77), ae::rgba::as_float(255)));
 	}
 
 	animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/bf", "png", "xml", 24);
@@ -23,9 +22,9 @@ bool TestState::init() {
 		return false;
 	}
 
-	// if (auto window = context().window_wref().lock()) {
-	// 	animated_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
-	// }
+	if (auto window = context().window_wref().lock()) {
+		animated_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
+	}
 
 	// animated_->play_anim("BF idle dance");
 	add(animated_);

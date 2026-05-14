@@ -30,7 +30,9 @@ rgba Renderer::background_rgba() const {
 	return background_rgba_;
 }
 
-void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color, vec2<int> offsets) const {
+void Renderer::draw_texture(Texture const& texture, rect<int> source_rect,
+                            mat3 const& transform, rgba color,
+                            vec2<int> offsets) const {
 	if (texture.id < 1) {
 		return;
 	}
@@ -47,7 +49,6 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 	}
 
 	size<int> texture_bounds = {texture.width, texture.height};
-
 	vec2<float> offsetsf = {static_cast<float>(offsets.x), static_cast<float>(offsets.y)};
 
 	push_matrix(transform);
@@ -70,45 +71,38 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 	{ // bottom left
 		vec2<float> coord = source_rect.position<float>();
 		coord.y += source_rect.height;
+		vec2<float> v_pos = {0.f, static_cast<float>(source_rect.height)};
 
 		if (flip_x) {
 			coord.x += source_rect.width;
 		}
 
 		define_texture_coord(coord / texture_bounds);
-
-		vec2<float> v_pos = {0.f, static_cast<float>(source_rect.height)};
-
 		define_vertex(v_pos + offsetsf);
 	}
 
 	{ // bottom right
-		vec2<float> coord = source_rect.position<float>();
-		coord += source_rect.bounds<float>();
+		vec2<float> coord = source_rect.position<float>() + source_rect.bounds<float>();
+		vec2<float> v_pos = {static_cast<float>(source_rect.width),
+		                     static_cast<float>(source_rect.height)};
 
 		if (flip_x) {
 			coord.x -= source_rect.width;
 		}
 
 		define_texture_coord(coord / texture_bounds);
-
-		vec2<float> v_pos = {static_cast<float>(source_rect.width),
-		                     static_cast<float>(source_rect.height)};
-
 		define_vertex(v_pos + offsetsf);
 	}
 
 	{ // top right
 		vec2<float> coord = source_rect.position<float>();
+		vec2<float> v_pos = {static_cast<float>(source_rect.width), 0.f};
 
 		if (!flip_x) {
 			coord.x += source_rect.width;
 		}
 
 		define_texture_coord(coord / texture_bounds);
-
-		vec2<float> v_pos = {static_cast<float>(source_rect.width), 0.f};
-
 		define_vertex(v_pos + offsetsf);
 	}
 
