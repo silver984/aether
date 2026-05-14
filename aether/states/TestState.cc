@@ -103,8 +103,7 @@ void TestState::update_long_trail() {
 		return;
 	}
 
-	ae::vec2<float> v = {p->bounds().width / 2.f,
-	                     static_cast<float>(p->bounds().height)};
+	ae::vec2<float> v = {p->bounds().width / 2.f, static_cast<float>(p->bounds().height)};
 
 	long_tail_->set_position(v);
 }

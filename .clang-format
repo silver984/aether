@@ -16,3 +16,7 @@ AllowShortCaseLabelsOnASingleLine: true
 AllowShortLambdasOnASingleLine: Empty
 AllowShortEnumsOnASingleLine: true
 AlignConsecutiveAssignments: Consecutive
+IndentPPDirectives: BeforeHash
+AlignConsecutiveMacros: true
+AlignEscapedNewlines: Right
+SortIncludes: true

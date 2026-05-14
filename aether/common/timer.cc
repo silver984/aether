@@ -1,15 +1,17 @@
 #include <aether/common/timer.hh>
 
+using namespace std::chrono;
+
 namespace ae::timer {
 
-std::chrono::steady_clock::time_point start() {
-	return std::chrono::steady_clock::now();
+steady_clock::time_point start() {
+	return steady_clock::now();
 }
 
-long long end(std::chrono::steady_clock::time_point const& start) {
-	std::chrono::steady_clock::time_point const now = std::chrono::steady_clock::now();
-	std::chrono::milliseconds const ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+long long end(steady_clock::time_point start) {
+	steady_clock::time_point const now = steady_clock::now();
+	milliseconds const ms              = duration_cast<milliseconds>(now - start);
 	return ms.count();
 }
 
-}
+} // namespace ae::timer

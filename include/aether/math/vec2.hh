@@ -3,7 +3,7 @@
 
 #include <aether/math/math_t.hh>
 #include <aether/math/numeric_t.hh>
-#include <cstdint>
+#include <cstddef>
 
 namespace ae {
 

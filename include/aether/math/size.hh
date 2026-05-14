@@ -3,7 +3,7 @@
 
 #include <aether/math/math_t.hh>
 #include <aether/math/numeric_t.hh>
-#include <cstdint>
+#include <cstddef>
 
 namespace ae {
 
@@ -29,7 +29,7 @@ struct size final : math_t<size, T, 2> {
 		return i == 0 ? width : height;
 	}
 
-	T width = T{0};
+	T width  = T{0};
 	T height = T{0};
 };
 

@@ -2,7 +2,7 @@
 #define __AETHER_MATH_MATH_T_HH__
 
 #include <aether/math/numeric_t.hh>
-#include <cstdint>
+#include <cstddef>
 
 namespace ae {
 

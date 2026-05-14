@@ -3,7 +3,7 @@
 
 #include <aether/math/math_t.hh>
 #include <aether/math/numeric_t.hh>
-#include <cstdint>
+#include <cstddef>
 
 namespace ae {
 
@@ -57,9 +57,9 @@ struct rect final : math_t<rect, T, 4> {
 		}
 	}
 
-	T x = T{0};
-	T y = T{0};
-	T width = T{0};
+	T x      = T{0};
+	T y      = T{0};
+	T width  = T{0};
 	T height = T{0};
 };
 
