@@ -23,7 +23,7 @@ std::string_view function_name(std::source_location const& loc) {
 
 	// remove calling conventions
 	constexpr std::string_view cc_tokens[] = {
-		"__cdecl", "__stdcall", "__fastcall", "__vectorcall"};
+	    "__cdecl", "__stdcall", "__fastcall", "__vectorcall"};
 
 	for (auto cc : cc_tokens) {
 		if (auto pos = func.find(cc); pos != std::string_view::npos) {
@@ -69,8 +69,7 @@ std::filesystem::path log_file_path;
 
 namespace ae::log::impl {
 
-void print(std::string_view msg, std::string_view level,
-		   fmt::color level_color, std::source_location const& loc) {
+void print(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
 	std::string time_and_loc_str = fmt::format("{:<12} {} ", time_str(), function_name(loc));
 	std::string level_str = fmt::format("[{}] ", level);
 

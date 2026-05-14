@@ -10,11 +10,11 @@ Vector2 as_vector2(vec2<float> vec2) {
 
 Matrix as_matrix(mat3 const& matrix) {
 	Matrix r{};
-	r.m0 = matrix.m[0][0];
-	r.m4 = matrix.m[0][1];
+	r.m0  = matrix.m[0][0];
+	r.m4  = matrix.m[0][1];
 	r.m12 = matrix.m[0][2];
-	r.m1 = matrix.m[1][0];
-	r.m5 = matrix.m[1][1];
+	r.m1  = matrix.m[1][0];
+	r.m5  = matrix.m[1][1];
 	r.m13 = matrix.m[1][2];
 	r.m10 = 1.f;
 	r.m15 = 1.f;

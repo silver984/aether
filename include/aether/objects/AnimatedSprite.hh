@@ -10,10 +10,8 @@ namespace ae {
 
 class AnimatedSprite : public Node {
   public:
-	AnimatedSprite(Context const& ctx,
-				   std::string_view path,
-				   std::string_view image_format,
-				   std::string_view data_format, int fps);
+	AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
+	               std::string_view data_format, int fps);
 	~AnimatedSprite() override;
 
 	[[nodiscard]] std::string_view type() const override;

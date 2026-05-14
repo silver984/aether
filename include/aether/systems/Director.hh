@@ -15,10 +15,10 @@ class Director final {
   public:
 	Director(Context const& ctx);
 	~Director();
-	Director(Director const&) = delete;
-	Director(Director&&) = delete;
+	Director(Director const&)            = delete;
+	Director(Director&&)                 = delete;
 	Director& operator=(Director const&) = delete;
-	Director& operator=(Director&&) = delete;
+	Director& operator=(Director&&)      = delete;
 
 	void switch_state(std::shared_ptr<Node>&& new_state);
 

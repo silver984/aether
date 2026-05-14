@@ -9,24 +9,13 @@
 
 namespace ae {
 
-Node::Node(Context const& ctx) : context_(&ctx),
-                                 color_(1.f, 1.f, 1.f, 1.f),
+Node::Node(Context const& ctx) : context_(&ctx), color_(1.f, 1.f, 1.f, 1.f),
                                  combined_color_(color_.r(), color_.g(), color_.b(), color_.a()),
-                                 transform_(mat3::identity()),
-                                 bounds_(0, 0),
-                                 position_(0.f, 0.f),
-                                 anchor_(0.5f, 0.5f),
-                                 scale_(1.f, 1.f),
-                                 skew_(0.f, 0.f),
-                                 rotation_(0.f),
-                                 time_scale_(1.f),
-                                 is_transform_dirty_(false),
-                                 is_rgba_dirty_(false),
-                                 is_active_(false),
-                                 is_draw_enabled_(false),
-                                 is_visible_(true),
+                                 transform_(mat3::identity()), bounds_(0, 0), position_(0.f, 0.f),
+                                 anchor_(0.5f, 0.5f), scale_(1.f, 1.f), skew_(0.f, 0.f), rotation_(0.f),
+                                 time_scale_(1.f), is_transform_dirty_(false), is_rgba_dirty_(false),
+                                 is_active_(false), is_draw_enabled_(false), is_visible_(true),
                                  is_initialized_(false) {}
-
 Node::~Node() = default;
 
 void Node::add(std::shared_ptr<Node> node) {
@@ -439,11 +428,8 @@ void Node::mark_rgba_dirty() {
 
 // private
 mat3 Node::calculate_transform(std::weak_ptr<Node> parent) const {
-	vec2<float> anchor_position = {anchor_.x * bounds_.width,
-	                               anchor_.y * bounds_.height};
-
-	vec2<float> skew_rad = {math::degrees_to_radians(skew_.x),
-	                        math::degrees_to_radians(skew_.y)};
+	vec2<float> anchor_position = {anchor_.x * bounds_.width, anchor_.y * bounds_.height};
+	vec2<float> skew_rad = {math::degrees_to_radians(skew_.x), math::degrees_to_radians(skew_.y)};
 
 	mat3 t = mat3::translation(position_);
 	mat3 r = mat3::rotation(math::degrees_to_radians(rotation_));

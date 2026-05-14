@@ -17,10 +17,10 @@ class Window final {
   public:
 	Window();
 	~Window();
-	Window(Window const&) = delete;
-	Window(Window&&) = delete;
+	Window(Window const&)            = delete;
+	Window(Window&&)                 = delete;
 	Window& operator=(Window const&) = delete;
-	Window& operator=(Window&&) = delete;
+	Window& operator=(Window&&)      = delete;
 
 	[[nodiscard]] bool should_close() const;
 	[[nodiscard]] bool is_minimized() const;

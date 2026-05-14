@@ -52,11 +52,10 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 
 	SetTraceLogCallback([](int, char const*, va_list) {});
 
-	SetConfigFlags(ConfigFlags::FLAG_WINDOW_RESIZABLE |
-				   ConfigFlags::FLAG_WINDOW_ALWAYS_RUN |
-				   ConfigFlags::FLAG_WINDOW_TRANSPARENT);
+	SetConfigFlags(ConfigFlags::FLAG_WINDOW_RESIZABLE | ConfigFlags::FLAG_WINDOW_ALWAYS_RUN |
+	               ConfigFlags::FLAG_WINDOW_TRANSPARENT);
 
-	title_ = std::string(title);
+	title_       = std::string(title);
 	screen_size_ = math::max(resolution / 2, resolution);
 
 	InitWindow(screen_size_.width, screen_size_.height, title_.c_str());

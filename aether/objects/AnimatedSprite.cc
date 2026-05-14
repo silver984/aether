@@ -6,17 +6,13 @@
 
 namespace ae {
 
-AnimatedSprite::AnimatedSprite(Context const& ctx,
-                               std::string_view path,
-                               std::string_view image_format,
-                               std::string_view data_format,
-                               int fps) : Node(ctx),
-                                          frame_elapsed_(0.f),
-                                          cur_frame_index_(0),
-                                          path_arg_(std::string(path)),
-                                          image_format_arg_(std::string(image_format)),
-                                          data_format_arg_(std::string(data_format)),
-                                          fps_arg_(std::max(1, fps)) {}
+AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
+                               std::string_view data_format, int fps) : Node(ctx), frame_elapsed_(0.f),
+                                                                        cur_frame_index_(0),
+                                                                        path_arg_(std::string(path)),
+                                                                        image_format_arg_(std::string(image_format)),
+                                                                        data_format_arg_(std::string(data_format)),
+                                                                        fps_arg_(std::max(1, fps)) {}
 
 AnimatedSprite::~AnimatedSprite() = default;
 

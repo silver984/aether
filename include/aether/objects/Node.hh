@@ -26,7 +26,7 @@ class Node : public std::enable_shared_from_this<Node> {
 	virtual ~Node();
 
 	template <typename T, typename... va>
-		requires std::is_base_of_v<Node, T>
+	    requires std::is_base_of_v<Node, T>
 	static std::shared_ptr<T> create(Context const& ctx, va&&... args) {
 		std::shared_ptr<T> ptr = std::make_shared<T>(ctx, std::forward<va>(args)...);
 

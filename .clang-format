@@ -8,5 +8,11 @@ DerivePointerAlignment: false
 PointerAlignment: Left
 QualifierAlignment: Right
 NamespaceIndentation: None
-AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortLambdasOnASingleLine: Empty
+AllowShortEnumsOnASingleLine: true
+AlignConsecutiveAssignments: Consecutive

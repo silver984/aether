@@ -24,7 +24,7 @@ struct texture_deleter {
 struct file_path final {
 	static file_path parse(std::string_view file) {
 		std::filesystem::path abs = std::filesystem::absolute(file);
-		std::string ext = abs.extension().string();
+		std::string ext           = abs.extension().string();
 
 		if (!ext.empty() && ext[0] == '.') {
 			// remove the dot from the extension
@@ -34,10 +34,10 @@ struct file_path final {
 		// make extension lowercase
 		std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
 
-		return {.str = abs.string(),
-				.dir = abs.parent_path().string(),
-				.name = abs.stem().string(),
-				.ext = ext};
+		return {.str  = abs.string(),
+		        .dir  = abs.parent_path().string(),
+		        .name = abs.stem().string(),
+		        .ext  = ext};
 	}
 
 	std::string str;
@@ -127,9 +127,12 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 	}
 
 	auto shared = std::shared_ptr<Texture>(new Texture(std::move(tmp)), texture_deleter{});
-	tracelog("Loaded texture ({}) | OpenGL id: {} | bounds: {}x{}", fmt::ptr(shared.get()), shared->id, shared->width, shared->height);
+
+	tracelog("Loaded texture ({}) | OpenGL id: {} | bounds: {}x{}",
+	         fmt::ptr(shared.get()), shared->id, shared->width, shared->height);
 
 	texture_wrefs_[lfile.str] = shared;
+
 	tracelog("Stored to texture references | current size: {}", texture_wrefs_.size());
 
 	auto end_time = timer::end(start_time);
@@ -138,7 +141,8 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 	return shared;
 }
 
-std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_view path, std::string_view image_format, std::string_view data_format) {
+std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_view path, std::string_view image_format,
+                                                                   std::string_view data_format) {
 	file_path lpath = file_path::parse(path);
 
 	if (auto it = texture_atlas_wrefs_.find(lpath.str); it != texture_atlas_wrefs_.end()) {
@@ -153,7 +157,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 	auto load_start_time = timer::start();
 
-	auto shared = std::make_shared<texture_atlas>();
+	auto shared     = std::make_shared<texture_atlas>();
 	shared->texture = load_shared_texture(fmt::format("{}.{}", path, image_format));
 
 	if (!shared->texture) {
@@ -176,7 +180,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 	txml::XMLDocument doc;
 
 	if (txml::XMLError res = doc.LoadFile(data_path.str.c_str());
-		res != txml::XMLError::XML_SUCCESS) {
+	    res != txml::XMLError::XML_SUCCESS) {
 		errorlog("Failed to load XML file");
 		return nullptr;
 	}
@@ -193,7 +197,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 	auto parse_start_time = timer::start();
 
 	for (tinyxml2::XMLElement* elem = root->FirstChildElement("SubTexture");
-		 elem != nullptr; elem = elem->NextSiblingElement("SubTexture")) {
+	     elem != nullptr; elem      = elem->NextSiblingElement("SubTexture")) {
 		char const* full_anim_name_ccptr = elem->Attribute("name");
 
 		if (!full_anim_name_ccptr) {
@@ -222,25 +226,25 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 		texture_atlas::subtexture tmp(index);
 
 		if (txml::XMLError res = elem->QueryIntAttribute("x", &tmp.source_rect.x);
-			res != txml::XMLError::XML_SUCCESS) {
+		    res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no x attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
 		if (txml::XMLError res = elem->QueryIntAttribute("y", &tmp.source_rect.y);
-			res != txml::XMLError::XML_SUCCESS) {
+		    res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no y attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
 		if (txml::XMLError res = elem->QueryIntAttribute("width", &tmp.source_rect.width);
-			res != txml::XMLError::XML_SUCCESS) {
+		    res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no width attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
 		if (txml::XMLError res = elem->QueryIntAttribute("height", &tmp.source_rect.height);
-			res != txml::XMLError::XML_SUCCESS) {
+		    res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no height attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
@@ -257,18 +261,19 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 		frame_count += vec.size();
 
 		std::sort(vec.begin(), vec.end(),
-				  [](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
-					  return a.reference_index < b.reference_index;
-				  });
+		          [](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
+			          return a.reference_index < b.reference_index;
+		          });
 	}
 
 	auto parse_end_time = timer::end(parse_start_time);
 	debuglog("Parsing done | took {}ms", parse_end_time);
 
 	tracelog("Loaded texture atlas ({}) | texture: {} | animation count: {} | frame count: {}",
-			 fmt::ptr(shared.get()), fmt::ptr(shared->texture.get()), shared->subtextures.size(), frame_count);
+	         fmt::ptr(shared.get()), fmt::ptr(shared->texture.get()), shared->subtextures.size(), frame_count);
 
 	texture_atlas_wrefs_[lpath.str] = shared;
+
 	tracelog("Stored to texture atlas references | current size: {}", texture_atlas_wrefs_.size());
 
 	auto load_end_time = timer::end(load_start_time);
@@ -305,8 +310,8 @@ size_t Resource::clean_texture_refs() {
 	debuglog("Cleaning texture references");
 
 	auto start_time = timer::start();
-	size_t erased = cleaning_helper(texture_wrefs_);
-	auto end_time = timer::end(start_time);
+	size_t erased   = cleaning_helper(texture_wrefs_);
+	auto end_time   = timer::end(start_time);
 
 	debuglog("Done | erased {} ref/s | took {}ms", erased, end_time);
 
@@ -321,8 +326,8 @@ size_t Resource::clean_texture_atlas_refs() {
 	debuglog("Cleaning texture atlas references");
 
 	auto start_time = timer::start();
-	size_t erased = cleaning_helper(texture_atlas_wrefs_);
-	auto end_time = timer::end(start_time);
+	size_t erased   = cleaning_helper(texture_atlas_wrefs_);
+	auto end_time   = timer::end(start_time);
 
 	debuglog("Done | erased {} ref/s | took {}ms", erased, end_time);
 

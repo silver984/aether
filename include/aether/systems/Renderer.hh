@@ -22,16 +22,15 @@ class Renderer final {
   public:
 	Renderer(Context const& ctx);
 	~Renderer();
-	Renderer(Renderer const&) = delete;
-	Renderer(Renderer&&) = delete;
+	Renderer(Renderer const&)            = delete;
+	Renderer(Renderer&&)                 = delete;
 	Renderer& operator=(Renderer const&) = delete;
-	Renderer& operator=(Renderer&&) = delete;
+	Renderer& operator=(Renderer&&)      = delete;
 
 	[[nodiscard]] size<int> bounds() const;
 	void set_background_rgba(rgba color);
 	[[nodiscard]] rgba background_rgba() const;
-	void draw_texture(Texture const& texture, rect<int> source_rect,
-	                  mat3 const& transform, rgba color,
+	void draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color,
 	                  vec2<int> offsets = {}) const;
 
   private:

@@ -35,10 +35,8 @@ class Context final {
 	[[nodiscard]] uint32_t running_fps() const;
 
   private:
-	void store_refs(std::weak_ptr<Window> window,
-					std::weak_ptr<Renderer> renderer,
-					std::weak_ptr<Resource> resource,
-					std::weak_ptr<Director> director);
+	void store_refs(std::weak_ptr<Window> window, std::weak_ptr<Renderer> renderer, std::weak_ptr<Resource> resource,
+	                std::weak_ptr<Director> director);
 	void update_frame_ctx();
 
 	std::weak_ptr<Window> window_wref_;

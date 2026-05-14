@@ -17,10 +17,10 @@ class Funkin final {
   public:
 	Funkin();
 	~Funkin();
-	Funkin(Funkin const&) = delete;
-	Funkin(Funkin&&) = delete;
+	Funkin(Funkin const&)            = delete;
+	Funkin(Funkin&&)                 = delete;
 	Funkin& operator=(Funkin const&) = delete;
-	Funkin& operator=(Funkin&&) = delete;
+	Funkin& operator=(Funkin&&)      = delete;
 
 	bool init(std::string_view game_title, size<int> game_resolution, int game_fps);
 	void run();

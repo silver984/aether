@@ -30,8 +30,7 @@ rgba Renderer::background_rgba() const {
 	return background_rgba_;
 }
 
-void Renderer::draw_texture(Texture const& texture, rect<int> source_rect,
-                            mat3 const& transform, rgba color,
+void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color,
                             vec2<int> offsets) const {
 	if (texture.id < 1) {
 		return;
@@ -83,8 +82,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect,
 
 	{ // bottom right
 		vec2<float> coord = source_rect.position<float>() + source_rect.bounds<float>();
-		vec2<float> v_pos = {static_cast<float>(source_rect.width),
-		                     static_cast<float>(source_rect.height)};
+		vec2<float> v_pos = {static_cast<float>(source_rect.width), static_cast<float>(source_rect.height)};
 
 		if (flip_x) {
 			coord.x -= source_rect.width;
@@ -181,11 +179,8 @@ mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
 
 	float scale_factor = std::min(scale_ratio.x, scale_ratio.y);
 
-	vec2<float> scaled_size = {screen_size.width * scale_factor,
-	                           screen_size.height * scale_factor};
-
-	vec2<float> offset = {render_bounds.width - scaled_size.x,
-	                      render_bounds.height - scaled_size.y};
+	vec2<float> scaled_size = {screen_size.width * scale_factor, screen_size.height * scale_factor};
+	vec2<float> offset = {render_bounds.width - scaled_size.x, render_bounds.height - scaled_size.y};
 
 	mat3 t = mat3::translation(offset / 2.f);
 	mat3 s = mat3::scale(vec2<float>(scale_factor, scale_factor));

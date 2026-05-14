@@ -4,8 +4,7 @@
 namespace ae {
 
 // private
-Context::Context() : total_time_(0.f),
-					 running_fps_(0) {}
+Context::Context() : total_time_(0.f), running_fps_(0) {}
 
 // private
 Context::~Context() = default;
@@ -39,10 +38,8 @@ uint32_t Context::running_fps() const {
 }
 
 // private
-void Context::store_refs(std::weak_ptr<Window> window,
-						 std::weak_ptr<Renderer> renderer,
-						 std::weak_ptr<Resource> resource,
-						 std::weak_ptr<Director> director) {
+void Context::store_refs(std::weak_ptr<Window> window, std::weak_ptr<Renderer> renderer,
+                         std::weak_ptr<Resource> resource, std::weak_ptr<Director> director) {
 	window_wref_ = std::move(window);
 	renderer_wref_ = std::move(renderer);
 	resource_wref_ = std::move(resource);
