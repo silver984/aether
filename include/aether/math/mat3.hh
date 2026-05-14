@@ -7,9 +7,7 @@ namespace ae {
 
 struct mat3 final {
 	mat3();
-	explicit mat3(float m00, float m01, float m02,
-	              float m10, float m11, float m12,
-	              float m20, float m21, float m22);
+	explicit mat3(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22);
 
 	[[nodiscard]] static mat3 rotation(float radians);
 	[[nodiscard]] static mat3 skew(vec2<float> radians);

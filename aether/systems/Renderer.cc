@@ -11,9 +11,8 @@
 namespace ae {
 
 // private
-Renderer::Renderer(Context const& ctx) : context_(&ctx),
-                                         background_rgba_(0.f, 0.f, 0.f, 1.f),
-                                         transform_(mat3::identity()) {}
+Renderer::Renderer(Context const& ctx)
+    : context_(&ctx), background_rgba_(0.f, 0.f, 0.f, 1.f), transform_(mat3::identity()) {}
 
 // private
 Renderer::~Renderer() = default;
@@ -39,7 +38,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 	bool flip_x = false;
 
 	if (source_rect.width < 0) {
-		flip_x = true;
+		flip_x            = true;
 		source_rect.width = std::abs(source_rect.width);
 	}
 
@@ -48,7 +47,6 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 	}
 
 	size<int> texture_bounds = {texture.width, texture.height};
-	vec2<float> offsetsf = {static_cast<float>(offsets.x), static_cast<float>(offsets.y)};
 
 	push_matrix(transform);
 	rlSetTexture(texture.id);
@@ -64,7 +62,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(offsetsf);
+		define_vertex(static_cast<vec2<float>>(offsets));
 	}
 
 	{ // bottom left
@@ -77,7 +75,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(v_pos + offsetsf);
+		define_vertex(v_pos + offsets);
 	}
 
 	{ // bottom right
@@ -89,7 +87,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(v_pos + offsetsf);
+		define_vertex(v_pos + offsets);
 	}
 
 	{ // top right
@@ -101,7 +99,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(v_pos + offsetsf);
+		define_vertex(v_pos + offsets);
 	}
 
 	rlEnd();
@@ -171,7 +169,7 @@ void Renderer::define_texture_coord(vec2<float> position) const {
 
 // private
 mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
-	auto screen_size = window->screen_size();
+	auto screen_size   = window->screen_size();
 	auto render_bounds = bounds();
 
 	vec2<float> scale_ratio = {static_cast<float>(render_bounds.width) / screen_size.width,
@@ -180,7 +178,7 @@ mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
 	float scale_factor = std::min(scale_ratio.x, scale_ratio.y);
 
 	vec2<float> scaled_size = {screen_size.width * scale_factor, screen_size.height * scale_factor};
-	vec2<float> offset = {render_bounds.width - scaled_size.x, render_bounds.height - scaled_size.y};
+	vec2<float> offset      = {render_bounds.width - scaled_size.x, render_bounds.height - scaled_size.y};
 
 	mat3 t = mat3::translation(offset / 2.f);
 	mat3 s = mat3::scale(vec2<float>(scale_factor, scale_factor));

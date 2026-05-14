@@ -49,18 +49,10 @@ void Sprite::set_texture_wrap(texture_wrap type) {
 
 	switch (type) {
 		using enum texture_wrap;
-	case clamp:
-		SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_CLAMP);
-		break;
-	case repeat:
-		SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_REPEAT);
-		break;
-	case mirror_clamp:
-		SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_MIRROR_CLAMP);
-		break;
-	case mirror_repeat:
-		SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_MIRROR_REPEAT);
-		break;
+	case clamp: SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_CLAMP); break;
+	case repeat: SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_REPEAT); break;
+	case mirror_clamp: SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_MIRROR_CLAMP); break;
+	case mirror_repeat: SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_MIRROR_REPEAT); break;
 	}
 }
 

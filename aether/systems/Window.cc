@@ -2,7 +2,7 @@
 #include <aether/math/util.hh>
 #include <aether/systems/Window.hh>
 #ifdef WIN32
-#include <aether/platforms/win32.hh>
+	#include <aether/platforms/win32.hh>
 #endif
 #include <algorithm>
 #include <raylib.h>
@@ -43,11 +43,11 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 
 #ifdef AETHER_DEBUG
 	log::impl::create_log_file();
-#ifdef WIN32
+	#ifdef WIN32
 	if (!win32::enable_console_colors()) {
 		warninglog("Couldn't enable console colors");
 	}
-#endif
+	#endif
 #endif
 
 	SetTraceLogCallback([](int, char const*, va_list) {});

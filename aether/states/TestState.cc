@@ -10,8 +10,8 @@ TestState::~TestState() = default;
 // protected
 bool TestState::init() {
 	if (auto renderer = context().renderer_wref().lock()) {
-		renderer->set_background_rgba(ae::rgba(ae::rgba::as_float(202), ae::rgba::as_float(255),
-		                                       ae::rgba::as_float(77), ae::rgba::as_float(255)));
+		renderer->set_background_rgba(ae::rgba(ae::rgba::as_float(202), ae::rgba::as_float(255), ae::rgba::as_float(77),
+		                                       ae::rgba::as_float(255)));
 	}
 
 	animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/bf", "png", "xml", 24);

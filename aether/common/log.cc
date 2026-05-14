@@ -22,8 +22,7 @@ std::string_view function_name(std::source_location const& loc) {
 	}
 
 	// remove calling conventions
-	constexpr std::string_view cc_tokens[] = {
-	    "__cdecl", "__stdcall", "__fastcall", "__vectorcall"};
+	constexpr std::string_view cc_tokens[] = {"__cdecl", "__stdcall", "__fastcall", "__vectorcall"};
 
 	for (auto cc : cc_tokens) {
 		if (auto pos = func.find(cc); pos != std::string_view::npos) {
@@ -33,7 +32,7 @@ std::string_view function_name(std::source_location const& loc) {
 		}
 	}
 
-	// 5. trim again (msvc sometimes leaves leading space)
+	// trim again (msvc sometimes leaves leading space)
 	while (!func.empty() && func.front() == ' ') {
 		func.remove_prefix(1);
 	}

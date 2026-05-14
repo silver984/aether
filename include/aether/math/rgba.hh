@@ -9,15 +9,11 @@ namespace ae {
 // i genuinely dont like this type, its kinda ugly
 
 struct rgba final {
-	constexpr rgba() : r_(0.f),
-	                   g_(0.f),
-	                   b_(0.f),
-	                   a_(0.f) {}
+	constexpr rgba() : r_(0.f), g_(0.f), b_(0.f), a_(0.f) {}
 
-	explicit constexpr rgba(float r, float g, float b, float a) : r_(std::clamp(r, 0.f, 1.f)),
-	                                                              g_(std::clamp(g, 0.f, 1.f)),
-	                                                              b_(std::clamp(b, 0.f, 1.f)),
-	                                                              a_(std::clamp(a, 0.f, 1.f)) {}
+	explicit constexpr rgba(float r, float g, float b, float a)
+	    : r_(std::clamp(r, 0.f, 1.f)), g_(std::clamp(g, 0.f, 1.f)), b_(std::clamp(b, 0.f, 1.f)),
+	      a_(std::clamp(a, 0.f, 1.f)) {}
 
 	[[nodiscard]] constexpr float r() const {
 		return r_;

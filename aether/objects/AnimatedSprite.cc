@@ -7,12 +7,10 @@
 namespace ae {
 
 AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
-                               std::string_view data_format, int fps) : Node(ctx), frame_elapsed_(0.f),
-                                                                        cur_frame_index_(0),
-                                                                        path_arg_(std::string(path)),
-                                                                        image_format_arg_(std::string(image_format)),
-                                                                        data_format_arg_(std::string(data_format)),
-                                                                        fps_arg_(std::max(1, fps)) {}
+                               std::string_view data_format, int fps)
+    : Node(ctx), frame_elapsed_(0.f), cur_frame_index_(0), path_arg_(std::string(path)),
+      image_format_arg_(std::string(image_format)), data_format_arg_(std::string(data_format)),
+      fps_arg_(std::max(1, fps)) {}
 
 AnimatedSprite::~AnimatedSprite() = default;
 
@@ -22,8 +20,8 @@ std::string_view AnimatedSprite::type() const {
 
 void AnimatedSprite::toggle_antialiasing(bool val) const {
 	if (texture_atlas_ && texture_atlas_->texture) {
-		SetTextureFilter(*texture_atlas_->texture, val ? TextureFilter::TEXTURE_FILTER_BILINEAR
-		                                               : TextureFilter::TEXTURE_FILTER_POINT);
+		SetTextureFilter(*texture_atlas_->texture,
+		                 val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
 	}
 }
 

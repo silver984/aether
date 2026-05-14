@@ -9,15 +9,16 @@ MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 
 # === Line Breaking ===
-ColumnLimit: 0
+ColumnLimit: 120
 BreakBeforeBraces: Attach
+AlwaysBreakTemplateDeclarations: Yes
 
 # === Pointer & Qualifier Alignment ===
 DerivePointerAlignment: false
 PointerAlignment: Left
 QualifierAlignment: Right
 
-# === Short Statements (AllowShort*) ===
+# === Short Statements ===
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false

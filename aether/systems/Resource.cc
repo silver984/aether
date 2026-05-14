@@ -34,10 +34,7 @@ struct file_path final {
 		// make extension lowercase
 		std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
 
-		return {.str  = abs.string(),
-		        .dir  = abs.parent_path().string(),
-		        .name = abs.stem().string(),
-		        .ext  = ext};
+		return {.str = abs.string(), .dir = abs.parent_path().string(), .name = abs.stem().string(), .ext = ext};
 	}
 
 	std::string str;
@@ -47,8 +44,7 @@ struct file_path final {
 };
 
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
-template <typename T>
-size_t cleaning_helper(ae::string_map<T>& map) {
+template <typename T> size_t cleaning_helper(ae::string_map<T>& map) {
 	size_t erased = 0;
 
 	for (auto it = map.begin(); it != map.end();) {
@@ -66,8 +62,7 @@ size_t cleaning_helper(ae::string_map<T>& map) {
 	return erased;
 }
 #else
-template <typename T>
-void cleaning_helper(ae::string_map<T>& map) {
+template <typename T> void cleaning_helper(ae::string_map<T>& map) {
 	for (auto it = map.begin(); it != map.end();) {
 		auto& weak_ptr = it->second;
 
@@ -128,8 +123,8 @@ std::shared_ptr<Texture> Resource::load_shared_texture(std::string_view file) {
 
 	auto shared = std::shared_ptr<Texture>(new Texture(std::move(tmp)), texture_deleter{});
 
-	tracelog("Loaded texture ({}) | OpenGL id: {} | bounds: {}x{}",
-	         fmt::ptr(shared.get()), shared->id, shared->width, shared->height);
+	tracelog("Loaded texture ({}) | OpenGL id: {} | bounds: {}x{}", fmt::ptr(shared.get()), shared->id, shared->width,
+	         shared->height);
 
 	texture_wrefs_[lfile.str] = shared;
 
@@ -179,8 +174,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 	txml::XMLDocument doc;
 
-	if (txml::XMLError res = doc.LoadFile(data_path.str.c_str());
-	    res != txml::XMLError::XML_SUCCESS) {
+	if (txml::XMLError res = doc.LoadFile(data_path.str.c_str()); res != txml::XMLError::XML_SUCCESS) {
 		errorlog("Failed to load XML file");
 		return nullptr;
 	}
@@ -196,8 +190,8 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 	auto parse_start_time = timer::start();
 
-	for (tinyxml2::XMLElement* elem = root->FirstChildElement("SubTexture");
-	     elem != nullptr; elem      = elem->NextSiblingElement("SubTexture")) {
+	for (tinyxml2::XMLElement* elem = root->FirstChildElement("SubTexture"); elem != nullptr;
+	     elem                       = elem->NextSiblingElement("SubTexture")) {
 		char const* full_anim_name_ccptr = elem->Attribute("name");
 
 		if (!full_anim_name_ccptr) {
@@ -225,14 +219,12 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 		texture_atlas::subtexture tmp(index);
 
-		if (txml::XMLError res = elem->QueryIntAttribute("x", &tmp.source_rect.x);
-		    res != txml::XMLError::XML_SUCCESS) {
+		if (txml::XMLError res = elem->QueryIntAttribute("x", &tmp.source_rect.x); res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no x attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
-		if (txml::XMLError res = elem->QueryIntAttribute("y", &tmp.source_rect.y);
-		    res != txml::XMLError::XML_SUCCESS) {
+		if (txml::XMLError res = elem->QueryIntAttribute("y", &tmp.source_rect.y); res != txml::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no y attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
@@ -260,17 +252,16 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 	for (auto& [_, vec] : shared->subtextures) {
 		frame_count += vec.size();
 
-		std::sort(vec.begin(), vec.end(),
-		          [](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
-			          return a.reference_index < b.reference_index;
-		          });
+		std::sort(vec.begin(), vec.end(), [](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
+			return a.reference_index < b.reference_index;
+		});
 	}
 
 	auto parse_end_time = timer::end(parse_start_time);
 	debuglog("Parsing done | took {}ms", parse_end_time);
 
-	tracelog("Loaded texture atlas ({}) | texture: {} | animation count: {} | frame count: {}",
-	         fmt::ptr(shared.get()), fmt::ptr(shared->texture.get()), shared->subtextures.size(), frame_count);
+	tracelog("Loaded texture atlas ({}) | texture: {} | animation count: {} | frame count: {}", fmt::ptr(shared.get()),
+	         fmt::ptr(shared->texture.get()), shared->subtextures.size(), frame_count);
 
 	texture_atlas_wrefs_[lpath.str] = shared;
 

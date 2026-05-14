@@ -52,9 +52,9 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 			#define tracelog(fmt_str, ...) ae::log::trace(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 			#define debuglog(fmt_str, ...) ae::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 		#else
-			#define tracelog(fmt_str, ...) \
+			#define tracelog(fmt_str, ...)                                                                             \
 				ae::log::trace(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-			#define debuglog(fmt_str, ...) \
+			#define debuglog(fmt_str, ...)                                                                             \
 				ae::log::debug(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
 		#endif
 	#else
@@ -67,11 +67,10 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 		#define warninglog(fmt_str, ...) ae::log::warning(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 		#define errorlog(fmt_str, ...)   ae::log::error(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 	#else
-		#define infolog(fmt_str, ...) \
-			ae::log::info(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-		#define warninglog(fmt_str, ...) \
+		#define infolog(fmt_str, ...) ae::log::info(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
+		#define warninglog(fmt_str, ...)                                                                               \
 			ae::log::warning(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-		#define errorlog(fmt_str, ...) \
+		#define errorlog(fmt_str, ...)                                                                                 \
 			ae::log::error(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
 	#endif
 #else
