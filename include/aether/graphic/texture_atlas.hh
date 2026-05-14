@@ -21,11 +21,7 @@ struct texture_atlas final {
 		rect<int> source_rect;
 		vec2<int> transform_offset;
 	};
-
-	struct deleter {
-		void operator()(texture_atlas* ptr) const;
-	};
-
+	
 	std::shared_ptr<Texture> texture;
 	string_map<std::vector<subtexture>> subtextures;
 };

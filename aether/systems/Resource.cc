@@ -15,7 +15,6 @@ struct texture_deleter {
 	void operator()(Texture* ptr) const {
 		if (ptr && ptr->id > 0) {
 			UnloadTexture(*ptr);
-			tracelog("Unloaded texture ({}) | OpenGL id: {}", fmt::ptr(ptr), ptr->id);
 		}
 
 		delete ptr;
@@ -58,12 +57,8 @@ size_t cleaning_helper(ae::string_map<T>& map) {
 		auto& weak_ptr = it->second;
 
 		if (weak_ptr.expired()) {
-			auto name = it->first;
 			it = map.erase(it);
 			erased++;
-
-			tracelog("Erased \"{}\"", name);
-
 			continue;
 		}
 
@@ -160,7 +155,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 	auto load_start_time = timer::start();
 
-	auto shared = std::shared_ptr<texture_atlas>(new texture_atlas(), texture_atlas::deleter{});
+	auto shared = std::make_shared<texture_atlas>();
 	shared->texture = load_shared_texture(fmt::format("{}.{}", path, image_format));
 
 	if (!shared->texture) {

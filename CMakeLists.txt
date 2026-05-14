@@ -41,12 +41,19 @@ include(cmake/dependencies.cmake)
 aether_fetch_dependencies(${AETHER})
 
 if (WIN32)
-    # only allow the console on debug
-    target_link_options(${AETHER}
-        PRIVATE
+    # MinGW (GCC)
+    if (MINGW OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        target_link_options(${AETHER} PRIVATE
+            $<$<CONFIG:Debug>:-mconsole>
+            $<$<NOT:$<CONFIG:Debug>>:-mwindows>
+        )
+    else()
+        # MSVC
+        target_link_options(${AETHER} PRIVATE
             $<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>
-            $<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup>
-    )
+            $<$<NOT:$<CONFIG:Debug>>:/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup>
+        )
+    endif()
 endif()
 
 add_custom_command(TARGET ${AETHER} POST_BUILD

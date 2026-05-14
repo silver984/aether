@@ -17,41 +17,56 @@ jobs:
         include:
           - os: Windows
             runner: windows-latest
-            cmake_preset: aether-debug
+            cmake_preset: debug
 
           - os: Windows
             runner: windows-latest
-            cmake_preset: aether-debug-verbose
-
+            cmake_preset: debug-verbose
+            
           - os: Windows
             runner: windows-latest
-            cmake_preset: aether-release
+            cmake_preset: release
             artifact_name: windows
 
-          - os: Linux
-            runner: ubuntu-latest
-            cmake_preset: aether-debug
+          - os: Windows
+            runner: windows-latest
+            cmake_preset: debug-mingw
+            use_mingw: true
+
+          - os: Windows
+            runner: windows-latest
+            cmake_preset: debug-verbose-mingw
+            use_mingw: true
+
+          - os: Windows
+            runner: windows-latest
+            cmake_preset: release-mingw
+            use_mingw: true
 
           - os: Linux
             runner: ubuntu-latest
-            cmake_preset: aether-debug-verbose
+            cmake_preset: debug
 
           - os: Linux
             runner: ubuntu-latest
-            cmake_preset: aether-release
+            cmake_preset: debug-verbose
+
+          - os: Linux
+            runner: ubuntu-latest
+            cmake_preset: release
             artifact_name: linux-ubuntu
 
           - os: macOS
             runner: macos-latest
-            cmake_preset: aether-debug
+            cmake_preset: debug
 
           - os: macOS
             runner: macos-latest
-            cmake_preset: aether-debug-verbose
+            cmake_preset: debug-verbose
 
           - os: macOS
             runner: macos-latest
-            cmake_preset: aether-release
+            cmake_preset: release
             artifact_name: macos
 
     steps:
@@ -82,10 +97,21 @@ jobs:
       - name: Setup Ninja
         uses: seanmiddleditch/gha-setup-ninja@v5
 
-      - name: Setup MSVC (Windows)
-        if: runner.os == 'Windows'
+      # MSVC setup (Windows, non-MinGW)
+      - name: Setup MSVC (Windows MSVC builds)
+        if: runner.os == 'Windows' && !matrix.use_mingw
         uses: ilammy/msvc-dev-cmd@v1
+      
+      # MSYS2 setup (Windows MinGW builds)
+      - name: Setup MSYS2 (Windows MinGW builds)
+        if: runner.os == 'Windows' && matrix.use_mingw
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+          update: true
 
+      # Linux dependencies
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
@@ -98,15 +124,36 @@ jobs:
             libxi-dev \
             libgl1-mesa-dev
 
-      - name: Configure CMake
+      # ------------------------------------------------------------
+      # General builds (MSVC on Windows, default compilers on Linux/macOS)
+      # ------------------------------------------------------------
+      - name: Configure CMake (General)
+        if: runner.os != 'Windows' || !matrix.use_mingw
         run: cmake --preset ${{ matrix.cmake_preset }}
 
-      - name: Build
+      - name: Build (General)
+        if: runner.os != 'Windows' || !matrix.use_mingw
         run: cmake --build --preset ${{ matrix.cmake_preset }}
-        
+
+      # ------------------------------------------------------------
+      # MinGW builds on Windows (use MSYS2 shell)
+      # ------------------------------------------------------------
+      - name: Configure CMake (MinGW)
+        if: runner.os == 'Windows' && matrix.use_mingw
+        shell: msys2 {0}
+        run: cmake --preset ${{ matrix.cmake_preset }}
+
+      - name: Build (MinGW)
+        if: runner.os == 'Windows' && matrix.use_mingw
+        shell: msys2 {0}
+        run: cmake --build --preset ${{ matrix.cmake_preset }}
+
+      # ------------------------------------------------------------
+      # Upload artifact (only for release builds, excluding MinGW)
+      # ------------------------------------------------------------
       - name: Upload artifact
-        if: contains(matrix.cmake_preset, 'release')
+        if: contains(matrix.cmake_preset, 'release') && !matrix.use_mingw
         uses: actions/upload-artifact@v4
         with:
-          name: aether${{ steps.git.outputs.short_sha }}-${{ steps.version.outputs.version }}-${{ matrix.artifact_name }}
+          name: aether-${{ steps.version.outputs.version }}-${{ matrix.artifact_name }}
           path: build/${{ matrix.cmake_preset }}/bin

@@ -2,45 +2,77 @@
   "version": 2,
   "configurePresets": [
     {
-      "name": "aether",
+      "name": "base",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}"
     },
     {
-      "name": "aether-debug",
-      "inherits": "aether",
+      "name": "mingw",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "aether-debug-verbose",
-      "inherits": "aether-debug",
+      "name": "debug-mingw",
+      "inherits": ["mingw", "debug"]
+    },
+    {
+      "name": "debug-verbose",
+      "inherits": "debug",
       "cacheVariables": {
         "AETHER_VERBOSE_LOGS": "ON"
       }
     },
     {
-      "name": "aether-release",
-      "inherits": "aether",
+      "name": "debug-verbose-mingw",
+      "inherits": ["mingw", "debug-verbose"]
+    },
+    {
+      "name": "release",
+      "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "name": "release-mingw",
+      "inherits": ["mingw", "release"]
     }
   ],
 
   "buildPresets": [
     {
-      "name": "aether-debug",
-      "configurePreset": "aether-debug"
+      "name": "debug",
+      "configurePreset": "debug"
     },
     {
-      "name": "aether-debug-verbose",
-      "configurePreset": "aether-debug-verbose"
+      "name": "debug-mingw",
+      "configurePreset": "debug-mingw"
     },
     {
-      "name": "aether-release",
-      "configurePreset": "aether-release"
+      "name": "debug-verbose",
+      "configurePreset": "debug-verbose"
+    },
+    {
+      "name": "debug-verbose-mingw",
+      "configurePreset": "debug-verbose-mingw"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "release-mingw",
+      "configurePreset": "release-mingw"
     }
   ]
 }

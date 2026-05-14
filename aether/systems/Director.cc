@@ -50,22 +50,14 @@ void Director::try_cleanup() {
 
 // private
 void Director::release_current_state() {
-	tracelog("Releasing current state ({})", fmt::ptr(current_state_.get()));
-
 	current_state_.reset();
-	current_state_ = nullptr;
-
-	tracelog("Current state released");
+	tracelog("Current state released ({})", fmt::ptr(current_state_.get()));
 }
 
 // private
 void Director::release_pending_state() {
-	tracelog("Releasing pending state ({})", fmt::ptr(pending_state_.get()));
-
 	pending_state_.reset();
-	pending_state_ = nullptr;
-
-	tracelog("Pending state released");
+	tracelog("Pending state released ({})", fmt::ptr(pending_state_.get()));
 }
 
 // private
@@ -97,10 +89,7 @@ void Director::move_pending_state() {
 	}
 
 	current_state_ = std::move(pending_state_);
-	
 	tracelog("Moved pending state to current");
-
-	pending_state_ = nullptr;
 }
 
 }

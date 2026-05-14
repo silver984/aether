@@ -10,11 +10,11 @@ function(fetch dependency_name repo tag)
     FetchContent_MakeAvailable(${dependency_name})
 endfunction()
 
-function(aether_fetch_dependencies aether)
+function(aether_fetch_dependencies target)
     fetch(raylib https://github.com/raysan5/raylib.git 6.0)
     fetch(fmt https://github.com/fmtlib/fmt.git 12.1.0)
     
-    target_link_libraries(${AETHER}
+    target_link_libraries(${target}
         PRIVATE
             raylib
             fmt::fmt

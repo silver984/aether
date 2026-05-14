@@ -28,12 +28,23 @@ void AnimatedSprite::toggle_antialiasing(bool val) const {
 	}
 }
 
-void AnimatedSprite::play_anim(std::string_view anim_name) {
+void AnimatedSprite::play_anim(std::string_view anim_name, int fps, bool should_loop) {
 	if (!texture_atlas_ || !texture_atlas_->subtextures.contains(anim_name)) {
 		return;
 	}
 
-	cur_anim_name_ = std::string(anim_name);
+	// just to avoid string construction when not needed
+	if (cur_anim_name_ != anim_name) {
+		cur_anim_name_ = std::string(anim_name);
+	}
+
+	// reset state
+	cur_frame_index_ = 0;
+	frame_elapsed_ = 0.f;
+
+	if (fps != 0) {
+		fps_arg_ = std::max(1, fps);
+	}
 }
 
 // protected
@@ -52,14 +63,11 @@ bool AnimatedSprite::init() {
 		return false;
 	}
 
-	auto first_animation = texture_atlas_->subtextures.begin();
+	// set default animation
+	auto const first_animation = texture_atlas_->subtextures.begin();
 	auto const& first_frame = first_animation->second.begin();
-
-	// set first frame
 	texture_source_rect_ = first_frame->source_rect;
 	cur_frame_offsets_ = first_frame->transform_offset;
-	
-	// set default animation name
 	cur_anim_name_ = first_animation->first;
 
 	toggle_antialiasing(true);
@@ -77,11 +85,11 @@ void AnimatedSprite::update(float dt) {
 	}
 
 	auto const& cur_anim_frames = texture_atlas_->subtextures[cur_anim_name_];
-	float target_frame_time = 1.f / fps_arg_;
+	float const target_frame_time = 1.f / fps_arg_;
 	frame_elapsed_ += dt;
 
 	// advance a frame
-	while (frame_elapsed_ > target_frame_time) {
+	while (frame_elapsed_ >= target_frame_time) {
 		// TODO: non looping animation
 		cur_frame_index_ = (cur_frame_index_ + 1) % cur_anim_frames.size();
 
@@ -97,7 +105,7 @@ void AnimatedSprite::update(float dt) {
 void AnimatedSprite::draw(mat3 const& transform, rgba color) const {
 	auto renderer = context().renderer_wref().lock();
 
-	if (!renderer || !texture_atlas_) {
+	if (!renderer || !texture_atlas_ || !texture_atlas_->texture) {
 		return;
 	}
 	

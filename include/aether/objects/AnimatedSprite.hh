@@ -15,7 +15,7 @@ public:
 
 	[[nodiscard]] std::string_view type() const override;
 	void toggle_antialiasing(bool val) const;
-	void play_anim(std::string_view anim_name);
+	void play_anim(std::string_view anim_name, int fps = 0, bool should_loop = false);
 
 protected:
 	bool init() override;
@@ -30,6 +30,7 @@ private:
 	vec2<int> cur_frame_offsets_;
 	float frame_elapsed_;
 	size_t cur_frame_index_;
+	bool is_cur_anim_looping_;
 	std::string cur_anim_name_;
 	std::string const path_arg_;
 	std::string const image_format_arg_;
