@@ -24,27 +24,28 @@ struct texture_deleter {
 struct file_path final {
 	static file_path parse(std::string_view file) {
 		std::filesystem::path abs = std::filesystem::absolute(file);
-		std::string ext           = abs.extension().string();
+		std::string extension     = abs.extension().string();
 
-		if (!ext.empty() && ext[0] == '.') {
+		if (!extension.empty() && extension[0] == '.') {
 			// remove the dot from the extension
-			ext.erase(0, 1);
+			extension.erase(0, 1);
 		}
 
 		// make extension lowercase
-		std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
+		std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
 
-		return {.str = abs.string(), .dir = abs.parent_path().string(), .name = abs.stem().string(), .ext = ext};
+		return {.str = abs.string(), .dir = abs.parent_path().string(), .name = abs.stem().string(), .ext = extension};
 	}
 
-	std::string str;
-	std::string dir;
-	std::string name;
-	std::string ext;
+	std::string const str;
+	std::string const dir;
+	std::string const name;
+	std::string const ext;
 };
 
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
-template <typename T> size_t cleaning_helper(ae::string_map<T>& map) {
+template <typename T>
+size_t cleaning_helper(ae::string_map<T>& map) {
 	size_t erased = 0;
 
 	for (auto it = map.begin(); it != map.end();) {
@@ -62,7 +63,8 @@ template <typename T> size_t cleaning_helper(ae::string_map<T>& map) {
 	return erased;
 }
 #else
-template <typename T> void cleaning_helper(ae::string_map<T>& map) {
+template <typename T>
+void cleaning_helper(ae::string_map<T>& map) {
 	for (auto it = map.begin(); it != map.end();) {
 		auto& weak_ptr = it->second;
 

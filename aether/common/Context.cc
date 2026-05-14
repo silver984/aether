@@ -4,7 +4,7 @@
 namespace ae {
 
 // private
-Context::Context() : total_time_(0.f), running_fps_(0) {}
+Context::Context() : total_time_(0.f), frame_elapsed_(0.f), frame_count_(0), running_fps_(0) {}
 
 // private
 Context::~Context() = default;
@@ -48,18 +48,15 @@ void Context::store_refs(std::weak_ptr<Window> window, std::weak_ptr<Renderer> r
 
 // private
 void Context::update_frame_ctx() {
-	static uint32_t frame_count = 0;
-	static float elapsed        = 0.f;
-
 	float dt = delta_time();
-	elapsed += dt;
+	frame_elapsed_ += dt;
 	total_time_ += dt;
-	frame_count++;
+	frame_count_++;
 
-	while (elapsed >= 1.f) {
-		running_fps_ = frame_count;
-		frame_count  = 0;
-		elapsed -= 1.f;
+	while (frame_elapsed_ >= 1.f) {
+		running_fps_ = frame_count_;
+		frame_count_ = 0;
+		frame_elapsed_ -= 1.f;
 	}
 }
 

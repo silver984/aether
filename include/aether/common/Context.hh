@@ -43,6 +43,8 @@ private:
 	std::weak_ptr<Resource> resource_wref_;
 	std::weak_ptr<Director> director_wref_;
 	float total_time_;
+	float frame_elapsed_;
+	uint32_t frame_count_;
 	uint32_t running_fps_;
 };
 

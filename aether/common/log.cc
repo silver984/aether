@@ -26,7 +26,6 @@ std::string_view function_name(std::source_location const& loc) {
 
 	for (auto cc : cc_tokens) {
 		if (auto pos = func.find(cc); pos != std::string_view::npos) {
-			// erase token + surrounding space if present
 			auto after = pos + cc.size();
 			func.remove_prefix(after < func.size() ? after + 1 : after);
 		}
@@ -39,6 +38,7 @@ std::string_view function_name(std::source_location const& loc) {
 
 	return func;
 #else
+	// TODO: MinGW
 	return loc.function_name();
 #endif
 }
