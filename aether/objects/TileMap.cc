@@ -63,7 +63,7 @@ bool TileMap::init() {
 
 	texture_source_rect_.width  = tile_bounds_arg_.width;
 	texture_source_rect_.height = tile_bounds_arg_.height;
-	set_bounds({tile_bounds_arg_.width, tile_bounds_arg_.height});
+	set_bounds({static_cast<int>(tile_bounds_arg_.width), static_cast<int>(tile_bounds_arg_.height)});
 	toggle_antialiasing(true);
 	enable_draw();
 
