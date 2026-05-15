@@ -66,7 +66,7 @@ bool AnimatedSprite::init() {
 	auto const first_animation = texture_atlas_->subtextures.begin();
 	auto const& first_frame    = first_animation->second.begin();
 	texture_source_rect_       = first_frame->source_rect;
-	cur_frame_offsets_         = first_frame->transform_offset;
+	cur_frame_offsets_         = first_frame->offsets;
 	cur_anim_name_             = first_animation->first;
 
 	toggle_antialiasing(true);
@@ -98,7 +98,7 @@ void AnimatedSprite::update(float dt) {
 
 		auto const& cur_anim_frame = cur_anim_frames[cur_frame_index_];
 		texture_source_rect_       = cur_anim_frame.source_rect;
-		cur_frame_offsets_         = cur_anim_frame.transform_offset;
+		cur_frame_offsets_         = cur_anim_frame.offsets;
 
 		frame_elapsed_ -= target_frame_time;
 	}
@@ -112,7 +112,8 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) const {
 		return;
 	}
 
-	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, transform, color, -cur_frame_offsets_);
+	mat3 t = mat3::translation(-static_cast<vec2<float>>(cur_frame_offsets_));
+	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, transform * t, color);
 }
 
 // private

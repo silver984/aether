@@ -77,6 +77,10 @@ void TestState::update(float dt) {
 
 	elapsed_ += dt;
 
+	if (animated_) {
+		animated_->set_rotation(animated_->rotation() + (90.f * dt));
+	}
+
 	while (elapsed_ >= 1.f) {
 		if (icon_) {
 			if (icon_->tile_index() == ae::vec2<int>{0, 0}) {
@@ -86,7 +90,9 @@ void TestState::update(float dt) {
 			}
 		}
 
-		animated_->play_anim("boyfriend icon instance 1");
+		if (animated_) {
+			animated_->play_anim("boyfriend icon instance 1");
+		}
 
 		elapsed_ -= 1.f;
 	}

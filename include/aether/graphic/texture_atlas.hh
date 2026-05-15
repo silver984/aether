@@ -17,7 +17,7 @@ struct texture_atlas final {
 
 		int reference_index;
 		rect<int> source_rect;
-		vec2<int> transform_offset;
+		vec2<int> offsets;
 	};
 
 	std::shared_ptr<Texture> texture;

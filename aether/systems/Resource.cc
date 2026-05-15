@@ -243,8 +243,8 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 			continue;
 		}
 
-		elem->QueryIntAttribute("frameX", &tmp.transform_offset.x);
-		elem->QueryIntAttribute("frameY", &tmp.transform_offset.y);
+		elem->QueryIntAttribute("frameX", &tmp.offsets.x);
+		elem->QueryIntAttribute("frameY", &tmp.offsets.y);
 
 		shared->subtextures[anim_name].emplace_back(std::move(tmp));
 	}

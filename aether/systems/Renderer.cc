@@ -28,8 +28,7 @@ rgba Renderer::background_rgba() const {
 	return background_rgba_;
 }
 
-void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color,
-                            vec2<int> offsets) const {
+void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color) const {
 	if (texture.id < 1) {
 		return;
 	}
@@ -61,44 +60,41 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(static_cast<vec2<float>>(offsets));
+		define_vertex({});
 	}
 
 	{ // bottom left
 		vec2<float> coord = source_rect.position<float>();
 		coord.y += static_cast<float>(source_rect.height);
-		vec2<float> v_pos = {0.f, static_cast<float>(source_rect.height)};
 
 		if (flip_x) {
 			coord.x += static_cast<float>(source_rect.width);
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(v_pos + offsets);
+		define_vertex({0.f, static_cast<float>(source_rect.height)});
 	}
 
 	{ // bottom right
 		vec2<float> coord = source_rect.position<float>() + source_rect.bounds<float>();
-		vec2<float> v_pos = {static_cast<float>(source_rect.width), static_cast<float>(source_rect.height)};
 
 		if (flip_x) {
 			coord.x -= static_cast<float>(source_rect.width);
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(v_pos + offsets);
+		define_vertex({static_cast<float>(source_rect.width), static_cast<float>(source_rect.height)});
 	}
 
 	{ // top right
 		vec2<float> coord = source_rect.position<float>();
-		vec2<float> v_pos = {static_cast<float>(source_rect.width), 0.f};
 
 		if (!flip_x) {
 			coord.x += static_cast<float>(source_rect.width);
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex(v_pos + offsets);
+		define_vertex({static_cast<float>(source_rect.width), 0.f});
 	}
 
 	rlEnd();
