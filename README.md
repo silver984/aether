@@ -4,12 +4,12 @@
 </div>
 
 <div align="center">
-    <a href="https://github.com/silver984/AetherEngine/actions"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/silver984/AetherEngine/multi-platform.yml?style=for-the-badge&label=build status"></a>
+    <a href="https://github.com/silver984/AetherEngine/actions"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/silver984/AetherEngine/multi-platform.yml?style=for-the-badge&label=build"></a>
     <img alt="Repo size" src="https://img.shields.io/github/repo-size/silver984/AetherEngine?style=for-the-badge">
     <img alt="Supported platforms" src="https://img.shields.io/badge/supported_platforms-windows,_linux,_macOS-blue?style=for-the-badge">
 </div>
 
----
+#
 
 <div align="center">
     <img src="https://raw.githubusercontent.com/FunkinCrew/Funkin/refs/heads/main/docs/readme_images/FNF_logo.png" width="400">
@@ -28,4 +28,4 @@ Links:
 - [Download Android builds from Google Play!](https://play.google.com/store/apps/details?id=me.funkin.fnf)
 - [Download iOS builds from the App Store!](https://apps.apple.com/app/id6740428530)
 
----
+#
