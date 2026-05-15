@@ -18,7 +18,7 @@ bool TestState::init() {
 			bf->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
 		}
 
-		bf->play_anim("BF dies", true);
+		bf->play_anim("BF idle dance", true);
 		add(bf);
 	}
 

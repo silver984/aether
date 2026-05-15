@@ -28,14 +28,21 @@ void AnimatedSprite::toggle_antialiasing(bool val) const {
 	}
 }
 
-void AnimatedSprite::play_anim(std::string_view anim_name, bool should_loop, int fps) {
-	if (!texture_atlas_ || !texture_atlas_->subtextures.contains(anim_name)) {
+void AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop, int fps) {
+	if (!texture_atlas_) {
+		debuglog("Attempted to play animation with nullptr texture atlas");
+		return;
+	}
+
+	if (!texture_atlas_->subtextures.contains(animation_name)) {
+		debuglog("Attempted to play animation not found from texture atlas | animation name: \"{}\"", animation_name);
 		return;
 	}
 
 	// just to avoid string construction when not needed
-	if (current_anim_name_ != anim_name) {
-		current_anim_name_ = std::string(anim_name);
+	if (current_animation_name_ != animation_name) {
+		current_animation_name_ = std::string(animation_name);
+		animation_reset_        = true;
 	}
 
 	// reset state
@@ -47,8 +54,6 @@ void AnimatedSprite::play_anim(std::string_view anim_name, bool should_loop, int
 	if (fps != 0) {
 		fps_arg_ = std::max(1, fps);
 	}
-
-	animation_reset_ = true;
 }
 
 // protected
@@ -69,11 +74,11 @@ bool AnimatedSprite::init() {
 
 	// set default animation
 	auto const first_animation     = texture_atlas_->subtextures.begin();
-	auto const& first_subtexture   = first_animation->second.begin();
-	current_anim_name_             = first_animation->first;
-	texture_source_rect_           = first_subtexture->source_rect;
-	current_subtexture_offsets_    = first_subtexture->offsets;
-	is_current_subtexture_rotated_ = first_subtexture->is_rotated;
+	auto const& first_subtexture   = first_animation->second.front();
+	current_animation_name_        = first_animation->first;
+	texture_source_rect_           = first_subtexture.source_rect;
+	current_subtexture_offsets_    = first_subtexture.offsets;
+	is_current_subtexture_rotated_ = first_subtexture.is_rotated;
 	is_subtexture_transform_dirty_ = true;
 
 	toggle_antialiasing(true);
@@ -86,10 +91,6 @@ bool AnimatedSprite::init() {
 
 // protected
 void AnimatedSprite::update(float dt) {
-	if (!texture_atlas_) {
-		return;
-	}
-
 	float const target_subtexture_time = 1.f / fps_arg_;
 	subtexture_elapsed_ += dt;
 
@@ -109,7 +110,7 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 	}
 
 	if (is_subtexture_transform_dirty_) {
-		mat3 t                         = mat3::translation(-(static_cast<vec2<float>>(current_subtexture_offsets_)));
+		mat3 const t                   = mat3::translation(-(static_cast<vec2<float>>(current_subtexture_offsets_)));
 		subtexture_transform_          = transform * t;
 		is_subtexture_transform_dirty_ = false;
 	}
@@ -120,7 +121,15 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 
 // private
 void AnimatedSprite::progress_frame() {
-	auto const& current_animation = texture_atlas_->subtextures[current_anim_name_];
+	if (!texture_atlas_) {
+		return;
+	}
+
+	if (texture_atlas_->subtextures.empty()) {
+		return;
+	}
+
+	auto const& current_animation = texture_atlas_->subtextures[current_animation_name_];
 
 	if (animation_reset_) {
 		set_bounds(calculate_bounds(current_animation));
@@ -149,10 +158,6 @@ void AnimatedSprite::progress_frame() {
 
 // private
 size<int> AnimatedSprite::calculate_bounds(std::vector<texture_atlas::subtexture> const& animation) const {
-	if (!texture_atlas_) {
-		return {};
-	}
-
 	size<int> ret;
 
 	for (auto const& subtexture : animation) {

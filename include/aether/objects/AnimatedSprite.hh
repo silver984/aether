@@ -8,6 +8,8 @@
 
 namespace ae {
 
+class Renderer;
+
 class AnimatedSprite : public Node {
 public:
 	AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
@@ -16,7 +18,7 @@ public:
 
 	[[nodiscard]] std::string_view type() const override;
 	void toggle_antialiasing(bool val) const;
-	void play_anim(std::string_view anim_name, bool should_loop = false, int fps = 0);
+	void play_anim(std::string_view animation_name, bool should_loop = false, int fps = 0);
 
 protected:
 	bool init() override;
@@ -24,6 +26,7 @@ protected:
 	void draw(mat3 const& transform, rgba color) override;
 
 private:
+	using Node::set_bounds;
 	void progress_frame();
 	[[nodiscard]] size<int> calculate_bounds(std::vector<texture_atlas::subtexture> const& animation) const;
 
@@ -37,7 +40,7 @@ private:
 	bool is_current_subtexture_rotated_;
 	bool is_subtexture_transform_dirty_;
 	mat3 subtexture_transform_;
-	std::string current_anim_name_;
+	std::string current_animation_name_;
 	std::string const path_arg_;
 	std::string const image_format_arg_;
 	std::string const data_format_arg_;
