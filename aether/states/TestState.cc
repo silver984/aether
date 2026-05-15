@@ -93,10 +93,10 @@ void TestState::update(float dt) {
 
 	while (elapsed_ >= 1.f) {
 		if (icon_) {
-			if (icon_->tile_index() == ae::vec2<int>{0, 0}) {
-				icon_->seek_tile(ae::vec2<int>{1, 0});
-			} else if (icon_->tile_index() == ae::vec2<int>{1, 0}) {
-				icon_->seek_tile(ae::vec2<int>{0, 0});
+			if (icon_->tile_index() == ae::vec2<uint32_t>(0, 0)) {
+				icon_->seek_tile({1, 0});
+			} else if (icon_->tile_index() == ae::vec2<uint32_t>(1, 0)) {
+				icon_->seek_tile({0, 0});
 			}
 		}
 

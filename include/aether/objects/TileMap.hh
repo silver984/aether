@@ -3,6 +3,7 @@
 
 #include <aether/math/rect.hh>
 #include <aether/objects/Node.hh>
+#include <cstdint>
 
 struct Texture;
 
@@ -15,9 +16,9 @@ public:
 
 	[[nodiscard]] std::string_view type() const override;
 	void toggle_antialiasing(bool val) const;
-	[[nodiscard]] vec2<int> tile_count() const;
+	[[nodiscard]] vec2<uint32_t> tile_count() const;
 	void seek_tile(vec2<int> tile_index);
-	[[nodiscard]] vec2<int> tile_index() const;
+	[[nodiscard]] vec2<uint32_t> tile_index() const;
 	// TODO: set_texture
 
 protected:
@@ -27,9 +28,9 @@ protected:
 private:
 	std::shared_ptr<Texture> texture_;
 	rect<int> texture_source_rect_;
-	vec2<int> tile_index_;
+	vec2<uint32_t> tile_index_;
 	std::string const file_arg_;
-	size<int> const tile_bounds_arg_;
+	size<uint32_t> const tile_bounds_arg_;
 };
 
 } // namespace ae

@@ -13,7 +13,7 @@ AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view path, std::s
       is_current_animation_looping_(false), is_current_subtexture_rotated_(false),
       subtexture_transform_(mat3::identity()), path_arg_(std::string(path)),
       image_format_arg_(std::string(image_format)), data_format_arg_(std::string(data_format)),
-      fps_arg_(std::max(1, fps)) {}
+      playback_fps_(std::max(1, fps)) {}
 
 AnimatedSprite::~AnimatedSprite() = default;
 
@@ -52,8 +52,35 @@ void AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop
 
 	// change fps if arg is not default
 	if (fps != 0) {
-		fps_arg_ = std::max(1, fps);
+		playback_fps_ = std::max(1, fps);
 	}
+}
+
+std::vector<std::string> AnimatedSprite::animation_names() const {
+	if (!texture_atlas_ || texture_atlas_->subtextures.empty()) {
+		return {};
+	}
+
+	std::vector<std::string> animation_names;
+	animation_names.reserve(texture_atlas_->subtextures.size());
+
+	for (auto const& [name, _] : texture_atlas_->subtextures) {
+		animation_names.emplace_back(name);
+	}
+
+	return animation_names;
+}
+
+std::string_view AnimatedSprite::current_animation_name() const {
+	return current_animation_name_;
+}
+
+size_t AnimatedSprite::current_subtexture_index() const {
+	return current_subtexture_index_;
+}
+
+uint32_t AnimatedSprite::playback_fps() const {
+	return playback_fps_;
 }
 
 // protected
@@ -90,7 +117,7 @@ bool AnimatedSprite::init() {
 
 // protected
 void AnimatedSprite::update(float dt) {
-	float const target_subtexture_time = 1.f / fps_arg_;
+	float const target_subtexture_time = 1.f / playback_fps_;
 	subtexture_elapsed_ += dt;
 
 	// advance a frame

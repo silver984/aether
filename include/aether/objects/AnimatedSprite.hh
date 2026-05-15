@@ -5,6 +5,7 @@
 #include <aether/math/rect.hh>
 #include <aether/objects/Node.hh>
 #include <cstddef>
+#include <cstdint>
 
 namespace ae {
 
@@ -19,6 +20,10 @@ public:
 	[[nodiscard]] std::string_view type() const override;
 	void toggle_antialiasing(bool val) const;
 	void play_anim(std::string_view animation_name, bool should_loop = false, int fps = 0);
+	[[nodiscard]] std::vector<std::string> animation_names() const;
+	[[nodiscard]] std::string_view current_animation_name() const;
+	[[nodiscard]] size_t current_subtexture_index() const;
+	[[nodiscard]] uint32_t playback_fps() const;
 
 protected:
 	bool init() override;
@@ -43,7 +48,7 @@ private:
 	std::string const path_arg_;
 	std::string const image_format_arg_;
 	std::string const data_format_arg_;
-	int fps_arg_; // purposefully modifiable
+	uint32_t playback_fps_;
 };
 
 } // namespace ae

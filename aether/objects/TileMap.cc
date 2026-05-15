@@ -8,7 +8,8 @@
 namespace ae {
 
 TileMap::TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds)
-    : Node(ctx), file_arg_(std::string(file)), tile_bounds_arg_(math::max({1, 1}, tile_bounds)) {}
+    : Node(ctx), file_arg_(std::string(file)),
+      tile_bounds_arg_(static_cast<size<uint32_t>>(math::max({1, 1}, tile_bounds))) {}
 TileMap::~TileMap() = default;
 
 std::string_view ae::TileMap::type() const {
@@ -21,7 +22,7 @@ void TileMap::toggle_antialiasing(bool val) const {
 	}
 }
 
-vec2<int> TileMap::tile_count() const {
+vec2<uint32_t> TileMap::tile_count() const {
 	if (!texture_) {
 		return {};
 	}
@@ -35,12 +36,12 @@ void TileMap::seek_tile(vec2<int> tile_index) {
 		return;
 	}
 
-	tile_index_            = math::clamp(tile_index, {}, tile_count() - 1);
+	tile_index_ = static_cast<vec2<uint32_t>>(math::clamp(tile_index, {}, static_cast<vec2<int>>(tile_count()) - 1));
 	texture_source_rect_.x = tile_bounds_arg_.width * tile_index_.x;
 	texture_source_rect_.y = tile_bounds_arg_.height * tile_index_.y;
 }
 
-vec2<int> TileMap::tile_index() const {
+vec2<uint32_t> TileMap::tile_index() const {
 	return tile_index_;
 }
 
