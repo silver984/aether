@@ -2,11 +2,12 @@
 #include <aether/common/timer.hh>
 #include <aether/systems/Resource.hh>
 #include <cctype>
+#include <external/nlohmann/json.hpp>
 #include <external/tinyxml2.h>
 #include <filesystem>
 #include <fmt/format.h>
+#include <fstream>
 #include <raylib.h>
-#include <string>
 #include <utility>
 
 namespace {
@@ -77,6 +78,8 @@ void cleaning_helper(ae::string_map<T>& map) {
 	}
 }
 #endif
+
+// std::filesystem::path base_game_assets_path;
 
 } // namespace
 
@@ -276,6 +279,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 	return shared;
 }
 
+// private
 void Resource::try_clean_refs() {
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 	debuglog("Attempting to clean references");
@@ -296,6 +300,7 @@ void Resource::try_clean_refs() {
 }
 
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
+// private
 size_t Resource::clean_texture_refs() {
 	if (texture_wrefs_.empty()) {
 		return 0;
@@ -312,6 +317,7 @@ size_t Resource::clean_texture_refs() {
 	return erased;
 }
 
+// private
 size_t Resource::clean_texture_atlas_refs() {
 	if (texture_atlas_wrefs_.empty()) {
 		return 0;
@@ -328,6 +334,7 @@ size_t Resource::clean_texture_atlas_refs() {
 	return erased;
 }
 #else
+// private
 void Resource::clean_texture_refs() {
 	if (texture_wrefs_.empty()) {
 		return;
@@ -336,6 +343,7 @@ void Resource::clean_texture_refs() {
 	cleaning_helper(texture_wrefs_);
 }
 
+// private
 void Resource::clean_texture_atlas_refs() {
 	if (texture_atlas_wrefs_.empty()) {
 		return;

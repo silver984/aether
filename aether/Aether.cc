@@ -1,4 +1,4 @@
-#include <aether/Funkin.hh>
+#include <aether/Aether.hh>
 #include <aether/common/log.hh>
 #include <aether/common/timer.hh>
 #include <aether/math/vec2.hh>
@@ -6,15 +6,14 @@
 
 namespace ae {
 
-Funkin::Funkin() : is_initialized_(false) {}
-
-Funkin::~Funkin() {
+Aether::Aether() : is_initialized_(false) {}
+Aether::~Aether() {
 	if (is_initialized_) {
 		shutdown();
 	}
 }
 
-bool Funkin::init(std::string_view game_title, size<int> game_resolution, int game_fps) {
+bool Aether::init(std::string_view game_title, size<int> game_resolution, int game_fps) {
 	if (is_initialized_) {
 		return true;
 	}
@@ -36,7 +35,7 @@ bool Funkin::init(std::string_view game_title, size<int> game_resolution, int ga
 	return is_initialized_ = true;
 }
 
-void Funkin::run() {
+void Aether::run() {
 	if (!is_initialized_) {
 		debuglog("Attempted to run loop uninitialized");
 		return;
@@ -67,12 +66,12 @@ void Funkin::run() {
 	shutdown();
 }
 
-Context const& Funkin::context() {
+Context const& Aether::context() {
 	return ctx_;
 }
 
 // private
-void Funkin::shutdown() {
+void Aether::shutdown() {
 	infolog("Shutting down");
 
 	auto start_time = timer::start();

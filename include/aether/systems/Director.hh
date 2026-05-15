@@ -7,10 +7,10 @@
 
 namespace ae {
 
-class Funkin;
+class Aether;
 
 class Director final {
-	friend class Funkin;
+	friend class Aether;
 
 public:
 	Director(Context const& ctx);

@@ -1,5 +1,5 @@
-#ifndef __AETHER_FUNKIN_HH__
-#define __AETHER_FUNKIN_HH__
+#ifndef __AETHER_AETHER_HH__
+#define __AETHER_AETHER_HH__
 
 #include <aether/common/Context.hh>
 #include <aether/math/size.hh>
@@ -13,14 +13,14 @@
 
 namespace ae {
 
-class Funkin final {
+class Aether final {
 public:
-	Funkin();
-	~Funkin();
-	Funkin(Funkin const&)            = delete;
-	Funkin(Funkin&&)                 = delete;
-	Funkin& operator=(Funkin const&) = delete;
-	Funkin& operator=(Funkin&&)      = delete;
+	Aether();
+	~Aether();
+	Aether(Aether const&)            = delete;
+	Aether(Aether&&)                 = delete;
+	Aether& operator=(Aether const&) = delete;
+	Aether& operator=(Aether&&)      = delete;
 
 	bool init(std::string_view game_title, size<int> game_resolution, int game_fps);
 	void run();

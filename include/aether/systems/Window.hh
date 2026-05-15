@@ -9,10 +9,10 @@
 
 namespace ae {
 
-class Funkin;
+class Aether;
 
 class Window final {
-	friend class Funkin;
+	friend class Aether;
 
 public:
 	Window();

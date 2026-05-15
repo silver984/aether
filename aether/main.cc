@@ -1,10 +1,10 @@
-#include <aether/Funkin.hh>
+#include <aether/Aether.hh>
 #include <aether/states/TestState.hh>
 #include <aether/systems/Director.hh>
 #include <aether/version.h>
 
 int main() {
-	ae::Funkin aether;
+	ae::Aether aether;
 
 	if (aether.init("FNF: Aether Engine " AETHER_VERSION, {1280, 720}, 240)) {
 		auto& ctx = aether.context();

@@ -1,7 +1,7 @@
 target_sources(${AETHER}
     PRIVATE
+        Aether.cc
         main.cc
-        Funkin.cc
 )
 
 add_subdirectory(common)

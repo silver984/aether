@@ -1,10 +1,7 @@
-#include <aether/common/log.hh>
-#include <aether/math/rect.hh>
 #include <aether/states/TestState.hh>
 #include <aether/systems/Renderer.hh>
-#include <aether/systems/Window.hh>
 
-TestState::TestState(ae::Context const& ctx) : ae::Node(ctx), elapsed_(0.f) {}
+TestState::TestState(ae::Context const& ctx) : ae::Node(ctx) {}
 TestState::~TestState() = default;
 
 // protected
@@ -13,113 +10,5 @@ bool TestState::init() {
 		renderer->set_background_rgba({202, 255, 77, 255});
 	}
 
-	// if (auto bf = ae::Node::create<ae::AnimatedSprite>(context(), "resources/BOYFRIEND", "png", "xml", 24)) {
-	// 	if (auto window = context().window_wref().lock()) {
-	// 		bf->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
-	// 	}
-
-	// 	bf->play_anim("BF HEY!!", true);
-	// 	add(bf);
-	// }
-
-	animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/spooky_dark", "png", "xml", 24);
-
-	if (!animated_) {
-		return false;
-	}
-
-	if (auto window = context().window_wref().lock()) {
-		animated_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
-	}
-
-	// animated_->play_anim("idle", true);
-	animated_->play_anim("spooky dance idle", true);
-	add(animated_);
-
-	// long_ = ae::Node::create<ae::Sprite>(context(), "resources/long.png");
-
-	// if (!long_) {
-	// 	return false;
-	// }
-
-	// if (auto window = context().window_wref().lock()) {
-	// 	long_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
-	// }
-
-	// long_->set_texture_wrap(ae::texture_wrap::repeat);
-	// long_->set_anchor(ae::vec2<float>(0.5f, 0.f));
-	// long_->set_scale(0.5f);
-	// add(long_);
-
-	// long_tail_ = ae::Node::create<ae::Sprite>(context(), "resources/long-tail.png");
-	// if (!long_tail_) {
-	// 	return false;
-	// }
-
-	// long_tail_->set_anchor(ae::vec2<float>(0.5f, 0.f));
-	// long_->add(long_tail_);
-	// update_long_trail();
-
-	icon_ = ae::Node::create<ae::TileMap>(context(), "resources/bf-old.png", ae::size<int>{150, 150});
-
-	if (!icon_) {
-		return false;
-	}
-
-	icon_->set_position(icon_->position() + 150.f);
-	add(icon_);
-
-	activate();
-
 	return true;
-}
-
-// protected
-void TestState::update(float dt) {
-	// if (long_) {
-	// 	auto v = long_->texture_source_rect();
-	// 	v.height += static_cast<int>(80.f * dt);
-	// 	long_->set_texture_source_rect(v, true);
-	// 	long_->set_rotation(long_->rotation() + (360.f * dt));
-	// }
-
-	// update_long_trail();
-
-	elapsed_ += dt;
-
-	// if (animated_) {
-	// 	animated_->set_rotation(animated_->rotation() - (90.f * dt));
-	// }
-
-	while (elapsed_ >= 1.f) {
-		if (icon_) {
-			if (icon_->tile_index() == ae::vec2<uint32_t>(0, 0)) {
-				icon_->seek_tile({1, 0});
-			} else if (icon_->tile_index() == ae::vec2<uint32_t>(1, 0)) {
-				icon_->seek_tile({0, 0});
-			}
-		}
-
-		// if (animated_) {
-		// 	animated_->play_anim("boyfriend icon instance 1");
-		// }
-
-		elapsed_ -= 1.f;
-	}
-}
-
-// private
-void TestState::update_long_trail() {
-	if (!long_tail_) {
-		return;
-	}
-
-	auto p = long_tail_->parent().lock();
-
-	if (!p) {
-		return;
-	}
-
-	ae::vec2<float> v = {p->bounds().width / 2.f, static_cast<float>(p->bounds().height)};
-	long_tail_->set_position(v);
 }

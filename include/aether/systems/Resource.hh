@@ -3,19 +3,18 @@
 
 #include <aether/common/string_map.hh>
 #include <aether/graphic/texture_atlas.hh>
-#include <cstdint>
+#include <cstddef>
 #include <memory>
-#include <string_view>
 
 struct Texture;
 
 namespace ae {
 
-class Funkin;
+class Aether;
 class Director;
 
 class Resource final {
-	friend class Funkin;
+	friend class Aether;
 	friend class Director;
 
 public:
@@ -27,9 +26,8 @@ public:
 	Resource& operator=(Resource&&)      = delete;
 
 	[[nodiscard]] std::shared_ptr<Texture> load_shared_texture(std::string_view file);
-	[[nodiscard]] std::shared_ptr<texture_atlas> load_shared_texture_atlas(std::string_view path,
-	                                                                       std::string_view image_format,
-	                                                                       std::string_view data_format);
+	[[nodiscard]] std::shared_ptr<texture_atlas>
+	load_shared_texture_atlas(std::string_view path, std::string_view image_format, std::string_view data_format);
 
 private:
 	void try_clean_refs();

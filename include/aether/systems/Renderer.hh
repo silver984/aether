@@ -13,11 +13,11 @@ struct Texture;
 
 namespace ae {
 
-class Funkin;
+class Aether;
 class Window;
 
 class Renderer final {
-	friend class Funkin;
+	friend class Aether;
 
 public:
 	Renderer(Context const& ctx);

@@ -6,14 +6,14 @@
 
 namespace ae {
 
-class Funkin;
+class Aether;
 class Window;
 class Renderer;
 class Resource;
 class Director;
 
 class Context final {
-	friend class Funkin;
+	friend class Aether;
 
 private:
 	Context();
