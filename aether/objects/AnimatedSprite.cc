@@ -1,4 +1,5 @@
 #include <aether/common/log.hh>
+#include <aether/math/util.hh>
 #include <aether/objects/AnimatedSprite.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Resource.hh>
@@ -8,9 +9,9 @@ namespace ae {
 
 AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
                                std::string_view data_format, int fps)
-    : Node(ctx), frame_elapsed_(0.f), cur_frame_index_(0), is_cur_anim_looping_(false), path_arg_(std::string(path)),
-      image_format_arg_(std::string(image_format)), data_format_arg_(std::string(data_format)),
-      fps_arg_(std::max(1, fps)) {}
+    : Node(ctx), frame_elapsed_(0.f), cur_frame_index_(0), is_cur_anim_looping_(false), is_cur_frame_rotated_(false),
+      path_arg_(std::string(path)), image_format_arg_(std::string(image_format)),
+      data_format_arg_(std::string(data_format)), fps_arg_(std::max(1, fps)) {}
 
 AnimatedSprite::~AnimatedSprite() = default;
 
@@ -25,7 +26,7 @@ void AnimatedSprite::toggle_antialiasing(bool val) const {
 	}
 }
 
-void AnimatedSprite::play_anim(std::string_view anim_name, int fps, bool should_loop) {
+void AnimatedSprite::play_anim(std::string_view anim_name, bool should_loop, int fps) {
 	if (!texture_atlas_ || !texture_atlas_->subtextures.contains(anim_name)) {
 		return;
 	}
@@ -67,6 +68,7 @@ bool AnimatedSprite::init() {
 	auto const& first_frame    = first_animation->second.begin();
 	texture_source_rect_       = first_frame->source_rect;
 	cur_frame_offsets_         = first_frame->offsets;
+	is_cur_frame_rotated_      = first_frame->is_rotated;
 	cur_anim_name_             = first_animation->first;
 
 	toggle_antialiasing(true);
@@ -98,6 +100,7 @@ void AnimatedSprite::update(float dt) {
 
 		auto const& cur_anim_frame = cur_anim_frames[cur_frame_index_];
 		texture_source_rect_       = cur_anim_frame.source_rect;
+		is_cur_frame_rotated_      = cur_anim_frame.is_rotated;
 		cur_frame_offsets_         = cur_anim_frame.offsets;
 
 		frame_elapsed_ -= target_frame_time;
@@ -113,7 +116,16 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) const {
 	}
 
 	mat3 t = mat3::translation(-static_cast<vec2<float>>(cur_frame_offsets_));
-	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, transform * t, color);
+	mat3 ltransform;
+
+	if (is_cur_frame_rotated_) {
+		mat3 r     = mat3::rotation(math::degrees_to_radians(-90.f));
+		ltransform = transform * t * r;
+	} else {
+		ltransform = transform * t;
+	}
+
+	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, ltransform, color);
 }
 
 // private
@@ -129,7 +141,8 @@ size<int> AnimatedSprite::calculate_bounds() const {
 		count += second.size();
 
 		for (auto const& vec : second) {
-			avg += {vec.source_rect.width, vec.source_rect.height};
+			avg += {vec.is_rotated ? vec.source_rect.height : vec.source_rect.width,
+			        vec.is_rotated ? vec.source_rect.width : vec.source_rect.height};
 		}
 	}
 

@@ -13,11 +13,19 @@ bool TestState::init() {
 		renderer->set_background_rgba({202, 255, 77, 255});
 	}
 
-	animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/bf", "png", "xml", 24);
+	if (auto bf = ae::Node::create<ae::AnimatedSprite>(context(), "resources/BOYFRIEND", "png", "xml", 24)) {
+		bf->set_position(bf->position() + 400.f);
+		bf->play_anim("BF idle dance", true);
+		add(bf);
+	}
+
+	animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/spooky_dark", "png", "xml", 24);
 
 	if (!animated_) {
 		return false;
 	}
+
+	animated_->play_anim("spooky dance idle", true);
 
 	if (auto window = context().window_wref().lock()) {
 		animated_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
@@ -77,9 +85,9 @@ void TestState::update(float dt) {
 
 	elapsed_ += dt;
 
-	if (animated_) {
-		animated_->set_rotation(animated_->rotation() + (90.f * dt));
-	}
+	// if (animated_) {
+	// 	animated_->set_rotation(animated_->rotation() + (90.f * dt));
+	// }
 
 	while (elapsed_ >= 1.f) {
 		if (icon_) {
@@ -90,9 +98,9 @@ void TestState::update(float dt) {
 			}
 		}
 
-		if (animated_) {
-			animated_->play_anim("boyfriend icon instance 1");
-		}
+		// if (animated_) {
+		// 	animated_->play_anim("boyfriend icon instance 1");
+		// }
 
 		elapsed_ -= 1.f;
 	}
