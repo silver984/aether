@@ -21,9 +21,10 @@ public:
 protected:
 	bool init() override;
 	void update(float dt) override;
-	void draw(mat3 const& transform, rgba color) const override;
+	void draw(mat3 const& transform, rgba color) override;
 
 private:
+	void progress_frame();
 	[[nodiscard]] size<int> calculate_bounds() const;
 
 	std::shared_ptr<texture_atlas> texture_atlas_;
@@ -33,6 +34,8 @@ private:
 	size_t cur_frame_index_;
 	bool is_cur_anim_looping_;
 	bool is_cur_frame_rotated_;
+	bool is_frame_transform_dirty_;
+	mat3 frame_transform_;
 	std::string cur_anim_name_;
 	std::string const path_arg_;
 	std::string const image_format_arg_;

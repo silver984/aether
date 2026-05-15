@@ -306,7 +306,7 @@ bool Node::init() {
 void Node::update(float dt) {}
 
 // protected
-void Node::draw(mat3 const& transform, rgba color) const {}
+void Node::draw(mat3 const& transform, rgba color) {}
 
 // protected
 Context const& Node::context() const {

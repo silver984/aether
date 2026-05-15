@@ -83,7 +83,7 @@ bool Sprite::init() {
 }
 
 // protected
-void Sprite::draw(mat3 const& transform, rgba color) const {
+void Sprite::draw(mat3 const& transform, rgba color) {
 	auto renderer = context().renderer_wref().lock();
 
 	if (!renderer || !texture_) {

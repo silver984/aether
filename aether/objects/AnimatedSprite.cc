@@ -10,8 +10,9 @@ namespace ae {
 AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
                                std::string_view data_format, int fps)
     : Node(ctx), frame_elapsed_(0.f), cur_frame_index_(0), is_cur_anim_looping_(false), is_cur_frame_rotated_(false),
-      path_arg_(std::string(path)), image_format_arg_(std::string(image_format)),
-      data_format_arg_(std::string(data_format)), fps_arg_(std::max(1, fps)) {}
+      is_frame_transform_dirty_(false), frame_transform_(mat3::identity()), path_arg_(std::string(path)),
+      image_format_arg_(std::string(image_format)), data_format_arg_(std::string(data_format)),
+      fps_arg_(std::max(1, fps)) {}
 
 AnimatedSprite::~AnimatedSprite() = default;
 
@@ -66,10 +67,11 @@ bool AnimatedSprite::init() {
 	// set default animation
 	auto const first_animation = texture_atlas_->subtextures.begin();
 	auto const& first_frame    = first_animation->second.begin();
+	cur_anim_name_             = first_animation->first;
 	texture_source_rect_       = first_frame->source_rect;
 	cur_frame_offsets_         = first_frame->offsets;
 	is_cur_frame_rotated_      = first_frame->is_rotated;
-	cur_anim_name_             = first_animation->first;
+	is_frame_transform_dirty_  = true;
 
 	toggle_antialiasing(true);
 	set_bounds(calculate_bounds());
@@ -90,42 +92,57 @@ void AnimatedSprite::update(float dt) {
 
 	// advance a frame
 	while (frame_elapsed_ >= target_frame_time) {
-		auto const& cur_anim_frames = texture_atlas_->subtextures[cur_anim_name_];
-
-		if (is_cur_anim_looping_) {
-			cur_frame_index_ = (cur_frame_index_ + 1) % cur_anim_frames.size();
-		} else {
-			cur_frame_index_ = std::min(cur_frame_index_ + 1, cur_anim_frames.size() - 1);
-		}
-
-		auto const& cur_anim_frame = cur_anim_frames[cur_frame_index_];
-		texture_source_rect_       = cur_anim_frame.source_rect;
-		is_cur_frame_rotated_      = cur_anim_frame.is_rotated;
-		cur_frame_offsets_         = cur_anim_frame.offsets;
-
+		progress_frame();
 		frame_elapsed_ -= target_frame_time;
 	}
 }
 
 // protected
-void AnimatedSprite::draw(mat3 const& transform, rgba color) const {
+void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 	auto renderer = context().renderer_wref().lock();
 
 	if (!renderer || !texture_atlas_ || !texture_atlas_->texture) {
 		return;
 	}
 
-	mat3 t = mat3::translation(-static_cast<vec2<float>>(cur_frame_offsets_));
-	mat3 ltransform;
+	if (is_frame_transform_dirty_) {
+		mat3 t = mat3::translation(-static_cast<vec2<float>>(cur_frame_offsets_));
 
-	if (is_cur_frame_rotated_) {
-		mat3 r     = mat3::rotation(math::degrees_to_radians(-90.f));
-		ltransform = transform * t * r;
-	} else {
-		ltransform = transform * t;
+		if (is_cur_frame_rotated_) {
+			mat3 r           = mat3::rotation(math::degrees_to_radians(-90.f));
+			frame_transform_ = transform * t * r;
+		} else {
+			frame_transform_ = transform * t;
+		}
+
+		is_frame_transform_dirty_ = false;
 	}
 
-	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, ltransform, color);
+	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, frame_transform_, color);
+}
+
+// private
+void AnimatedSprite::progress_frame() {
+	auto const& cur_anim_frames = texture_atlas_->subtextures[cur_anim_name_];
+
+	if (is_cur_anim_looping_) {
+		cur_frame_index_ = (cur_frame_index_ + 1) % cur_anim_frames.size();
+	} else {
+		cur_frame_index_ = std::min(cur_frame_index_ + 1, cur_anim_frames.size() - 1);
+	}
+
+	auto const& cur_anim_frame = cur_anim_frames[cur_frame_index_];
+	texture_source_rect_       = cur_anim_frame.source_rect;
+
+	if (is_cur_frame_rotated_ != cur_anim_frame.is_rotated) {
+		is_cur_frame_rotated_     = cur_anim_frame.is_rotated;
+		is_frame_transform_dirty_ = true;
+	}
+
+	if (cur_frame_offsets_ != cur_anim_frame.offsets) {
+		cur_frame_offsets_        = cur_anim_frame.offsets;
+		is_frame_transform_dirty_ = true;
+	}
 }
 
 // private

@@ -79,7 +79,7 @@ public:
 protected:
 	virtual bool init();
 	virtual void update(float dt);
-	virtual void draw(mat3 const& transform, rgba color) const;
+	virtual void draw(mat3 const& transform, rgba color);
 	[[nodiscard]] Context const& context() const;
 
 private:

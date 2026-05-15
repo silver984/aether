@@ -22,7 +22,7 @@ public:
 
 protected:
 	bool init() override;
-	void draw(mat3 const& transform, rgba color) const override;
+	void draw(mat3 const& transform, rgba color) override;
 
 private:
 	std::shared_ptr<Texture> texture_;

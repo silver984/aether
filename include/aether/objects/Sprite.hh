@@ -8,12 +8,7 @@ struct Texture;
 
 namespace ae {
 
-enum class texture_wrap : int {
-	clamp,
-	repeat,
-	mirror_clamp,
-	mirror_repeat
-};
+enum class texture_wrap : int { clamp, repeat, mirror_clamp, mirror_repeat };
 
 class Resource;
 
@@ -31,7 +26,7 @@ public:
 
 protected:
 	bool init() override;
-	void draw(mat3 const& transform, rgba color) const override;
+	void draw(mat3 const& transform, rgba color) override;
 
 private:
 	std::shared_ptr<Texture> texture_;

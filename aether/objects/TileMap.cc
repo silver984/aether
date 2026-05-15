@@ -70,7 +70,7 @@ bool TileMap::init() {
 }
 
 // protected
-void TileMap::draw(mat3 const& transform, rgba color) const {
+void TileMap::draw(mat3 const& transform, rgba color) {
 	auto renderer = context().renderer_wref().lock();
 
 	if (!renderer || !texture_) {
