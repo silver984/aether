@@ -38,7 +38,6 @@ private:
 	bool animation_reset_;
 	bool is_current_animation_looping_;
 	bool is_current_subtexture_rotated_;
-	bool is_subtexture_transform_dirty_;
 	mat3 subtexture_transform_;
 	std::string current_animation_name_;
 	std::string const path_arg_;

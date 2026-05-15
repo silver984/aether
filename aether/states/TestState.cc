@@ -13,29 +13,28 @@ bool TestState::init() {
 		renderer->set_background_rgba({202, 255, 77, 255});
 	}
 
-	if (auto bf = ae::Node::create<ae::AnimatedSprite>(context(), "resources/BOYFRIEND", "png", "xml", 24)) {
-		if (auto window = context().window_wref().lock()) {
-			bf->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
-		}
+	// if (auto bf = ae::Node::create<ae::AnimatedSprite>(context(), "resources/BOYFRIEND", "png", "xml", 24)) {
+	// 	if (auto window = context().window_wref().lock()) {
+	// 		bf->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
+	// 	}
 
-		bf->play_anim("BF idle dance", true);
-		add(bf);
+	// 	bf->play_anim("BF HEY!!", true);
+	// 	add(bf);
+	// }
+
+	animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/spooky_dark", "png", "xml", 24);
+
+	if (!animated_) {
+		return false;
 	}
 
-	// animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/spooky_dark", "png", "xml", 24);
+	if (auto window = context().window_wref().lock()) {
+		animated_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
+	}
 
-	// if (!animated_) {
-	// 	return false;
-	// }
-
-	// animated_->play_anim("spooky dance idle", true);
-
-	// if (auto window = context().window_wref().lock()) {
-	// 	animated_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
-	// }
-
-	// // animated_->play_anim("BF idle dance");
-	// add(animated_);
+	// animated_->play_anim("idle", true);
+	animated_->play_anim("spooky dance idle", true);
+	add(animated_);
 
 	// long_ = ae::Node::create<ae::Sprite>(context(), "resources/long.png");
 
@@ -89,7 +88,7 @@ void TestState::update(float dt) {
 	elapsed_ += dt;
 
 	// if (animated_) {
-	// 	animated_->set_rotation(animated_->rotation() + (90.f * dt));
+	// 	animated_->set_rotation(animated_->rotation() - (90.f * dt));
 	// }
 
 	while (elapsed_ >= 1.f) {
