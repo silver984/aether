@@ -14,25 +14,28 @@ bool TestState::init() {
 	}
 
 	if (auto bf = ae::Node::create<ae::AnimatedSprite>(context(), "resources/BOYFRIEND", "png", "xml", 24)) {
-		bf->set_position(bf->position() + 400.f);
-		bf->play_anim("BF idle dance", true);
+		if (auto window = context().window_wref().lock()) {
+			bf->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
+		}
+
+		bf->play_anim("BF dies", true);
 		add(bf);
 	}
 
-	animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/spooky_dark", "png", "xml", 24);
+	// animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/spooky_dark", "png", "xml", 24);
 
-	if (!animated_) {
-		return false;
-	}
+	// if (!animated_) {
+	// 	return false;
+	// }
 
-	animated_->play_anim("spooky dance idle", true);
+	// animated_->play_anim("spooky dance idle", true);
 
-	if (auto window = context().window_wref().lock()) {
-		animated_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
-	}
+	// if (auto window = context().window_wref().lock()) {
+	// 	animated_->set_position(static_cast<ae::vec2<float>>(window->screen_size()) / 2.f);
+	// }
 
-	// animated_->play_anim("BF idle dance");
-	add(animated_);
+	// // animated_->play_anim("BF idle dance");
+	// add(animated_);
 
 	// long_ = ae::Node::create<ae::Sprite>(context(), "resources/long.png");
 

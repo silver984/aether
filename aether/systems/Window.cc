@@ -51,9 +51,7 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 #endif
 
 	SetTraceLogCallback([](int, char const*, va_list) {});
-
-	SetConfigFlags(ConfigFlags::FLAG_WINDOW_RESIZABLE | ConfigFlags::FLAG_WINDOW_ALWAYS_RUN |
-	               ConfigFlags::FLAG_WINDOW_TRANSPARENT);
+	SetConfigFlags(ConfigFlags::FLAG_WINDOW_RESIZABLE | ConfigFlags::FLAG_WINDOW_ALWAYS_RUN);
 
 	title_       = std::string(title);
 	screen_size_ = math::max({640, 360}, resolution);

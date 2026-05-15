@@ -25,18 +25,19 @@ protected:
 
 private:
 	void progress_frame();
-	[[nodiscard]] size<int> calculate_bounds() const;
+	[[nodiscard]] size<int> calculate_bounds(std::vector<texture_atlas::subtexture> const& animation) const;
 
 	std::shared_ptr<texture_atlas> texture_atlas_;
 	rect<int> texture_source_rect_;
-	vec2<int> cur_frame_offsets_;
-	float frame_elapsed_;
-	size_t cur_frame_index_;
-	bool is_cur_anim_looping_;
-	bool is_cur_frame_rotated_;
-	bool is_frame_transform_dirty_;
-	mat3 frame_transform_;
-	std::string cur_anim_name_;
+	vec2<int> current_subtexture_offsets_;
+	float subtexture_elapsed_;
+	size_t current_subtexture_index_;
+	bool animation_reset_;
+	bool is_current_animation_looping_;
+	bool is_current_subtexture_rotated_;
+	bool is_subtexture_transform_dirty_;
+	mat3 subtexture_transform_;
+	std::string current_anim_name_;
 	std::string const path_arg_;
 	std::string const image_format_arg_;
 	std::string const data_format_arg_;

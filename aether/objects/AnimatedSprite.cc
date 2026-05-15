@@ -9,8 +9,9 @@ namespace ae {
 
 AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
                                std::string_view data_format, int fps)
-    : Node(ctx), frame_elapsed_(0.f), cur_frame_index_(0), is_cur_anim_looping_(false), is_cur_frame_rotated_(false),
-      is_frame_transform_dirty_(false), frame_transform_(mat3::identity()), path_arg_(std::string(path)),
+    : Node(ctx), subtexture_elapsed_(0.f), current_subtexture_index_(0), animation_reset_(false),
+      is_current_animation_looping_(false), is_current_subtexture_rotated_(false),
+      is_subtexture_transform_dirty_(false), subtexture_transform_(mat3::identity()), path_arg_(std::string(path)),
       image_format_arg_(std::string(image_format)), data_format_arg_(std::string(data_format)),
       fps_arg_(std::max(1, fps)) {}
 
@@ -33,19 +34,21 @@ void AnimatedSprite::play_anim(std::string_view anim_name, bool should_loop, int
 	}
 
 	// just to avoid string construction when not needed
-	if (cur_anim_name_ != anim_name) {
-		cur_anim_name_ = std::string(anim_name);
+	if (current_anim_name_ != anim_name) {
+		current_anim_name_ = std::string(anim_name);
 	}
 
 	// reset state
-	cur_frame_index_     = 0;
-	frame_elapsed_       = 0.f;
-	is_cur_anim_looping_ = should_loop;
+	current_subtexture_index_     = 0;
+	subtexture_elapsed_           = 0.f;
+	is_current_animation_looping_ = should_loop;
 
 	// change fps if arg is not default
 	if (fps != 0) {
 		fps_arg_ = std::max(1, fps);
 	}
+
+	animation_reset_ = true;
 }
 
 // protected
@@ -65,16 +68,16 @@ bool AnimatedSprite::init() {
 	}
 
 	// set default animation
-	auto const first_animation = texture_atlas_->subtextures.begin();
-	auto const& first_frame    = first_animation->second.begin();
-	cur_anim_name_             = first_animation->first;
-	texture_source_rect_       = first_frame->source_rect;
-	cur_frame_offsets_         = first_frame->offsets;
-	is_cur_frame_rotated_      = first_frame->is_rotated;
-	is_frame_transform_dirty_  = true;
+	auto const first_animation     = texture_atlas_->subtextures.begin();
+	auto const& first_subtexture   = first_animation->second.begin();
+	current_anim_name_             = first_animation->first;
+	texture_source_rect_           = first_subtexture->source_rect;
+	current_subtexture_offsets_    = first_subtexture->offsets;
+	is_current_subtexture_rotated_ = first_subtexture->is_rotated;
+	is_subtexture_transform_dirty_ = true;
 
 	toggle_antialiasing(true);
-	set_bounds(calculate_bounds());
+	set_bounds(calculate_bounds(first_animation->second));
 	activate();
 	enable_draw();
 
@@ -87,13 +90,13 @@ void AnimatedSprite::update(float dt) {
 		return;
 	}
 
-	float const target_frame_time = 1.f / fps_arg_;
-	frame_elapsed_ += dt;
+	float const target_subtexture_time = 1.f / fps_arg_;
+	subtexture_elapsed_ += dt;
 
 	// advance a frame
-	while (frame_elapsed_ >= target_frame_time) {
+	while (subtexture_elapsed_ >= target_subtexture_time) {
 		progress_frame();
-		frame_elapsed_ -= target_frame_time;
+		subtexture_elapsed_ -= target_subtexture_time;
 	}
 }
 
@@ -105,69 +108,58 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 		return;
 	}
 
-	if (is_frame_transform_dirty_) {
-		mat3 t = mat3::translation(-static_cast<vec2<float>>(cur_frame_offsets_));
-
-		if (is_cur_frame_rotated_) {
-			mat3 r           = mat3::rotation(math::degrees_to_radians(-90.f));
-			frame_transform_ = transform * t * r;
-		} else {
-			frame_transform_ = transform * t;
-		}
-
-		is_frame_transform_dirty_ = false;
+	if (is_subtexture_transform_dirty_) {
+		mat3 t                         = mat3::translation(-(static_cast<vec2<float>>(current_subtexture_offsets_)));
+		subtexture_transform_          = transform * t;
+		is_subtexture_transform_dirty_ = false;
 	}
 
-	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, frame_transform_, color);
+	renderer->draw_rect(bounds(), transform, {255, 0, 0, 255});
+	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, subtexture_transform_, color);
 }
 
 // private
 void AnimatedSprite::progress_frame() {
-	auto const& cur_anim_frames = texture_atlas_->subtextures[cur_anim_name_];
+	auto const& current_animation = texture_atlas_->subtextures[current_anim_name_];
 
-	if (is_cur_anim_looping_) {
-		cur_frame_index_ = (cur_frame_index_ + 1) % cur_anim_frames.size();
+	if (animation_reset_) {
+		set_bounds(calculate_bounds(current_animation));
+		animation_reset_ = false;
+	}
+
+	if (is_current_animation_looping_) {
+		current_subtexture_index_ = (current_subtexture_index_ + 1) % current_animation.size();
 	} else {
-		cur_frame_index_ = std::min(cur_frame_index_ + 1, cur_anim_frames.size() - 1);
+		current_subtexture_index_ = std::min(current_subtexture_index_ + 1, current_animation.size() - 1);
 	}
 
-	auto const& cur_anim_frame = cur_anim_frames[cur_frame_index_];
-	texture_source_rect_       = cur_anim_frame.source_rect;
+	auto const& current_subtexture = current_animation[current_subtexture_index_];
+	texture_source_rect_           = current_subtexture.source_rect;
 
-	if (is_cur_frame_rotated_ != cur_anim_frame.is_rotated) {
-		is_cur_frame_rotated_     = cur_anim_frame.is_rotated;
-		is_frame_transform_dirty_ = true;
+	if (is_current_subtexture_rotated_ != current_subtexture.is_rotated) {
+		is_current_subtexture_rotated_ = current_subtexture.is_rotated;
+		is_subtexture_transform_dirty_ = true;
 	}
 
-	if (cur_frame_offsets_ != cur_anim_frame.offsets) {
-		cur_frame_offsets_        = cur_anim_frame.offsets;
-		is_frame_transform_dirty_ = true;
+	if (current_subtexture_offsets_ != current_subtexture.offsets) {
+		current_subtexture_offsets_    = current_subtexture.offsets;
+		is_subtexture_transform_dirty_ = true;
 	}
 }
 
 // private
-size<int> AnimatedSprite::calculate_bounds() const {
+size<int> AnimatedSprite::calculate_bounds(std::vector<texture_atlas::subtexture> const& animation) const {
 	if (!texture_atlas_) {
 		return {};
 	}
 
-	size<int> avg;
-	size_t count = 0;
+	size<int> ret;
 
-	for (auto const& [_, second] : texture_atlas_->subtextures) {
-		count += second.size();
-
-		for (auto const& vec : second) {
-			avg += {vec.is_rotated ? vec.source_rect.height : vec.source_rect.width,
-			        vec.is_rotated ? vec.source_rect.width : vec.source_rect.height};
-		}
+	for (auto const& subtexture : animation) {
+		ret = math::max(ret, subtexture.source_rect.bounds<int>() - subtexture.offsets);
 	}
 
-	if (count > 0) {
-		return avg / count;
-	}
-
-	return {};
+	return ret;
 }
 
 } // namespace ae
