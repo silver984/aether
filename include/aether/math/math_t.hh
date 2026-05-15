@@ -293,7 +293,7 @@ struct math_t {
 	}
 
 	[[nodiscard]] constexpr bool operator!=(derived<T> rhs) const {
-		return !(*this == rhs);
+		return !(self() == rhs);
 	}
 
 	template <numeric_t U>

@@ -10,8 +10,7 @@ TestState::~TestState() = default;
 // protected
 bool TestState::init() {
 	if (auto renderer = context().renderer_wref().lock()) {
-		renderer->set_background_rgba(ae::rgba(ae::rgba::as_float(202), ae::rgba::as_float(255), ae::rgba::as_float(77),
-		                                       ae::rgba::as_float(255)));
+		renderer->set_background_rgba({202, 255, 77, 255});
 	}
 
 	animated_ = ae::Node::create<ae::AnimatedSprite>(context(), "resources/bf", "png", "xml", 24);
@@ -86,6 +85,8 @@ void TestState::update(float dt) {
 				icon_->seek_tile(ae::vec2<int>{0, 0});
 			}
 		}
+
+		animated_->play_anim("boyfriend icon instance 1");
 
 		elapsed_ -= 1.f;
 	}

@@ -8,7 +8,7 @@ namespace ae {
 
 AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
                                std::string_view data_format, int fps)
-    : Node(ctx), frame_elapsed_(0.f), cur_frame_index_(0), path_arg_(std::string(path)),
+    : Node(ctx), frame_elapsed_(0.f), cur_frame_index_(0), is_cur_anim_looping_(false), path_arg_(std::string(path)),
       image_format_arg_(std::string(image_format)), data_format_arg_(std::string(data_format)),
       fps_arg_(std::max(1, fps)) {}
 
@@ -36,8 +36,9 @@ void AnimatedSprite::play_anim(std::string_view anim_name, int fps, bool should_
 	}
 
 	// reset state
-	cur_frame_index_ = 0;
-	frame_elapsed_   = 0.f;
+	cur_frame_index_     = 0;
+	frame_elapsed_       = 0.f;
+	is_cur_anim_looping_ = should_loop;
 
 	// change fps if arg is not default
 	if (fps != 0) {
@@ -89,8 +90,11 @@ void AnimatedSprite::update(float dt) {
 	while (frame_elapsed_ >= target_frame_time) {
 		auto const& cur_anim_frames = texture_atlas_->subtextures[cur_anim_name_];
 
-		// TODO: non looping animation
-		cur_frame_index_ = (cur_frame_index_ + 1) % cur_anim_frames.size();
+		if (is_cur_anim_looping_) {
+			cur_frame_index_ = (cur_frame_index_ + 1) % cur_anim_frames.size();
+		} else {
+			cur_frame_index_ = std::min(cur_frame_index_ + 1, cur_anim_frames.size() - 1);
+		}
 
 		auto const& cur_anim_frame = cur_anim_frames[cur_frame_index_];
 		texture_source_rect_       = cur_anim_frame.source_rect;

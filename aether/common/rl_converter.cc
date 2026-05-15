@@ -22,10 +22,7 @@ Matrix as_matrix(mat3 const& matrix) {
 }
 
 Color as_color(rgba color) {
-	return {static_cast<unsigned char>(std::round(255.f * color.r())),
-	        static_cast<unsigned char>(std::round(255.f * color.g())),
-	        static_cast<unsigned char>(std::round(255.f * color.b())),
-	        static_cast<unsigned char>(std::round(255.f * color.a()))};
+	return {color.r, color.g, color.b, color.a};
 }
 
 Rectangle as_rectangle(rect<float> rectangle) {

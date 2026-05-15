@@ -1,59 +1,36 @@
-#ifndef __AETHER_MATH_RGB_HH__
-#define __AETHER_MATH_RGB_HH__
+#ifndef __AETHER_MATH_RGBA_HH__
+#define __AETHER_MATH_RGBA_HH__
 
-#include <algorithm>
 #include <cstdint>
 
 namespace ae {
 
-// i genuinely dont like this type, its kinda ugly
-
 struct rgba final {
-	constexpr rgba() : r_(0.f), g_(0.f), b_(0.f), a_(0.f) {}
+	constexpr rgba() = default;
+	constexpr rgba(uint8_t val) : r(val), g(val), b(val), a(val) {}
+	constexpr rgba(uint8_t r_val, uint8_t g_val, uint8_t b_val, uint8_t a_val)
+	    : r(r_val), g(g_val), b(b_val), a(a_val) {}
 
-	explicit constexpr rgba(float r, float g, float b, float a)
-	    : r_(std::clamp(r, 0.f, 1.f)), g_(std::clamp(g, 0.f, 1.f)), b_(std::clamp(b, 0.f, 1.f)),
-	      a_(std::clamp(a, 0.f, 1.f)) {}
+	constexpr rgba operator*(rgba rhs) {
+		auto mul = [](uint8_t a, uint8_t b) -> uint8_t {
+			return static_cast<uint8_t>((static_cast<uint16_t>(a) * b) / 255);
+		};
 
-	[[nodiscard]] constexpr float r() const {
-		return r_;
-	}
-
-	[[nodiscard]] constexpr float g() const {
-		return g_;
-	}
-
-	[[nodiscard]] constexpr float b() const {
-		return b_;
-	}
-
-	[[nodiscard]] constexpr float a() const {
-		return a_;
-	}
-
-	[[nodiscard]] static constexpr float as_float(uint8_t val) {
-		return static_cast<float>(val) / 255.f;
-	}
-
-	void set(float r, float g, float b, float a);
-	void set_r(float val);
-	void set_g(float val);
-	void set_b(float val);
-	void set_a(float val);
-
-	[[nodiscard]] constexpr rgba operator*(rgba rhs) const {
-		return rgba(r_ * rhs.r_, g_ * rhs.g_, b_ * rhs.b_, a_ * rhs.a_);
+		return {mul(r, rhs.r), mul(g, rhs.g), mul(b, rhs.b), mul(a, rhs.a)};
 	}
 
 	[[nodiscard]] constexpr bool operator==(rgba rhs) const {
-		return r_ == rhs.r_ && g_ == rhs.g_ && b_ == rhs.b_ && a_ == rhs.a_;
+		return r == rhs.r && g == rhs.g && b == rhs.b && a == rhs.a;
 	}
 
-private:
-	float r_;
-	float g_;
-	float b_;
-	float a_;
+	[[nodiscard]] constexpr bool operator!=(rgba rhs) const {
+		return !(*this == rhs);
+	}
+
+	uint8_t r = 0;
+	uint8_t g = 0;
+	uint8_t b = 0;
+	uint8_t a = 0;
 };
 
 } // namespace ae

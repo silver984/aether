@@ -5,14 +5,11 @@
 #include <algorithm>
 #include <cmath>
 
-// TODO: world alpha depending on parent alpha
-
 namespace ae {
 
 Node::Node(Context const& ctx)
-    : context_(&ctx), color_(1.f, 1.f, 1.f, 1.f), combined_color_(color_.r(), color_.g(), color_.b(), color_.a()),
-      transform_(mat3::identity()), bounds_(0, 0), position_(0.f, 0.f), anchor_(0.5f, 0.5f), scale_(1.f, 1.f),
-      skew_(0.f, 0.f), rotation_(0.f), time_scale_(1.f), is_transform_dirty_(false), is_rgba_dirty_(false),
+    : context_(&ctx), color_(255), combined_color_(color_), transform_(mat3::identity()), anchor_(0.5f, 0.5f),
+      scale_(1.f, 1.f), rotation_(0.f), time_scale_(1.f), is_transform_dirty_(false), is_rgba_dirty_(false),
       is_active_(false), is_draw_enabled_(false), is_visible_(true), is_initialized_(false) {}
 Node::~Node() = default;
 
@@ -193,7 +190,7 @@ void Node::set_anchor(vec2<float> val) {
 		return;
 	}
 
-	anchor_ = math::clamp(val, vec2<float>(0.f, 0.f), vec2<float>(1.f, 1.f));
+	anchor_ = math::clamp(val, {}, {1.f, 1.f});
 
 	mark_transform_dirty();
 }
@@ -269,17 +266,19 @@ rgba Node::color() const {
 }
 
 void Node::set_alpha(float val) {
-	if (color_.a() == val) {
+	uint8_t valui8 = static_cast<uint8_t>(std::round(255.f * std::clamp(val, 0.f, 1.f)));
+
+	if (color_.a == valui8) {
 		return;
 	}
 
-	color_.set_a(val);
+	color_.a = valui8;
 
 	mark_rgba_dirty();
 }
 
 float Node::alpha() const {
-	return color_.a();
+	return color_.a / 255.f;
 }
 
 void Node::toggle_visibility(bool val) {
@@ -355,7 +354,7 @@ void Node::base_draw() {
 		is_rgba_dirty_  = false;
 	}
 
-	if (combined_color_.a() <= 0.f) {
+	if (combined_color_.a == 0) {
 		return;
 	}
 

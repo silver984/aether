@@ -11,8 +11,7 @@
 namespace ae {
 
 // private
-Renderer::Renderer(Context const& ctx)
-    : context_(&ctx), background_rgba_(0.f, 0.f, 0.f, 1.f), transform_(mat3::identity()) {}
+Renderer::Renderer(Context const& ctx) : context_(&ctx), background_rgba_(0, 0, 0, 1), transform_(mat3::identity()) {}
 
 // private
 Renderer::~Renderer() = default;
@@ -52,13 +51,13 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 	rlSetTexture(texture.id);
 	rlBegin(RL_QUADS);
 	define_color_vertex(color);
-	rlNormal3f(0.0f, 0.0f, 1.0f);
+	rlNormal3f(0.f, 0.f, 1.f);
 
 	{ // top left
 		vec2<float> coord = source_rect.position<float>();
 
 		if (flip_x) {
-			coord.x += source_rect.width;
+			coord.x += static_cast<float>(source_rect.width);
 		}
 
 		define_texture_coord(coord / texture_bounds);
@@ -67,11 +66,11 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 
 	{ // bottom left
 		vec2<float> coord = source_rect.position<float>();
-		coord.y += source_rect.height;
+		coord.y += static_cast<float>(source_rect.height);
 		vec2<float> v_pos = {0.f, static_cast<float>(source_rect.height)};
 
 		if (flip_x) {
-			coord.x += source_rect.width;
+			coord.x += static_cast<float>(source_rect.width);
 		}
 
 		define_texture_coord(coord / texture_bounds);
@@ -83,7 +82,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		vec2<float> v_pos = {static_cast<float>(source_rect.width), static_cast<float>(source_rect.height)};
 
 		if (flip_x) {
-			coord.x -= source_rect.width;
+			coord.x -= static_cast<float>(source_rect.width);
 		}
 
 		define_texture_coord(coord / texture_bounds);
@@ -95,7 +94,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		vec2<float> v_pos = {static_cast<float>(source_rect.width), 0.f};
 
 		if (!flip_x) {
-			coord.x += source_rect.width;
+			coord.x += static_cast<float>(source_rect.width);
 		}
 
 		define_texture_coord(coord / texture_bounds);
@@ -138,8 +137,7 @@ void Renderer::end_draw() const {
 #ifdef AETHER_DEBUG
 // private
 void Renderer::draw_debug() const {
-	static std::string debug_text;
-	debug_text = fmt::format("FPS: {}", context_->running_fps());
+	std::string debug_text = fmt::format("FPS: {}", context_->running_fps());
 	DrawText(debug_text.c_str(), 5, 5, 10, WHITE);
 }
 #endif
