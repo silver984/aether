@@ -1,12 +1,13 @@
 <div align="center">
     <img src="aether-logo-unfinished.png" width="500"/>
-    <h1><i>Friday Night Funkin': AetherEngine</i></h1>
+    <h4>(logo subject to change)</h4>
+    <h1><i>Friday Night Funkin': Aether Engine</i></h1>
 </div>
 
 <div align="center">
     <a href="https://github.com/silver984/AetherEngine/actions"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/silver984/AetherEngine/multi-platform.yml?style=for-the-badge&label=build"></a>
     <img alt="Repo size" src="https://img.shields.io/github/repo-size/silver984/AetherEngine?style=for-the-badge">
-    <img alt="Supported platforms" src="https://img.shields.io/badge/supported_platforms-windows,_linux,_macOS-blue?style=for-the-badge">
+    <img alt="Supported platforms" src="https://img.shields.io/badge/supported_platforms-windows,_linux,_macOS-red?style=for-the-badge">
 </div>
 
 #
@@ -29,3 +30,9 @@ Links:
 - [Download iOS builds from the App Store!](https://apps.apple.com/app/id6740428530)
 
 #
+
+<div align="center">
+    <h3>Aether Engine</h3>  
+</div>
+
+Todo
