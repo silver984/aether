@@ -1,7 +1,7 @@
 <div align="center">
     <img src="aether-logo-unfinished.png" width="500"/>
     <h4>(logo subject to change)</h4>
-    <h1><i>Friday Night Funkin': Aether Engine</i></h1>
+    <h1><i>Aether Engine for Friday Night Funkin'</i></h1>
 </div>
 
 <div align="center">
@@ -14,25 +14,26 @@
 
 <div align="center">
     <img src="https://raw.githubusercontent.com/FunkinCrew/Funkin/refs/heads/main/docs/readme_images/FNF_logo.png" width="400">
-    <h3>Friday Night Funkin'</h3>
-    Friday Night Funkin' is a rhythm game. Built using HaxeFlixel for <a href="https://ldjam.com/events/ludum-dare/47">Ludum Dare 47.</a>    
+    <h3><i>What's Friday Night Funkin'?</i></h3>
+    <i>Friday Night Funkin'</i> is a rhythm game. Built using HaxeFlixel for <a href="https://ldjam.com/events/ludum-dare/47">Ludum Dare 47.</a>    
 </div>
 
 <br>
 
 > Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...
 
-Links:
+Play the game here:
 
-- [Playable web demo on Newgrounds!](https://www.newgrounds.com/portal/view/770371)
-- [Demo download builds for Windows, Mac, and Linux from Itch.io!](https://ninja-muffin24.itch.io/funkin)
-- [Download Android builds from Google Play!](https://play.google.com/store/apps/details?id=me.funkin.fnf)
-- [Download iOS builds from the App Store!](https://apps.apple.com/app/id6740428530)
+- [Newgrounds](https://www.newgrounds.com/portal/view/770371)
+- [Itch.io](https://ninja-muffin24.itch.io/funkin)
+- [Google Play](https://play.google.com/store/apps/details?id=me.funkin.fnf)
+- [App Store](https://apps.apple.com/app/id6740428530)
 
 #
 
 <div align="center">
-    <h3>Aether Engine</h3>  
+    <h3><i>What's Aether Engine</i></h3>
+    <i>Aether Engine</i> is a non-official odding engine for Friday Night Funkin'
 </div>
 
 Todo
