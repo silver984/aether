@@ -1,7 +1,7 @@
 <div align="center">
     <img src="aether-logo-unfinished.png" width="500"/>
     <h4>(logo subject to change)</h4>
-    <h1><i>Aether Engine for Friday Night Funkin'</i></h1>
+    <h1>Aether Engine for Friday Night Funkin'</h1>
 </div>
 
 <div align="center">
@@ -10,15 +10,9 @@
     <img alt="Supported platforms" src="https://img.shields.io/badge/supported_platforms-windows,_linux,_macOS-red?style=for-the-badge">
 </div>
 
-#
+## What's Friday Night Funkin?
 
-<div align="center">
-    <img src="https://raw.githubusercontent.com/FunkinCrew/Funkin/refs/heads/main/docs/readme_images/FNF_logo.png" width="400">
-    <h3><i>What's Friday Night Funkin'?</i></h3>
-    <i>Friday Night Funkin'</i> is a rhythm game. Built using HaxeFlixel for <a href="https://ldjam.com/events/ludum-dare/47">Ludum Dare 47.</a>    
-</div>
-
-<br>
+_Friday Night Funkin'_ is a **rhythm game.** Built using HaxeFlixel for [Ludum Dare 47.](https://ldjam.com/events/ludum-dare/47)
 
 > Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...
 
@@ -29,11 +23,25 @@ Play the game here:
 - [Google Play](https://play.google.com/store/apps/details?id=me.funkin.fnf)
 - [App Store](https://apps.apple.com/app/id6740428530)
 
-#
+## What's Aether Engine?
 
-<div align="center">
-    <h3><i>What's Aether Engine</i></h3>
-    <i>Aether Engine</i> is a non-official modding engine for Friday Night Funkin'
-</div>
+_Aether Engine_ is a **non-official modding engine** for Friday Night Funkin'.
 
-Todo
+Unlike traditional engines like [_Psych Engine_](https://github.com/ShadowMario/FNF-PsychEngine) or [_Kade Engine_](https://github.com/kadedev/kade-engine), Aether Engine is not a fork of Friday Night Funkin's code. Aether Engine is written in C++ without an official game engine like [_HaxeFlixel._](https://haxeflixel.com/)
+
+> This engine is currently a work in progress. Its identity is not fully mature and is subject to change overtime.
+
+### My Ideas for This Engine:
+
+> These features are planned. The engine is early in development, and nothing is final.
+
+- Mods made with Aether Engine will be written purely in [Lua,](https://www.lua.org/) enabled by [LuaBridge3.](https://github.com/kunitoki/LuaBridge3) These mods will be distributed as _packages,_ taking a form of a `.aether` archive.
+- Aether Engine will aim to modernize modding development by taking an SDK-like approach, making modding an easier process.
+
+## How to Build
+
+> This part of the README is yet to be acknowledged.
+
+## License
+
+Aether Engine's source code is licensed under the [**MIT license.**](https://github.com/silver984/AetherEngine/blob/develop/LICENSE) Friday Night Funkin's assets are protected by national and international copyright and trademark law. This engine does not and will never redistribute these assets. Read their license [here.](https://github.com/FunkinCrew/funkin.assets/blob/main/LICENSE.md)
