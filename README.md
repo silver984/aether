@@ -5,8 +5,8 @@
 </div>
 
 <div align="center">
-    <a href="https://github.com/silver984/AetherEngine/actions"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/silver984/AetherEngine/multi-platform.yml?style=for-the-badge&label=build"></a>
-    <img alt="Repo size" src="https://img.shields.io/github/repo-size/silver984/AetherEngine?style=for-the-badge">
+    <a href="https://github.com/silver984/aether/actions"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/silver984/aether/multi-platform.yml?style=for-the-badge&label=build"></a>
+    <img alt="Repo size" src="https://img.shields.io/github/repo-size/silver984/aether?style=for-the-badge">
     <img alt="Supported platforms" src="https://img.shields.io/badge/supported_platforms-windows,_linux,_macOS-red?style=for-the-badge">
 </div>
 
@@ -44,4 +44,4 @@ Unlike traditional engines like [_Psych Engine_](https://github.com/ShadowMario/
 
 ## License
 
-Aether Engine's source code is licensed under the [**MIT license.**](https://github.com/silver984/AetherEngine/blob/develop/LICENSE) Friday Night Funkin's assets are protected by national and international copyright and trademark law. This engine does not and will never redistribute these assets. Read their license [here.](https://github.com/FunkinCrew/funkin.assets/blob/main/LICENSE.md)
+Aether Engine's source code is licensed under the [**MIT license.**](https://github.com/silver984/aether/blob/develop/LICENSE) Friday Night Funkin's assets are protected by national and international copyright and trademark law. This engine does not and will never redistribute these assets. Read their license [here.](https://github.com/FunkinCrew/funkin.assets/blob/main/LICENSE.md)
