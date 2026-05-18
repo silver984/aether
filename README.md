@@ -33,7 +33,7 @@ Play the game here:
 
 <div align="center">
     <h3><i>What's Aether Engine</i></h3>
-    <i>Aether Engine</i> is a non-official odding engine for Friday Night Funkin'
+    <i>Aether Engine</i> is a non-official modding engine for Friday Night Funkin'
 </div>
 
 Todo
