@@ -101,14 +101,15 @@ bool AnimatedSprite::init() {
 
 	// set default animation
 	auto const first_animation     = texture_atlas_->subtextures.begin();
-	auto const& first_subtexture   = first_animation->second.front();
+	auto const first_subtextureset = first_animation->second;
+	auto const& first_subtexture   = first_subtextureset.front();
 	current_animation_name_        = first_animation->first;
 	texture_source_rect_           = first_subtexture.source_rect;
 	current_subtexture_offsets_    = first_subtexture.offsets;
 	is_current_subtexture_rotated_ = first_subtexture.is_rotated;
 
 	toggle_antialiasing(true);
-	set_bounds(calculate_bounds(first_animation->second));
+	set_bounds(calculate_bounds(first_subtextureset));
 	activate();
 	enable_draw();
 
@@ -174,10 +175,10 @@ void AnimatedSprite::progress_frame() {
 }
 
 // private
-size<int> AnimatedSprite::calculate_bounds(std::vector<texture_atlas::subtexture> const& animation) const {
+size<int> AnimatedSprite::calculate_bounds(std::vector<texture_atlas::subtexture> const& subtextures) const {
 	size<int> ret;
 
-	for (auto const& subtexture : animation) {
+	for (auto const& subtexture : subtextures) {
 		if (subtexture.is_rotated) {
 			ret = math::max(ret,
 			                math::switch_sides(subtexture.source_rect.bounds<int>()) + math::abs(subtexture.offsets));

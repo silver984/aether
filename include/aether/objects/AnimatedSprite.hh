@@ -33,7 +33,7 @@ protected:
 private:
 	using Node::set_bounds;
 	void progress_frame();
-	[[nodiscard]] size<int> calculate_bounds(std::vector<texture_atlas::subtexture> const& animation) const;
+	[[nodiscard]] size<int> calculate_bounds(std::vector<texture_atlas::subtexture> const& subtextures) const;
 
 	std::shared_ptr<texture_atlas> texture_atlas_;
 	rect<int> texture_source_rect_;

@@ -11,7 +11,7 @@
 namespace {
 
 Texture tex_shapes              = {1, 1, 1, 1, 7};
-ae::size<float> tex_shapes_rect = {1.f, 1.f};
+ae::size<float> tex_shapes_size = {1.f, 1.f};
 
 } // namespace
 
@@ -110,38 +110,39 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 }
 
 void Renderer::draw_rect(size<int> bounds, mat3 const& transform, rgba color) const {
-	size<int> tex_shapes_bounds = {tex_shapes.width, tex_shapes.height};
+	// TODO: refactor this
+	// size<int> tex_shapes_bounds = {tex_shapes.width, tex_shapes.height};
 
-	push_matrix(transform);
-	rlSetTexture(tex_shapes.id);
-	rlBegin(RL_QUADS);
-	define_color_vertex(color);
-	rlNormal3f(0.f, 0.f, 1.f);
+	// push_matrix(transform);
+	// rlSetTexture(1);
+	// rlBegin(RL_QUADS);
+	// define_color_vertex(color);
+	// rlNormal3f(0.f, 0.f, 1.f);
 
-	{ // top left
-		define_texture_coord({});
-		define_vertex({});
-	}
+	// { // top left
+	// 	define_texture_coord({});
+	// 	define_vertex({});
+	// }
 
-	{ // bottom left
-		define_texture_coord({0.f, tex_shapes_rect.height / tex_shapes_bounds.height});
-		define_vertex({0.f, static_cast<float>(bounds.height)});
-	}
+	// { // bottom left
+	// 	define_texture_coord({0.f, tex_shapes_size.height / tex_shapes_bounds.height});
+	// 	define_vertex({0.f, static_cast<float>(bounds.height)});
+	// }
 
-	{ // bottom right
-		vec2<float> coord = {tex_shapes_rect.width, tex_shapes_rect.height};
-		define_texture_coord(coord / tex_shapes_bounds);
-		define_vertex({static_cast<float>(bounds.width), static_cast<float>(bounds.height)});
-	}
+	// { // bottom right
+	// 	vec2<float> coord = {tex_shapes_size.width, tex_shapes_size.height};
+	// 	define_texture_coord(coord / tex_shapes_bounds);
+	// 	define_vertex({static_cast<float>(bounds.width), static_cast<float>(bounds.height)});
+	// }
 
-	{ // top right
-		define_texture_coord({tex_shapes_rect.width / tex_shapes_bounds.width, 0.f});
-		define_vertex({static_cast<float>(bounds.width), 0.f});
-	}
+	// { // top right
+	// 	define_texture_coord({tex_shapes_size.width / tex_shapes_bounds.width, 0.f});
+	// 	define_vertex({static_cast<float>(bounds.width), 0.f});
+	// }
 
-	rlEnd();
-	rlSetTexture(0);
-	rlPopMatrix();
+	// rlEnd();
+	// rlSetTexture(0);
+	// rlPopMatrix();
 }
 
 // private
