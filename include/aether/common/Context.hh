@@ -1,6 +1,4 @@
-#ifndef __AETHER_COMMON_CONTEXT_HH__
-#define __AETHER_COMMON_CONTEXT_HH__
-
+#pragma once
 #include <cstdint>
 #include <memory>
 
@@ -49,5 +47,3 @@ private:
 };
 
 } // namespace ae
-
-#endif

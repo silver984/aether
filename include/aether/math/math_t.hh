@@ -1,6 +1,4 @@
-#ifndef __AETHER_MATH_MATH_T_HH__
-#define __AETHER_MATH_MATH_T_HH__
-
+#pragma once
 #include <aether/math/numeric_t.hh>
 #include <cstddef>
 
@@ -318,5 +316,3 @@ private:
 };
 
 } // namespace ae
-
-#endif

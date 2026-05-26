@@ -1,6 +1,4 @@
-#ifndef __AETHER_STATES_TESTSTATE_HH__
-#define __AETHER_STATES_TESTSTATE_HH__
-
+#pragma once
 #include <aether/objects/Node.hh>
 
 class TestState : public ae::Node {
@@ -11,5 +9,3 @@ public:
 protected:
 	bool init() override;
 };
-
-#endif

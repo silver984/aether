@@ -1,6 +1,4 @@
-#ifndef __AETHER_OBJECTS_ANIMATEDSPRITE_HH__
-#define __AETHER_OBJECTS_ANIMATEDSPRITE_HH__
-
+#pragma once
 #include <aether/graphic/texture_atlas.hh>
 #include <aether/math/rect.hh>
 #include <aether/objects/Node.hh>
@@ -52,5 +50,3 @@ private:
 };
 
 } // namespace ae
-
-#endif

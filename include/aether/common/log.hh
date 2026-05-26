@@ -1,6 +1,4 @@
-#ifndef __AETHER_COMMON_LOG_HH__
-#define __AETHER_COMMON_LOG_HH__
-
+#pragma once
 #ifdef AETHER_DEBUG
 	#include <fmt/color.h>
 	#include <fmt/format.h>
@@ -79,6 +77,4 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 	#define infolog(...)    ((void)0)
 	#define warninglog(...) ((void)0)
 	#define errorlog(...)   ((void)0)
-#endif
-
 #endif

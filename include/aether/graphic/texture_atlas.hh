@@ -1,6 +1,4 @@
-#ifndef __AETHER_GRAPHIC_TEXTURE_ATLAS_HH__
-#define __AETHER_GRAPHIC_TEXTURE_ATLAS_HH__
-
+#pragma once
 #include <aether/common/string_map.hh>
 #include <aether/math/rect.hh>
 #include <aether/math/vec2.hh>
@@ -26,5 +24,3 @@ struct texture_atlas final {
 };
 
 } // namespace ae
-
-#endif

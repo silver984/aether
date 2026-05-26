@@ -1,6 +1,4 @@
-#ifndef __AETHER_AETHER_HH__
-#define __AETHER_AETHER_HH__
-
+#pragma once
 #include <aether/common/Context.hh>
 #include <aether/math/size.hh>
 #include <aether/systems/Director.hh>
@@ -38,5 +36,3 @@ private:
 };
 
 } // namespace ae
-
-#endif

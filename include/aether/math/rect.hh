@@ -1,6 +1,4 @@
-#ifndef __AETHER_MATH_RECT_HH__
-#define __AETHER_MATH_RECT_HH__
-
+#pragma once
 #include <aether/math/math_t.hh>
 #include <aether/math/numeric_t.hh>
 #include <cstddef>
@@ -55,5 +53,3 @@ struct rect final : math_t<rect, T, 4> {
 };
 
 } // namespace ae
-
-#endif

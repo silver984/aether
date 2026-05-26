@@ -1,6 +1,4 @@
-#ifndef __AETHER_COMMON_RL_CONVERTER_HH__
-#define __AETHER_COMMON_RL_CONVERTER_HH__
-
+#pragma once
 #include <aether/math/mat3.hh>
 #include <aether/math/rect.hh>
 #include <aether/math/rgba.hh>
@@ -18,5 +16,3 @@ Color as_color(rgba color);
 Rectangle as_rectangle(rect<float> rectangle);
 
 } // namespace ae::rl
-
-#endif

@@ -5,3 +5,5 @@ target_sources(${AETHER}
         Resource.cc
         Window.cc
 )
+
+add_subdirectory(repos)

@@ -1,6 +1,4 @@
-#ifndef __AETHER_OBJECTS_SPRITE_HH__
-#define __AETHER_OBJECTS_SPRITE_HH__
-
+#pragma once
 #include <aether/math/rect.hh>
 #include <aether/objects/Node.hh>
 
@@ -35,5 +33,3 @@ private:
 };
 
 } // namespace ae
-
-#endif

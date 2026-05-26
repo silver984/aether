@@ -1,6 +1,4 @@
-#ifndef __AETHER_OBJECTS_NODE_HH__
-#define __AETHER_OBJECTS_NODE_HH__
-
+#pragma once
 #include <aether/common/Context.hh>
 #include <aether/math/mat3.hh>
 #include <aether/math/rgba.hh>
@@ -115,5 +113,3 @@ private:
 };
 
 } // namespace ae
-
-#endif

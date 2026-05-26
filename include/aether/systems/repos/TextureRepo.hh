@@ -1,10 +1,29 @@
-#ifndef __AETHER_SYSTEMS_REPOS_TEXTUREREPO_HH__
-#define __AETHER_SYSTEMS_REPOS_TEXTUREREPO_HH__
+#pragma once
+#include <aether/common/string_map.hh>
+#include <memory>
+#include <string_view>
+
+struct Texture;
 
 namespace ae {
 
-class TextureRepo {};
+class Aether;
+
+class TextureRepo final {
+	friend class Aether;
+
+public:
+	TextureRepo();
+	~TextureRepo();
+	TextureRepo(TextureRepo const&)            = delete;
+	TextureRepo(TextureRepo&&)                 = delete;
+	TextureRepo& operator=(TextureRepo const&) = delete;
+	TextureRepo& operator=(TextureRepo&&)      = delete;
+
+	std::shared_ptr<Texture> fetch(std::string_view file);
+
+private:
+	string_map<std::shared_ptr<Texture>> cache_;
+};
 
 } // namespace ae
-
-#endif

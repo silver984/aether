@@ -1,6 +1,4 @@
-#ifndef __AETHER_SYSTEMS_RENDERER_HH__
-#define __AETHER_SYSTEMS_RENDERER_HH__
-
+#pragma once
 #include <aether/common/Context.hh>
 #include <aether/math/mat3.hh>
 #include <aether/math/rect.hh>
@@ -51,5 +49,3 @@ private:
 };
 
 } // namespace ae
-
-#endif

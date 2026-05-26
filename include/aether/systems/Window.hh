@@ -1,6 +1,4 @@
-#ifndef __AETHER_SYSTEMS_WINDOW_HH__
-#define __AETHER_SYSTEMS_WINDOW_HH__
-
+#pragma once
 #include <aether/math/size.hh>
 #include <cstdint>
 #include <string>
@@ -38,5 +36,3 @@ private:
 };
 
 } // namespace ae
-
-#endif

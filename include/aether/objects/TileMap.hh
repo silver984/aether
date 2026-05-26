@@ -1,6 +1,4 @@
-#ifndef __AETHER_OBJECTS_TILEMAP_HH__
-#define __AETHER_OBJECTS_TILEMAP_HH__
-
+#pragma once
 #include <aether/math/rect.hh>
 #include <aether/objects/Node.hh>
 #include <cstdint>
@@ -34,5 +32,3 @@ private:
 };
 
 } // namespace ae
-
-#endif

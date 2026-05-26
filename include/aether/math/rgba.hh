@@ -1,6 +1,4 @@
-#ifndef __AETHER_MATH_RGBA_HH__
-#define __AETHER_MATH_RGBA_HH__
-
+#pragma once
 #include <cstdint>
 
 namespace ae {
@@ -34,5 +32,3 @@ struct rgba final {
 };
 
 } // namespace ae
-
-#endif

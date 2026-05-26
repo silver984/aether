@@ -1,6 +1,4 @@
-#ifndef __AETHER_SYSTEMS_RESOURCE_HH__
-#define __AETHER_SYSTEMS_RESOURCE_HH__
-
+#pragma once
 #include <aether/common/string_map.hh>
 #include <aether/graphic/texture_atlas.hh>
 #include <cstddef>
@@ -53,5 +51,3 @@ private:
 };
 
 } // namespace ae
-
-#endif
