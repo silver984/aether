@@ -1,4 +1,4 @@
-<div align="center"><h1>Third-Party Notices</h1></div>
+# Third-Party Notices
 
 Aether Engine includes software developed by third parties.
 

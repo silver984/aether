@@ -1,4 +1,4 @@
-<div align="center"><h1>Aether Engine's Licenses</h1></div>
+# Aether Engine's Licenses
 
 Aether Engine is distributed under multiple licenses.
 
