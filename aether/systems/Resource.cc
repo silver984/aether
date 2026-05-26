@@ -167,6 +167,10 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 	// TODO: support for other data formats other than XML
 	// this currently only support adobe animate, aim to also support texturepacker
+	if (data_format != "xml") {
+		errorlog("Unidentified data format");
+		return nullptr;
+	}
 
 	file_path data_path = file_path::parse(fmt::format("{}.{}", path, data_format));
 
@@ -175,21 +179,21 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 		return nullptr;
 	}
 
-	namespace txml = tinyxml2;
+	tinyxml2::XMLDocument doc;
 
-	txml::XMLDocument doc;
-
-	if (txml::XMLError res = doc.LoadFile(data_path.str.c_str()); res != txml::XMLError::XML_SUCCESS) {
+	if (tinyxml2::XMLError res = doc.LoadFile(data_path.str.c_str()); res != tinyxml2::XMLError::XML_SUCCESS) {
 		errorlog("Failed to load XML file");
 		return nullptr;
 	}
 
-	txml::XMLElement* root = doc.FirstChildElement("TextureAtlas");
+	tinyxml2::XMLElement* root = doc.FirstChildElement("TextureAtlas");
 
 	if (!root) {
-		errorlog("XML is corrupted or is in an invalid format");
+		errorlog("Couldn't find first child element inside XML");
 		return nullptr;
 	}
+
+	texture_atlas_formats atlas_format = validate_xml_texture_atlas(root);
 
 	debuglog("Proceeding to parse subtextures");
 
@@ -212,8 +216,7 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 		}
 
 		std::string anim_name = full_anim_name.substr(0, full_anim_name.size() - 4);
-
-		int index{};
+		int index             = 0;
 
 		try {
 			index = std::stoi(full_anim_name.substr(full_anim_name.size() - 4));
@@ -224,24 +227,26 @@ std::shared_ptr<texture_atlas> Resource::load_shared_texture_atlas(std::string_v
 
 		texture_atlas::subtexture tmp(index);
 
-		if (txml::XMLError res = elem->QueryIntAttribute("x", &tmp.source_rect.x); res != txml::XMLError::XML_SUCCESS) {
+		if (tinyxml2::XMLError res = elem->QueryIntAttribute("x", &tmp.source_rect.x);
+		    res != tinyxml2::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no x attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
-		if (txml::XMLError res = elem->QueryIntAttribute("y", &tmp.source_rect.y); res != txml::XMLError::XML_SUCCESS) {
+		if (tinyxml2::XMLError res = elem->QueryIntAttribute("y", &tmp.source_rect.y);
+		    res != tinyxml2::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no y attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
-		if (txml::XMLError res = elem->QueryIntAttribute("width", &tmp.source_rect.width);
-		    res != txml::XMLError::XML_SUCCESS) {
+		if (tinyxml2::XMLError res = elem->QueryIntAttribute("width", &tmp.source_rect.width);
+		    res != tinyxml2::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no width attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
 
-		if (txml::XMLError res = elem->QueryIntAttribute("height", &tmp.source_rect.height);
-		    res != txml::XMLError::XML_SUCCESS) {
+		if (tinyxml2::XMLError res = elem->QueryIntAttribute("height", &tmp.source_rect.height);
+		    res != tinyxml2::XMLError::XML_SUCCESS) {
 			tracelog("Skipping subtexture with no height attribute | name: \"{}\"", full_anim_name);
 			continue;
 		}
@@ -352,5 +357,9 @@ void Resource::clean_texture_atlas_refs() {
 	cleaning_helper(texture_atlas_wrefs_);
 }
 #endif
+
+Resource::texture_atlas_formats Resource::validate_xml_texture_atlas(tinyxml2::XMLElement* const& root) {
+	return texture_atlas_formats::__none__;
+}
 
 } // namespace ae
