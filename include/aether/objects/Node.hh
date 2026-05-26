@@ -1,9 +1,9 @@
 #pragma once
-#include <aether/common/Context.hh>
-#include <aether/math/mat3.hh>
-#include <aether/math/rgba.hh>
-#include <aether/math/size.hh>
-#include <aether/math/vec2.hh>
+#include <aether/math_types/mat3.hh>
+#include <aether/math_types/rgba.hh>
+#include <aether/math_types/size.hh>
+#include <aether/math_types/vec2.hh>
+#include <aether/systems/common/Context.hh>
 #include <cstddef>
 #include <memory>
 #include <string>

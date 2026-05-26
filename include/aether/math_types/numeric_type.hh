@@ -5,6 +5,6 @@
 namespace ae {
 
 template <typename T>
-concept numeric_t = std::is_arithmetic_v<T>;
+concept numeric_type = std::is_arithmetic_v<T>;
 
 }

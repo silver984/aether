@@ -1,8 +1,8 @@
-#include <aether/common/log.hh>
-#include <aether/math/util.hh>
+#include <aether/debug/log.hh>
 #include <aether/objects/AnimatedSprite.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Resource.hh>
+#include <aether/util/math.hh>
 #include <raylib.h>
 
 namespace ae {

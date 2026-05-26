@@ -1,11 +1,11 @@
 #pragma once
-#include <aether/math/numeric_t.hh>
+#include <aether/math_types/numeric_type.hh>
 #include <cstddef>
 
 namespace ae {
 
-template <template <typename> class derived, numeric_t T, size_t N>
-struct math_t {
+template <template <typename> class derived, numeric_type T, size_t N>
+struct math_type {
 	[[nodiscard]] constexpr derived<T> operator+() const {
 		return self();
 	}
@@ -30,7 +30,7 @@ struct math_t {
 		return r;
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr derived<T> operator+(derived<U> rhs) const {
 		derived<T> r(self());
 
@@ -41,7 +41,7 @@ struct math_t {
 		return r;
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr derived<T> operator+(U rhs) const {
 		derived<T> r(self());
 
@@ -62,7 +62,7 @@ struct math_t {
 		return r;
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr derived<T> operator-(derived<U> rhs) const {
 		derived<T> r(self());
 
@@ -73,7 +73,7 @@ struct math_t {
 		return r;
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr derived<T> operator-(U rhs) const {
 		derived<T> r(self());
 
@@ -94,7 +94,7 @@ struct math_t {
 		return r;
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr derived<T> operator*(derived<U> rhs) const {
 		derived<T> r(self());
 
@@ -105,7 +105,7 @@ struct math_t {
 		return r;
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr derived<T> operator*(U rhs) const {
 		derived<T> r(self());
 
@@ -126,7 +126,7 @@ struct math_t {
 		return r;
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr derived<T> operator/(derived<U> rhs) const {
 		derived<T> r(self());
 
@@ -137,7 +137,7 @@ struct math_t {
 		return r;
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr derived<T> operator/(U rhs) const {
 		derived<T> r(self());
 
@@ -294,7 +294,7 @@ struct math_t {
 		return !(self() == rhs);
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] explicit constexpr operator derived<U>() const {
 		derived<U> r;
 

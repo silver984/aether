@@ -1,6 +1,6 @@
 #pragma once
-#include <aether/common/string_map.hh>
 #include <aether/graphic/texture_atlas.hh>
+#include <aether/util/string_map.hh>
 #include <cstddef>
 #include <memory>
 

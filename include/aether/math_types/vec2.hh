@@ -1,20 +1,20 @@
 #pragma once
-#include <aether/math/math_t.hh>
-#include <aether/math/numeric_t.hh>
+#include <aether/math_types/math_type.hh>
+#include <aether/math_types/numeric_type.hh>
 #include <cstddef>
 
 namespace ae {
 
-template <numeric_t T>
+template <numeric_type T>
 struct size;
 
-template <numeric_t T>
-struct vec2 final : math_t<vec2, T, 2> {
+template <numeric_type T>
+struct vec2 final : math_type<vec2, T, 2> {
 	constexpr vec2() = default;
 	constexpr vec2(T v) : x(v), y(v) {}
 	constexpr vec2(T x_val, T y_val) : x(x_val), y(y_val) {}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr operator size<U>() const {
 		return {static_cast<U>(x), static_cast<U>(y)};
 	}

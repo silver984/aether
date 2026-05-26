@@ -1,6 +1,6 @@
 #pragma once
 #include <aether/graphic/texture_atlas.hh>
-#include <aether/math/rect.hh>
+#include <aether/math_types/rect.hh>
 #include <aether/objects/Node.hh>
 #include <cstddef>
 #include <cstdint>

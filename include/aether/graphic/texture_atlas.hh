@@ -1,7 +1,7 @@
 #pragma once
-#include <aether/common/string_map.hh>
-#include <aether/math/rect.hh>
-#include <aether/math/vec2.hh>
+#include <aether/math_types/rect.hh>
+#include <aether/math_types/vec2.hh>
+#include <aether/util/string_map.hh>
 #include <memory>
 #include <vector>
 

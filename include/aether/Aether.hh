@@ -1,10 +1,10 @@
 #pragma once
-#include <aether/common/Context.hh>
-#include <aether/math/size.hh>
+#include <aether/math_types/size.hh>
 #include <aether/systems/Director.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Resource.hh>
 #include <aether/systems/Window.hh>
+#include <aether/systems/common/Context.hh>
 #include <cstdint>
 #include <memory>
 #include <string_view>

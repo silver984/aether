@@ -1,6 +1,6 @@
-#include <aether/common/log.hh>
-#include <aether/common/timer.hh>
+#include <aether/debug/log.hh>
 #include <aether/systems/Resource.hh>
+#include <aether/util/timer.hh>
 #include <cctype>
 #include <external/nlohmann/json.hpp>
 #include <external/tinyxml2.h>

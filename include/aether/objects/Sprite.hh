@@ -1,5 +1,5 @@
 #pragma once
-#include <aether/math/rect.hh>
+#include <aether/math_types/rect.hh>
 #include <aether/objects/Node.hh>
 
 struct Texture;

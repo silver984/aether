@@ -1,4 +1,4 @@
-#include <aether/common/log.hh>
+#include <aether/debug/log.hh>
 #include <aether/objects/Sprite.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Resource.hh>

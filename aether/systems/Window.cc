@@ -1,6 +1,6 @@
-#include <aether/common/log.hh>
-#include <aether/math/util.hh>
+#include <aether/debug/log.hh>
 #include <aether/systems/Window.hh>
+#include <aether/util/math.hh>
 #ifdef WIN32
 	#include <aether/platforms/win32.hh>
 #endif

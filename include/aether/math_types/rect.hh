@@ -1,29 +1,29 @@
 #pragma once
-#include <aether/math/math_t.hh>
-#include <aether/math/numeric_t.hh>
+#include <aether/math_types/math_type.hh>
+#include <aether/math_types/numeric_type.hh>
 #include <cstddef>
 
 namespace ae {
 
-template <numeric_t T>
+template <numeric_type T>
 struct vec2;
 
-template <numeric_t T>
+template <numeric_type T>
 struct size;
 
-template <numeric_t T>
-struct rect final : math_t<rect, T, 4> {
+template <numeric_type T>
+struct rect final : math_type<rect, T, 4> {
 	constexpr rect() = default;
 	constexpr rect(T val) : x(val), y(val), width(val), height(val) {}
 	constexpr rect(T x_val, T y_val, T width_val, T height_val)
 	    : x(x_val), y(y_val), width(width_val), height(height_val) {}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr vec2<U> position() const {
 		return {static_cast<U>(x), static_cast<U>(y)};
 	}
 
-	template <numeric_t U>
+	template <numeric_type U>
 	[[nodiscard]] constexpr size<U> bounds() const {
 		return {static_cast<U>(width), static_cast<U>(height)};
 	};

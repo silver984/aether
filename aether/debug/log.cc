@@ -1,4 +1,4 @@
-#include <aether/common/log.hh>
+#include <aether/debug/log.hh>
 #include <algorithm>
 #include <chrono>
 #include <filesystem>

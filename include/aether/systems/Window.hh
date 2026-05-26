@@ -1,5 +1,5 @@
 #pragma once
-#include <aether/math/size.hh>
+#include <aether/math_types/size.hh>
 #include <cstdint>
 #include <string>
 #include <string_view>

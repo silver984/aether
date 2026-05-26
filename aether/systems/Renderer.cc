@@ -1,6 +1,6 @@
-#include <aether/common/rl_converter.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Window.hh>
+#include <aether/util/as_raylib.hh>
 #include <algorithm>
 #include <cmath>
 #include <fmt/format.h>
@@ -150,7 +150,7 @@ void Renderer::start_draw() {
 	BeginDrawing();
 	auto lrender_bounds = render_bounds();
 	BeginScissorMode(0, 0, lrender_bounds.width, lrender_bounds.height);
-	ClearBackground(rl::as_color(background_rgba_));
+	ClearBackground(as_rl::as_color(background_rgba_));
 
 	if (auto window = context_->window_wref().lock()) {
 		if (window->was_resized()) {
@@ -184,13 +184,13 @@ void Renderer::draw_debug() const {
 // private
 void Renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
-	Matrix m = rl::as_matrix(matrix);
+	Matrix m = as_rl::as_matrix(matrix);
 	rlMultMatrixf(MatrixToFloat(m));
 }
 
 // private
 void Renderer::define_color_vertex(rgba color) const {
-	Color v = rl::as_color(color);
+	Color v = as_rl::as_color(color);
 	rlColor4ub(v.r, v.g, v.b, v.a);
 }
 

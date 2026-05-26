@@ -1,7 +1,7 @@
 #include <aether/Aether.hh>
-#include <aether/common/log.hh>
-#include <aether/common/timer.hh>
-#include <aether/math/vec2.hh>
+#include <aether/debug/log.hh>
+#include <aether/math_types/vec2.hh>
+#include <aether/util/timer.hh>
 #include <cstdint>
 
 namespace ae {

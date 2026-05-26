@@ -1,5 +1,5 @@
 #pragma once
-#include <aether/math/vec2.hh>
+#include <aether/math_types/vec2.hh>
 
 namespace ae {
 

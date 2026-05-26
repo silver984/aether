@@ -1,4 +1,4 @@
-#include <aether/math/mat3.hh>
+#include <aether/math_types/mat3.hh>
 #include <cmath>
 #include <cstddef>
 

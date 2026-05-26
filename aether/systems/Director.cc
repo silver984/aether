@@ -1,7 +1,7 @@
-#include <aether/common/log.hh>
-#include <aether/common/timer.hh>
+#include <aether/debug/log.hh>
 #include <aether/systems/Director.hh>
 #include <aether/systems/Resource.hh>
+#include <aether/util/timer.hh>
 #include <utility>
 
 namespace ae {
