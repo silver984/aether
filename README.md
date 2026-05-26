@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="aether-logo-unfinished.png" width="500"/>
+    <img src="logo/unfinished.png" width="500"/>
     <h4>(logo subject to change)</h4>
     <h1>Aether Engine for Friday Night Funkin'</h1>
 </div>
@@ -41,7 +41,3 @@ Unlike traditional engines like [_Psych Engine_](https://github.com/ShadowMario/
 ## How to Build
 
 > This part of the README is yet to be acknowledged.
-
-## License
-
-Aether Engine's source code is licensed under the [**MIT license.**](https://github.com/silver984/aether/blob/develop/LICENSE) Friday Night Funkin's assets are protected by national and international copyright and trademark law. This engine does not and will never redistribute these assets. Read their license [here.](https://github.com/FunkinCrew/funkin.assets/blob/main/LICENSE.md)
