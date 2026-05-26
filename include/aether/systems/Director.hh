@@ -1,6 +1,6 @@
 #pragma once
 #include <aether/objects/Node.hh>
-#include <aether/systems/common/Context.hh>
+#include <aether/systems/Context.hh>
 #include <memory>
 
 namespace ae {

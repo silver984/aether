@@ -4,7 +4,7 @@
 #include <aether/math_types/rgba.hh>
 #include <aether/math_types/size.hh>
 #include <aether/math_types/vec2.hh>
-#include <aether/systems/common/Context.hh>
+#include <aether/systems/Context.hh>
 #include <cstdint>
 
 struct Texture;

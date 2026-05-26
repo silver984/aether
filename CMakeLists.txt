@@ -57,6 +57,25 @@ if (WIN32)
 endif()
 
 add_custom_command(TARGET ${AETHER} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE-CC-BY-NC-4.0.txt
+        $<TARGET_FILE_DIR:${AETHER}>/LICENSE-CC-BY-NC-4.0.txt
+
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE-MIT.txt
+        $<TARGET_FILE_DIR:${AETHER}>/LICENSE-MIT.txt
+
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md
+        $<TARGET_FILE_DIR:${AETHER}>/LICENSE.md
+
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/THIRD-PARTY-NOTICES.md
+        $<TARGET_FILE_DIR:${AETHER}>/THIRD-PARTY-NOTICES.md
+
     COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:${AETHER}>/resources
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${AETHER}>/resources
+    
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/resources
+        $<TARGET_FILE_DIR:${AETHER}>/resources
 )
