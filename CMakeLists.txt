@@ -42,14 +42,12 @@ include(cmake/dependencies.cmake)
 aether_fetch_dependencies(${AETHER})
 
 if (WIN32)
-    # MinGW (GCC)
     if (MINGW OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         target_link_options(${AETHER} PRIVATE
             $<$<CONFIG:Debug>:-mconsole>
             $<$<NOT:$<CONFIG:Debug>>:-mwindows>
         )
-    else()
-        # MSVC
+    else() # MSVC
         target_link_options(${AETHER} PRIVATE
             $<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>
             $<$<NOT:$<CONFIG:Debug>>:/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup>

@@ -8,39 +8,37 @@
 namespace {
 
 std::string_view function_name(std::source_location const& loc) {
-#ifdef _MSC_VER
 	std::string_view func = loc.function_name();
 
-	// cut at '(' early
-	if (auto end = func.find('('); end != std::string_view::npos) {
-		func = func.substr(0, end);
+	// remove parameter list
+	if (auto paren = func.find('('); paren != std::string_view::npos) {
+		func = func.substr(0, paren);
 	}
 
-	// remove trailing spaces
-	while (!func.empty() && func.back() == ' ') {
-		func.remove_suffix(1);
-	}
-
+#ifdef _MSC_VER
 	// remove calling conventions
 	constexpr std::string_view cc_tokens[] = {"__cdecl", "__stdcall", "__fastcall", "__vectorcall"};
 
 	for (auto cc : cc_tokens) {
 		if (auto pos = func.find(cc); pos != std::string_view::npos) {
 			auto after = pos + cc.size();
-			func.remove_prefix(after < func.size() ? after + 1 : after);
+
+			while (after < func.size() && func[after] == ' ') {
+				++after;
+			}
+
+			func.remove_prefix(after);
+			break;
 		}
 	}
-
-	// trim again (msvc sometimes leaves leading space)
-	while (!func.empty() && func.front() == ' ') {
-		func.remove_prefix(1);
+#else
+	// GCC / Clang / MinGW:
+	if (auto space = func.rfind(' '); space != std::string_view::npos) {
+		func.remove_prefix(space + 1);
 	}
+#endif
 
 	return func;
-#else
-	// TODO: MinGW
-	return loc.function_name();
-#endif
 }
 
 std::string time_str() {
