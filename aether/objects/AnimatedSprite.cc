@@ -170,13 +170,15 @@ size<int> AnimatedSprite::calculate_bounds(std::vector<texture_atlas::subtexture
 	size<int> ret;
 
 	for (auto const& subtexture : subtextures) {
+		auto lbounds = subtexture.source_rect.bounds<int>();
+		auto offsets = math::abs(subtexture.offsets);
+
 		if (subtexture.is_rotated) {
-			ret = math::max(ret,
-			                math::switch_sides(subtexture.source_rect.bounds<int>()) + math::abs(subtexture.offsets));
+			ret = math::max(ret, math::switch_sides(lbounds) + offsets);
 			continue;
 		}
 
-		ret = math::max(ret, subtexture.source_rect.bounds<int>() + math::abs(subtexture.offsets));
+		ret = math::max(ret, lbounds + offsets);
 	}
 
 	return ret;

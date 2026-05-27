@@ -2,6 +2,7 @@
 #include <aether/systems/Context.hh>
 #include <aether/systems/repos/TextureRepo.hh>
 #include <aether/util/filesystem.hh>
+#include <aether/util/timer.hh>
 #include <raylib.h>
 #include <utility>
 
@@ -28,8 +29,8 @@ TextureRepo::~TextureRepo() = default;
 std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	std::filesystem::path lfile;
 
-	if (auto const opt_path = fs::normalized_filepath(file); opt_path.has_value()) {
-		lfile = opt_path.value();
+	if (auto const optional_file = fs::normalized_filepath(file); optional_file.has_value()) {
+		lfile = optional_file.value();
 	} else {
 		errorlog("Filesystem gave error");
 		return nullptr;
@@ -39,31 +40,37 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 		return from_cache;
 	}
 
-	// TODO: support other formats than just PNG
-	if (auto const file_extension = fs::file_extension(lfile); file_extension != "png") {
+	if (auto const file_extension = fs::file_extension(lfile); !is_format_supported(file_extension)) {
 		errorlog("Unsupported file format | file: \"{}\"", lfile.filename().string());
 		return nullptr;
 	}
 
-	purge_unused_not_reserved();
+	purge_unused();
 
+	debuglog("Loading \"{}\"", lfile.filename().string());
+	auto const start_time     = timer::start();
 	Texture temporary_texture = LoadTexture(lfile.string().c_str());
 
-	if (!validate_texture(temporary_texture)) {
+	if (!is_texture_valid(temporary_texture)) {
 		errorlog("Invalid texture properties");
 		UnloadTexture(temporary_texture);
 	}
 
-	cached_texture temporary_cache;
-	temporary_cache.texture = std::shared_ptr<Texture>(new Texture(std::move(temporary_texture)), texture_deleter{});
-	auto [iterator, is_inserted] = cached_textures_.emplace(lfile, std::move(temporary_cache));
+	auto shared_texture = std::shared_ptr<Texture>(new Texture(std::move(temporary_texture)), texture_deleter{});
+	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width,
+	         shared_texture->height, shared_texture->id, fmt::ptr(shared_texture.get()));
+	auto [iterator, is_inserted] = cached_textures_.emplace(lfile, std::move(shared_texture));
+	auto const end_time          = timer::end(start_time);
 
 	if (!is_inserted) {
 		errorlog("Couldn't insert to cache");
 		return nullptr;
+	} else {
+		tracelog("Successfully inserted to cache | cache size: {}", cached_textures_.size());
 	}
 
-	return iterator->second.texture;
+	debuglog("Done | took {}ms", end_time);
+	return iterator->second;
 }
 
 // private
@@ -72,37 +79,23 @@ void TextureRepo::clear() {
 }
 
 // private
-void TextureRepo::purge_unused_not_reserved() {
+void TextureRepo::purge_unused() {
 	std::erase_if(cached_textures_, [](auto const& pair) {
-		return pair.second.is_reserved && pair.second.texture.use_count() <= 1;
-	});
-}
-
-// private
-void TextureRepo::purge_unused_reserved() {
-	std::erase_if(cached_textures_, [](auto const& pair) {
-		return !pair.second.is_reserved && pair.second.texture.use_count() <= 1;
-	});
-}
-
-// private
-void TextureRepo::purge_unused_all() {
-	std::erase_if(cached_textures_, [](auto const& pair) {
-		return pair.second.texture.use_count() <= 1;
+		return pair.second.use_count() <= 1;
 	});
 }
 
 // private
 std::shared_ptr<Texture> TextureRepo::try_fetch_from_cache(std::filesystem::path const& file) {
 	if (auto iterator = cached_textures_.find(file); iterator != cached_textures_.end()) {
-		return iterator->second.texture;
+		return iterator->second;
 	}
 
 	return nullptr;
 }
 
 // private
-bool TextureRepo::validate_texture(Texture const& texture) {
+bool TextureRepo::is_texture_valid(Texture const& texture) {
 	if (texture.id < 1) {
 		return false;
 	}
@@ -112,6 +105,17 @@ bool TextureRepo::validate_texture(Texture const& texture) {
 	}
 
 	return true;
+}
+
+// private
+bool TextureRepo::is_format_supported(std::string_view file_extension) {
+	for (auto const& format : SUPPORTED_FORMATS_) {
+		if (file_extension == format) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 } // namespace ae

@@ -7,7 +7,6 @@ struct Texture;
 namespace ae {
 
 class Aether;
-class Context;
 
 class TextureRepo final {
 	friend class Aether;
@@ -23,23 +22,17 @@ public:
 	TextureRepo& operator=(TextureRepo&&)      = delete;
 
 	std::shared_ptr<Texture> fetch(std::string_view file);
-	// void reserve(std::string_view file);
-	void purge_unused_not_reserved();
-	void purge_unused_reserved();
-	void purge_unused_all();
+	void purge_unused();
 
 private:
 	void clear();
 	[[nodiscard]] std::shared_ptr<Texture> try_fetch_from_cache(std::filesystem::path const& file);
-	[[nodiscard]] bool validate_texture(Texture const& texture);
+	[[nodiscard]] bool is_texture_valid(Texture const& texture);
+	[[nodiscard]] bool is_format_supported(std::string_view file_extension);
 
-	struct cached_texture final {
-		cached_texture() : is_reserved(false) {}
-		std::shared_ptr<Texture> texture;
-		bool is_reserved;
-	};
-
-	path_map<cached_texture> cached_textures_;
+	path_map<std::shared_ptr<Texture>> cached_textures_;
+	static constexpr std::array<std::string_view, 7> SUPPORTED_FORMATS_ = {"png", "jpg", "jpeg", "bmp",
+	                                                                       "gif", "qoi", "dds"};
 };
 
 } // namespace ae
