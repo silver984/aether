@@ -33,6 +33,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 	}
 
 	if (file_extension == ".xml") {
+		return xml_parse(lfile);
 	}
 
 	return nullptr;
