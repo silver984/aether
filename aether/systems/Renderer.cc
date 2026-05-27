@@ -18,7 +18,7 @@ ae::size<float> tex_shapes_size = {1.f, 1.f};
 namespace ae {
 
 // private
-Renderer::Renderer(Context const& ctx) : context_(&ctx), background_rgba_(0, 0, 0, 1), transform_(mat3::identity()) {}
+Renderer::Renderer() : ctx_(nullptr), background_rgba_(0, 0, 0, 255), transform_(mat3::identity()) {}
 
 // private
 Renderer::~Renderer() = default;
@@ -109,8 +109,8 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 	rlPopMatrix();
 }
 
+// TODO: remake this
 void Renderer::draw_rect(size<int> bounds, mat3 const& transform, rgba color) const {
-	// TODO: refactor this
 	// size<int> tex_shapes_bounds = {tex_shapes.width, tex_shapes.height};
 
 	// push_matrix(transform);
@@ -146,16 +146,19 @@ void Renderer::draw_rect(size<int> bounds, mat3 const& transform, rgba color) co
 }
 
 // private
+void Renderer::bind_context(Context const& ctx) {
+	ctx_ = &ctx;
+}
+
+// private
 void Renderer::start_draw() {
 	BeginDrawing();
 	auto lrender_bounds = render_bounds();
 	BeginScissorMode(0, 0, lrender_bounds.width, lrender_bounds.height);
 	ClearBackground(as_rl::as_color(background_rgba_));
 
-	if (auto window = context_->window_wref().lock()) {
-		if (window->was_resized()) {
-			transform_ = calculate_transform(window);
-		}
+	if (ctx_ && ctx_->window.was_resized()) {
+		transform_ = calculate_transform(ctx_->window.screen_size());
 	}
 
 	push_matrix(transform_);
@@ -176,7 +179,11 @@ void Renderer::end_draw() const {
 #ifdef AETHER_DEBUG
 // private
 void Renderer::draw_debug() const {
-	std::string const debug_text = fmt::format("FPS: {}", context_->running_fps());
+	if (!ctx_) {
+		return;
+	}
+
+	std::string const debug_text = fmt::format("FPS: {}", ctx_->running_fps());
 	DrawText(debug_text.c_str(), 5, 5, 10, WHITE);
 }
 #endif
@@ -205,9 +212,8 @@ void Renderer::define_texture_coord(vec2<float> position) const {
 }
 
 // private
-mat3 Renderer::calculate_transform(std::shared_ptr<Window> window) const {
-	auto const screen_size    = window->screen_size();
-	auto const lrender_bounds = render_bounds();
+mat3 Renderer::calculate_transform(size<int> screen_size) const {
+	size<int> const lrender_bounds = render_bounds();
 
 	vec2<float> const scale_ratio = {static_cast<float>(lrender_bounds.width) / screen_size.width,
 	                                 static_cast<float>(lrender_bounds.height) / screen_size.height};

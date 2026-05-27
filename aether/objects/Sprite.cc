@@ -1,7 +1,7 @@
 #include <aether/debug/log.hh>
 #include <aether/objects/Sprite.hh>
 #include <aether/systems/Renderer.hh>
-#include <aether/systems/Resource.hh>
+#include <aether/systems/repos/TextureRepo.hh>
 #include <raylib.h>
 
 namespace ae {
@@ -15,19 +15,13 @@ std::string_view Sprite::type() const {
 
 void Sprite::toggle_antialiasing(bool val) const {
 	if (texture_) {
-		SetTextureFilter(*texture_, val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
+		using enum TextureFilter;
+		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
 
 bool Sprite::set_texture(std::string_view file) {
-	auto resource = context().resource_wref().lock();
-
-	if (!resource) {
-		errorlog("Can't reference resource system");
-		return false;
-	}
-
-	texture_ = resource->load_shared_texture(file);
+	texture_ = ctx_.texture_repo.fetch(file);
 
 	if (!texture_) {
 		errorlog("Failed");
@@ -49,10 +43,11 @@ void Sprite::set_texture_wrap(texture_wrap type) {
 
 	switch (type) {
 		using enum texture_wrap;
-	case clamp: SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_CLAMP); break;
-	case repeat: SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_REPEAT); break;
-	case mirror_clamp: SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_MIRROR_CLAMP); break;
-	case mirror_repeat: SetTextureWrap(*texture_, TextureWrap::TEXTURE_WRAP_MIRROR_REPEAT); break;
+		using enum TextureWrap;
+	case clamp: SetTextureWrap(*texture_, TEXTURE_WRAP_CLAMP); break;
+	case repeat: SetTextureWrap(*texture_, TEXTURE_WRAP_REPEAT); break;
+	case mirror_clamp: SetTextureWrap(*texture_, TEXTURE_WRAP_MIRROR_CLAMP); break;
+	case mirror_repeat: SetTextureWrap(*texture_, TEXTURE_WRAP_MIRROR_REPEAT); break;
 	}
 }
 
@@ -84,13 +79,9 @@ bool Sprite::init() {
 
 // protected
 void Sprite::draw(mat3 const& transform, rgba color) {
-	auto renderer = context().renderer_wref().lock();
-
-	if (!renderer || !texture_) {
-		return;
+	if (texture_) {
+		ctx_.renderer.draw_texture(*texture_, texture_source_rect_, transform, color);
 	}
-
-	renderer->draw_texture(*texture_, texture_source_rect_, transform, color);
 }
 
 } // namespace ae

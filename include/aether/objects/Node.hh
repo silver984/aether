@@ -29,7 +29,6 @@ public:
 		std::shared_ptr<T> ptr = std::make_shared<T>(ctx, std::forward<va>(args)...);
 
 		if (!ptr->base_init()) {
-			ptr.reset();
 			return nullptr;
 		}
 
@@ -78,7 +77,8 @@ protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void draw(mat3 const& transform, rgba color);
-	[[nodiscard]] Context const& context() const;
+
+	Context const& ctx_;
 
 private:
 	bool base_init();
@@ -90,7 +90,6 @@ private:
 	[[nodiscard]] mat3 calculate_transform(std::weak_ptr<Node> parent) const;
 	[[nodiscard]] rgba calculate_combined_rgba(std::weak_ptr<Node> parent) const;
 
-	Context const* const context_;
 	std::weak_ptr<Node> parent_;
 	std::vector<std::shared_ptr<Node>> children_;
 	std::string name_;

@@ -1,3 +1,4 @@
+#include <aether/objects/Sprite.hh>
 #include <aether/states/TestState.hh>
 #include <aether/systems/Renderer.hh>
 
@@ -6,9 +7,15 @@ TestState::~TestState() = default;
 
 // protected
 bool TestState::init() {
-	if (auto renderer = context().renderer_wref().lock()) {
-		renderer->set_background_rgba({202, 255, 77, 255});
+	ctx_.renderer.set_background_rgba({202, 255, 77, 255});
+
+	auto img = ae::Node::create<ae::Sprite>(ctx_, "resources/aether/ui/blackbox.png");
+	if (!img) {
+		return false;
 	}
+
+	img->set_position({400.f, 400.f});
+	add(img);
 
 	return true;
 }

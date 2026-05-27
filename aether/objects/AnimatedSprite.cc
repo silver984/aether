@@ -23,8 +23,8 @@ std::string_view AnimatedSprite::type() const {
 
 void AnimatedSprite::toggle_antialiasing(bool val) const {
 	if (texture_atlas_ && texture_atlas_->texture) {
-		SetTextureFilter(*texture_atlas_->texture,
-		                 val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
+		using enum TextureFilter;
+		SetTextureFilter(*texture_atlas_->texture, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
 
@@ -85,14 +85,7 @@ uint32_t AnimatedSprite::playback_fps() const {
 
 // protected
 bool AnimatedSprite::init() {
-	auto resource = context().resource_wref().lock();
-
-	if (!resource) {
-		errorlog("Can't reference resource system");
-		return false;
-	}
-
-	texture_atlas_ = resource->load_shared_texture_atlas(path_arg_, image_format_arg_, data_format_arg_);
+	texture_atlas_ = ctx_.resource.load_shared_texture_atlas(path_arg_, image_format_arg_, data_format_arg_);
 
 	if (!texture_atlas_) {
 		errorlog("Failed");
@@ -130,9 +123,7 @@ void AnimatedSprite::update(float dt) {
 
 // protected
 void AnimatedSprite::draw(mat3 const& transform, rgba color) {
-	auto renderer = context().renderer_wref().lock();
-
-	if (!renderer || !texture_atlas_ || !texture_atlas_->texture) {
+	if (!texture_atlas_ || !texture_atlas_->texture) {
 		return;
 	}
 
@@ -146,7 +137,7 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 		subtexture_transform_ = transform * t;
 	}
 
-	renderer->draw_texture(*texture_atlas_->texture, texture_source_rect_, subtexture_transform_, color);
+	ctx_.renderer.draw_texture(*texture_atlas_->texture, texture_source_rect_, subtexture_transform_, color);
 }
 
 // private

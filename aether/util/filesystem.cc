@@ -7,7 +7,7 @@ namespace ae::fs {
 
 std::optional<std::filesystem::path> normalized_filepath(std::string_view str) {
 	try {
-		return std::filesystem::weakly_canonical(str);
+		return std::filesystem::canonical(str);
 	} catch (std::filesystem::filesystem_error const& err) {
 		errorlog("Caught filesystem error | arg: \"{}\" | what: {}", str, err.what());
 		return std::nullopt;

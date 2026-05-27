@@ -1,7 +1,7 @@
 #include <aether/debug/log.hh>
 #include <aether/objects/TileMap.hh>
 #include <aether/systems/Renderer.hh>
-#include <aether/systems/Resource.hh>
+#include <aether/systems/repos/TextureRepo.hh>
 #include <aether/util/math.hh>
 #include <raylib.h>
 
@@ -10,6 +10,7 @@ namespace ae {
 TileMap::TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds)
     : Node(ctx), file_arg_(std::string(file)),
       tile_bounds_arg_(static_cast<size<uint32_t>>(math::max({1, 1}, tile_bounds))) {}
+
 TileMap::~TileMap() = default;
 
 std::string_view ae::TileMap::type() const {
@@ -18,7 +19,8 @@ std::string_view ae::TileMap::type() const {
 
 void TileMap::toggle_antialiasing(bool val) const {
 	if (texture_) {
-		SetTextureFilter(*texture_, val ? TextureFilter::TEXTURE_FILTER_BILINEAR : TextureFilter::TEXTURE_FILTER_POINT);
+		using enum TextureFilter;
+		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
 
@@ -47,14 +49,7 @@ vec2<uint32_t> TileMap::tile_index() const {
 
 // protected
 bool TileMap::init() {
-	auto resource = context().resource_wref().lock();
-
-	if (!resource) {
-		errorlog("Can't reference resource system");
-		return false;
-	}
-
-	texture_ = resource->load_shared_texture(file_arg_);
+	texture_ = ctx_.texture_repo.fetch(file_arg_);
 
 	if (!texture_) {
 		errorlog("Failed");
@@ -72,13 +67,9 @@ bool TileMap::init() {
 
 // protected
 void TileMap::draw(mat3 const& transform, rgba color) {
-	auto renderer = context().renderer_wref().lock();
-
-	if (!renderer || !texture_) {
-		return;
+	if (texture_) {
+		ctx_.renderer.draw_texture(*texture_, texture_source_rect_, transform, color);
 	}
-
-	renderer->draw_texture(*texture_, texture_source_rect_, transform, color);
 }
 
 } // namespace ae

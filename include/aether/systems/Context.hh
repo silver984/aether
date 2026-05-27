@@ -7,6 +7,7 @@ namespace ae {
 class Aether;
 class Window;
 class Renderer;
+class TextureRepo;
 class Resource;
 class Director;
 
@@ -14,7 +15,8 @@ class Context final {
 	friend class Aether;
 
 private:
-	Context();
+	Context(Window& window_ref, Renderer& renderer_ref, TextureRepo& texture_repo_ref, Resource& resource_ref,
+	        Director& director_ref);
 
 public:
 	~Context();
@@ -23,23 +25,20 @@ public:
 	Context& operator=(Context const&) = delete;
 	Context& operator=(Context&&)      = delete;
 
-	[[nodiscard]] std::weak_ptr<Window> window_wref() const;
-	[[nodiscard]] std::weak_ptr<Renderer> renderer_wref() const;
-	[[nodiscard]] std::weak_ptr<Resource> resource_wref() const;
-	[[nodiscard]] std::weak_ptr<Director> director_wref() const;
 	[[nodiscard]] float delta_time() const;
 	[[nodiscard]] float total_time() const;
+	[[nodiscard]] uint32_t frame_count() const;
 	[[nodiscard]] uint32_t running_fps() const;
 
+	Window& window;
+	Renderer& renderer;
+	TextureRepo& texture_repo;
+	Resource& resource;
+	Director& director;
+
 private:
-	void store_refs(std::weak_ptr<Window> window, std::weak_ptr<Renderer> renderer, std::weak_ptr<Resource> resource,
-	                std::weak_ptr<Director> director);
 	void update_frame_ctx();
 
-	std::weak_ptr<Window> window_wref_;
-	std::weak_ptr<Renderer> renderer_wref_;
-	std::weak_ptr<Resource> resource_wref_;
-	std::weak_ptr<Director> director_wref_;
 	float total_time_;
 	float frame_elapsed_;
 	uint32_t frame_count_;

@@ -21,8 +21,10 @@ class Resource final {
 	friend class Aether;
 	friend class Director;
 
-public:
+private:
 	Resource();
+
+public:
 	~Resource();
 	Resource(Resource const&)            = delete;
 	Resource(Resource&&)                 = delete;

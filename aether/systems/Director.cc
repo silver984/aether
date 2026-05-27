@@ -7,30 +7,37 @@
 namespace ae {
 
 // private
-Director::Director(Context const& ctx) : context_(&ctx) {}
+Director::Director() : ctx_(nullptr) {}
 
-// private
 Director::~Director() = default;
 
 void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 	if (!new_state) {
 		debuglog("Attempted to switch to a nullptr state");
 
-		if (auto resource = context_->resource_wref().lock()) {
-			resource->try_clean_refs();
-		}
+		// if (ctx_) {
+		// 	ctx_->resource.try_clean_refs();
+		// }
 
 		return;
 	}
 
 	pending_state_ = std::move(new_state);
-
 	tracelog("Switching states | pending: {}", fmt::ptr(pending_state_.get()));
 }
 
+void Director::test() {
+	tracelog("HELLO");
+}
+
+// private
+void Director::bind_context(Context const& ctx) {
+	ctx_ = &ctx;
+}
+
+// private
 void Director::try_cleanup() {
 	debuglog("Attempting to clean up");
-
 	auto start_time = timer::start();
 
 	if (pending_state_) {
@@ -42,7 +49,6 @@ void Director::try_cleanup() {
 	}
 
 	auto end_time = timer::end(start_time);
-
 	debuglog("Done | took {}ms", end_time);
 }
 
@@ -64,8 +70,8 @@ void Director::update_current_state() {
 		move_pending_state();
 	}
 
-	if (current_state_) {
-		current_state_->base_update(context_->delta_time());
+	if (current_state_ && ctx_) {
+		current_state_->base_update(ctx_->delta_time());
 	}
 }
 
@@ -81,9 +87,9 @@ void Director::move_pending_state() {
 	if (current_state_) {
 		release_current_state();
 
-		if (auto resource = context_->resource_wref().lock()) {
-			resource->try_clean_refs();
-		}
+		// if (ctx_) {
+		// 	ctx_->resource.try_clean_refs();
+		// }
 	}
 
 	current_state_ = std::move(pending_state_);

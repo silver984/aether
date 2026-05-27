@@ -8,9 +8,10 @@
 namespace ae {
 
 Node::Node(Context const& ctx)
-    : context_(&ctx), color_(255), combined_color_(color_), transform_(mat3::identity()), anchor_(0.5f, 0.5f),
+    : ctx_(ctx), color_(255), combined_color_(color_), transform_(mat3::identity()), anchor_(0.5f, 0.5f),
       scale_(1.f, 1.f), rotation_(0.f), time_scale_(1.f), is_transform_dirty_(false), is_rgba_dirty_(false),
       is_active_(false), is_draw_enabled_(false), is_visible_(true), is_initialized_(false) {}
+
 Node::~Node() = default;
 
 void Node::add(std::shared_ptr<Node> node) {
@@ -191,7 +192,6 @@ void Node::set_anchor(vec2<float> val) {
 	}
 
 	anchor_ = math::clamp(val, {}, {1.f, 1.f});
-
 	mark_transform_dirty();
 }
 
@@ -205,7 +205,6 @@ void Node::set_scale(vec2<float> val) {
 	}
 
 	scale_ = val;
-
 	mark_transform_dirty();
 }
 
@@ -215,7 +214,6 @@ void Node::set_scale(float val) {
 	}
 
 	scale_ = {val, val};
-
 	mark_transform_dirty();
 }
 
@@ -229,7 +227,6 @@ void Node::set_skew(vec2<float> val) {
 	}
 
 	skew_ = val;
-
 	mark_transform_dirty();
 }
 
@@ -243,7 +240,6 @@ void Node::set_rotation(float val) {
 	}
 
 	rotation_ = val;
-
 	mark_transform_dirty();
 }
 
@@ -257,7 +253,6 @@ void Node::set_color(rgba val) {
 	}
 
 	color_ = val;
-
 	mark_rgba_dirty();
 }
 
@@ -307,11 +302,6 @@ void Node::update(float dt) {}
 
 // protected
 void Node::draw(mat3 const& transform, rgba color) {}
-
-// protected
-Context const& Node::context() const {
-	return static_cast<Context const&>(*context_);
-}
 
 // private
 bool Node::base_init() {

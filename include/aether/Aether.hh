@@ -5,7 +5,7 @@
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Resource.hh>
 #include <aether/systems/Window.hh>
-#include <cstdint>
+#include <aether/systems/repos/TextureRepo.hh>
 #include <memory>
 #include <string_view>
 
@@ -27,10 +27,11 @@ public:
 private:
 	void shutdown();
 
-	std::shared_ptr<Window> window_;
-	std::shared_ptr<Renderer> renderer_;
-	std::shared_ptr<Resource> resource_;
-	std::shared_ptr<Director> director_;
+	Window window_;
+	Renderer renderer_;
+	Resource resource_;
+	Director director_;
+	TextureRepo texture_repo_;
 	Context ctx_;
 	bool is_initialized_;
 };

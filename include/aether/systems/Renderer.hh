@@ -17,8 +17,10 @@ class Window;
 class Renderer final {
 	friend class Aether;
 
+private:
+	Renderer();
+
 public:
-	Renderer(Context const& ctx);
 	~Renderer();
 	Renderer(Renderer const&)            = delete;
 	Renderer(Renderer&&)                 = delete;
@@ -32,6 +34,7 @@ public:
 	void draw_rect(size<int> bounds, mat3 const& transform, rgba color) const;
 
 private:
+	void bind_context(Context const& ctx);
 	void start_draw();
 	void end_draw() const;
 #ifdef AETHER_DEBUG
@@ -41,9 +44,9 @@ private:
 	void define_color_vertex(rgba color) const;
 	void define_vertex(vec2<float> position) const;
 	void define_texture_coord(vec2<float> position) const;
-	mat3 calculate_transform(std::shared_ptr<Window> window) const;
+	mat3 calculate_transform(size<int> screen_size) const;
 
-	Context const* const context_;
+	Context const* ctx_;
 	rgba background_rgba_;
 	mat3 transform_;
 };

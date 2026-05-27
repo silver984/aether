@@ -12,8 +12,10 @@ class Aether;
 class Window final {
 	friend class Aether;
 
-public:
+private:
 	Window();
+
+public:
 	~Window();
 	Window(Window const&)            = delete;
 	Window(Window&&)                 = delete;

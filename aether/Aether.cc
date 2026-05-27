@@ -6,7 +6,8 @@
 
 namespace ae {
 
-Aether::Aether() : is_initialized_(false) {}
+Aether::Aether() : ctx_(window_, renderer_, texture_repo_, resource_, director_), is_initialized_(false) {}
+
 Aether::~Aether() {
 	if (is_initialized_) {
 		shutdown();
@@ -18,18 +19,13 @@ bool Aether::init(std::string_view game_title, size<int> game_resolution, int ga
 		return true;
 	}
 
-	window_ = std::make_shared<Window>();
-
-	if (!window_->init(game_title, game_resolution, game_fps)) {
-		window_.reset();
+	if (!window_.init(game_title, game_resolution, game_fps)) {
 		errorlog("Failed");
 		return false;
 	}
 
-	renderer_ = std::make_shared<Renderer>(ctx_);
-	resource_ = std::make_shared<Resource>();
-	director_ = std::make_shared<Director>(ctx_);
-	ctx_.store_refs(window_, renderer_, resource_, director_);
+	renderer_.bind_context(ctx_);
+	director_.bind_context(ctx_);
 
 	infolog("Initialized");
 	return is_initialized_ = true;
@@ -37,30 +33,25 @@ bool Aether::init(std::string_view game_title, size<int> game_resolution, int ga
 
 void Aether::run() {
 	if (!is_initialized_) {
-		debuglog("Attempted to run loop uninitialized");
+		debuglog("Attempted to run loop while uninitialized");
 		return;
 	}
 
-	while (window_ && renderer_ && window_->is_initialized_ && !window_->should_close()) {
-		bool is_window_minimized = window_->is_minimized();
+	while (window_.is_initialized_ && !window_.should_close()) {
+		bool is_window_minimized = window_.is_minimized();
 
 		if (!is_window_minimized) {
 			ctx_.update_frame_ctx();
-
-			if (director_) {
-				director_->update_current_state();
-			}
+			director_.update_current_state();
 		}
 
-		renderer_->start_draw();
+		renderer_.start_draw();
 
 		if (!is_window_minimized) {
-			if (director_) {
-				director_->draw_current_state();
-			}
+			director_.draw_current_state();
 		}
 
-		renderer_->end_draw();
+		renderer_.end_draw();
 	}
 
 	shutdown();
@@ -76,16 +67,12 @@ void Aether::shutdown() {
 
 	auto start_time = timer::start();
 
-	if (director_) {
-		director_->try_cleanup();
-	}
+	director_.try_cleanup();
+	texture_repo_.clear();
+	resource_.try_clean_refs();
 
-	if (resource_) {
-		resource_->try_clean_refs();
-	}
-
-	if (window_ && window_->is_initialized_) {
-		window_->shutdown();
+	if (window_.is_initialized_) {
+		window_.shutdown();
 	}
 
 	is_initialized_ = false;

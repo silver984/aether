@@ -10,8 +10,10 @@ class Aether;
 class Director final {
 	friend class Aether;
 
+private:
+	Director();
+
 public:
-	Director(Context const& ctx);
 	~Director();
 	Director(Director const&)            = delete;
 	Director(Director&&)                 = delete;
@@ -19,8 +21,10 @@ public:
 	Director& operator=(Director&&)      = delete;
 
 	void switch_state(std::shared_ptr<Node>&& new_state);
+	void test();
 
 private:
+	void bind_context(Context const& ctx);
 	void try_cleanup();
 	void release_current_state();
 	void release_pending_state();
@@ -28,7 +32,7 @@ private:
 	void draw_current_state();
 	void move_pending_state();
 
-	Context const* const context_;
+	Context const* ctx_;
 	std::shared_ptr<Node> current_state_;
 	std::shared_ptr<Node> pending_state_;
 };

@@ -4,26 +4,13 @@
 namespace ae {
 
 // private
-Context::Context() : total_time_(0.f), frame_elapsed_(0.f), frame_count_(0), running_fps_(0) {}
+Context::Context(Window& window_ref, Renderer& renderer_ref, TextureRepo& texture_repo_ref, Resource& resource_ref,
+                 Director& director_ref)
+    : window(window_ref), renderer(renderer_ref), texture_repo(texture_repo_ref), resource(resource_ref),
+      director(director_ref), total_time_(0.f), frame_elapsed_(0.f), frame_count_(0), running_fps_(0) {}
 
-// private
+// public
 Context::~Context() = default;
-
-std::weak_ptr<Window> Context::window_wref() const {
-	return window_wref_;
-}
-
-std::weak_ptr<Renderer> Context::renderer_wref() const {
-	return renderer_wref_;
-}
-
-std::weak_ptr<Resource> Context::resource_wref() const {
-	return resource_wref_;
-}
-
-std::weak_ptr<Director> Context::director_wref() const {
-	return director_wref_;
-}
 
 float Context::delta_time() const {
 	return GetFrameTime();
@@ -33,17 +20,12 @@ float Context::total_time() const {
 	return total_time_;
 }
 
-uint32_t Context::running_fps() const {
-	return running_fps_;
+uint32_t Context::frame_count() const {
+	return frame_count_;
 }
 
-// private
-void Context::store_refs(std::weak_ptr<Window> window, std::weak_ptr<Renderer> renderer,
-                         std::weak_ptr<Resource> resource, std::weak_ptr<Director> director) {
-	window_wref_   = std::move(window);
-	renderer_wref_ = std::move(renderer);
-	resource_wref_ = std::move(resource);
-	director_wref_ = std::move(director);
+uint32_t Context::running_fps() const {
+	return running_fps_;
 }
 
 // private
