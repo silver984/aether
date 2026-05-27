@@ -1,6 +1,7 @@
 #pragma once
 #include <aether/util/path_map.hh>
 #include <memory>
+#include <unordered_set>
 
 struct Texture;
 
@@ -28,11 +29,8 @@ private:
 	void clear();
 	[[nodiscard]] std::shared_ptr<Texture> try_fetch_from_cache(std::filesystem::path const& file);
 	[[nodiscard]] bool is_texture_valid(Texture const& texture);
-	[[nodiscard]] bool is_format_supported(std::string_view file_extension);
 
-	path_map<std::shared_ptr<Texture>> cached_textures_;
-	static constexpr std::array<std::string_view, 7> SUPPORTED_FORMATS_ = {"png", "jpg", "jpeg", "bmp",
-	                                                                       "gif", "qoi", "dds"};
+	util::path_map<std::shared_ptr<Texture>> cached_textures_;
 };
 
 } // namespace ae

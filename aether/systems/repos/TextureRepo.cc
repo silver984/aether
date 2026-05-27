@@ -2,6 +2,7 @@
 #include <aether/systems/Context.hh>
 #include <aether/systems/repos/TextureRepo.hh>
 #include <aether/util/filesystem.hh>
+#include <aether/util/string.hh>
 #include <aether/util/timer.hh>
 #include <raylib.h>
 #include <utility>
@@ -29,10 +30,10 @@ TextureRepo::~TextureRepo() = default;
 std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	std::filesystem::path lfile;
 
-	if (auto const optional_file = fs::normalized_filepath(file); optional_file.has_value()) {
+	if (auto const optional_file = util::fs::normalized_filepath(file); optional_file.has_value()) {
 		lfile = optional_file.value();
 	} else {
-		errorlog("Filesystem gave error");
+		errorlog("Filesystem gave an error");
 		return nullptr;
 	}
 
@@ -40,7 +41,8 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 		return from_cache;
 	}
 
-	if (auto const file_extension = fs::file_extension(lfile); !is_format_supported(file_extension)) {
+	if (auto const file_extension = util::fs::file_extension(lfile);
+	    !util::str::string_matches_any(file_extension, {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".dds"})) {
 		errorlog("Unsupported file format | file: \"{}\"", lfile.filename().string());
 		return nullptr;
 	}
@@ -48,7 +50,7 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	purge_unused();
 
 	debuglog("Loading \"{}\"", lfile.filename().string());
-	auto const start_time     = timer::start();
+	auto const start_time     = util::timer::start();
 	Texture temporary_texture = LoadTexture(lfile.string().c_str());
 
 	if (!is_texture_valid(temporary_texture)) {
@@ -59,8 +61,8 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	auto shared_texture = std::shared_ptr<Texture>(new Texture(std::move(temporary_texture)), texture_deleter{});
 	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width,
 	         shared_texture->height, shared_texture->id, fmt::ptr(shared_texture.get()));
-	auto [iterator, is_inserted] = cached_textures_.emplace(lfile, std::move(shared_texture));
-	auto const end_time          = timer::end(start_time);
+	auto const [iterator, is_inserted] = cached_textures_.emplace(lfile, std::move(shared_texture));
+	auto const end_time                = util::timer::end(start_time);
 
 	if (!is_inserted) {
 		errorlog("Couldn't insert to cache");
@@ -105,17 +107,6 @@ bool TextureRepo::is_texture_valid(Texture const& texture) {
 	}
 
 	return true;
-}
-
-// private
-bool TextureRepo::is_format_supported(std::string_view file_extension) {
-	for (auto const& format : SUPPORTED_FORMATS_) {
-		if (file_extension == format) {
-			return true;
-		}
-	}
-
-	return false;
 }
 
 } // namespace ae

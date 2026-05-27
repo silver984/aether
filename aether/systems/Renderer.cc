@@ -1,3 +1,4 @@
+#include <aether/systems/Context.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Window.hh>
 #include <aether/util/as_raylib.hh>
@@ -155,7 +156,7 @@ void Renderer::start_draw() {
 	BeginDrawing();
 	auto lrender_bounds = render_bounds();
 	BeginScissorMode(0, 0, lrender_bounds.width, lrender_bounds.height);
-	ClearBackground(as_rl::as_color(background_rgba_));
+	ClearBackground(util::rl::as_color(background_rgba_));
 
 	if (ctx_ && ctx_->window.was_resized()) {
 		transform_ = calculate_transform(ctx_->window.screen_size());
@@ -191,13 +192,13 @@ void Renderer::draw_debug() const {
 // private
 void Renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
-	Matrix m = as_rl::as_matrix(matrix);
+	Matrix m = util::rl::as_matrix(matrix);
 	rlMultMatrixf(MatrixToFloat(m));
 }
 
 // private
 void Renderer::define_color_vertex(rgba color) const {
-	Color v = as_rl::as_color(color);
+	Color v = util::rl::as_color(color);
 	rlColor4ub(v.r, v.g, v.b, v.a);
 }
 

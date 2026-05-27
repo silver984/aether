@@ -5,6 +5,7 @@
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Resource.hh>
 #include <aether/systems/Window.hh>
+#include <aether/systems/repos/TextureAtlasRepo.hh>
 #include <aether/systems/repos/TextureRepo.hh>
 #include <memory>
 #include <string_view>
@@ -32,6 +33,7 @@ private:
 	Resource resource_;
 	Director director_;
 	TextureRepo texture_repo_;
+	TextureAtlasRepo texture_atlas_repo_;
 	Context ctx_;
 	bool is_initialized_;
 };

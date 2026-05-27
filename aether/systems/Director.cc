@@ -1,4 +1,5 @@
 #include <aether/debug/log.hh>
+#include <aether/systems/Context.hh>
 #include <aether/systems/Director.hh>
 #include <aether/systems/Resource.hh>
 #include <aether/util/timer.hh>
@@ -14,20 +15,11 @@ Director::~Director() = default;
 void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 	if (!new_state) {
 		debuglog("Attempted to switch to a nullptr state");
-
-		// if (ctx_) {
-		// 	ctx_->resource.try_clean_refs();
-		// }
-
 		return;
 	}
 
 	pending_state_ = std::move(new_state);
 	tracelog("Switching states | pending: {}", fmt::ptr(pending_state_.get()));
-}
-
-void Director::test() {
-	tracelog("HELLO");
 }
 
 // private
@@ -38,7 +30,7 @@ void Director::bind_context(Context const& ctx) {
 // private
 void Director::try_cleanup() {
 	debuglog("Attempting to clean up");
-	auto start_time = timer::start();
+	auto const start_time = util::timer::start();
 
 	if (pending_state_) {
 		release_pending_state();
@@ -48,7 +40,7 @@ void Director::try_cleanup() {
 		release_current_state();
 	}
 
-	auto end_time = timer::end(start_time);
+	auto const end_time = util::timer::end(start_time);
 	debuglog("Done | took {}ms", end_time);
 }
 
@@ -86,10 +78,6 @@ void Director::draw_current_state() {
 void Director::move_pending_state() {
 	if (current_state_) {
 		release_current_state();
-
-		// if (ctx_) {
-		// 	ctx_->resource.try_clean_refs();
-		// }
 	}
 
 	current_state_ = std::move(pending_state_);

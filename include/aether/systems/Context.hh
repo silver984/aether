@@ -27,8 +27,8 @@ public:
 
 	[[nodiscard]] float delta_time() const;
 	[[nodiscard]] float total_time() const;
-	[[nodiscard]] uint32_t frame_count() const;
-	[[nodiscard]] uint32_t running_fps() const;
+	[[nodiscard]] std::uint32_t frame_count() const;
+	[[nodiscard]] std::uint32_t running_fps() const;
 
 	Window& window;
 	Renderer& renderer;
@@ -41,8 +41,8 @@ private:
 
 	float total_time_;
 	float frame_elapsed_;
-	uint32_t frame_count_;
-	uint32_t running_fps_;
+	std::uint32_t frame_count_;
+	std::uint32_t running_fps_;
 };
 
 } // namespace ae

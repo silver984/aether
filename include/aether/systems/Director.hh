@@ -1,11 +1,11 @@
 #pragma once
 #include <aether/objects/Node.hh>
-#include <aether/systems/Context.hh>
 #include <memory>
 
 namespace ae {
 
 class Aether;
+class Context;
 
 class Director final {
 	friend class Aether;
@@ -21,7 +21,6 @@ public:
 	Director& operator=(Director&&)      = delete;
 
 	void switch_state(std::shared_ptr<Node>&& new_state);
-	void test();
 
 private:
 	void bind_context(Context const& ctx);

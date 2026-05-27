@@ -38,7 +38,7 @@ void Aether::run() {
 	}
 
 	while (window_.is_initialized_ && !window_.should_close()) {
-		bool is_window_minimized = window_.is_minimized();
+		bool const is_window_minimized = window_.is_minimized();
 
 		if (!is_window_minimized) {
 			ctx_.update_frame_ctx();
@@ -64,8 +64,7 @@ Context const& Aether::context() {
 // private
 void Aether::shutdown() {
 	infolog("Shutting down");
-
-	auto start_time = timer::start();
+	auto const start_time = util::timer::start();
 
 	director_.try_cleanup();
 	texture_repo_.clear();
@@ -77,7 +76,7 @@ void Aether::shutdown() {
 
 	is_initialized_ = false;
 
-	auto end_time = timer::end(start_time);
+	auto const end_time = util::timer::end(start_time);
 	infolog("Done | took {}ms", end_time);
 }
 

@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cstdint>
 
-namespace ae::fs {
+namespace ae::util::fs {
 
 std::optional<std::filesystem::path> normalized_filepath(std::string_view str) {
 	try {
@@ -20,18 +20,15 @@ std::string file_extension(std::filesystem::path const& file_path) {
 	}
 
 	auto extension = file_path.extension().string();
-
-	// remove the dot
-	if (!extension.empty() && extension[0] == '.') {
-		extension.erase(0, 1);
-	}
-
-	// lowercase
-	std::transform(extension.begin(), extension.end(), extension.begin(), [](uint8_t c) {
+	std::transform(extension.begin(), extension.end(), extension.begin(), [](std::uint8_t c) {
 		return std::tolower(c);
 	});
 
 	return extension;
 }
 
-} // namespace ae::fs
+bool file_extension_matches_any(std::string_view extension, std::initializer_list<std::string_view> candidates) {
+	return std::find(candidates.begin(), candidates.end(), extension) != candidates.end();
+}
+
+} // namespace ae::util::fs

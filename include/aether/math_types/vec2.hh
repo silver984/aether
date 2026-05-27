@@ -19,11 +19,11 @@ struct vec2 final : math_type<vec2, T, 2> {
 		return {static_cast<U>(x), static_cast<U>(y)};
 	}
 
-	constexpr T& operator[](size_t i) {
+	constexpr T& operator[](std::size_t i) {
 		return i == 0 ? x : y;
 	}
 
-	constexpr T const& operator[](size_t i) const {
+	constexpr T const& operator[](std::size_t i) const {
 		return i == 0 ? x : y;
 	}
 

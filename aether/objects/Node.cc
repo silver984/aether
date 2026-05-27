@@ -124,8 +124,8 @@ bool Node::is_draw_enabled() const {
 	return is_draw_enabled_;
 }
 
-size_t Node::count() const {
-	size_t c = children_.size();
+std::size_t Node::count() const {
+	std::size_t c = children_.size();
 
 	for (auto const& child : children_) {
 		if (!child) {
@@ -261,7 +261,7 @@ rgba Node::color() const {
 }
 
 void Node::set_alpha(float val) {
-	uint8_t valui8 = static_cast<uint8_t>(std::round(255.f * std::clamp(val, 0.f, 1.f)));
+	std::uint8_t valui8 = static_cast<std::uint8_t>(std::round(255.f * std::clamp(val, 0.f, 1.f)));
 
 	if (color_.a == valui8) {
 		return;

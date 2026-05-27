@@ -6,7 +6,7 @@
 #include <cmath>
 #include <numbers>
 
-namespace ae::math {
+namespace ae::util::math {
 
 template <numeric_type T>
 [[nodiscard]] T lerp(T a, T b, T t) {
@@ -120,4 +120,4 @@ template <numeric_type T>
 	return {rotated.x + origin.x, rotated.y + origin.y};
 }
 
-} // namespace ae::math
+} // namespace ae::util::math

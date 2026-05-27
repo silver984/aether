@@ -75,11 +75,11 @@ std::string_view AnimatedSprite::current_animation_name() const {
 	return current_animation_name_;
 }
 
-size_t AnimatedSprite::current_subtexture_index() const {
+std::size_t AnimatedSprite::current_subtexture_index() const {
 	return current_subtexture_index_;
 }
 
-uint32_t AnimatedSprite::playback_fps() const {
+std::uint32_t AnimatedSprite::playback_fps() const {
 	return playback_fps_;
 }
 

@@ -20,11 +20,11 @@ float Context::total_time() const {
 	return total_time_;
 }
 
-uint32_t Context::frame_count() const {
+std::uint32_t Context::frame_count() const {
 	return frame_count_;
 }
 
-uint32_t Context::running_fps() const {
+std::uint32_t Context::running_fps() const {
 	return running_fps_;
 }
 

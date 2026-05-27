@@ -4,7 +4,7 @@
 
 namespace ae {
 
-template <template <typename> class derived, numeric_type T, size_t N>
+template <template <typename> class derived, numeric_type T, std::size_t N>
 struct math_type {
 	[[nodiscard]] constexpr derived<T> operator+() const {
 		return self();
@@ -13,7 +13,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator-() const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] *= -1;
 		}
 
@@ -23,7 +23,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator+(derived<T> rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] += rhs[i];
 		}
 
@@ -34,7 +34,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator+(derived<U> rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] += static_cast<T>(rhs[i]);
 		}
 
@@ -45,7 +45,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator+(U rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] += static_cast<T>(rhs);
 		}
 
@@ -55,7 +55,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator-(derived<T> rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] -= rhs[i];
 		}
 
@@ -66,7 +66,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator-(derived<U> rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] -= static_cast<T>(rhs[i]);
 		}
 
@@ -77,7 +77,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator-(U rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] -= static_cast<T>(rhs);
 		}
 
@@ -87,7 +87,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator*(derived<T> rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] *= rhs[i];
 		}
 
@@ -98,7 +98,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator*(derived<U> rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] *= static_cast<T>(rhs[i]);
 		}
 
@@ -109,7 +109,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator*(U rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] *= static_cast<T>(rhs);
 		}
 
@@ -119,7 +119,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator/(derived<T> rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] /= rhs[i];
 		}
 
@@ -130,7 +130,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator/(derived<U> rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] /= static_cast<T>(rhs[i]);
 		}
 
@@ -141,7 +141,7 @@ struct math_type {
 	[[nodiscard]] constexpr derived<T> operator/(U rhs) const {
 		derived<T> r(self());
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] /= static_cast<T>(rhs);
 		}
 
@@ -149,7 +149,7 @@ struct math_type {
 	}
 
 	constexpr derived<T>& operator+=(derived<T> rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] += rhs[i];
 		}
 
@@ -158,7 +158,7 @@ struct math_type {
 
 	template <typename U>
 	constexpr derived<T>& operator+=(derived<U> rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] += static_cast<T>(rhs[i]);
 		}
 
@@ -167,7 +167,7 @@ struct math_type {
 
 	template <typename U>
 	constexpr derived<T>& operator+=(U rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] += static_cast<T>(rhs);
 		}
 
@@ -175,7 +175,7 @@ struct math_type {
 	}
 
 	constexpr derived<T>& operator-=(derived<T> rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] -= rhs[i];
 		}
 
@@ -184,7 +184,7 @@ struct math_type {
 
 	template <typename U>
 	constexpr derived<T>& operator-=(derived<U> rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] -= static_cast<T>(rhs[i]);
 		}
 
@@ -193,7 +193,7 @@ struct math_type {
 
 	template <typename U>
 	constexpr derived<T>& operator-=(U rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] -= static_cast<T>(rhs);
 		}
 
@@ -201,7 +201,7 @@ struct math_type {
 	}
 
 	constexpr derived<T>& operator*=(derived<T> rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] *= rhs[i];
 		}
 
@@ -210,7 +210,7 @@ struct math_type {
 
 	template <typename U>
 	constexpr derived<T>& operator*=(derived<U> rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] *= static_cast<T>(rhs[i]);
 		}
 
@@ -219,7 +219,7 @@ struct math_type {
 
 	template <typename U>
 	constexpr derived<T>& operator*=(U rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] *= static_cast<T>(rhs);
 		}
 
@@ -227,7 +227,7 @@ struct math_type {
 	}
 
 	constexpr derived<T>& operator/=(derived<T> rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] /= rhs[i];
 		}
 
@@ -236,7 +236,7 @@ struct math_type {
 
 	template <typename U>
 	constexpr derived<T>& operator/=(derived<U> rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] /= static_cast<T>(rhs[i]);
 		}
 
@@ -245,7 +245,7 @@ struct math_type {
 
 	template <typename U>
 	constexpr derived<T>& operator/=(U rhs) {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] /= static_cast<T>(rhs);
 		}
 
@@ -253,7 +253,7 @@ struct math_type {
 	}
 
 	constexpr derived<T>& operator++() {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			++self()[i];
 		}
 
@@ -267,7 +267,7 @@ struct math_type {
 	}
 
 	constexpr derived<T>& operator--() {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			--self()[i];
 		}
 
@@ -281,7 +281,7 @@ struct math_type {
 	}
 
 	[[nodiscard]] constexpr bool operator==(derived<T> rhs) const {
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			if (self()[i] != rhs[i]) {
 				return false;
 			}
@@ -298,7 +298,7 @@ struct math_type {
 	[[nodiscard]] explicit constexpr operator derived<U>() const {
 		derived<U> r;
 
-		for (size_t i = 0; i < N; ++i) {
+		for (std::size_t i = 0; i < N; ++i) {
 			r[i] = static_cast<U>(self()[i]);
 		}
 

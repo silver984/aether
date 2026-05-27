@@ -43,8 +43,8 @@ vec2<float> mat3::transform_point(vec2<float> p) const {
 mat3 mat3::operator*(mat3 const& o) const {
 	mat3 r;
 
-	for (size_t row = 0; row < 3; ++row) {
-		for (size_t col = 0; col < 3; ++col) {
+	for (std::size_t row = 0; row < 3; ++row) {
+		for (std::size_t col = 0; col < 3; ++col) {
 			r.m[row][col] = m[row][0] * o.m[0][col] + m[row][1] * o.m[1][col] + m[row][2] * o.m[2][col];
 		}
 	}

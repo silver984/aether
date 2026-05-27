@@ -19,11 +19,11 @@ struct size final : math_type<size, T, 2> {
 		return {static_cast<U>(width), static_cast<U>(height)};
 	}
 
-	constexpr T& operator[](size_t i) {
+	constexpr T& operator[](std::size_t i) {
 		return i == 0 ? width : height;
 	}
 
-	constexpr T const& operator[](size_t i) const {
+	constexpr T const& operator[](std::size_t i) const {
 		return i == 0 ? width : height;
 	}
 

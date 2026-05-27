@@ -20,8 +20,8 @@ public:
 	void play_anim(std::string_view animation_name, bool should_loop = false, int fps = 0);
 	[[nodiscard]] std::vector<std::string> animation_names() const;
 	[[nodiscard]] std::string_view current_animation_name() const;
-	[[nodiscard]] size_t current_subtexture_index() const;
-	[[nodiscard]] uint32_t playback_fps() const;
+	[[nodiscard]] std::size_t current_subtexture_index() const;
+	[[nodiscard]] std::uint32_t playback_fps() const;
 
 protected:
 	bool init() override;
@@ -37,7 +37,7 @@ private:
 	rect<int> texture_source_rect_;
 	vec2<int> current_subtexture_offsets_;
 	float subtexture_elapsed_;
-	size_t current_subtexture_index_;
+	std::size_t current_subtexture_index_;
 	bool animation_reset_;
 	bool is_current_animation_looping_;
 	bool is_current_subtexture_rotated_;
@@ -46,7 +46,7 @@ private:
 	std::string const path_arg_;
 	std::string const image_format_arg_;
 	std::string const data_format_arg_;
-	uint32_t playback_fps_;
+	std::uint32_t playback_fps_;
 };
 
 } // namespace ae

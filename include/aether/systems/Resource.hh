@@ -40,16 +40,16 @@ private:
 
 	void try_clean_refs();
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
-	size_t clean_texture_refs();
-	size_t clean_texture_atlas_refs();
+	std::size_t clean_texture_refs();
+	std::size_t clean_texture_atlas_refs();
 #else
 	void clean_texture_refs();
 	void clean_texture_atlas_refs();
 #endif
 	texture_atlas_formats validate_xml_texture_atlas(tinyxml2::XMLElement* const& root);
 
-	string_map<std::weak_ptr<Texture>> texture_wrefs_;
-	string_map<std::weak_ptr<texture_atlas>> texture_atlas_wrefs_;
+	util::string_map<std::weak_ptr<Texture>> texture_wrefs_;
+	util::string_map<std::weak_ptr<texture_atlas>> texture_atlas_wrefs_;
 };
 
 } // namespace ae
