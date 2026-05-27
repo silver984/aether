@@ -14,7 +14,7 @@ bool TestState::init() {
 		return false;
 	}
 
-	img->set_position({400.f, 400.f});
+	img->set_position({400.f, 300.f});
 	add(img);
 
 	return true;
