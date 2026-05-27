@@ -24,12 +24,13 @@ public:
 
 	std::shared_ptr<Texture> fetch(std::string_view file);
 	// void reserve(std::string_view file);
-	// void free_reserved(std::string_view reserved);
+	void purge_unused_not_reserved();
+	void purge_unused_reserved();
+	void purge_unused_all();
 
 private:
 	void clear();
-	void purge_unused_not_reserved();
-	// void purge_reserved();
+	[[nodiscard]] std::shared_ptr<Texture> try_fetch_from_cache(std::filesystem::path const& file);
 	[[nodiscard]] bool validate_texture(Texture const& texture);
 
 	struct cached_texture final {

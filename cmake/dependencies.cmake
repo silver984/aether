@@ -11,6 +11,7 @@ function(fetch dependency_name repo tag)
 endfunction()
 
 function(aether_fetch_dependencies target)
+    add_compile_definitions(SUPPORT_FILEFORMAT_JPG=1) # for raylib
     fetch(raylib https://github.com/raysan5/raylib.git 6.0)
     fetch(fmt https://github.com/fmtlib/fmt.git 12.1.0)
     

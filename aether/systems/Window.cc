@@ -52,7 +52,8 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 #endif
 
 	SetTraceLogCallback([](int, char const*, va_list) {});
-	SetConfigFlags(ConfigFlags::FLAG_WINDOW_RESIZABLE | ConfigFlags::FLAG_WINDOW_ALWAYS_RUN);
+	using enum ConfigFlags;
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
 
 	title_                              = std::string(title);
 	size<int> const minimum_screen_size = {640, 360};
