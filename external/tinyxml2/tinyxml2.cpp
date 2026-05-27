@@ -21,7 +21,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-#include <external/tinyxml2.h>
+#include "tinyxml2.h"
 
 #include <new>		// yes, this one new style header, is in the Android SDK.
 #if defined(ANDROID_NDK) || defined(__BORLANDC__) || defined(__QNXNTO__) || defined(__CC_ARM)
@@ -31,27 +31,6 @@ distribution.
 #   include <cstddef>
 #   include <cstdarg>
 #endif
-
-// Handle fallthrough attribute for different compilers
-#ifndef __has_attribute
-#   define __has_attribute(x) 0
-#endif
-#ifndef __has_cpp_attribute
-#  define __has_cpp_attribute(x) 0
-#endif
-
-#if defined(_MSC_VER)
-#   define TIXML_FALLTHROUGH (void(0))
-#elif (__cplusplus >= 201703L && __has_cpp_attribute(fallthrough))
-#   define TIXML_FALLTHROUGH [[fallthrough]]
-#elif __has_cpp_attribute(clang::fallthrough)
-#   define TIXML_FALLTHROUGH [[clang::fallthrough]]
-#elif __has_attribute(fallthrough)
-#   define TIXML_FALLTHROUGH __attribute__((fallthrough))
-#else
-#   define TIXML_FALLTHROUGH (void(0))
-#endif
-
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1400 ) && (!defined WINCE)
 	// Microsoft Visual Studio, version 2005 and higher. Not WinCE.
@@ -114,9 +93,6 @@ distribution.
 	#define TIXML_VSNPRINTF	vsnprintf
 	static inline int TIXML_VSCPRINTF( const char* format, va_list va )
 	{
-	    if (!format) {
-	        return 0;
-	    }
 		int len = vsnprintf( 0, 0, format, va );
 		TIXMLASSERT( len >= 0 );
 		return len;
@@ -470,17 +446,17 @@ void XMLUtil::ConvertUTF32ToUTF8( unsigned long input, char* output, int* length
             --output;
             *output = static_cast<char>((input | BYTE_MARK) & BYTE_MASK);
             input >>= 6;
-            TIXML_FALLTHROUGH;
+            //fall through
         case 3:
             --output;
             *output = static_cast<char>((input | BYTE_MARK) & BYTE_MASK);
             input >>= 6;
-            TIXML_FALLTHROUGH;
+            //fall through
         case 2:
             --output;
             *output = static_cast<char>((input | BYTE_MARK) & BYTE_MASK);
             input >>= 6;
-            TIXML_FALLTHROUGH;
+            //fall through
         case 1:
             --output;
             *output = static_cast<char>(input | FIRST_BYTE_MARK[*length]);
@@ -2347,11 +2323,9 @@ static FILE* callfopen( const char* filepath, const char* mode )
     return fp;
 }
 
-void XMLDocument::DeleteNode( XMLNode* node )	{   
-    if(node == 0) {
-        return; // check for null pointer
-    }
-    TIXMLASSERT(node->_document == this);
+void XMLDocument::DeleteNode( XMLNode* node )	{
+    TIXMLASSERT( node );
+    TIXMLASSERT(node->_document == this );
     if (node->_parent) {
         node->_parent->DeleteChild( node );
     }
@@ -2603,7 +2577,7 @@ void XMLDocument::PopDepth()
 	--_parsingDepth;
 }
 
-XMLPrinter::XMLPrinter( FILE* file, bool compact, int depth, EscapeAposCharsInAttributes aposInAttributes ) :
+XMLPrinter::XMLPrinter( FILE* file, bool compact, int depth ) :
     _elementJustOpened( false ),
     _stack(),
     _firstElement( true ),
@@ -2620,11 +2594,9 @@ XMLPrinter::XMLPrinter( FILE* file, bool compact, int depth, EscapeAposCharsInAt
     }
     for( int i=0; i<NUM_ENTITIES; ++i ) {
         const char entityValue = entities[i].value;
-        if ((aposInAttributes == ESCAPE_APOS_CHARS_IN_ATTRIBUTES) || (entityValue != SINGLE_QUOTE)) {
-            const unsigned char flagIndex = static_cast<unsigned char>(entityValue);
-            TIXMLASSERT( flagIndex < ENTITY_RANGE );
-            _entityFlag[flagIndex] = true;
-        }
+        const unsigned char flagIndex = static_cast<unsigned char>(entityValue);
+        TIXMLASSERT( flagIndex < ENTITY_RANGE );
+        _entityFlag[flagIndex] = true;
     }
     _restrictedEntityFlag[static_cast<unsigned char>('&')] = true;
     _restrictedEntityFlag[static_cast<unsigned char>('<')] = true;
@@ -2661,7 +2633,7 @@ void XMLPrinter::Write( const char* data, size_t size )
         fwrite ( data , sizeof(char), size, _fp);
     }
     else {
-        char* p = _buffer.PushArr( size ) - 1;   // back up over the null terminator.
+        char* p = _buffer.PushArr( static_cast<int>(size) ) - 1;   // back up over the null terminator.
         memcpy( p, data, size );
         p[size] = 0;
     }

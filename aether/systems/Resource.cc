@@ -2,12 +2,11 @@
 #include <aether/systems/Resource.hh>
 #include <aether/util/timer.hh>
 #include <cctype>
-#include <external/nlohmann/json.hpp>
-#include <external/tinyxml2.h>
 #include <filesystem>
 #include <fmt/format.h>
 #include <fstream>
 #include <raylib.h>
+#include <tinyxml2/tinyxml2.h>
 #include <utility>
 
 namespace {

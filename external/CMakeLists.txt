@@ -1,4 +1,1 @@
-target_sources(${AETHER}
-    PRIVATE
-        tinyxml2.cpp
-)
+add_subdirectory(tinyxml2)
