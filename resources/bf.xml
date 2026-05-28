@@ -3,10 +3,10 @@
     <SubTexture name="down0001" x="495" y="0" width="495" height="483" />
     <SubTexture name="downmiss0000" x="990" y="0" width="495" height="483" />
     <SubTexture name="idle0000" x="1485" y="0" width="495" height="483" />
-    <SubTexture name="idle0001" x="1980" y="0" width="495" height="483" />
-    <SubTexture name="idle0002" x="2475" y="0" width="495" height="483" />
     <SubTexture name="idle0003" x="0" y="483" width="495" height="483" />
+    <SubTexture name="idle0001" x="1980" y="0" width="495" height="483" />
     <SubTexture name="idle0004" x="495" y="483" width="495" height="483" />
+    <SubTexture name="idle0002" x="2475" y="0" width="495" height="483" />
     <SubTexture name="idle0005" x="990" y="483" width="495" height="483" />
     <SubTexture name="left0000" x="1485" y="483" width="495" height="483" />
     <SubTexture name="left0001" x="1980" y="483" width="495" height="483" />

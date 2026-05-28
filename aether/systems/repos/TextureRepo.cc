@@ -50,7 +50,8 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	purge_unused();
 
 	debuglog("Loading \"{}\"", lfile.filename().string());
-	auto const start_time     = util::timer::start();
+	auto const start_time = util::timer::start();
+
 	Texture temporary_texture = LoadTexture(lfile.string().c_str());
 
 	if (!is_texture_valid(temporary_texture)) {
@@ -60,14 +61,13 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 
 	std::shared_ptr<Texture> shared_texture =
 	    std::shared_ptr<Texture>(new Texture(std::move(temporary_texture)), texture_deleter{});
-
 	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width,
 	         shared_texture->height, shared_texture->id, fmt::ptr(shared_texture.get()));
 
-	auto [iterator, _]  = cached_textures_.emplace(lfile, std::move(shared_texture));
-	auto const end_time = util::timer::end(start_time);
-
+	auto [iterator, _] = cached_textures_.emplace(lfile, std::move(shared_texture));
 	tracelog("Successfully inserted to cache | cache size: {}", cached_textures_.size());
+
+	auto const end_time = util::timer::end(start_time);
 	debuglog("Done | took {}ms", end_time);
 	return iterator->second;
 }

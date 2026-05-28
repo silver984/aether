@@ -2,6 +2,7 @@
 #include <aether/systems/repos/TextureAtlasRepo.hh>
 #include <aether/util/filesystem.hh>
 #include <aether/util/string.hh>
+#include <aether/util/timer.hh>
 #include <algorithm>
 #include <charconv>
 #include <cstddef>
@@ -34,6 +35,11 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 		return nullptr;
 	}
 
+	purge_unused();
+
+	debuglog("Loading \"{}\"", lfile.filename().string());
+	auto const start_time = util::timer::start();
+
 	std::shared_ptr<texture_atlas> shared_texture_atlas = nullptr;
 
 	if (file_extension == ".xml") {
@@ -46,6 +52,10 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 	}
 
 	auto [iterator, _] = cached_texture_atlases_.emplace(lfile, std::move(shared_texture_atlas));
+	tracelog("Successfully inserted to cache | cache size: {}", cached_texture_atlases_.size());
+
+	auto const end_time = util::timer::end(start_time);
+	debuglog("Done | took {}ms", end_time);
 	return iterator->second;
 }
 
@@ -97,7 +107,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_parse(std::filesystem::path
 // private
 std::shared_ptr<texture_atlas>
 TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std::string_view element_name,
-                                     std::function<void(tinyxml2::XMLElement const&, texture_atlas&)> callback) {
+                                     std::function<void(tinyxml2::XMLElement const&, texture_atlas&)>&& callback) {
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
@@ -105,7 +115,11 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 		return nullptr;
 	}
 
+	debuglog("Parsing");
+	auto const start_time = util::timer::start();
+
 	std::shared_ptr<texture_atlas> shared_texture_atlas = std::make_shared<texture_atlas>();
+	tracelog("Allocated shared texture atlas | address: {}", fmt::ptr(shared_texture_atlas.get()));
 
 	for (tinyxml2::XMLElement const* current_element = root_element->FirstChildElement(element_name.data());
 	     current_element != nullptr; current_element = current_element->NextSiblingElement(element_name.data())) {
@@ -119,6 +133,9 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 			          return a.reference_index < b.reference_index;
 		          });
 	}
+
+	auto const end_time = util::timer::end(start_time);
+	debuglog("Done | took {}ms", end_time);
 
 	return shared_texture_atlas;
 }
@@ -216,8 +233,10 @@ TextureAtlasRepo::xml_format TextureAtlasRepo::assess_xml_format(tinyxml2::XMLDo
 	std::string_view first_child_name  = first_child_name_ccptr;
 
 	if (first_child_name == "SubTexture") {
+		tracelog("Detected Adobe Animate XML format");
 		return adobe_animate;
 	} else if (first_child_name == "sprite") {
+		tracelog("Detected TexturePacker generic XML format");
 		return texture_packer;
 	}
 
