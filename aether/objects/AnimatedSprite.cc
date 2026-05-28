@@ -1,19 +1,18 @@
 #include <aether/debug/log.hh>
 #include <aether/objects/AnimatedSprite.hh>
 #include <aether/systems/Renderer.hh>
-#include <aether/systems/Resource.hh>
+#include <aether/systems/repos/TextureAtlasRepo.hh>
+#include <aether/systems/repos/TextureRepo.hh>
 #include <aether/util/math.hh>
 #include <raylib.h>
 
 namespace ae {
 
-AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
-                               std::string_view data_format, int fps)
+AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view image_file, std::string_view data_file, int fps)
     : Node(ctx), subtexture_elapsed_(0.f), current_subtexture_index_(0), animation_reset_(false),
       is_current_animation_looping_(false), is_current_subtexture_rotated_(false),
-      subtexture_transform_(mat3::identity()), path_arg_(std::string(path)),
-      image_format_arg_(std::string(image_format)), data_format_arg_(std::string(data_format)),
-      playback_fps_(std::max(1, fps)) {}
+      subtexture_transform_(mat3::identity()), image_file_arg_(std::string(image_file)),
+      data_file_arg_(std::string(data_file)), playback_fps_(std::max(1, fps)) {}
 
 AnimatedSprite::~AnimatedSprite() = default;
 
@@ -22,9 +21,9 @@ std::string_view AnimatedSprite::type() const {
 }
 
 void AnimatedSprite::toggle_antialiasing(bool val) const {
-	if (texture_atlas_ && texture_atlas_->texture) {
+	if (texture_) {
 		using enum TextureFilter;
-		SetTextureFilter(*texture_atlas_->texture, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
+		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
 
@@ -85,10 +84,17 @@ std::uint32_t AnimatedSprite::playback_fps() const {
 
 // protected
 bool AnimatedSprite::init() {
-	texture_atlas_ = ctx_.resource.load_shared_texture_atlas(path_arg_, image_format_arg_, data_format_arg_);
+	texture_ = ctx_.texture_repo.fetch(image_file_arg_);
+
+	if (!texture_) {
+		errorlog("Failed | nullptr texture");
+		return false;
+	}
+
+	texture_atlas_ = ctx_.texture_atlas_repo.fetch(data_file_arg_);
 
 	if (!texture_atlas_) {
-		errorlog("Failed");
+		errorlog("Failed | nullptr texture atlas");
 		return false;
 	}
 
@@ -123,7 +129,7 @@ void AnimatedSprite::update(float dt) {
 
 // protected
 void AnimatedSprite::draw(mat3 const& transform, rgba color) {
-	if (!texture_atlas_ || !texture_atlas_->texture) {
+	if (!texture_) {
 		return;
 	}
 
@@ -138,7 +144,7 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 		subtexture_transform_ = transform * t;
 	}
 
-	ctx_.renderer.draw_texture(*texture_atlas_->texture, texture_source_rect_, subtexture_transform_, color);
+	ctx_.renderer.draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
 }
 
 // private
@@ -171,8 +177,8 @@ size<int> AnimatedSprite::calculate_bounds(std::vector<texture_atlas::subtexture
 	size<int> ret;
 
 	for (auto const& subtexture : subtextures) {
-		auto lbounds = subtexture.source_rect.bounds<int>();
-		auto offsets = util::math::abs(subtexture.offsets);
+		size<int> const lbounds = subtexture.source_rect.bounds<int>();
+		vec2<int> const offsets = util::math::abs(subtexture.offsets);
 
 		if (subtexture.is_rotated) {
 			ret = util::math::max(ret, util::math::switch_sides(lbounds) + offsets);

@@ -58,7 +58,8 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 		UnloadTexture(temporary_texture);
 	}
 
-	auto shared_texture = std::shared_ptr<Texture>(new Texture(std::move(temporary_texture)), texture_deleter{});
+	std::shared_ptr<Texture> shared_texture =
+	    std::shared_ptr<Texture>(new Texture(std::move(temporary_texture)), texture_deleter{});
 
 	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width,
 	         shared_texture->height, shared_texture->id, fmt::ptr(shared_texture.get()));

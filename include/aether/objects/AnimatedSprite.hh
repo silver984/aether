@@ -5,14 +5,13 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace ae {
+struct Texture;
 
-class Renderer;
+namespace ae {
 
 class AnimatedSprite : public Node {
 public:
-	AnimatedSprite(Context const& ctx, std::string_view path, std::string_view image_format,
-	               std::string_view data_format, int fps);
+	AnimatedSprite(Context const& ctx, std::string_view image_file, std::string_view data_file, int fps);
 	~AnimatedSprite() override;
 
 	[[nodiscard]] std::string_view type() const override;
@@ -33,6 +32,7 @@ private:
 	void progress_frame();
 	[[nodiscard]] size<int> calculate_bounds(std::vector<texture_atlas::subtexture> const& subtextures) const;
 
+	std::shared_ptr<Texture> texture_;
 	std::shared_ptr<texture_atlas> texture_atlas_;
 	rect<int> texture_source_rect_;
 	vec2<int> current_subtexture_offsets_;
@@ -43,9 +43,8 @@ private:
 	bool is_current_subtexture_rotated_;
 	mat3 subtexture_transform_;
 	std::string current_animation_name_;
-	std::string const path_arg_;
-	std::string const image_format_arg_;
-	std::string const data_format_arg_;
+	std::string const image_file_arg_;
+	std::string const data_file_arg_;
 	std::uint32_t playback_fps_;
 };
 

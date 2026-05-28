@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <charconv>
 #include <cstddef>
-#include <tinyxml2/tinyxml2.h>
 
 namespace ae {
 
@@ -185,9 +184,8 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml
 		    current_element.QueryIntAttribute("frameY", &temporary_subtexture.offsets.y);
 		    current_element.QueryBoolAttribute("rotated", &temporary_subtexture.is_rotated);
 
-		    std::string_view animation_name = full_animation_name.substr(0, animation_name_length);
-		    auto const [iterator, _]        = atlas.subtextures.emplace(animation_name);
-		    iterator->second.emplace_back(std::move(temporary_subtexture));
+		    std::string animation_name = std::string(full_animation_name.substr(0, animation_name_length));
+		    atlas.subtextures[animation_name].emplace_back(std::move(temporary_subtexture));
 	    });
 }
 
@@ -228,9 +226,9 @@ TextureAtlasRepo::xml_format TextureAtlasRepo::assess_xml_format(tinyxml2::XMLDo
 
 // private
 void TextureAtlasRepo::log_defective_subtexture(std::string_view message,
-                                                std::optional<std::string_view> name_attribute = std::nullopt) {
+                                                std::optional<std::string_view> name_attribute) {
 	if (name_attribute.has_value()) {
-		tracelog("Skipping subtexture with {} | on: \"{}\"", message, name_attribute);
+		tracelog("Skipping subtexture with {} | on: \"{}\"", message, name_attribute.value());
 		return;
 	}
 
