@@ -4,7 +4,13 @@
 #include <functional>
 #include <memory>
 #include <optional>
-#include <tinyxml2/tinyxml2.h>
+
+namespace tinyxml2 {
+
+class XMLDocument;
+class XMLElement;
+
+} // namespace tinyxml2
 
 namespace ae {
 

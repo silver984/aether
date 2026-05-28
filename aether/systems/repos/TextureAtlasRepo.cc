@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <charconv>
 #include <cstddef>
+#include <tinyxml2/tinyxml2.h>
 
 namespace ae {
 
@@ -91,8 +92,14 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_parse(std::filesystem::path
 
 	switch (assess_xml_format(document)) {
 		using enum xml_format;
-	case adobe_animate: return xml_adobe_animate_parse(document);
-	case texture_packer: return xml_texture_packer_parse(document);
+	case adobe_animate: {
+		tracelog("Detected Adobe Animate XML format");
+		return xml_adobe_animate_parse(document);
+	}
+	case texture_packer: {
+		tracelog("Detected TexturePacker generic XML format");
+		return xml_texture_packer_parse(document);
+	}
 	case unknown:
 	default: {
 		errorlog("Unknown XML format");
@@ -233,10 +240,8 @@ TextureAtlasRepo::xml_format TextureAtlasRepo::assess_xml_format(tinyxml2::XMLDo
 	std::string_view first_child_name  = first_child_name_ccptr;
 
 	if (first_child_name == "SubTexture") {
-		tracelog("Detected Adobe Animate XML format");
 		return adobe_animate;
 	} else if (first_child_name == "sprite") {
-		tracelog("Detected TexturePacker generic XML format");
 		return texture_packer;
 	}
 
@@ -246,12 +251,14 @@ TextureAtlasRepo::xml_format TextureAtlasRepo::assess_xml_format(tinyxml2::XMLDo
 // private
 void TextureAtlasRepo::log_defective_subtexture(std::string_view message,
                                                 std::optional<std::string_view> name_attribute) {
+#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 	if (name_attribute.has_value()) {
 		tracelog("Skipping subtexture with {} | on: \"{}\"", message, name_attribute.value());
 		return;
 	}
 
 	tracelog("Skipping subtexture with {}", message);
+#endif
 }
 
 } // namespace ae
