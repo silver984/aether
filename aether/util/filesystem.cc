@@ -27,8 +27,4 @@ std::string file_extension(std::filesystem::path const& file_path) {
 	return extension;
 }
 
-bool file_extension_matches_any(std::string_view extension, std::initializer_list<std::string_view> candidates) {
-	return std::find(candidates.begin(), candidates.end(), extension) != candidates.end();
-}
-
 } // namespace ae::util::fs
