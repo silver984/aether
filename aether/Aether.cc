@@ -6,7 +6,7 @@
 
 namespace ae {
 
-Aether::Aether() : ctx_(window_, renderer_, texture_repo_, resource_, director_), is_initialized_(false) {}
+Aether::Aether() : ctx_(window_, renderer_, texture_repo_, texture_atlas_repo_, director_), is_initialized_(false) {}
 
 Aether::~Aether() {
 	if (is_initialized_) {
@@ -68,7 +68,7 @@ void Aether::shutdown() {
 
 	director_.try_cleanup();
 	texture_repo_.clear();
-	resource_.try_clean_refs();
+	texture_atlas_repo_.clear();
 
 	if (window_.is_initialized_) {
 		window_.shutdown();

@@ -3,7 +3,6 @@ target_sources(${AETHER}
         Context.cc
         Director.cc
         Renderer.cc
-        Resource.cc
         Window.cc
 )
 

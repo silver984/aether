@@ -3,7 +3,6 @@
 #include <aether/systems/Context.hh>
 #include <aether/systems/Director.hh>
 #include <aether/systems/Renderer.hh>
-#include <aether/systems/Resource.hh>
 #include <aether/systems/Window.hh>
 #include <aether/systems/repos/TextureAtlasRepo.hh>
 #include <aether/systems/repos/TextureRepo.hh>
@@ -30,7 +29,6 @@ private:
 
 	Window window_;
 	Renderer renderer_;
-	Resource resource_;
 	Director director_;
 	TextureRepo texture_repo_;
 	TextureAtlasRepo texture_atlas_repo_;

@@ -1,7 +1,6 @@
 #include <aether/debug/log.hh>
 #include <aether/systems/Context.hh>
 #include <aether/systems/Director.hh>
-#include <aether/systems/Resource.hh>
 #include <aether/util/timer.hh>
 #include <utility>
 

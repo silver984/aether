@@ -129,8 +129,9 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 
 	if (is_current_subtexture_rotated_) {
 		mat3 const fix = mat3::translation({0.f, static_cast<float>(bounds().height - current_subtexture_offsets_.y)});
-		mat3 const r   = mat3::rotation(math::degrees_to_radians(-90.f));
-		mat3 const t = mat3::translation(-(static_cast<vec2<float>>(math::switch_sides(current_subtexture_offsets_))));
+		mat3 const r   = mat3::rotation(util::math::degrees_to_radians(-90.f));
+		mat3 const t =
+		    mat3::translation(-(static_cast<vec2<float>>(util::math::switch_sides(current_subtexture_offsets_))));
 		subtexture_transform_ = transform * fix * r * t;
 	} else {
 		mat3 const t          = mat3::translation(-(static_cast<vec2<float>>(current_subtexture_offsets_)));
@@ -171,14 +172,14 @@ size<int> AnimatedSprite::calculate_bounds(std::vector<texture_atlas::subtexture
 
 	for (auto const& subtexture : subtextures) {
 		auto lbounds = subtexture.source_rect.bounds<int>();
-		auto offsets = math::abs(subtexture.offsets);
+		auto offsets = util::math::abs(subtexture.offsets);
 
 		if (subtexture.is_rotated) {
-			ret = math::max(ret, math::switch_sides(lbounds) + offsets);
+			ret = util::math::max(ret, util::math::switch_sides(lbounds) + offsets);
 			continue;
 		}
 
-		ret = math::max(ret, lbounds + offsets);
+		ret = util::math::max(ret, lbounds + offsets);
 	}
 
 	return ret;

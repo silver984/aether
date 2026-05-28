@@ -8,15 +8,15 @@ class Aether;
 class Window;
 class Renderer;
 class TextureRepo;
-class Resource;
+class TextureAtlasRepo;
 class Director;
 
 class Context final {
 	friend class Aether;
 
 private:
-	Context(Window& window_ref, Renderer& renderer_ref, TextureRepo& texture_repo_ref, Resource& resource_ref,
-	        Director& director_ref);
+	Context(Window& window_ref, Renderer& renderer_ref, TextureRepo& texture_repo_ref,
+	        TextureAtlasRepo& texture_atlas_repo_ref, Director& director_ref);
 
 public:
 	~Context();
@@ -33,7 +33,7 @@ public:
 	Window& window;
 	Renderer& renderer;
 	TextureRepo& texture_repo;
-	Resource& resource;
+	TextureAtlasRepo& texture_atlas_repo;
 	Director& director;
 
 private:

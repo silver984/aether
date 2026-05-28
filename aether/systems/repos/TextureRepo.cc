@@ -63,24 +63,23 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width,
 	         shared_texture->height, shared_texture->id, fmt::ptr(shared_texture.get()));
 
-	auto const [iterator, _] = cached_textures_.emplace(lfile, std::move(shared_texture));
-	auto const end_time      = util::timer::end(start_time);
+	auto [iterator, _]  = cached_textures_.emplace(lfile, std::move(shared_texture));
+	auto const end_time = util::timer::end(start_time);
 
 	tracelog("Successfully inserted to cache | cache size: {}", cached_textures_.size());
 	debuglog("Done | took {}ms", end_time);
 	return iterator->second;
 }
 
-// private
-void TextureRepo::clear() {
-	cached_textures_.clear();
-}
-
-// private
 void TextureRepo::purge_unused() {
 	std::erase_if(cached_textures_, [](auto const& pair) {
 		return pair.second.use_count() <= 1;
 	});
+}
+
+// private
+void TextureRepo::clear() {
+	cached_textures_.clear();
 }
 
 // private

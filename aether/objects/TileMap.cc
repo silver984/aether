@@ -9,7 +9,7 @@ namespace ae {
 
 TileMap::TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds)
     : Node(ctx), file_arg_(std::string(file)),
-      tile_bounds_arg_(static_cast<size<std::uint32_t>>(math::max({1, 1}, tile_bounds))) {}
+      tile_bounds_arg_(static_cast<size<std::uint32_t>>(util::math::max({1, 1}, tile_bounds))) {}
 
 TileMap::~TileMap() = default;
 
@@ -39,7 +39,7 @@ void TileMap::seek_tile(vec2<int> tile_index) {
 	}
 
 	tile_index_ =
-	    static_cast<vec2<std::uint32_t>>(math::clamp(tile_index, {}, static_cast<vec2<int>>(tile_count()) - 1));
+	    static_cast<vec2<std::uint32_t>>(util::math::clamp(tile_index, {}, static_cast<vec2<int>>(tile_count()) - 1));
 	texture_source_rect_.x = tile_bounds_arg_.width * tile_index_.x;
 	texture_source_rect_.y = tile_bounds_arg_.height * tile_index_.y;
 }

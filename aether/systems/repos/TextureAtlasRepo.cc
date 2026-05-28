@@ -3,8 +3,8 @@
 #include <aether/util/filesystem.hh>
 #include <aether/util/string.hh>
 #include <algorithm>
+#include <charconv>
 #include <cstddef>
-#include <optional>
 #include <tinyxml2/tinyxml2.h>
 
 namespace ae {
@@ -30,7 +30,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 	auto const file_extension = util::fs::file_extension(lfile);
 
 	// TODO: json and plist
-	if (!util::str::string_matches_any(file_extension, {".xml" /* .json, .plist */})) {
+	if (!util::str::string_matches_any(file_extension, {".xml"})) {
 		errorlog("Unsupported file format | file: \"{}\"", lfile.filename().string());
 		return nullptr;
 	}
@@ -46,8 +46,19 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 		return nullptr;
 	}
 
-	auto const [iterator, _] = cached_texture_atlases_.emplace(lfile, std::move(shared_texture_atlas));
+	auto [iterator, _] = cached_texture_atlases_.emplace(lfile, std::move(shared_texture_atlas));
 	return iterator->second;
+}
+
+void TextureAtlasRepo::purge_unused() {
+	std::erase_if(cached_texture_atlases_, [](auto const& pair) {
+		return pair.second.use_count() <= 1;
+	});
+}
+
+// private
+void TextureAtlasRepo::clear() {
+	cached_texture_atlases_.clear();
 }
 
 // private
@@ -72,6 +83,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_parse(std::filesystem::path
 	switch (assess_xml_format(document)) {
 		using enum xml_format;
 	case adobe_animate: return xml_adobe_animate_parse(document);
+	case texture_packer: return xml_texture_packer_parse(document);
 	case unknown:
 	default: {
 		errorlog("Unknown XML format");
@@ -84,79 +96,24 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_parse(std::filesystem::path
 }
 
 // private
-std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml2::XMLDocument const& document) {
-	auto shared_texture_atlas     = std::make_shared<texture_atlas>();
-	auto const* root              = document.FirstChildElement("TextureAtlas");
-	auto log_defective_subtexture = [](std::string_view message,
-	                                   std::optional<std::string_view> animation_name = std::nullopt) -> void {
-		if (animation_name.has_value()) {
-			tracelog("Skipping subtexture with {} | name: \"{}\"", message, animation_name);
-			return;
-		}
+std::shared_ptr<texture_atlas>
+TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std::string_view element_name,
+                                     std::function<void(tinyxml2::XMLElement const&, texture_atlas&)> callback) {
+	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
-		tracelog("Skipping subtexture with {}", message);
-	};
-
-	for (auto const* element = root->FirstChildElement("SubTexture"); element != nullptr;
-	     element             = element->NextSiblingElement("SubTexture")) {
-		char const* full_animation_name_ccptr = element->Attribute("name");
-
-		if (!full_animation_name_ccptr) {
-			log_defective_subtexture("no name attribute");
-			continue;
-		}
-
-		std::string_view full_animation_name = full_animation_name_ccptr;
-
-		if (full_animation_name.size() < 4) {
-			log_defective_subtexture("insufficient name length", full_animation_name);
-			continue;
-		}
-
-		// adobe animate exports frame indices as exactly 4 trailing digits:
-		// examples: "idle0000", "run0023"
-		//
-		// we intentionally do NOT scan backwards until a non-digit character,
-		// because animation names themselves may legally end in digits:
-		// "idle1" + "0000" -> "idle10000"
-		// "idle2" + "0000" -> "idle20000"
-		auto const animation_name_length = full_animation_name.size() - 4;
-		int animation_frame_index        = 0;
-
-		try {
-			animation_frame_index = std::stoi(std::string(full_animation_name.substr(animation_name_length)));
-		} catch (...) {
-			log_defective_subtexture("invalid frame index", full_animation_name);
-			continue;
-		}
-
-		texture_atlas::subtexture temporary_subtexture(animation_frame_index);
-
-		using enum tinyxml2::XMLError;
-		if (element->QueryIntAttribute("width", &temporary_subtexture.source_rect.width) != XML_SUCCESS) {
-			log_defective_subtexture("no width attribute", full_animation_name);
-			continue;
-		}
-
-		if (element->QueryIntAttribute("height", &temporary_subtexture.source_rect.height) != XML_SUCCESS) {
-			log_defective_subtexture("no height attribute", full_animation_name);
-			continue;
-		}
-
-		// these dont need to have valid values
-		// they simply fallback to their defaults
-		element->QueryIntAttribute("x", &temporary_subtexture.source_rect.x);
-		element->QueryIntAttribute("y", &temporary_subtexture.source_rect.y);
-		element->QueryIntAttribute("frameX", &temporary_subtexture.offsets.x);
-		element->QueryIntAttribute("frameY", &temporary_subtexture.offsets.y);
-		element->QueryBoolAttribute("rotated", &temporary_subtexture.is_rotated);
-
-		std::string_view animation_name = full_animation_name.substr(0, animation_name_length);
-		auto const [iterator, _]        = shared_texture_atlas->subtextures.emplace(animation_name);
-		iterator->second.emplace_back(std::move(temporary_subtexture));
+	if (!root_element) {
+		errorlog("Couldn't find root element");
+		return nullptr;
 	}
 
-	// rearrange subtextures
+	std::shared_ptr<texture_atlas> shared_texture_atlas = std::make_shared<texture_atlas>();
+
+	for (tinyxml2::XMLElement const* current_element = root_element->FirstChildElement(element_name.data());
+	     current_element != nullptr; current_element = current_element->NextSiblingElement(element_name.data())) {
+		callback(*current_element, *shared_texture_atlas);
+	}
+
+	// automatically rearrange subtextures
 	for (auto& [_, subtextures] : shared_texture_atlas->subtextures) {
 		std::sort(subtextures.begin(), subtextures.end(),
 		          [](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
@@ -168,31 +125,116 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml
 }
 
 // private
+std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml2::XMLDocument const& document) {
+	return xml_parse_delegate(
+	    document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, texture_atlas& atlas) -> void {
+		    char const* full_animation_name_ccptr = current_element.Attribute("name");
+
+		    if (!full_animation_name_ccptr) {
+			    log_defective_subtexture("no name attribute");
+			    return;
+		    }
+
+		    std::string_view full_animation_name = full_animation_name_ccptr;
+
+		    // adobe animate exports frame indices as exactly 4 trailing digits:
+		    // examples: "idle0000", "run0023"
+		    //
+		    // we intentionally do NOT scan backwards until a non-digit character,
+		    // because animation names themselves may legally end in digits:
+		    // "idle1" + "0000" -> "idle10000"
+		    // "idle2" + "0000" -> "idle20000"
+		    if (full_animation_name.size() < 4) {
+			    log_defective_subtexture("insufficient name length", full_animation_name);
+			    return;
+		    }
+
+		    int animation_frame_index               = 0;
+		    std::size_t const animation_name_length = full_animation_name.size() - 4;
+
+		    { // parse frame index
+			    std::string_view frame_index_str = full_animation_name.substr(animation_name_length);
+			    char const* begin                = frame_index_str.data();
+			    char const* end                  = begin + frame_index_str.size();
+			    auto [ptr, error_code]           = std::from_chars(begin, end, animation_frame_index);
+
+			    if (error_code != std::errc{} || ptr != end) {
+				    log_defective_subtexture("invalid frame index", full_animation_name);
+				    return;
+			    }
+		    }
+
+		    texture_atlas::subtexture temporary_subtexture(animation_frame_index);
+
+		    using enum tinyxml2::XMLError;
+		    if (current_element.QueryIntAttribute("width", &temporary_subtexture.source_rect.width) != XML_SUCCESS) {
+			    log_defective_subtexture("no width attribute", full_animation_name);
+			    return;
+		    }
+
+		    if (current_element.QueryIntAttribute("height", &temporary_subtexture.source_rect.height) != XML_SUCCESS) {
+			    log_defective_subtexture("no height attribute", full_animation_name);
+			    return;
+		    }
+
+		    // these dont need to have valid values
+		    // they simply fallback to their defaults
+		    current_element.QueryIntAttribute("x", &temporary_subtexture.source_rect.x);
+		    current_element.QueryIntAttribute("y", &temporary_subtexture.source_rect.y);
+		    current_element.QueryIntAttribute("frameX", &temporary_subtexture.offsets.x);
+		    current_element.QueryIntAttribute("frameY", &temporary_subtexture.offsets.y);
+		    current_element.QueryBoolAttribute("rotated", &temporary_subtexture.is_rotated);
+
+		    std::string_view animation_name = full_animation_name.substr(0, animation_name_length);
+		    auto const [iterator, _]        = atlas.subtextures.emplace(animation_name);
+		    iterator->second.emplace_back(std::move(temporary_subtexture));
+	    });
+}
+
+std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_texture_packer_parse(tinyxml2::XMLDocument const& document) {
+	return xml_parse_delegate(document, "sprite",
+	                          [this](tinyxml2::XMLElement const& current_element, texture_atlas& atlas) -> void {
+		                          // TODO
+	                          });
+}
+
+// private
 TextureAtlasRepo::xml_format TextureAtlasRepo::assess_xml_format(tinyxml2::XMLDocument const& document) {
 	using enum TextureAtlasRepo::xml_format;
 
-	auto const* root = document.FirstChildElement("TextureAtlas");
+	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
-	if (!root) {
+	if (!root_element) {
 		return unknown;
 	}
 
-	auto const* first_child = root->FirstChildElement();
+	tinyxml2::XMLElement const* first_child = root_element->FirstChildElement();
 
 	if (!first_child) {
 		return unknown;
 	}
 
-	char const* first_child_name_ccptr     = first_child->Name();
-	std::string_view first_child_name_strv = first_child_name_ccptr;
+	char const* first_child_name_ccptr = first_child->Name();
+	std::string_view first_child_name  = first_child_name_ccptr;
 
-	if (first_child_name_strv == "SubTexture") {
+	if (first_child_name == "SubTexture") {
 		return adobe_animate;
-	} else if (first_child_name_strv == "sprite") {
+	} else if (first_child_name == "sprite") {
 		return texture_packer;
 	}
 
 	return unknown;
+}
+
+// private
+void TextureAtlasRepo::log_defective_subtexture(std::string_view message,
+                                                std::optional<std::string_view> name_attribute = std::nullopt) {
+	if (name_attribute.has_value()) {
+		tracelog("Skipping subtexture with {} | on: \"{}\"", message, name_attribute);
+		return;
+	}
+
+	tracelog("Skipping subtexture with {}", message);
 }
 
 } // namespace ae
