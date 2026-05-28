@@ -98,6 +98,11 @@ bool AnimatedSprite::init() {
 		return false;
 	}
 
+	if (texture_atlas_->subtextures.empty()) {
+		errorlog("Failed | no valid frames");
+		return false;
+	}
+
 	// set default animation
 	auto const first_animation     = texture_atlas_->subtextures.begin();
 	auto const first_subtextureset = first_animation->second;

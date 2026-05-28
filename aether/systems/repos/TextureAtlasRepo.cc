@@ -52,7 +52,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 	}
 
 	if (!shared_texture_atlas) {
-		errorlog("Failed | file: \"{}\"", lfile.filename().string());
+		errorlog("Failed");
 		return nullptr;
 	}
 
@@ -135,6 +135,11 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 	for (tinyxml2::XMLElement const* current_element = root_element->FirstChildElement(element_name.data());
 	     current_element != nullptr; current_element = current_element->NextSiblingElement(element_name.data())) {
 		callback(*current_element, *shared_texture_atlas);
+	}
+
+	if (shared_texture_atlas->subtextures.empty()) {
+		errorlog("Failed | atlas has no valid frames");
+		return nullptr;
 	}
 
 	// automatically rearrange subtextures
