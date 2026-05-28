@@ -46,9 +46,10 @@ private:
 	[[nodiscard]] std::shared_ptr<texture_atlas> xml_adobe_animate_parse(tinyxml2::XMLDocument const& document);
 	[[nodiscard]] std::shared_ptr<texture_atlas> xml_texture_packer_parse(tinyxml2::XMLDocument const& document);
 	[[nodiscard]] xml_format assess_xml_format(tinyxml2::XMLDocument const& document);
-
+#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 	void log_defective_subtexture(std::string_view message,
 	                              std::optional<std::string_view> name_attribute = std::nullopt);
+#endif
 
 	util::path_map<std::shared_ptr<texture_atlas>> cached_texture_atlases_;
 };

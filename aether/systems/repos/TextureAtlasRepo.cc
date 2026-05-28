@@ -8,6 +8,10 @@
 #include <cstddef>
 #include <tinyxml2/tinyxml2.h>
 
+#if !(defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS))
+	#define log_defective_subtexture(...) ((void)0)
+#endif
+
 namespace ae {
 
 // private
@@ -248,17 +252,17 @@ TextureAtlasRepo::xml_format TextureAtlasRepo::assess_xml_format(tinyxml2::XMLDo
 	return unknown;
 }
 
+#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 // private
 void TextureAtlasRepo::log_defective_subtexture(std::string_view message,
                                                 std::optional<std::string_view> name_attribute) {
-#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 	if (name_attribute.has_value()) {
 		tracelog("Skipping subtexture with {} | on: \"{}\"", message, name_attribute.value());
 		return;
 	}
 
 	tracelog("Skipping subtexture with {}", message);
-#endif
 }
+#endif
 
 } // namespace ae
