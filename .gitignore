@@ -1,3 +1,11 @@
 build/
 .vs/
 .vscode/
+
+# temporary
+resources/bf.png
+resources/bf.xml
+resources/cuttinDeezeBalls.png
+resources/cuttinDeezeBalls.xml
+resources/WhittyCrazy.png
+resources/WhittyCrazy.xml

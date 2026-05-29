@@ -34,7 +34,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 
 	auto const file_extension = util::fs::file_extension(lfile);
 
-	// TODO: json and plist
+	// TODO: json, plist, and txt
 	if (!util::str::string_matches_any(file_extension, {".xml"})) {
 		errorlog("Unsupported file format | file: \"{}\"", lfile.filename().string());
 		return nullptr;
@@ -118,7 +118,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_parse(std::filesystem::path
 // private
 std::shared_ptr<texture_atlas>
 TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std::string_view element_name,
-                                     std::function<void(tinyxml2::XMLElement const&, texture_atlas&)>&& callback) {
+                                     std::function<void(tinyxml2::XMLElement const&, texture_atlas&)> callback) {
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
@@ -137,18 +137,26 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 		callback(*current_element, *shared_texture_atlas);
 	}
 
-	if (shared_texture_atlas->subtextures.empty()) {
-		errorlog("Failed | atlas has no valid frames");
+	if (shared_texture_atlas->animations.empty()) {
+		errorlog("Failed | atlas has no data");
 		return nullptr;
 	}
 
+	// just for logging
+	std::size_t subtexture_count = 0;
+
 	// automatically rearrange subtextures
-	for (auto& [_, subtextures] : shared_texture_atlas->subtextures) {
+	for (auto& [_, subtextures] : shared_texture_atlas->animations) {
+		subtexture_count += subtextures.size();
+
 		std::sort(subtextures.begin(), subtextures.end(),
 		          [](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
 			          return a.reference_index < b.reference_index;
 		          });
 	}
+
+	tracelog("Atlas data populated | animation count: {} | subtexture/frame count: {}",
+	         shared_texture_atlas->animations.size(), subtexture_count);
 
 	auto const end_time = util::timer::end(start_time);
 	debuglog("Done | took {}ms", end_time);
@@ -218,7 +226,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml
 		    current_element.QueryBoolAttribute("rotated", &temporary_subtexture.is_rotated);
 
 		    std::string animation_name = std::string(full_animation_name.substr(0, animation_name_length));
-		    atlas.subtextures[animation_name].emplace_back(std::move(temporary_subtexture));
+		    atlas.animations[animation_name].emplace_back(std::move(temporary_subtexture));
 	    });
 }
 

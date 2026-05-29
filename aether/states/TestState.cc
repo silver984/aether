@@ -1,22 +1,37 @@
 #include <aether/objects/AnimatedSprite.hh>
 #include <aether/states/TestState.hh>
 #include <aether/systems/Renderer.hh>
+#include <aether/systems/Window.hh>
 
 TestState::TestState(ae::Context const& ctx) : ae::Node(ctx) {}
 TestState::~TestState() = default;
 
 // protected
 bool TestState::init() {
-	ctx_.renderer.set_background_rgba({202, 255, 77, 255});
-
-	auto animation = ae::Node::create<ae::AnimatedSprite>(ctx_, "resources/bf.png", "resources/bf.xml", 12);
-	if (!animation) {
+	auto animation1 = ae::Node::create<ae::AnimatedSprite>(ctx_, "resources/cuttinDeezeBalls.png",
+	                                                       "resources/cuttinDeezeBalls.xml", 24);
+	if (!animation1) {
 		return false;
 	}
 
-	animation->play_anim("idle", true);
-	animation->set_position({640.f, 360.f});
-	add(animation);
+	animation1->set_scale(0.6f);
+	animation1->play_anim("Whitty Ballistic Cutscene", true);
+	animation1->set_position(ctx_.window.screen_size() / 2.f);
+	add(animation1);
+
+	auto animation2 =
+	    ae::Node::create<ae::AnimatedSprite>(ctx_, "resources/WhittyCrazy.png", "resources/WhittyCrazy.xml", 24);
+
+	if (!animation2) {
+		return false;
+	}
+
+	animation2->set_scale(0.8f);
+	animation2->play_anim("Whitty idle dance", true);
+	animation2->set_position(ctx_.window.screen_size() / 2.f);
+	add(animation2);
+
+	ctx_.renderer.set_background_rgba({128, 128, 128, 255});
 
 	return true;
 }

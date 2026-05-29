@@ -18,7 +18,7 @@ struct texture_atlas final {
 		bool is_rotated;
 	};
 
-	util::string_map<std::vector<subtexture>> subtextures;
+	util::string_map<std::vector<subtexture>> animations;
 };
 
 } // namespace ae

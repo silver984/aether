@@ -41,7 +41,7 @@ private:
 
 	[[nodiscard]] std::shared_ptr<texture_atlas>
 	xml_parse_delegate(tinyxml2::XMLDocument const& document, std::string_view element_name,
-	                   std::function<void(tinyxml2::XMLElement const&, texture_atlas&)>&& callback);
+	                   std::function<void(tinyxml2::XMLElement const&, texture_atlas&)> callback);
 
 	[[nodiscard]] std::shared_ptr<texture_atlas> xml_adobe_animate_parse(tinyxml2::XMLDocument const& document);
 	[[nodiscard]] std::shared_ptr<texture_atlas> xml_texture_packer_parse(tinyxml2::XMLDocument const& document);

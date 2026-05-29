@@ -33,7 +33,7 @@ void AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop
 		return;
 	}
 
-	if (!texture_atlas_->subtextures.contains(animation_name)) {
+	if (!texture_atlas_->animations.contains(animation_name)) {
 		debuglog("Attempted to play animation not found from texture atlas | animation name: \"{}\"", animation_name);
 		return;
 	}
@@ -56,14 +56,14 @@ void AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop
 }
 
 std::vector<std::string> AnimatedSprite::animation_names() const {
-	if (!texture_atlas_ || texture_atlas_->subtextures.empty()) {
+	if (!texture_atlas_ || texture_atlas_->animations.empty()) {
 		return {};
 	}
 
 	std::vector<std::string> animation_names;
-	animation_names.reserve(texture_atlas_->subtextures.size());
+	animation_names.reserve(texture_atlas_->animations.size());
 
-	for (auto const& [name, _] : texture_atlas_->subtextures) {
+	for (auto const& [name, _] : texture_atlas_->animations) {
 		animation_names.emplace_back(name);
 	}
 
@@ -98,13 +98,13 @@ bool AnimatedSprite::init() {
 		return false;
 	}
 
-	if (texture_atlas_->subtextures.empty()) {
+	if (texture_atlas_->animations.empty()) {
 		errorlog("Failed | no valid frames");
 		return false;
 	}
 
 	// set default animation
-	auto const first_animation     = texture_atlas_->subtextures.begin();
+	auto const first_animation     = texture_atlas_->animations.begin();
 	auto const first_subtextureset = first_animation->second;
 	auto const& first_subtexture   = first_subtextureset.front();
 	current_animation_name_        = first_animation->first;
@@ -154,11 +154,11 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 
 // private
 void AnimatedSprite::progress_frame() {
-	if (!texture_atlas_ || texture_atlas_->subtextures.empty()) {
+	if (!texture_atlas_ || texture_atlas_->animations.empty()) {
 		return;
 	}
 
-	auto const& current_animation = texture_atlas_->subtextures[current_animation_name_];
+	auto const& current_animation = texture_atlas_->animations[current_animation_name_];
 
 	if (animation_reset_) {
 		set_bounds(calculate_bounds(current_animation));
