@@ -4,6 +4,7 @@
 #include <aether/util/string.hh>
 #include <aether/util/timer.hh>
 #include <algorithm>
+#include <cctype>
 #include <charconv>
 #include <cstddef>
 #include <tinyxml2/tinyxml2.h>
@@ -149,10 +150,10 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 	for (auto& [_, subtextures] : shared_texture_atlas->animations) {
 		subtexture_count += subtextures.size();
 
-		std::sort(subtextures.begin(), subtextures.end(),
-		          [](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
-			          return a.reference_index < b.reference_index;
-		          });
+		std::stable_sort(subtextures.begin(), subtextures.end(),
+		                 [](texture_atlas::subtexture const& a, texture_atlas::subtexture const& b) {
+			                 return a.reference_index < b.reference_index;
+		                 });
 	}
 
 	tracelog("Atlas data populated | animation count: {} | subtexture/frame count: {}",
@@ -168,43 +169,21 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml2::XMLDocument const& document) {
 	return xml_parse_delegate(
 	    document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, texture_atlas& atlas) -> void {
-		    char const* full_animation_name_ccptr = current_element.Attribute("name");
+		    char const* full_animation_name = current_element.Attribute("name");
 
-		    if (!full_animation_name_ccptr) {
+		    if (!full_animation_name) {
 			    log_defective_subtexture("no name attribute");
 			    return;
 		    }
 
-		    std::string_view full_animation_name = full_animation_name_ccptr;
+		    auto const parsed_animation_name = parse_animation_name(full_animation_name);
 
-		    // adobe animate exports frame indices as exactly 4 trailing digits:
-		    // examples: "idle0000", "run0023"
-		    //
-		    // we intentionally do NOT scan backwards until a non-digit character,
-		    // because animation names themselves may legally end in digits:
-		    // "idle1" + "0000" -> "idle10000"
-		    // "idle2" + "0000" -> "idle20000"
-		    if (full_animation_name.size() < 4) {
-			    log_defective_subtexture("insufficient name length", full_animation_name);
+		    if (!parsed_animation_name.has_value()) {
+			    log_defective_subtexture("invalid name", full_animation_name);
 			    return;
 		    }
 
-		    int animation_frame_index               = 0;
-		    std::size_t const animation_name_length = full_animation_name.size() - 4;
-
-		    { // parse frame index
-			    std::string_view frame_index_str = full_animation_name.substr(animation_name_length);
-			    char const* begin                = frame_index_str.data();
-			    char const* end                  = begin + frame_index_str.size();
-			    auto [ptr, error_code]           = std::from_chars(begin, end, animation_frame_index);
-
-			    if (error_code != std::errc{} || ptr != end) {
-				    log_defective_subtexture("invalid frame index", full_animation_name);
-				    return;
-			    }
-		    }
-
-		    texture_atlas::subtexture temporary_subtexture(animation_frame_index);
+		    texture_atlas::subtexture temporary_subtexture(parsed_animation_name->second);
 
 		    using enum tinyxml2::XMLError;
 		    if (current_element.QueryIntAttribute("width", &temporary_subtexture.source_rect.width) != XML_SUCCESS) {
@@ -225,8 +204,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml
 		    current_element.QueryIntAttribute("frameY", &temporary_subtexture.offsets.y);
 		    current_element.QueryBoolAttribute("rotated", &temporary_subtexture.is_rotated);
 
-		    std::string animation_name = std::string(full_animation_name.substr(0, animation_name_length));
-		    atlas.animations[animation_name].emplace_back(std::move(temporary_subtexture));
+		    atlas.animations[std::string(parsed_animation_name->first)].emplace_back(std::move(temporary_subtexture));
 	    });
 }
 
@@ -263,6 +241,50 @@ TextureAtlasRepo::xml_format TextureAtlasRepo::assess_xml_format(tinyxml2::XMLDo
 	}
 
 	return unknown;
+}
+
+// private
+std::optional<std::pair<std::string_view, int>> TextureAtlasRepo::parse_animation_name(std::string_view unparsed_name) {
+	if (unparsed_name.empty()) {
+		return std::nullopt;
+	}
+
+	std::size_t const raw_name_length = unparsed_name.size();
+	std::size_t first_digit_position  = 0;
+
+	// find first digit position
+	while (first_digit_position < raw_name_length &&
+	       !std::isdigit(static_cast<unsigned char>(unparsed_name[first_digit_position]))) {
+		++first_digit_position;
+	}
+
+	// there are no non digits
+	if (first_digit_position == 0) {
+		return std::nullopt;
+	}
+
+	// no digits at all
+	if (first_digit_position == raw_name_length) {
+		return std::nullopt;
+	}
+
+	std::size_t post_digit_position = first_digit_position;
+
+	// find post digit position
+	while (post_digit_position < raw_name_length &&
+	       std::isdigit(static_cast<unsigned char>(unparsed_name[post_digit_position]))) {
+		++post_digit_position;
+	}
+
+	int animation_frame_index = 0;
+	auto [_, error_code]      = std::from_chars(unparsed_name.data() + first_digit_position,
+	                                            unparsed_name.data() + post_digit_position, animation_frame_index);
+
+	if (error_code != std::errc()) {
+		return std::nullopt;
+	}
+
+	return std::pair<std::string_view, int>(unparsed_name.substr(0, first_digit_position), animation_frame_index);
 }
 
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
