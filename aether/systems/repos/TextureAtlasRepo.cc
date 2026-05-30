@@ -169,30 +169,30 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml2::XMLDocument const& document) {
 	return xml_parse_delegate(
 	    document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, texture_atlas& atlas) -> void {
-		    char const* full_animation_name = current_element.Attribute("name");
+		    char const* full_frame_name = current_element.Attribute("name");
 
-		    if (!full_animation_name) {
+		    if (!full_frame_name) {
 			    log_defective_subtexture("no name attribute");
 			    return;
 		    }
 
-		    auto const parsed_animation_name = parse_animation_name(full_animation_name);
+		    auto const parsed_frame_name = parse_frame_name(full_frame_name);
 
-		    if (!parsed_animation_name.has_value()) {
-			    log_defective_subtexture("invalid name", full_animation_name);
+		    if (!parsed_frame_name.has_value()) {
+			    log_defective_subtexture("invalid name", full_frame_name);
 			    return;
 		    }
 
-		    texture_atlas::subtexture temporary_subtexture(parsed_animation_name->second);
+		    texture_atlas::subtexture temporary_subtexture(parsed_frame_name->second);
 
 		    using enum tinyxml2::XMLError;
 		    if (current_element.QueryIntAttribute("width", &temporary_subtexture.source_rect.width) != XML_SUCCESS) {
-			    log_defective_subtexture("no width attribute", full_animation_name);
+			    log_defective_subtexture("no width attribute", full_frame_name);
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("height", &temporary_subtexture.source_rect.height) != XML_SUCCESS) {
-			    log_defective_subtexture("no height attribute", full_animation_name);
+			    log_defective_subtexture("no height attribute", full_frame_name);
 			    return;
 		    }
 
@@ -204,7 +204,7 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml
 		    current_element.QueryIntAttribute("frameY", &temporary_subtexture.offsets.y);
 		    current_element.QueryBoolAttribute("rotated", &temporary_subtexture.is_rotated);
 
-		    atlas.animations[std::string(parsed_animation_name->first)].emplace_back(std::move(temporary_subtexture));
+		    atlas.animations[std::string(parsed_frame_name->first)].emplace_back(std::move(temporary_subtexture));
 	    });
 }
 
@@ -244,7 +244,7 @@ TextureAtlasRepo::xml_format TextureAtlasRepo::assess_xml_format(tinyxml2::XMLDo
 }
 
 // private
-std::optional<std::pair<std::string_view, int>> TextureAtlasRepo::parse_animation_name(std::string_view unparsed_name) {
+std::optional<std::pair<std::string_view, int>> TextureAtlasRepo::parse_frame_name(std::string_view unparsed_name) {
 	if (unparsed_name.empty()) {
 		return std::nullopt;
 	}
@@ -276,15 +276,15 @@ std::optional<std::pair<std::string_view, int>> TextureAtlasRepo::parse_animatio
 		++post_digit_position;
 	}
 
-	int animation_frame_index = 0;
-	auto [_, error_code]      = std::from_chars(unparsed_name.data() + first_digit_position,
-	                                            unparsed_name.data() + post_digit_position, animation_frame_index);
+	int frame_index      = 0;
+	auto [_, error_code] = std::from_chars(unparsed_name.data() + first_digit_position,
+	                                       unparsed_name.data() + post_digit_position, frame_index);
 
 	if (error_code != std::errc()) {
 		return std::nullopt;
 	}
 
-	return std::pair<std::string_view, int>(unparsed_name.substr(0, first_digit_position), animation_frame_index);
+	return std::pair<std::string_view, int>(unparsed_name.substr(0, first_digit_position), frame_index);
 }
 
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)

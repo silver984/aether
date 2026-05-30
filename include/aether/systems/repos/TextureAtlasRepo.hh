@@ -47,7 +47,7 @@ private:
 	[[nodiscard]] std::shared_ptr<texture_atlas> xml_adobe_animate_parse(tinyxml2::XMLDocument const& document);
 	[[nodiscard]] std::shared_ptr<texture_atlas> xml_texture_packer_parse(tinyxml2::XMLDocument const& document);
 	[[nodiscard]] xml_format assess_xml_format(tinyxml2::XMLDocument const& document);
-	[[nodiscard]] std::optional<std::pair<std::string_view, int>> parse_animation_name(std::string_view unparsed_name);
+	[[nodiscard]] std::optional<std::pair<std::string_view, int>> parse_frame_name(std::string_view unparsed_name);
 
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
 	void log_defective_subtexture(std::string_view message,
