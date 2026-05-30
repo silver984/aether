@@ -6,12 +6,12 @@ struct Texture;
 
 namespace ae {
 
-enum class texture_wrap : int { clamp, repeat, mirror_clamp, mirror_repeat };
-
 class Sprite : public NodeIdentity<Sprite> {
-	friend class ae::NodeIdentity<Sprite>;
+	friend class NodeIdentity<Sprite>;
 
 public:
+	enum class texture_wrap : int { clamp, repeat, mirror_clamp, mirror_repeat };
+
 	Sprite(Context const& ctx, std::string_view file);
 	~Sprite() override;
 

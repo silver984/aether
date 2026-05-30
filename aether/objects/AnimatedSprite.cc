@@ -10,7 +10,7 @@ namespace ae {
 
 AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view image_file, std::string_view data_file, int fps)
     : NodeIdentity<AnimatedSprite>(ctx), subtexture_elapsed_(0.f), current_subtexture_index_(0),
-      animation_reset_(false), is_current_animation_looping_(false), is_current_subtexture_rotated_(false),
+      animation_was_reset_(true), is_current_animation_looping_(false), is_current_subtexture_rotated_(false),
       subtexture_transform_(mat3::identity()), image_file_arg_(std::string(image_file)),
       data_file_arg_(std::string(data_file)), playback_fps_(std::max(1, fps)) {}
 
@@ -23,21 +23,21 @@ void AnimatedSprite::toggle_antialiasing(bool val) const {
 	}
 }
 
-void AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop, int fps) {
+bool AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop, int fps) {
 	if (!texture_atlas_) {
 		debuglog("Attempted to play animation with nullptr texture atlas");
-		return;
+		return false;
 	}
 
 	if (!texture_atlas_->animations.contains(animation_name)) {
 		debuglog("Attempted to play animation not found from texture atlas | animation name: \"{}\"", animation_name);
-		return;
+		return false;
 	}
 
 	// just to avoid string construction when not needed
 	if (current_animation_name_ != animation_name) {
 		current_animation_name_ = std::string(animation_name);
-		animation_reset_        = true;
+		animation_was_reset_    = true;
 	}
 
 	// reset state
@@ -49,6 +49,8 @@ void AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop
 	if (fps != 0) {
 		playback_fps_ = std::max(1, fps);
 	}
+
+	return true;
 }
 
 std::vector<std::string> AnimatedSprite::animation_names() const {
@@ -118,6 +120,11 @@ bool AnimatedSprite::init() {
 
 // protected
 void AnimatedSprite::update(float dt) {
+	if (animation_was_reset_) {
+		progress_frame();
+		animation_was_reset_ = false;
+	}
+
 	float const target_subtexture_time = 1.f / playback_fps_;
 	subtexture_elapsed_ += dt;
 
@@ -156,10 +163,7 @@ void AnimatedSprite::progress_frame() {
 
 	auto const& current_animation = texture_atlas_->animations[current_animation_name_];
 
-	if (animation_reset_) {
-		set_bounds(calculate_bounds(current_animation));
-		animation_reset_ = false;
-	}
+	set_bounds(calculate_bounds(current_animation));
 
 	if (is_current_animation_looping_) {
 		current_subtexture_index_ = (current_subtexture_index_ + 1) % current_animation.size();

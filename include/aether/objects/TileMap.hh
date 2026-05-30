@@ -8,7 +8,7 @@ struct Texture;
 namespace ae {
 
 class TileMap : public NodeIdentity<TileMap> {
-	friend class ae::NodeIdentity<TileMap>;
+	friend class NodeIdentity<TileMap>;
 
 public:
 	TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds);
