@@ -3,7 +3,7 @@
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Window.hh>
 
-TestState::TestState(ae::Context const& ctx) : ae::Node(ctx) {}
+TestState::TestState(ae::Context const& ctx) : ae::NodeIdentity<TestState>(ctx) {}
 TestState::~TestState() = default;
 
 // protected

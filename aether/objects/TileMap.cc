@@ -8,14 +8,10 @@
 namespace ae {
 
 TileMap::TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds)
-    : Node(ctx), file_arg_(std::string(file)),
+    : NodeIdentity<TileMap>(ctx), file_arg_(std::string(file)),
       tile_bounds_arg_(static_cast<size<std::uint32_t>>(util::math::max({1, 1}, tile_bounds))) {}
 
 TileMap::~TileMap() = default;
-
-std::string_view ae::TileMap::type() const {
-	return "TileMap";
-}
 
 void TileMap::toggle_antialiasing(bool val) const {
 	if (texture_) {

@@ -9,16 +9,12 @@
 namespace ae {
 
 AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view image_file, std::string_view data_file, int fps)
-    : Node(ctx), subtexture_elapsed_(0.f), current_subtexture_index_(0), animation_reset_(false),
-      is_current_animation_looping_(false), is_current_subtexture_rotated_(false),
+    : NodeIdentity<AnimatedSprite>(ctx), subtexture_elapsed_(0.f), current_subtexture_index_(0),
+      animation_reset_(false), is_current_animation_looping_(false), is_current_subtexture_rotated_(false),
       subtexture_transform_(mat3::identity()), image_file_arg_(std::string(image_file)),
       data_file_arg_(std::string(data_file)), playback_fps_(std::max(1, fps)) {}
 
 AnimatedSprite::~AnimatedSprite() = default;
-
-std::string_view AnimatedSprite::type() const {
-	return "AnimatedSprite";
-}
 
 void AnimatedSprite::toggle_antialiasing(bool val) const {
 	if (texture_) {

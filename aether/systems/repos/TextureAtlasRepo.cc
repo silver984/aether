@@ -98,11 +98,11 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_parse(std::filesystem::path
 	switch (assess_xml_format(document)) {
 		using enum xml_format;
 	case adobe_animate: {
-		tracelog("Detected Adobe Animate XML format");
+		tracelog("Detected Adobe Animate's XML format");
 		return xml_adobe_animate_parse(document);
 	}
 	case texture_packer: {
-		tracelog("Detected TexturePacker generic XML format");
+		tracelog("Detected TexturePacker's generic XML format");
 		return xml_texture_packer_parse(document);
 	}
 	case unknown:
@@ -169,37 +169,45 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml2::XMLDocument const& document) {
 	return xml_parse_delegate(
 	    document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, texture_atlas& atlas) -> void {
-		    char const* full_frame_name = current_element.Attribute("name");
+		    char const* frame_name = current_element.Attribute("name");
 
-		    if (!full_frame_name) {
+		    if (!frame_name) {
 			    log_defective_subtexture("no name attribute");
 			    return;
 		    }
 
-		    auto const parsed_frame_name = parse_frame_name(full_frame_name);
+		    auto const parsed_frame_name = parse_frame_name(frame_name);
 
 		    if (!parsed_frame_name.has_value()) {
-			    log_defective_subtexture("invalid name", full_frame_name);
+			    log_defective_subtexture("invalid name", frame_name);
 			    return;
 		    }
 
 		    texture_atlas::subtexture temporary_subtexture(parsed_frame_name->second);
 
 		    using enum tinyxml2::XMLError;
+		    if (current_element.QueryIntAttribute("x", &temporary_subtexture.source_rect.x) != XML_SUCCESS) {
+			    log_defective_subtexture("no x attribute", frame_name);
+			    return;
+		    }
+
+		    if (current_element.QueryIntAttribute("y", &temporary_subtexture.source_rect.y) != XML_SUCCESS) {
+			    log_defective_subtexture("no y attribute", frame_name);
+			    return;
+		    }
+
 		    if (current_element.QueryIntAttribute("width", &temporary_subtexture.source_rect.width) != XML_SUCCESS) {
-			    log_defective_subtexture("no width attribute", full_frame_name);
+			    log_defective_subtexture("no width attribute", frame_name);
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("height", &temporary_subtexture.source_rect.height) != XML_SUCCESS) {
-			    log_defective_subtexture("no height attribute", full_frame_name);
+			    log_defective_subtexture("no height attribute", frame_name);
 			    return;
 		    }
 
 		    // these dont need to have valid values
 		    // they simply fallback to their defaults
-		    current_element.QueryIntAttribute("x", &temporary_subtexture.source_rect.x);
-		    current_element.QueryIntAttribute("y", &temporary_subtexture.source_rect.y);
 		    current_element.QueryIntAttribute("frameX", &temporary_subtexture.offsets.x);
 		    current_element.QueryIntAttribute("frameY", &temporary_subtexture.offsets.y);
 		    current_element.QueryBoolAttribute("rotated", &temporary_subtexture.is_rotated);
@@ -209,10 +217,47 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml
 }
 
 std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_texture_packer_parse(tinyxml2::XMLDocument const& document) {
-	return xml_parse_delegate(document, "sprite",
-	                          [this](tinyxml2::XMLElement const& current_element, texture_atlas& atlas) -> void {
-		                          // TODO
-	                          });
+	return xml_parse_delegate(
+	    document, "sprite", [this](tinyxml2::XMLElement const& current_element, texture_atlas& atlas) -> void {
+		    char const* frame_name = current_element.Attribute("n");
+
+		    if (!frame_name) {
+			    log_defective_subtexture("no n attribute");
+			    return;
+		    }
+
+		    auto const parsed_frame_name = parse_frame_name(frame_name);
+
+		    if (!parsed_frame_name.has_value()) {
+			    log_defective_subtexture("invalid name", frame_name);
+			    return;
+		    }
+
+		    texture_atlas::subtexture temporary_subtexture(parsed_frame_name->second);
+
+		    using enum tinyxml2::XMLError;
+		    if (current_element.QueryIntAttribute("x", &temporary_subtexture.source_rect.x) != XML_SUCCESS) {
+			    log_defective_subtexture("no x attribute", frame_name);
+			    return;
+		    }
+
+		    if (current_element.QueryIntAttribute("y", &temporary_subtexture.source_rect.y) != XML_SUCCESS) {
+			    log_defective_subtexture("no y attribute", frame_name);
+			    return;
+		    }
+
+		    if (current_element.QueryIntAttribute("w", &temporary_subtexture.source_rect.width) != XML_SUCCESS) {
+			    log_defective_subtexture("no w attribute", frame_name);
+			    return;
+		    }
+
+		    if (current_element.QueryIntAttribute("h", &temporary_subtexture.source_rect.height) != XML_SUCCESS) {
+			    log_defective_subtexture("no h attribute", frame_name);
+			    return;
+		    }
+
+		    atlas.animations[std::string(parsed_frame_name->first)].emplace_back(std::move(temporary_subtexture));
+	    });
 }
 
 // private
@@ -281,11 +326,11 @@ std::optional<std::pair<std::string_view, int>> TextureAtlasRepo::parse_frame_na
 		return std::nullopt;
 	}
 
-	// remove separator if its there
+	// remove the separator if its there
 	std::size_t prefix_end = digit_start;
 	if (prefix_end > 0) {
 		char c = unparsed_name[prefix_end - 1];
-		if (c == '_' || c == '-' || c == '/') {
+		if (c == '_' || c == '-' || c == '/' || c == '#') {
 			--prefix_end;
 		}
 	}

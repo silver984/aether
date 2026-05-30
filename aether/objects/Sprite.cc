@@ -6,12 +6,8 @@
 
 namespace ae {
 
-Sprite::Sprite(Context const& ctx, std::string_view file) : Node(ctx), file_arg_(std::string(file)) {}
+Sprite::Sprite(Context const& ctx, std::string_view file) : NodeIdentity<Sprite>(ctx), file_arg_(std::string(file)) {}
 Sprite::~Sprite() = default;
-
-std::string_view Sprite::type() const {
-	return "Sprite";
-}
 
 void Sprite::toggle_antialiasing(bool val) const {
 	if (texture_) {

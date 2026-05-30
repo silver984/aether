@@ -9,12 +9,13 @@ struct Texture;
 
 namespace ae {
 
-class AnimatedSprite : public Node {
+class AnimatedSprite : public NodeIdentity<AnimatedSprite> {
+	friend class ae::NodeIdentity<AnimatedSprite>;
+
 public:
 	AnimatedSprite(Context const& ctx, std::string_view image_file, std::string_view data_file, int fps);
 	~AnimatedSprite() override;
 
-	[[nodiscard]] std::string_view type() const override;
 	void toggle_antialiasing(bool val) const;
 	void play_anim(std::string_view animation_name, bool should_loop = false, int fps = 0);
 	[[nodiscard]] std::vector<std::string> animation_names() const;
@@ -32,6 +33,7 @@ private:
 	void progress_frame();
 	[[nodiscard]] size<int> calculate_bounds(std::vector<texture_atlas::subtexture> const& subtextures) const;
 
+	static constexpr std::string_view TYPE_ = "AnimatedSprite";
 	std::shared_ptr<Texture> texture_;
 	std::shared_ptr<texture_atlas> texture_atlas_;
 	rect<int> texture_source_rect_;

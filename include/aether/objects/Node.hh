@@ -4,6 +4,7 @@
 #include <aether/math_types/size.hh>
 #include <aether/math_types/vec2.hh>
 #include <aether/systems/Context.hh>
+#include <concepts>
 #include <cstddef>
 #include <memory>
 #include <string>
@@ -109,6 +110,20 @@ private:
 	bool is_draw_enabled_;
 	bool is_visible_;
 	bool is_initialized_;
+};
+
+template <typename T>
+class NodeIdentity : public Node {
+public:
+	NodeIdentity(Context const& ctx) : Node(ctx) {}
+	~NodeIdentity() override = default;
+
+	template <typename U, typename... Args>
+	static std::shared_ptr<U> create(Context const&, Args&&...) = delete;
+
+	std::string_view type() const override {
+		return T::TYPE_;
+	}
 };
 
 } // namespace ae
