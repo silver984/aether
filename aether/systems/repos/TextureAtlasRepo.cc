@@ -250,41 +250,48 @@ std::optional<std::pair<std::string_view, int>> TextureAtlasRepo::parse_frame_na
 	}
 
 	std::size_t const raw_name_length = unparsed_name.size();
-	std::size_t first_digit_position  = 0;
 
 	// find first digit position
-	while (first_digit_position < raw_name_length &&
-	       !std::isdigit(static_cast<unsigned char>(unparsed_name[first_digit_position]))) {
-		++first_digit_position;
+	std::size_t digit_start = 0;
+	while (digit_start < raw_name_length && !std::isdigit(static_cast<unsigned char>(unparsed_name[digit_start]))) {
+		++digit_start;
 	}
 
-	// there are no non digits
-	if (first_digit_position == 0) {
+	// there are no digits
+	if (digit_start == raw_name_length) {
 		return std::nullopt;
 	}
 
-	// no digits at all
-	if (first_digit_position == raw_name_length) {
+	// there is no leading name
+	if (digit_start == 0) {
 		return std::nullopt;
 	}
-
-	std::size_t post_digit_position = first_digit_position;
 
 	// find post digit position
-	while (post_digit_position < raw_name_length &&
-	       std::isdigit(static_cast<unsigned char>(unparsed_name[post_digit_position]))) {
-		++post_digit_position;
+	std::size_t digit_end = digit_start;
+	while (digit_end < raw_name_length && std::isdigit(static_cast<unsigned char>(unparsed_name[digit_end]))) {
+		++digit_end;
 	}
 
-	int frame_index      = 0;
-	auto [_, error_code] = std::from_chars(unparsed_name.data() + first_digit_position,
-	                                       unparsed_name.data() + post_digit_position, frame_index);
+	int frame_index = 0;
+	auto [_, error_code] =
+	    std::from_chars(unparsed_name.data() + digit_start, unparsed_name.data() + digit_end, frame_index);
 
 	if (error_code != std::errc()) {
 		return std::nullopt;
 	}
 
-	return std::pair<std::string_view, int>(unparsed_name.substr(0, first_digit_position), frame_index);
+	// remove separator if its there
+	std::size_t prefix_end = digit_start;
+	if (prefix_end > 0) {
+		char c = unparsed_name[prefix_end - 1];
+		if (c == '_' || c == '-' || c == '/') {
+			--prefix_end;
+		}
+	}
+
+	// return frame name, and frame index
+	return std::pair<std::string_view, int>(unparsed_name.substr(0, prefix_end), frame_index);
 }
 
 #if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
