@@ -6,9 +6,9 @@
 #include <aether/util/filesystem.hh>
 #include <aether/util/timer.hh>
 #include <algorithm>
+#include <cstring>
 #include <miniaudio/miniaudio.h>
 #include <unordered_map>
-#include <cstring>
 #include <utility>
 
 namespace ae {
@@ -53,13 +53,7 @@ struct Audio::impl {
 		auto const start_time = util::timer::start();
 #endif
 
-		std::uint32_t id = 1;
-
-		while (active_sounds.find(id) != active_sounds.end()) {
-			++id;
-		}
-
-		auto [iterator, _] = active_sounds.emplace(id, owner);
+		auto [iterator, _] = active_sounds.emplace(id_hint, owner);
 
 		if (ma_result result =
 		        ma_sound_init_from_file(&engine, lfile.string().c_str(), 0, nullptr, nullptr, &iterator->second.sound);
@@ -79,7 +73,7 @@ struct Audio::impl {
 		debuglog("Done | took {}ms", end_time);
 #endif
 
-		return id;
+		return id_hint++;
 	}
 
 	bool play(std::uint32_t id) {
@@ -149,6 +143,7 @@ struct Audio::impl {
 	}
 
 	ma_engine engine;
+	std::uint32_t id_hint = 0;
 	std::unordered_map<std::uint32_t, scoped_sound> active_sounds;
 	bool is_initialized = false;
 };
