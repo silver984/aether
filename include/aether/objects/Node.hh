@@ -6,6 +6,7 @@
 #include <aether/systems/Context.hh>
 #include <concepts>
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -36,8 +37,8 @@ public:
 		return ptr;
 	}
 
-	void add(std::shared_ptr<Node> node);
-	void remove(std::shared_ptr<Node> node);
+	void add_child(std::shared_ptr<Node> node);
+	void remove_child(std::shared_ptr<Node> node);
 	void destroy();
 	void activate();
 	void deactivate();
@@ -47,19 +48,26 @@ public:
 	void disable_draw();
 	void toggle_draw(bool val);
 	[[nodiscard]] bool is_draw_enabled() const;
-	[[nodiscard]] std::size_t count() const;
+	[[nodiscard]] std::size_t child_count() const;
+	[[nodiscard]] std::size_t recursed_child_count() const;
 	[[nodiscard]] std::weak_ptr<Node> parent() const;
 	void set_name(std::string_view name);
 	[[nodiscard]] std::string_view name() const;
 	[[nodiscard]] virtual std::string_view type() const;
-	void set_bounds(size<int> val);     // TODO: set_width, set_height
-	[[nodiscard]] size<int> bounds() const;
-	void set_position(vec2<float> val); // TODO: set_position_x, set_position_y
+	void set_bounds(size<int> val); // TODO: set_width, set_height
+	[[nodiscard]] size<std::uint32_t> bounds() const;
+	[[nodiscard]] std::uint32_t width() const;
+	[[nodiscard]] std::uint32_t height() const;
+	void set_position(vec2<float> val);
+	void set_position_x(float val);
+	void set_position_y(float val);
 	[[nodiscard]] vec2<float> position() const;
-	void set_anchor(vec2<float> val);   // TODO: set_anchor_x, set_anchor_y
+	void set_anchor(vec2<float> val); // TODO: set_anchor_x, set_anchor_y
 	[[nodiscard]] vec2<float> anchor() const;
 	void set_scale(vec2<float> val);
 	void set_scale(float val);
+	void set_scale_x(float val);
+	void set_scale_y(float val);
 	[[nodiscard]] vec2<float> scale() const;
 	void set_skew(vec2<float> val);
 	[[nodiscard]] vec2<float> skew() const;
@@ -73,6 +81,12 @@ public:
 	[[nodiscard]] bool is_visible() const;
 	void set_time_scale(float val);
 	[[nodiscard]] float time_scale() const;
+	void toggle_flip(bool val);
+	void toggle_flip_x(bool val);
+	[[nodiscard]] bool is_flip_x() const;
+	void toggle_flip_y(bool val);
+	[[nodiscard]] bool is_flip_y() const;
+	[[nodiscard]] std::vector<std::shared_ptr<Node>> children() const;
 
 protected:
 	virtual bool init();
@@ -97,13 +111,15 @@ private:
 	rgba color_;
 	rgba combined_color_;
 	mat3 transform_;
-	size<int> bounds_;
+	size<std::uint32_t> bounds_;
 	vec2<float> position_;
 	vec2<float> anchor_;
 	vec2<float> scale_;
 	vec2<float> skew_; // degrees
 	float rotation_;   // degrees
 	float time_scale_;
+	bool is_flip_x_;
+	bool is_flip_y_;
 	bool is_transform_dirty_;
 	bool is_rgba_dirty_;
 	bool is_active_;

@@ -7,8 +7,7 @@
 namespace ae {
 
 // private
-Director::Director() : ctx_(nullptr) {}
-
+Director::Director()  = default;
 Director::~Director() = default;
 
 void Director::switch_state(std::shared_ptr<Node>&& new_state) {
@@ -19,11 +18,6 @@ void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 
 	pending_state_ = std::move(new_state);
 	tracelog("Switching states | pending: {}", fmt::ptr(pending_state_.get()));
-}
-
-// private
-void Director::bind_context(Context const& ctx) {
-	ctx_ = &ctx;
 }
 
 // private
@@ -56,13 +50,13 @@ void Director::release_pending_state() {
 }
 
 // private
-void Director::update_current_state() {
+void Director::update_current_state(float dt) {
 	if (pending_state_) {
 		move_pending_state();
 	}
 
-	if (current_state_ && ctx_) {
-		current_state_->base_update(ctx_->delta_time());
+	if (current_state_) {
+		current_state_->base_update(dt);
 	}
 }
 

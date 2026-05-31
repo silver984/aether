@@ -34,11 +34,13 @@ public:
 	void draw_rect(size<int> bounds, mat3 const& transform, rgba color) const;
 
 private:
-	void bind_context(Context const& ctx);
-	void start_draw();
-	void end_draw() const;
+	void setup();
+	void start_draw(Window& window);
 #ifdef AETHER_DEBUG
-	void draw_debug() const;
+	void end_draw(Context const& ctx) const;
+	void draw_debug(std::uint32_t running_fps) const;
+#else
+	void end_draw() const;
 #endif
 	void push_matrix(mat3 const& matrix) const;
 	void define_color_vertex(rgba color) const;
@@ -46,9 +48,9 @@ private:
 	void define_texture_coord(vec2<float> position) const;
 	mat3 calculate_transform(size<int> screen_size) const;
 
-	Context const* ctx_;
 	rgba background_rgba_;
 	mat3 transform_;
+	bool is_setup_;
 };
 
 } // namespace ae

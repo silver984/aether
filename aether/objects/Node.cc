@@ -1,3 +1,4 @@
+#include <aether/debug/log.hh>
 #include <aether/objects/Node.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Window.hh>
@@ -9,12 +10,13 @@ namespace ae {
 
 Node::Node(Context const& ctx)
     : ctx_(ctx), color_(255), combined_color_(color_), transform_(mat3::identity()), anchor_(0.5f, 0.5f),
-      scale_(1.f, 1.f), rotation_(0.f), time_scale_(1.f), is_transform_dirty_(false), is_rgba_dirty_(false),
-      is_active_(false), is_draw_enabled_(false), is_visible_(true), is_initialized_(false) {}
+      scale_(1.f, 1.f), rotation_(0.f), time_scale_(1.f), is_flip_x_(false), is_flip_y_(false),
+      is_transform_dirty_(false), is_rgba_dirty_(false), is_active_(false), is_draw_enabled_(false), is_visible_(true),
+      is_initialized_(false) {}
 
 Node::~Node() = default;
 
-void Node::add(std::shared_ptr<Node> node) {
+void Node::add_child(std::shared_ptr<Node> node) {
 	if (!node) {
 		return;
 	}
@@ -38,7 +40,7 @@ void Node::add(std::shared_ptr<Node> node) {
 
 	if (auto old_parent = node->parent().lock()) {
 		// remove from old parent
-		old_parent->remove(node);
+		old_parent->remove_child(node);
 	}
 
 	node->parent_ = weak_from_this();
@@ -47,7 +49,7 @@ void Node::add(std::shared_ptr<Node> node) {
 	node->mark_rgba_dirty();
 }
 
-void Node::remove(std::shared_ptr<Node> node) {
+void Node::remove_child(std::shared_ptr<Node> node) {
 	if (!node) {
 		return;
 	}
@@ -70,14 +72,8 @@ void Node::remove(std::shared_ptr<Node> node) {
 }
 
 void Node::destroy() {
-	if (!is_initialized_) {
-		return;
-	}
-
-	is_initialized_ = false;
-
 	if (auto parent = parent_.lock()) {
-		parent->remove(shared_from_this());
+		parent->remove_child(shared_from_this());
 	}
 
 	// recursively destroy children
@@ -124,7 +120,11 @@ bool Node::is_draw_enabled() const {
 	return is_draw_enabled_;
 }
 
-std::size_t Node::count() const {
+std::size_t Node::child_count() const {
+	return children_.size();
+}
+
+std::size_t Node::recursed_child_count() const {
 	std::size_t c = children_.size();
 
 	for (auto const& child : children_) {
@@ -132,7 +132,7 @@ std::size_t Node::count() const {
 			continue;
 		}
 
-		c += child->count();
+		c += child->recursed_child_count();
 	}
 
 	return c;
@@ -159,17 +159,25 @@ std::string_view Node::type() const {
 }
 
 void Node::set_bounds(size<int> val) {
-	if (bounds_ == val) {
+	size<std::uint32_t> const val_ui32 = static_cast<size<std::uint32_t>>(util::math::max({}, val));
+	if (bounds_ == val_ui32) {
 		return;
 	}
 
-	bounds_ = val;
-
+	bounds_ = val_ui32;
 	mark_transform_dirty();
 }
 
-size<int> Node::bounds() const {
+size<std::uint32_t> Node::bounds() const {
 	return bounds_;
+}
+
+std::uint32_t Node::width() const {
+	return bounds_.width;
+}
+
+std::uint32_t Node::height() const {
+	return bounds_.height;
 }
 
 void Node::set_position(vec2<float> val) {
@@ -178,7 +186,24 @@ void Node::set_position(vec2<float> val) {
 	}
 
 	position_ = val;
+	mark_transform_dirty();
+}
 
+void Node::set_position_x(float val) {
+	if (position_.x == val) {
+		return;
+	}
+
+	position_.x = val;
+	mark_transform_dirty();
+}
+
+void Node::set_position_y(float val) {
+	if (position_.y == val) {
+		return;
+	}
+
+	position_.y = val;
 	mark_transform_dirty();
 }
 
@@ -214,6 +239,24 @@ void Node::set_scale(float val) {
 	}
 
 	scale_ = {val, val};
+	mark_transform_dirty();
+}
+
+void Node::set_scale_x(float val) {
+	if (scale_.x == val) {
+		return;
+	}
+
+	scale_.x = val;
+	mark_transform_dirty();
+}
+
+void Node::set_scale_y(float val) {
+	if (scale_.y == val) {
+		return;
+	}
+
+	scale_.y = val;
 	mark_transform_dirty();
 }
 
@@ -262,13 +305,11 @@ rgba Node::color() const {
 
 void Node::set_alpha(float val) {
 	std::uint8_t valui8 = static_cast<std::uint8_t>(std::round(255.f * std::clamp(val, 0.f, 1.f)));
-
 	if (color_.a == valui8) {
 		return;
 	}
 
 	color_.a = valui8;
-
 	mark_rgba_dirty();
 }
 
@@ -290,6 +331,46 @@ void Node::set_time_scale(float val) {
 
 float Node::time_scale() const {
 	return time_scale_;
+}
+
+void Node::toggle_flip(bool val) {
+	if (is_flip_x_ == val && is_flip_y_ == val) {
+		return;
+	}
+
+	is_flip_x_ = val;
+	is_flip_y_ = val;
+	mark_transform_dirty();
+}
+
+void Node::toggle_flip_x(bool val) {
+	if (is_flip_x_ == val) {
+		return;
+	}
+
+	is_flip_x_ = val;
+	mark_transform_dirty();
+}
+
+bool Node::is_flip_x() const {
+	return is_flip_x_;
+}
+
+void Node::toggle_flip_y(bool val) {
+	if (is_flip_y_ == val) {
+		return;
+	}
+
+	is_flip_y_ = val;
+	mark_transform_dirty();
+}
+
+bool Node::is_flip_y() const {
+	return is_flip_y_;
+}
+
+std::vector<std::shared_ptr<Node>> Node::children() const {
+	return children_;
 }
 
 // protected
@@ -416,11 +497,12 @@ void Node::mark_rgba_dirty() {
 // private
 mat3 Node::calculate_transform(std::weak_ptr<Node> parent) const {
 	vec2<float> const anchor_position = {anchor_.x * bounds_.width, anchor_.y * bounds_.height};
-	vec2<float> const skew_rad = {util::math::degrees_to_radians(skew_.x), util::math::degrees_to_radians(skew_.y)};
+	vec2<float> const skew_rad     = {util::math::degrees_to_radians(skew_.x), util::math::degrees_to_radians(skew_.y)};
+	vec2<float> const scale_factor = {is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f};
 
 	mat3 const t     = mat3::translation(position_);
 	mat3 const r     = mat3::rotation(util::math::degrees_to_radians(rotation_));
-	mat3 const s     = mat3::scale(scale_);
+	mat3 const s     = mat3::scale(scale_ * scale_factor);
 	mat3 const k     = mat3::skew(skew_rad);
 	mat3 const a     = mat3::translation(-anchor_position);
 	mat3 const local = t * r * s * k * a;

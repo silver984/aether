@@ -37,7 +37,8 @@ vec2<float> mat3::translation() const {
 }
 
 vec2<float> mat3::transform_point(vec2<float> p) const {
-	return {p.x * m[0][0] + p.y * m[0][1] + m[0][2], p.x * m[1][0] + p.y * m[1][1] + m[1][2]};
+	vec2<float> out = {p.x * m[0][0] + p.y * m[0][1] + m[0][2], p.x * m[1][0] + p.y * m[1][1] + m[1][2]};
+	return {std::round(out.x), std::round(out.y)};
 }
 
 mat3 mat3::operator*(mat3 const& o) const {

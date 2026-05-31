@@ -9,24 +9,35 @@ PopupUI::~PopupUI() = default;
 
 // protected
 bool PopupUI::init() {
-	for (int i = 0; i < area::count; ++i) {
+	for (int i = 0; i < count; ++i) {
 		auto& area = areas_[i];
 
 		area = Node::create<AnimatedSprite>(ctx_, "resources/aether/ui/blackbox.png",
-		                                    "resources/aether/ui/blackbox.xml", 3);
+		                                    "resources/aether/ui/blackbox.xml", 2);
 
 		if (!area) {
 			return false;
 		}
 
 		set_area_animation(*area, i);
-		add(area);
+		add_child(area);
 	}
 
-	areas_[area::top]->set_position({static_cast<float>(areas_[area::top_left_corner]->bounds().width), 0.f});
+	areas_[top]->set_position_x(static_cast<float>(areas_[top_left_corner]->width()));
+	areas_[top_right_corner]->set_position_x(areas_[top]->position().x + areas_[top]->width());
 
-	areas_[area::top_right_corner]->set_position(
-	    {areas_[area::top]->position().x + static_cast<float>(areas_[area::top]->bounds().width), 0.f});
+	areas_[right]->set_scale_y((areas_[right]->width() + 1) / static_cast<float>(areas_[right]->width()));
+	areas_[right]->toggle_flip(true);
+	areas_[right]->set_position_x(areas_[top_right_corner]->position().x);
+	areas_[right]->set_position_y(static_cast<float>(areas_[top_right_corner]->height()));
+
+	areas_[bottom_right_corner]->set_position_x(areas_[right]->position().x);
+	areas_[bottom_right_corner]->set_position_y(areas_[right]->position().y + areas_[top]->height());
+	areas_[bottom]->set_position_x(areas_[top]->position().x);
+	areas_[bottom]->set_position_y(areas_[bottom_right_corner]->position().y);
+	areas_[bottom_left_corner]->set_position_y(areas_[bottom_right_corner]->position().y);
+
+	areas_[left]->set_position_y(areas_[right]->position().y);
 
 	set_position(ctx_.window.screen_size() / 2.f);
 
@@ -36,35 +47,35 @@ bool PopupUI::init() {
 // private
 void PopupUI::set_area_animation(AnimatedSprite& area_sprite, int index) {
 	switch (index) {
-	case area::top_left_corner: {
+	case top_left_corner: {
 		area_sprite.play_anim("top_left_corner", true);
 		break;
 	}
-	case area::top: {
+	case top: {
 		area_sprite.play_anim("top", true);
 		break;
 	}
-	case area::top_right_corner: {
-		area_sprite.play_anim("top_left_corner", true);
+	case top_right_corner: {
+		area_sprite.play_anim("top_right_corner", true);
 		break;
 	}
-	case area::right: {
+	case right: {
 		area_sprite.play_anim("left", true);
 		break;
 	}
-	case area::bottom_right_corner: {
-		area_sprite.play_anim("bottom_left_corner", true);
+	case bottom_right_corner: {
+		area_sprite.play_anim("bottom_right_corner", true);
 		break;
 	}
-	case area::bottom: {
+	case bottom: {
 		area_sprite.play_anim("bottom", true);
 		break;
 	}
-	case area::bottom_left_corner: {
+	case bottom_left_corner: {
 		area_sprite.play_anim("bottom_left_corner", true);
 		break;
 	}
-	case area::left: {
+	case left: {
 		area_sprite.play_anim("left", true);
 		break;
 	}

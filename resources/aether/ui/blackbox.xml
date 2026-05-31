@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
-<!--
-$TexturePacker:SmartUpdate:394a0083afcb1daa67cf5f835d346e74:7c3d05f8a0274cedfc54220e989ee6ee:dbb5ca4028dd0b6a9eb3cf848593edb7$ -->
+<!-- $TexturePacker:SmartUpdate:9830eec02a948d406c4c36d796a0bd0b:0b4cdcb1f911f3540576870aa293c8cc:20054c14f654499d4da0fa6cf2981a70$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
@@ -20,20 +19,26 @@ vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
 verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
 triangles  => sprite triangulation, 3 vertex indices per triangle
 -->
-<TextureAtlas imagePath="blackbox.png" width="360" height="360">
-    <sprite n="bottom/0.png" x="0" y="0" w="90" h="90" />
-    <sprite n="bottom/1.png" x="90" y="0" w="90" h="90" />
-    <sprite n="bottom/2.png" x="180" y="0" w="90" h="90" />
-    <sprite n="bottom_left_corner/0.png" x="270" y="0" w="90" h="90" />
-    <sprite n="bottom_left_corner/1.png" x="0" y="90" w="90" h="90" />
-    <sprite n="bottom_left_corner/2.png" x="90" y="90" w="90" h="90" />
-    <sprite n="left/0.png" x="180" y="90" w="90" h="90" />
-    <sprite n="left/1.png" x="270" y="90" w="90" h="90" />
-    <sprite n="left/2.png" x="0" y="180" w="90" h="90" />
-    <sprite n="top/0.png" x="90" y="180" w="90" h="90" />
-    <sprite n="top/1.png" x="180" y="180" w="90" h="90" />
-    <sprite n="top/2.png" x="270" y="180" w="90" h="90" />
-    <sprite n="top_left_corner/0.png" x="0" y="270" w="90" h="90" />
-    <sprite n="top_left_corner/1.png" x="90" y="270" w="90" h="90" />
-    <sprite n="top_left_corner/2.png" x="180" y="270" w="90" h="90" />
+<TextureAtlas imagePath="blackbox.png" width="450" height="450">
+    <sprite n="bottom/0.png" x="0" y="0" w="90" h="90"/>
+    <sprite n="bottom/1.png" x="90" y="0" w="90" h="90"/>
+    <sprite n="bottom/2.png" x="180" y="0" w="90" h="90"/>
+    <sprite n="bottom_left_corner/0.png" x="270" y="0" w="90" h="90"/>
+    <sprite n="bottom_left_corner/1.png" x="360" y="0" w="90" h="90"/>
+    <sprite n="bottom_left_corner/2.png" x="0" y="90" w="90" h="90"/>
+    <sprite n="bottom_right_corner/0.png" x="90" y="90" w="90" h="90"/>
+    <sprite n="bottom_right_corner/1.png" x="180" y="90" w="90" h="90"/>
+    <sprite n="bottom_right_corner/2.png" x="270" y="90" w="90" h="90"/>
+    <sprite n="left/0.png" x="360" y="90" w="90" h="90"/>
+    <sprite n="left/1.png" x="0" y="180" w="90" h="90"/>
+    <sprite n="left/2.png" x="90" y="180" w="90" h="90"/>
+    <sprite n="top/0.png" x="180" y="180" w="90" h="90"/>
+    <sprite n="top/1.png" x="270" y="180" w="90" h="90"/>
+    <sprite n="top/2.png" x="360" y="180" w="90" h="90"/>
+    <sprite n="top_left_corner/0.png" x="0" y="270" w="90" h="90"/>
+    <sprite n="top_left_corner/1.png" x="90" y="270" w="90" h="90"/>
+    <sprite n="top_left_corner/2.png" x="180" y="270" w="90" h="90"/>
+    <sprite n="top_right_corner/0.png" x="270" y="270" w="90" h="90"/>
+    <sprite n="top_right_corner/1.png" x="360" y="270" w="90" h="90"/>
+    <sprite n="top_right_corner/2.png" x="0" y="360" w="90" h="90"/>
 </TextureAtlas>

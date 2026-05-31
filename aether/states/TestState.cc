@@ -1,4 +1,5 @@
 #include <aether/objects/PopupUI.hh>
+#include <aether/objects/Sprite.hh>
 #include <aether/states/TestState.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/Window.hh>
@@ -16,7 +17,7 @@ bool TestState::init() {
 
 	// bf->play_anim("idle", true);
 	// bf->set_position(ctx_.window.screen_size() / 2.f);
-	// add(bf);
+	// add_child(bf);
 
 	// auto animation1 = ae::Node::create<ae::AnimatedSprite>(ctx_, "resources/cuttinDeezeBalls.png",
 	//                                                        "resources/cuttinDeezeBalls.xml", 24);
@@ -27,7 +28,7 @@ bool TestState::init() {
 	// animation1->set_scale(0.6f);
 	// animation1->play_anim("Whitty Ballistic Cutscene", true);
 	// animation1->set_position(ctx_.window.screen_size() / 2.f);
-	// add(animation1);
+	// add_child(animation1);
 
 	// auto animation2 =
 	//     ae::Node::create<ae::AnimatedSprite>(ctx_, "resources/WhittyCrazy.png", "resources/WhittyCrazy.xml", 24);
@@ -39,10 +40,10 @@ bool TestState::init() {
 	// animation2->set_scale(0.8f);
 	// animation2->play_anim("Whitty idle dance", true);
 	// animation2->set_position(ctx_.window.screen_size() / 2.f);
-	// add(animation2);
+	// add_child(animation2);
 
 	if (auto popup = ae::Node::create<ae::PopupUI>(ctx_)) {
-		add(popup);
+		add_child(popup);
 	}
 
 	ctx_.renderer.set_background_rgba({128, 128, 128, 255});

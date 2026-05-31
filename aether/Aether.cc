@@ -24,8 +24,7 @@ bool Aether::init(std::string_view game_title, size<int> game_resolution, int ga
 		return false;
 	}
 
-	renderer_.bind_context(ctx_);
-	director_.bind_context(ctx_);
+	renderer_.setup();
 
 	infolog("Initialized");
 	return is_initialized_ = true;
@@ -42,16 +41,20 @@ void Aether::run() {
 
 		if (!is_window_minimized) {
 			ctx_.update_frame_ctx();
-			director_.update_current_state();
+			director_.update_current_state(ctx_.delta_time());
 		}
 
-		renderer_.start_draw();
+		renderer_.start_draw(window_);
 
 		if (!is_window_minimized) {
 			director_.draw_current_state();
 		}
 
+#ifdef AETHER_DEBUG
+		renderer_.end_draw(ctx_);
+#else
 		renderer_.end_draw();
+#endif
 	}
 
 	shutdown();

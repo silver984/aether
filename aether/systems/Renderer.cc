@@ -19,7 +19,7 @@ ae::size<float> tex_shapes_size = {1.f, 1.f};
 namespace ae {
 
 // private
-Renderer::Renderer() : ctx_(nullptr), background_rgba_(0, 0, 0, 255), transform_(mat3::identity()) {}
+Renderer::Renderer() : background_rgba_(0, 0, 0, 255), transform_(mat3::identity()), is_setup_(false) {}
 
 // private
 Renderer::~Renderer() = default;
@@ -37,7 +37,7 @@ rgba Renderer::background_rgba() const {
 }
 
 void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color) const {
-	if (texture.id < 1) {
+	if (!is_setup_ || texture.id < 1) {
 		return;
 	}
 
@@ -147,45 +147,49 @@ void Renderer::draw_rect(size<int> bounds, mat3 const& transform, rgba color) co
 }
 
 // private
-void Renderer::bind_context(Context const& ctx) {
-	ctx_ = &ctx;
+void Renderer::setup() {
+	if (is_setup_) {
+		return;
+	}
+
+	rlDisableBackfaceCulling();
+	is_setup_ = true;
 }
 
 // private
-void Renderer::start_draw() {
+void Renderer::start_draw(Window& window) {
 	BeginDrawing();
 	auto lrender_bounds = render_bounds();
 	BeginScissorMode(0, 0, lrender_bounds.width, lrender_bounds.height);
 	ClearBackground(util::rl::as_color(background_rgba_));
 
-	if (ctx_ && ctx_->window.was_resized()) {
-		transform_ = calculate_transform(ctx_->window.screen_size());
+	if (window.was_resized()) {
+		transform_ = calculate_transform(window.screen_size());
 	}
 
 	push_matrix(transform_);
 }
 
-// private
-void Renderer::end_draw() const {
-	rlPopMatrix();
-
 #ifdef AETHER_DEBUG
-	draw_debug();
-#endif
-
+// private
+void Renderer::end_draw(Context const& ctx) const {
+	rlPopMatrix();
+	draw_debug(ctx.running_fps());
 	EndScissorMode();
 	EndDrawing();
 }
 
-#ifdef AETHER_DEBUG
 // private
-void Renderer::draw_debug() const {
-	if (!ctx_) {
-		return;
-	}
-
-	std::string const debug_text = fmt::format("FPS: {}", ctx_->running_fps());
+void Renderer::draw_debug(std::uint32_t running_fps) const {
+	std::string const debug_text = fmt::format("FPS: {}", running_fps);
 	DrawText(debug_text.c_str(), 5, 5, 10, WHITE);
+}
+#else
+// private
+void Renderer::end_draw() const {
+	rlPopMatrix();
+	EndScissorMode();
+	EndDrawing();
 }
 #endif
 
@@ -221,13 +225,21 @@ mat3 Renderer::calculate_transform(size<int> screen_size) const {
 
 	float const scale_factor = std::min(scale_ratio.x, scale_ratio.y);
 
-	vec2<float> const scaled_size = {screen_size.width * scale_factor, screen_size.height * scale_factor};
-	vec2<float> const offset      = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
+	vec2<float> const scaled_size    = {screen_size.width * scale_factor, screen_size.height * scale_factor};
+	vec2<float> const offset         = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
+	vec2<float> const snapped_offset = {std::round(offset.x * 0.5f), std::round(offset.y * 0.5f)};
 
-	mat3 const t = mat3::translation(offset / 2.f);
-	mat3 const s = mat3::scale(vec2<float>(scale_factor, scale_factor));
+	mat3 const t = mat3::translation(snapped_offset);
+	mat3 const s = mat3::scale({scale_factor, scale_factor});
+	mat3 result  = t * s;
 
-	return t * s;
+	vec2<float> translation = result.translation();
+	translation.x           = std::round(translation.x);
+	translation.y           = std::round(translation.y);
+	result.m[0][2]          = translation.x;
+	result.m[1][2]          = translation.y;
+
+	return result;
 }
 
 } // namespace ae
