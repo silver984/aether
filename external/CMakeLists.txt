@@ -1,1 +1,2 @@
+add_subdirectory(miniaudio)
 add_subdirectory(tinyxml2)

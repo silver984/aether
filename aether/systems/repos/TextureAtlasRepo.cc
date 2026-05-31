@@ -1,4 +1,6 @@
-#include <aether/debug/log.hh>
+#ifdef AETHER_DEBUG
+	#include <aether/debug/log.hh>
+#endif
 #include <aether/systems/repos/TextureAtlasRepo.hh>
 #include <aether/util/filesystem.hh>
 #include <aether/util/string.hh>
@@ -8,10 +10,6 @@
 #include <charconv>
 #include <cstddef>
 #include <tinyxml2/tinyxml2.h>
-
-#if !(defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS))
-	#define log_defective_subtexture(...) ((void)0)
-#endif
 
 namespace ae {
 
@@ -25,7 +23,9 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 	if (auto const optional_file = util::fs::normalized_filepath(file); optional_file.has_value()) {
 		lfile = optional_file.value();
 	} else {
+#ifdef AETHER_DEBUG
 		errorlog("Filesystem gave an error");
+#endif
 		return nullptr;
 	}
 
@@ -37,14 +37,18 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 
 	// TODO: json, plist, and txt
 	if (!util::str::string_matches_any(file_extension, {".xml"})) {
+#ifdef AETHER_DEBUG
 		errorlog("Unsupported file format | file: \"{}\"", lfile.filename().string());
+#endif
 		return nullptr;
 	}
 
 	purge_unused();
 
+#ifdef AETHER_VERBOSE_DEBUG
 	debuglog("Loading \"{}\"", lfile.filename().string());
 	auto const start_time = util::timer::start();
+#endif
 
 	std::shared_ptr<texture_atlas> shared_texture_atlas = nullptr;
 
@@ -53,20 +57,25 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::fetch(std::string_view file) {
 	}
 
 	if (!shared_texture_atlas) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed");
+#endif
 		return nullptr;
 	}
 
 	auto [iterator, _] = cached_texture_atlases_.emplace(lfile, std::move(shared_texture_atlas));
-	tracelog("Successfully inserted to cache | cache size: {}", cached_texture_atlases_.size());
 
+#ifdef AETHER_VERBOSE_DEBUG
 	auto const end_time = util::timer::end(start_time);
+	tracelog("Successfully inserted to cache | cache size: {}", cached_texture_atlases_.size());
 	debuglog("Done | took {}ms", end_time);
+#endif
+
 	return iterator->second;
 }
 
 void TextureAtlasRepo::purge_unused() {
-	std::erase_if(cached_texture_atlases_, [](auto const& pair) {
+	std::erase_if(cached_texture_atlases_, [](auto& pair) {
 		return pair.second.use_count() <= 1;
 	});
 }
@@ -91,28 +100,38 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_parse(std::filesystem::path
 
 	using enum tinyxml2::XMLError;
 	if (document.LoadFile(file.string().c_str()) != XML_SUCCESS) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed to load XML file");
+#endif
 		return nullptr;
 	}
 
 	switch (assess_xml_format(document)) {
 		using enum xml_format;
 	case adobe_animate: {
+#ifdef AETHER_VERBOSE_DEBUG
 		tracelog("Detected Adobe Animate's XML format");
+#endif
 		return xml_adobe_animate_parse(document);
 	}
 	case texture_packer: {
+#ifdef AETHER_VERBOSE_DEBUG
 		tracelog("Detected TexturePacker's generic XML format");
+#endif
 		return xml_texture_packer_parse(document);
 	}
 	case unknown:
 	default: {
+#ifdef AETHER_DEBUG
 		errorlog("Unknown XML format");
+#endif
 		return nullptr;
 	}
 	}
 
+#ifdef AETHER_DEBUG
 	errorlog("Undefined error");
+#endif
 	return nullptr;
 }
 
@@ -123,15 +142,22 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
+#ifdef AETHER_DEBUG
 		errorlog("Couldn't find root element");
+#endif
 		return nullptr;
 	}
 
+#ifdef AETHER_VERBOSE_DEBUG
 	debuglog("Parsing");
 	auto const start_time = util::timer::start();
+#endif
 
 	std::shared_ptr<texture_atlas> shared_texture_atlas = std::make_shared<texture_atlas>();
+
+#ifdef AETHER_VERBOSE_DEBUG
 	tracelog("Allocated shared texture atlas | address: {}", fmt::ptr(shared_texture_atlas.get()));
+#endif
 
 	for (tinyxml2::XMLElement const* current_element = root_element->FirstChildElement(element_name.data());
 	     current_element != nullptr; current_element = current_element->NextSiblingElement(element_name.data())) {
@@ -139,7 +165,9 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 	}
 
 	if (shared_texture_atlas->animations.empty()) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed | atlas has no data");
+#endif
 		return nullptr;
 	}
 
@@ -156,11 +184,12 @@ TextureAtlasRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std:
 		                 });
 	}
 
+#ifdef AETHER_VERBOSE_DEBUG
+	auto const end_time = util::timer::end(start_time);
 	tracelog("Atlas data populated | animation count: {} | subtexture/frame count: {}",
 	         shared_texture_atlas->animations.size(), subtexture_count);
-
-	auto const end_time = util::timer::end(start_time);
 	debuglog("Done | took {}ms", end_time);
+#endif
 
 	return shared_texture_atlas;
 }
@@ -172,14 +201,18 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml
 		    char const* frame_name = current_element.Attribute("name");
 
 		    if (!frame_name) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no name attribute");
+#endif
 			    return;
 		    }
 
 		    auto const parsed_frame_name = parse_frame_name(frame_name);
 
 		    if (!parsed_frame_name.has_value()) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("invalid name", frame_name);
+#endif
 			    return;
 		    }
 
@@ -187,22 +220,30 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_adobe_animate_parse(tinyxml
 
 		    using enum tinyxml2::XMLError;
 		    if (current_element.QueryIntAttribute("x", &temporary_subtexture.source_rect.x) != XML_SUCCESS) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no x attribute", frame_name);
+#endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("y", &temporary_subtexture.source_rect.y) != XML_SUCCESS) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no y attribute", frame_name);
+#endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("width", &temporary_subtexture.source_rect.width) != XML_SUCCESS) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no width attribute", frame_name);
+#endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("height", &temporary_subtexture.source_rect.height) != XML_SUCCESS) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no height attribute", frame_name);
+#endif
 			    return;
 		    }
 
@@ -222,14 +263,18 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_texture_packer_parse(tinyxm
 		    char const* frame_name = current_element.Attribute("n");
 
 		    if (!frame_name) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no n attribute");
+#endif
 			    return;
 		    }
 
 		    auto const parsed_frame_name = parse_frame_name(frame_name);
 
 		    if (!parsed_frame_name.has_value()) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("invalid name", frame_name);
+#endif
 			    return;
 		    }
 
@@ -237,22 +282,30 @@ std::shared_ptr<texture_atlas> TextureAtlasRepo::xml_texture_packer_parse(tinyxm
 
 		    using enum tinyxml2::XMLError;
 		    if (current_element.QueryIntAttribute("x", &temporary_subtexture.source_rect.x) != XML_SUCCESS) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no x attribute", frame_name);
+#endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("y", &temporary_subtexture.source_rect.y) != XML_SUCCESS) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no y attribute", frame_name);
+#endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("w", &temporary_subtexture.source_rect.width) != XML_SUCCESS) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no w attribute", frame_name);
+#endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("h", &temporary_subtexture.source_rect.height) != XML_SUCCESS) {
+#ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_subtexture("no h attribute", frame_name);
+#endif
 			    return;
 		    }
 
@@ -339,7 +392,7 @@ std::optional<std::pair<std::string_view, int>> TextureAtlasRepo::parse_frame_na
 	return std::pair<std::string_view, int>(unparsed_name.substr(0, prefix_end), frame_index);
 }
 
-#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
+#ifdef AETHER_VERBOSE_DEBUG
 // private
 void TextureAtlasRepo::log_defective_subtexture(std::string_view message,
                                                 std::optional<std::string_view> name_attribute) {

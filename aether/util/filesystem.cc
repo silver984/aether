@@ -1,4 +1,6 @@
-#include <aether/debug/log.hh>
+#ifdef AETHER_DEBUG
+	#include <aether/debug/log.hh>
+#endif
 #include <aether/util/filesystem.hh>
 #include <algorithm>
 #include <cstdint>
@@ -9,7 +11,9 @@ std::optional<std::filesystem::path> normalized_filepath(std::string_view str) {
 	try {
 		return std::filesystem::canonical(str);
 	} catch (std::filesystem::filesystem_error const& err) {
+#ifdef AETHER_DEBUG
 		errorlog("Caught filesystem error | arg: \"{}\" | what: {}", str, err.what());
+#endif
 		return std::nullopt;
 	}
 }

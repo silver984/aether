@@ -6,3 +6,5 @@ target_sources(${AETHER}
         Sprite.cc
         TileMap.cc
 )
+
+add_subdirectory(abstract)

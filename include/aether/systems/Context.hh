@@ -6,6 +6,7 @@ namespace ae {
 
 class Aether;
 class Window;
+class Audio;
 class Renderer;
 class TextureRepo;
 class TextureAtlasRepo;
@@ -15,7 +16,7 @@ class Context final {
 	friend class Aether;
 
 private:
-	Context(Window& window_ref, Renderer& renderer_ref, TextureRepo& texture_repo_ref,
+	Context(Window& window_ref, Audio& audio_ref, Renderer& renderer_ref, TextureRepo& texture_repo_ref,
 	        TextureAtlasRepo& texture_atlas_repo_ref, Director& director_ref);
 
 public:
@@ -31,6 +32,7 @@ public:
 	[[nodiscard]] std::uint32_t running_fps() const;
 
 	Window& window;
+	Audio& audio;
 	Renderer& renderer;
 	TextureRepo& texture_repo;
 	TextureAtlasRepo& texture_atlas_repo;

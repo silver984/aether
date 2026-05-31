@@ -1,5 +1,8 @@
-#include <aether/debug/log.hh>
+#ifdef AETHER_DEBUG
+	#include <aether/debug/log.hh>
+#endif
 #include <aether/objects/Sprite.hh>
+#include <aether/systems/Context.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/repos/TextureRepo.hh>
 #include <raylib.h>
@@ -20,7 +23,9 @@ bool Sprite::set_texture(std::string_view file) {
 	texture_ = ctx_.texture_repo.fetch(file);
 
 	if (!texture_) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed");
+#endif
 		return false;
 	}
 
@@ -33,7 +38,9 @@ bool Sprite::set_texture(std::string_view file) {
 
 void Sprite::set_texture_wrap(texture_wrap type) {
 	if (!texture_) {
+#ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Attempted to set texture wrap with nullptr texture");
+#endif
 		return;
 	}
 
@@ -62,7 +69,9 @@ rect<int> Sprite::texture_source_rect() const {
 // protected
 bool Sprite::init() {
 	if (!set_texture(file_arg_)) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed");
+#endif
 		return false;
 	}
 

@@ -29,7 +29,7 @@
       "name": "debug-verbose",
       "inherits": "debug",
       "cacheVariables": {
-        "AETHER_VERBOSE_LOGS": "ON"
+        "AETHER_VERBOSE_DEBUG": "ON"
       }
     },
     {

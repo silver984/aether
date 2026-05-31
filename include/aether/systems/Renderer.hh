@@ -34,7 +34,7 @@ public:
 	void draw_rect(size<int> bounds, mat3 const& transform, rgba color) const;
 
 private:
-	void setup();
+	void disable_backface_culling();
 	void start_draw(Window& window);
 #ifdef AETHER_DEBUG
 	void end_draw(Context const& ctx) const;
@@ -50,7 +50,6 @@ private:
 
 	rgba background_rgba_;
 	mat3 transform_;
-	bool is_setup_;
 };
 
 } // namespace ae

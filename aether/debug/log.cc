@@ -1,9 +1,10 @@
-#include <aether/debug/log.hh>
-#include <algorithm>
-#include <chrono>
-#include <filesystem>
-#include <fmt/chrono.h>
-#include <fstream>
+#ifdef AETHER_DEBUG
+	#include <aether/debug/log.hh>
+	#include <algorithm>
+	#include <chrono>
+	#include <filesystem>
+	#include <fmt/chrono.h>
+	#include <fstream>
 
 namespace {
 
@@ -15,7 +16,7 @@ std::string_view function_name(std::source_location const& loc) {
 		func = func.substr(0, paren);
 	}
 
-#ifdef _MSC_VER
+	#ifdef _MSC_VER
 	// remove calling conventions
 	constexpr std::string_view cc_tokens[] = {"__cdecl", "__stdcall", "__fastcall", "__vectorcall"};
 
@@ -31,12 +32,12 @@ std::string_view function_name(std::source_location const& loc) {
 			break;
 		}
 	}
-#else
+	#else
 	// GCC / Clang / MinGW:
 	if (auto space = func.rfind(' '); space != std::string_view::npos) {
 		func.remove_prefix(space + 1);
 	}
-#endif
+	#endif
 
 	return func;
 }
@@ -78,11 +79,9 @@ void print(std::string_view msg, std::string_view level, fmt::color level_color,
 		}
 	}
 
-#ifdef AETHER_DEBUG
 	fmt::print(fmt::fg(fmt::color::gray), fmt::runtime(time_and_loc_str));
 	fmt::print(fmt::fg(level_color), fmt::runtime(level_str));
 	fmt::print("{}\n", msg);
-#endif
 }
 
 void create_log_file() {
@@ -94,3 +93,4 @@ void create_log_file() {
 }
 
 } // namespace ae::log::impl
+#endif

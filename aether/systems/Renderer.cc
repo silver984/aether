@@ -9,17 +9,17 @@
 #include <raymath.h>
 #include <rlgl.h>
 
-namespace {
+// namespace {
 
-Texture tex_shapes              = {1, 1, 1, 1, 7};
-ae::size<float> tex_shapes_size = {1.f, 1.f};
+// Texture tex_shapes              = {1, 1, 1, 1, 7};
+// ae::size<float> tex_shapes_size = {1.f, 1.f};
 
-} // namespace
+// } // namespace
 
 namespace ae {
 
 // private
-Renderer::Renderer() : background_rgba_(0, 0, 0, 255), transform_(mat3::identity()), is_setup_(false) {}
+Renderer::Renderer() : background_rgba_(0, 0, 0, 255), transform_(mat3::identity()) {}
 
 // private
 Renderer::~Renderer() = default;
@@ -37,7 +37,7 @@ rgba Renderer::background_rgba() const {
 }
 
 void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color) const {
-	if (!is_setup_ || texture.id < 1) {
+	if (texture.id < 1) {
 		return;
 	}
 
@@ -147,13 +147,8 @@ void Renderer::draw_rect(size<int> bounds, mat3 const& transform, rgba color) co
 }
 
 // private
-void Renderer::setup() {
-	if (is_setup_) {
-		return;
-	}
-
+void Renderer::disable_backface_culling() {
 	rlDisableBackfaceCulling();
-	is_setup_ = true;
 }
 
 // private
@@ -229,15 +224,11 @@ mat3 Renderer::calculate_transform(size<int> screen_size) const {
 	vec2<float> const offset         = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
 	vec2<float> const snapped_offset = {std::round(offset.x * 0.5f), std::round(offset.y * 0.5f)};
 
-	mat3 const t = mat3::translation(snapped_offset);
-	mat3 const s = mat3::scale({scale_factor, scale_factor});
-	mat3 result  = t * s;
-
-	vec2<float> translation = result.translation();
-	translation.x           = std::round(translation.x);
-	translation.y           = std::round(translation.y);
-	result.m[0][2]          = translation.x;
-	result.m[1][2]          = translation.y;
+	mat3 const t   = mat3::translation(snapped_offset);
+	mat3 const s   = mat3::scale({scale_factor, scale_factor});
+	mat3 result    = t * s;
+	result.m[0][2] = std::round(result.m[0][2]);
+	result.m[1][2] = std::round(result.m[1][2]);
 
 	return result;
 }

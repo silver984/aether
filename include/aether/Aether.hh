@@ -1,5 +1,6 @@
 #pragma once
 #include <aether/math_types/size.hh>
+#include <aether/systems/Audio.hh>
 #include <aether/systems/Context.hh>
 #include <aether/systems/Director.hh>
 #include <aether/systems/Renderer.hh>
@@ -28,6 +29,7 @@ private:
 	void shutdown();
 
 	Window window_;
+	Audio audio_;
 	Renderer renderer_;
 	Director director_;
 	TextureRepo texture_repo_;

@@ -4,13 +4,13 @@ cmake_minimum_required(VERSION 3.31.6)
 
 set(AETHER AetherEngine)
 include(cmake/version.cmake)
-project(${AETHER} VERSION ${AETHER_VERSION} LANGUAGES CXX)
+project(${AETHER} VERSION ${AETHER_VERSION} LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-option(AETHER_VERBOSE_LOGS "Enable verbose debug logs" OFF)
+option(AETHER_VERBOSE_DEBUG "Enable verbose debug" OFF)
 
 add_executable(${AETHER})
 
@@ -35,7 +35,7 @@ target_include_directories(${AETHER}
 target_compile_definitions(${AETHER}
     PRIVATE
         $<$<CONFIG:Debug>:AETHER_DEBUG>
-        $<$<BOOL:${AETHER_VERBOSE_LOGS}>:AETHER_VERBOSE_LOGS>
+        $<$<AND:$<CONFIG:Debug>,$<BOOL:${AETHER_VERBOSE_DEBUG}>>:AETHER_VERBOSE_DEBUG>
 )
 
 include(cmake/dependencies.cmake)

@@ -1,5 +1,8 @@
-#include <aether/debug/log.hh>
+#ifdef AETHER_DEBUG
+	#include <aether/debug/log.hh>
+#endif
 #include <aether/objects/AnimatedSprite.hh>
+#include <aether/systems/Context.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/repos/TextureAtlasRepo.hh>
 #include <aether/systems/repos/TextureRepo.hh>
@@ -25,12 +28,16 @@ void AnimatedSprite::toggle_antialiasing(bool val) const {
 
 bool AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop, int fps) {
 	if (!texture_atlas_) {
+#ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Attempted to play animation with nullptr texture atlas");
+#endif
 		return false;
 	}
 
 	if (!texture_atlas_->animations.contains(animation_name)) {
+#ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Attempted to play animation not found from texture atlas | animation name: \"{}\"", animation_name);
+#endif
 		return false;
 	}
 
@@ -85,19 +92,25 @@ bool AnimatedSprite::init() {
 	texture_ = ctx_.texture_repo.fetch(image_file_arg_);
 
 	if (!texture_) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed | nullptr texture");
+#endif
 		return false;
 	}
 
 	texture_atlas_ = ctx_.texture_atlas_repo.fetch(data_file_arg_);
 
 	if (!texture_atlas_) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed | nullptr texture atlas");
+#endif
 		return false;
 	}
 
 	if (texture_atlas_->animations.empty()) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed | no valid frames");
+#endif
 		return false;
 	}
 

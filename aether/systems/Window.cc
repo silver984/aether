@@ -1,4 +1,6 @@
-#include <aether/debug/log.hh>
+#ifdef AETHER_DEBUG
+	#include <aether/debug/log.hh>
+#endif
 #include <aether/systems/Window.hh>
 #include <aether/util/math.hh>
 #ifdef WIN32
@@ -44,6 +46,7 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 
 #ifdef AETHER_DEBUG
 	log::impl::create_log_file();
+
 	#ifdef WIN32
 	if (!win32::enable_console_colors()) {
 		warninglog("Couldn't enable console colors");
@@ -61,7 +64,9 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 	InitWindow(screen_size_.width, screen_size_.height, title_.c_str());
 
 	if (!IsWindowReady()) {
+#ifdef AETHER_DEBUG
 		errorlog("Not ready");
+#endif
 		return false;
 	}
 
@@ -69,14 +74,23 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 	SetExitKey(KeyboardKey::KEY_NULL);
 	SetWindowMinSize(minimum_screen_size.width, minimum_screen_size.height);
 
-	infolog("Initialized");
+#ifdef AETHER_VERBOSE_DEBUG
+	debuglog("Initialized");
+#endif
 	return is_initialized_ = true;
 }
 
 // private
 void Window::shutdown() {
+	if (!is_initialized_) {
+		// not initialized yet
+		return;
+	}
+
 	CloseWindow();
+#ifdef AETHER_DEBUG
 	debuglog("Closed window");
+#endif
 	is_initialized_ = false;
 }
 

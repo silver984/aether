@@ -3,7 +3,6 @@
 #include <aether/math_types/rgba.hh>
 #include <aether/math_types/size.hh>
 #include <aether/math_types/vec2.hh>
-#include <aether/systems/Context.hh>
 #include <concepts>
 #include <cstddef>
 #include <cstdint>
@@ -17,6 +16,7 @@
 namespace ae {
 
 class Director;
+class Context;
 
 class Node : public std::enable_shared_from_this<Node> {
 	friend class Director;

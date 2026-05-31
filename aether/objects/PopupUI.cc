@@ -1,5 +1,6 @@
 #include <aether/objects/AnimatedSprite.hh>
 #include <aether/objects/PopupUI.hh>
+#include <aether/systems/Context.hh>
 #include <aether/systems/Window.hh>
 
 namespace ae {

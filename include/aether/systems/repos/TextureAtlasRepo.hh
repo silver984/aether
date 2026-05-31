@@ -49,7 +49,7 @@ private:
 	[[nodiscard]] xml_format assess_xml_format(tinyxml2::XMLDocument const& document);
 	[[nodiscard]] std::optional<std::pair<std::string_view, int>> parse_frame_name(std::string_view unparsed_name);
 
-#if defined(AETHER_DEBUG) && defined(AETHER_VERBOSE_LOGS)
+#ifdef AETHER_VERBOSE_DEBUG
 	void log_defective_subtexture(std::string_view message,
 	                              std::optional<std::string_view> name_attribute = std::nullopt);
 #endif

@@ -1,5 +1,8 @@
-#include <aether/debug/log.hh>
+#ifdef AETHER_DEBUG
+	#include <aether/debug/log.hh>
+#endif
 #include <aether/objects/TileMap.hh>
+#include <aether/systems/Context.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/repos/TextureRepo.hh>
 #include <aether/util/math.hh>
@@ -30,7 +33,9 @@ vec2<std::uint32_t> TileMap::tile_count() const {
 
 void TileMap::seek_tile(vec2<int> tile_index) {
 	if (!texture_) {
+#ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Attempted to seek tile with nullptr texture");
+#endif
 		return;
 	}
 
@@ -49,7 +54,9 @@ bool TileMap::init() {
 	texture_ = ctx_.texture_repo.fetch(file_arg_);
 
 	if (!texture_) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed");
+#endif
 		return false;
 	}
 

@@ -1,4 +1,6 @@
-#include <aether/debug/log.hh>
+#ifdef AETHER_DEBUG
+	#include <aether/debug/log.hh>
+#endif
 #include <aether/systems/Context.hh>
 #include <aether/systems/repos/TextureRepo.hh>
 #include <aether/util/filesystem.hh>
@@ -33,7 +35,9 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	if (auto const optional_file = util::fs::normalized_filepath(file); optional_file.has_value()) {
 		lfile = optional_file.value();
 	} else {
+#ifdef AETHER_VERBOSE_DEBUG
 		errorlog("Filesystem gave an error");
+#endif
 		return nullptr;
 	}
 
@@ -49,31 +53,41 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 
 	purge_unused();
 
+#ifdef AETHER_VERBOSE_DEBUG
 	debuglog("Loading \"{}\"", lfile.filename().string());
 	auto const start_time = util::timer::start();
+#endif
 
 	Texture temporary_texture = LoadTexture(lfile.string().c_str());
 
 	if (!is_texture_valid(temporary_texture)) {
+#ifdef AETHER_DEBUG
 		errorlog("Invalid texture properties");
+#endif
 		UnloadTexture(temporary_texture);
 	}
 
 	std::shared_ptr<Texture> shared_texture =
 	    std::shared_ptr<Texture>(new Texture(std::move(temporary_texture)), texture_deleter{});
+
+#ifdef AETHER_VERBOSE_DEBUG
 	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width,
 	         shared_texture->height, shared_texture->id, fmt::ptr(shared_texture.get()));
+#endif
 
 	auto [iterator, _] = cached_textures_.emplace(lfile, std::move(shared_texture));
-	tracelog("Successfully inserted to cache | cache size: {}", cached_textures_.size());
 
+#ifdef AETHER_VERBOSE_DEBUG
 	auto const end_time = util::timer::end(start_time);
+	tracelog("Successfully inserted to cache | cache size: {}", cached_textures_.size());
 	debuglog("Done | took {}ms", end_time);
+#endif
+
 	return iterator->second;
 }
 
 void TextureRepo::purge_unused() {
-	std::erase_if(cached_textures_, [](auto const& pair) {
+	std::erase_if(cached_textures_, [](auto& pair) {
 		return pair.second.use_count() <= 1;
 	});
 }

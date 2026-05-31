@@ -1,12 +1,15 @@
 #include <aether/Aether.hh>
-#include <aether/debug/log.hh>
+#ifdef AETHER_DEBUG
+	#include <aether/debug/log.hh>
+#endif
 #include <aether/math_types/vec2.hh>
 #include <aether/util/timer.hh>
 #include <cstdint>
 
 namespace ae {
 
-Aether::Aether() : ctx_(window_, renderer_, texture_repo_, texture_atlas_repo_, director_), is_initialized_(false) {}
+Aether::Aether()
+    : ctx_(window_, audio_, renderer_, texture_repo_, texture_atlas_repo_, director_), is_initialized_(false) {}
 
 Aether::~Aether() {
 	if (is_initialized_) {
@@ -20,23 +23,39 @@ bool Aether::init(std::string_view game_title, size<int> game_resolution, int ga
 	}
 
 	if (!window_.init(game_title, game_resolution, game_fps)) {
+#ifdef AETHER_DEBUG
 		errorlog("Failed");
+#endif
 		return false;
 	}
 
-	renderer_.setup();
+#ifdef AETHER_DEBUG
+	if (!audio_.init()) {
+		warninglog("Audio failed to initialize");
+	}
+#else
+	audio_.init();
+#endif
 
+	renderer_.disable_backface_culling();
+
+#ifdef AETHER_DEBUG
 	infolog("Initialized");
+#endif
 	return is_initialized_ = true;
 }
 
 void Aether::run() {
 	if (!is_initialized_) {
-		debuglog("Attempted to run loop while uninitialized");
+#ifdef AETHER_DEBUG
+		errorlog("Can't run loop while uninitialized");
+#endif
 		return;
 	}
 
 	while (window_.is_initialized_ && !window_.should_close()) {
+		audio_.update();
+
 		bool const is_window_minimized = window_.is_minimized();
 
 		if (!is_window_minimized) {
@@ -66,21 +85,22 @@ Context const& Aether::context() {
 
 // private
 void Aether::shutdown() {
+#ifdef AETHER_DEBUG
 	infolog("Shutting down");
 	auto const start_time = util::timer::start();
+#endif
 
 	director_.try_cleanup();
 	texture_repo_.clear();
 	texture_atlas_repo_.clear();
-
-	if (window_.is_initialized_) {
-		window_.shutdown();
-	}
-
+	audio_.shutdown();
+	window_.shutdown();
 	is_initialized_ = false;
 
+#ifdef AETHER_DEBUG
 	auto const end_time = util::timer::end(start_time);
 	infolog("Done | took {}ms", end_time);
+#endif
 }
 
 } // namespace ae
