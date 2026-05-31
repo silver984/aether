@@ -88,9 +88,6 @@ void Window::shutdown() {
 	}
 
 	CloseWindow();
-#ifdef AETHER_DEBUG
-	debuglog("Closed window");
-#endif
 	is_initialized_ = false;
 }
 

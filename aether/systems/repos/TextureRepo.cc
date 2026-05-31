@@ -47,7 +47,9 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 
 	if (auto const file_extension = util::fs::file_extension(lfile);
 	    !util::str::string_matches_any(file_extension, {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".dds"})) {
+#ifdef AETHER_DEBUG
 		errorlog("Unsupported file format | file: \"{}\"", lfile.filename().string());
+#endif
 		return nullptr;
 	}
 

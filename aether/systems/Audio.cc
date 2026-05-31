@@ -8,13 +8,14 @@
 #include <algorithm>
 #include <miniaudio/miniaudio.h>
 #include <unordered_map>
+#include <cstring>
 #include <utility>
 
 namespace ae {
 
 struct Audio::impl {
 	struct scoped_sound final {
-		explicit scoped_sound(std::weak_ptr<Sound> owner_wref) : owner(std::move(owner_wref)) {
+		scoped_sound(std::weak_ptr<Sound> owner_wref) : owner(std::move(owner_wref)) {
 			memset(&sound, 0, sizeof(ma_sound));
 		}
 
