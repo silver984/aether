@@ -134,8 +134,8 @@ public:
 	NodeIdentity(Context const& ctx) : Node(ctx) {}
 	~NodeIdentity() override = default;
 
-	template <typename U, typename... Args>
-	static std::shared_ptr<U> create(Context const&, Args&&...) = delete;
+	template <typename U, typename... va>
+	static std::shared_ptr<U> create(Context const&, va&&...) = delete;
 
 	std::string_view type() const override {
 		return T::TYPE_;

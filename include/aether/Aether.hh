@@ -35,6 +35,7 @@ private:
 	TextureRepo texture_repo_;
 	TextureAtlasRepo texture_atlas_repo_;
 	Context ctx_;
+	bool ran_game_loop_;
 	bool is_initialized_;
 };
 

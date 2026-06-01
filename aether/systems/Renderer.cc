@@ -19,14 +19,12 @@
 namespace ae {
 
 // private
-Renderer::Renderer() : background_rgba_(0, 0, 0, 255), transform_(mat3::identity()) {}
+Renderer::Renderer()
+    : background_rgba_(0, 0, 0, 255)
+    , transform_(mat3::identity()) {}
 
 // private
 Renderer::~Renderer() = default;
-
-size<int> Renderer::render_bounds() const {
-	return {GetRenderWidth(), GetRenderHeight()};
-}
 
 void Renderer::set_background_rgba(rgba color) {
 	background_rgba_ = color;
@@ -36,14 +34,14 @@ rgba Renderer::background_rgba() const {
 	return background_rgba_;
 }
 
-void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color) const {
+void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const {
 	if (texture.id < 1) {
 		return;
 	}
 
 	bool flip_x = false;
 
-	if (source_rect.width < 0) {
+	if (source_rect.width < 0.f) {
 		flip_x            = true;
 		source_rect.width = std::abs(source_rect.width);
 	}
@@ -64,7 +62,7 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 		vec2<float> coord = source_rect.position<float>();
 
 		if (flip_x) {
-			coord.x += static_cast<float>(source_rect.width);
+			coord.x += source_rect.width;
 		}
 
 		define_texture_coord(coord / texture_bounds);
@@ -73,36 +71,36 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 
 	{ // bottom left
 		vec2<float> coord = source_rect.position<float>();
-		coord.y += static_cast<float>(source_rect.height);
+		coord.y += source_rect.height;
 
 		if (flip_x) {
-			coord.x += static_cast<float>(source_rect.width);
+			coord.x += source_rect.width;
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex({0.f, static_cast<float>(source_rect.height)});
+		define_vertex({0.f, source_rect.height});
 	}
 
 	{ // bottom right
 		vec2<float> coord = source_rect.position<float>() + source_rect.bounds<float>();
 
 		if (flip_x) {
-			coord.x -= static_cast<float>(source_rect.width);
+			coord.x -= source_rect.width;
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex({static_cast<float>(source_rect.width), static_cast<float>(source_rect.height)});
+		define_vertex({source_rect.width, source_rect.height});
 	}
 
 	{ // top right
 		vec2<float> coord = source_rect.position<float>();
 
 		if (!flip_x) {
-			coord.x += static_cast<float>(source_rect.width);
+			coord.x += source_rect.width;
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex({static_cast<float>(source_rect.width), 0.f});
+		define_vertex({source_rect.width, 0.f});
 	}
 
 	rlEnd();
@@ -110,49 +108,9 @@ void Renderer::draw_texture(Texture const& texture, rect<int> source_rect, mat3 
 	rlPopMatrix();
 }
 
-// TODO: remake this
-void Renderer::draw_rect(size<int> bounds, mat3 const& transform, rgba color) const {
-	// size<int> tex_shapes_bounds = {tex_shapes.width, tex_shapes.height};
-
-	// push_matrix(transform);
-	// rlSetTexture(1);
-	// rlBegin(RL_QUADS);
-	// define_color_vertex(color);
-	// rlNormal3f(0.f, 0.f, 1.f);
-
-	// { // top left
-	// 	define_texture_coord({});
-	// 	define_vertex({});
-	// }
-
-	// { // bottom left
-	// 	define_texture_coord({0.f, tex_shapes_size.height / tex_shapes_bounds.height});
-	// 	define_vertex({0.f, static_cast<float>(bounds.height)});
-	// }
-
-	// { // bottom right
-	// 	vec2<float> coord = {tex_shapes_size.width, tex_shapes_size.height};
-	// 	define_texture_coord(coord / tex_shapes_bounds);
-	// 	define_vertex({static_cast<float>(bounds.width), static_cast<float>(bounds.height)});
-	// }
-
-	// { // top right
-	// 	define_texture_coord({tex_shapes_size.width / tex_shapes_bounds.width, 0.f});
-	// 	define_vertex({static_cast<float>(bounds.width), 0.f});
-	// }
-
-	// rlEnd();
-	// rlSetTexture(0);
-	// rlPopMatrix();
-}
-
-// private
-void Renderer::disable_backface_culling() {
-	rlDisableBackfaceCulling();
-}
-
 // private
 void Renderer::start_draw(Window& window) {
+	rlDisableBackfaceCulling();
 	BeginDrawing();
 	auto lrender_bounds = render_bounds();
 	BeginScissorMode(0, 0, lrender_bounds.width, lrender_bounds.height);
@@ -187,6 +145,17 @@ void Renderer::end_draw() const {
 	EndDrawing();
 }
 #endif
+
+// private
+size<int> Renderer::render_bounds() const {
+	return {GetRenderWidth(), GetRenderHeight()};
+}
+
+// private
+void Renderer::reset_render_state() const {
+	rlDisableBackfaceCulling();
+	rlDisableDepthTest();
+}
 
 // private
 void Renderer::push_matrix(mat3 const& matrix) const {

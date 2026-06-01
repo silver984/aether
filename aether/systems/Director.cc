@@ -28,23 +28,14 @@ void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 }
 
 // private
-void Director::try_cleanup() {
-	if (pending_state_) {
-		current_state_.reset();
-	}
-
-	if (current_state_) {
-		pending_state_.reset();
-	}
+void Director::cleanup() {
+	current_state_.reset();
+	pending_state_.reset();
 }
 
 // private
 void Director::update_current_state(float dt) {
 	if (pending_state_) {
-		if (current_state_) {
-			current_state_.reset();
-		}
-
 		current_state_ = std::move(pending_state_);
 	}
 
@@ -58,6 +49,11 @@ void Director::draw_current_state() {
 	if (current_state_) {
 		current_state_->base_draw();
 	}
+}
+
+// private
+bool Director::has_pending_state() const {
+	return pending_state_ != nullptr;
 }
 
 } // namespace ae

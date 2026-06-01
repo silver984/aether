@@ -27,14 +27,11 @@ public:
 	Renderer& operator=(Renderer const&) = delete;
 	Renderer& operator=(Renderer&&)      = delete;
 
-	[[nodiscard]] size<int> render_bounds() const;
 	void set_background_rgba(rgba color);
 	[[nodiscard]] rgba background_rgba() const;
-	void draw_texture(Texture const& texture, rect<int> source_rect, mat3 const& transform, rgba color) const;
-	void draw_rect(size<int> bounds, mat3 const& transform, rgba color) const;
+	void draw_texture(Texture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
 
 private:
-	void disable_backface_culling();
 	void start_draw(Window& window);
 #ifdef AETHER_DEBUG
 	void end_draw(Context const& ctx) const;
@@ -42,11 +39,13 @@ private:
 #else
 	void end_draw() const;
 #endif
+	[[nodiscard]] size<int> render_bounds() const;
+	void reset_render_state() const;
 	void push_matrix(mat3 const& matrix) const;
 	void define_color_vertex(rgba color) const;
 	void define_vertex(vec2<float> position) const;
 	void define_texture_coord(vec2<float> position) const;
-	mat3 calculate_transform(size<int> screen_size) const;
+	[[nodiscard]] mat3 calculate_transform(size<int> screen_size) const;
 
 	mat3 transform_;
 	rgba background_rgba_;

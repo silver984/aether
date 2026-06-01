@@ -22,9 +22,10 @@ public:
 	void switch_state(std::shared_ptr<Node>&& new_state);
 
 private:
-	void try_cleanup();
+	void cleanup();
 	void update_current_state(float dt);
 	void draw_current_state();
+	[[nodiscard]] bool has_pending_state() const;
 
 	std::shared_ptr<Node> current_state_;
 	std::shared_ptr<Node> pending_state_;

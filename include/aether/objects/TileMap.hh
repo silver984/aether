@@ -11,7 +11,12 @@ class TileMap : public NodeIdentity<TileMap> {
 	friend class NodeIdentity<TileMap>;
 
 public:
-	TileMap(Context const& ctx, std::string_view file, size<int> tile_bounds);
+	struct descriptor final {
+		std::string_view file;
+		size<int> tile_bounds;
+	};
+
+	TileMap(Context const& ctx, descriptor desc);
 	~TileMap() override;
 
 	void toggle_antialiasing(bool val) const;
@@ -28,7 +33,7 @@ private:
 	static constexpr std::string_view TYPE_ = "TileMap";
 	std::shared_ptr<Texture> texture_;
 	std::string const file_arg_;
-	rect<int> texture_source_rect_;
+	rect<float> texture_source_rect_;
 	vec2<std::uint32_t> tile_index_;
 	size<std::uint32_t> const tile_bounds_arg_;
 };

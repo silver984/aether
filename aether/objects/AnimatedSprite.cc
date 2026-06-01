@@ -11,22 +11,28 @@
 
 namespace ae {
 
-AnimatedSprite::AnimatedSprite(Context const& ctx, std::string_view image_file, std::string_view data_file, int fps)
-    : NodeIdentity<AnimatedSprite>(ctx), subtexture_elapsed_(0.f), current_subtexture_index_(0),
-      animation_was_reset_(true), is_current_animation_looping_(false), is_current_subtexture_rotated_(false),
-      subtexture_transform_(mat3::identity()), image_file_arg_(std::string(image_file)),
-      data_file_arg_(std::string(data_file)), playback_fps_(std::max(1, fps)) {}
+AnimatedSprite::AnimatedSprite(Context const& ctx, descriptor desc)
+    : NodeIdentity<AnimatedSprite>(ctx)
+    , image_file_arg_(std::string(desc.image_file))
+    , data_file_arg_(std::string(desc.data_file))
+    , current_subtexture_index_(0)
+    , playback_fps_(static_cast<std::uint32_t>(std::max(1, desc.fps)))
+    , subtexture_transform_(mat3::identity())
+    , subtexture_elapsed_(0.f)
+    , animation_was_reset_(false)
+    , is_current_animation_looping_(false)
+    , is_current_subtexture_rotated_(false)
+    , has_antialiasing_arg_(desc.has_antialiasing) {}
 
 AnimatedSprite::~AnimatedSprite() = default;
 
 void AnimatedSprite::toggle_antialiasing(bool val) const {
 	if (texture_) {
-		using enum TextureFilter;
 		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
 
-bool AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop, int fps) {
+bool AnimatedSprite::play_anim(std::string_view animation_name) {
 	if (!texture_atlas_) {
 #ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Attempted to play animation with nullptr texture atlas");
@@ -36,7 +42,7 @@ bool AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop
 
 	if (!texture_atlas_->animations.contains(animation_name)) {
 #ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Attempted to play animation not found from texture atlas | animation name: \"{}\"", animation_name);
+		debuglog("Attempted to play animation not found from texture atlas | name: \"{}\"", animation_name);
 #endif
 		return false;
 	}
@@ -48,13 +54,21 @@ bool AnimatedSprite::play_anim(std::string_view animation_name, bool should_loop
 	}
 
 	// reset state
-	current_subtexture_index_     = 0;
-	subtexture_elapsed_           = 0.f;
-	is_current_animation_looping_ = should_loop;
+	current_subtexture_index_ = 0;
+	subtexture_elapsed_       = 0.f;
 
-	// change fps if arg is not default
-	if (fps != 0) {
-		playback_fps_ = std::max(1, fps);
+	return true;
+}
+
+bool AnimatedSprite::play_anim(std::string_view animation_name, anim_options options) {
+	if (!play_anim(animation_name)) {
+		return false;
+	}
+
+	is_current_animation_looping_ = options.loop;
+
+	if (options.fps.has_value()) {
+		playback_fps_ = std::max(1, options.fps.value());
 	}
 
 	return true;
@@ -116,16 +130,16 @@ bool AnimatedSprite::init() {
 
 	// set default animation
 	auto const first_animation     = texture_atlas_->animations.begin();
-	auto const first_subtextureset = first_animation->second;
-	auto const& first_subtexture   = first_subtextureset.front();
+	auto const& first_subtexture   = first_animation->second.front();
 	current_animation_name_        = first_animation->first;
-	texture_source_rect_           = first_subtexture.source_rect;
-	current_subtexture_offsets_    = first_subtexture.offsets;
 	is_current_subtexture_rotated_ = first_subtexture.is_rotated;
+	texture_source_rect_           = static_cast<rect<float>>(first_subtexture.source_rect);
+	current_subtexture_offsets_    = static_cast<vec2<float>>(first_subtexture.offsets);
+	animation_was_reset_           = true;
 
-	toggle_antialiasing(true);
-	set_bounds(calculate_bounds(first_subtextureset));
+	toggle_antialiasing(has_antialiasing_arg_);
 	activate();
+	update(0.f);
 	enable_draw();
 
 	return true;
@@ -155,13 +169,12 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 	}
 
 	if (is_current_subtexture_rotated_) {
-		mat3 const fix = mat3::translation({0.f, static_cast<float>(bounds().height - current_subtexture_offsets_.y)});
-		mat3 const r   = mat3::rotation(util::math::degrees_to_radians(-90.f));
-		mat3 const t =
-		    mat3::translation(-(static_cast<vec2<float>>(util::math::switch_sides(current_subtexture_offsets_))));
+		mat3 const fix        = mat3::translation({0.f, bounds().height - current_subtexture_offsets_.y});
+		mat3 const r          = mat3::rotation(util::math::degrees_to_radians(-90.f));
+		mat3 const t          = mat3::translation(util::math::switch_sides(-current_subtexture_offsets_));
 		subtexture_transform_ = transform * fix * r * t;
 	} else {
-		mat3 const t          = mat3::translation(-(static_cast<vec2<float>>(current_subtexture_offsets_)));
+		mat3 const t          = mat3::translation(-current_subtexture_offsets_);
 		subtexture_transform_ = transform * t;
 	}
 
@@ -175,7 +188,6 @@ void AnimatedSprite::progress_frame() {
 	}
 
 	auto const& current_animation = texture_atlas_->animations[current_animation_name_];
-
 	set_bounds(calculate_bounds(current_animation));
 
 	if (is_current_animation_looping_) {
@@ -185,9 +197,9 @@ void AnimatedSprite::progress_frame() {
 	}
 
 	auto const& current_subtexture = current_animation[current_subtexture_index_];
-	texture_source_rect_           = current_subtexture.source_rect;
 	is_current_subtexture_rotated_ = current_subtexture.is_rotated;
-	current_subtexture_offsets_    = current_subtexture.offsets;
+	texture_source_rect_           = static_cast<rect<float>>(current_subtexture.source_rect);
+	current_subtexture_offsets_    = static_cast<vec2<float>>(current_subtexture.offsets);
 }
 
 // private

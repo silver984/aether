@@ -39,3 +39,8 @@ AlignTrailingComments:
 IndentPPDirectives: BeforeHash
 AlignEscapedNewlines: Right
 SortIncludes: true
+
+# === Constructor Initializer List Formatting ===
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerIndentWidth: 4
+PackConstructorInitializers: Never

@@ -7,14 +7,26 @@
 #include <aether/systems/repos/TextureRepo.hh>
 #include <raylib.h>
 
+namespace {
+
+int round_int_cast(float val) {
+	return static_cast<int>(std::round(val));
+}
+
+} // namespace
+
 namespace ae {
 
-Sprite::Sprite(Context const& ctx, std::string_view file) : NodeIdentity<Sprite>(ctx), file_arg_(std::string(file)) {}
+Sprite::Sprite(Context const& ctx, descriptor desc)
+    : NodeIdentity<Sprite>(ctx)
+    , file_arg_(std::string(desc.file))
+    , wrap_type_arg_(desc.wrap_type)
+    , has_antialiasing_arg_(desc.has_antialiasing) {}
+
 Sprite::~Sprite() = default;
 
 void Sprite::toggle_antialiasing(bool val) const {
 	if (texture_) {
-		using enum TextureFilter;
 		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
@@ -30,7 +42,7 @@ bool Sprite::set_texture(std::string_view file) {
 	}
 
 	size<int> new_bounds = {texture_->width, texture_->height};
-	texture_source_rect_ = {0, 0, new_bounds.width, new_bounds.height};
+	texture_source_rect_ = {0.f, 0.f, static_cast<float>(new_bounds.width), static_cast<float>(new_bounds.height)};
 	set_bounds(new_bounds);
 
 	return true;
@@ -46,7 +58,6 @@ void Sprite::set_texture_wrap(texture_wrap type) {
 
 	switch (type) {
 		using enum texture_wrap;
-		using enum TextureWrap;
 	case clamp: SetTextureWrap(*texture_, TEXTURE_WRAP_CLAMP); break;
 	case repeat: SetTextureWrap(*texture_, TEXTURE_WRAP_REPEAT); break;
 	case mirror_clamp: SetTextureWrap(*texture_, TEXTURE_WRAP_MIRROR_CLAMP); break;
@@ -54,16 +65,17 @@ void Sprite::set_texture_wrap(texture_wrap type) {
 	}
 }
 
-void Sprite::set_texture_source_rect(rect<int> val, bool update_bounds) {
-	texture_source_rect_ = val;
+void Sprite::set_texture_source_rect(rect<int> val) {
+	texture_source_rect_ = static_cast<rect<float>>(val);
+}
 
-	if (update_bounds) {
-		set_bounds({texture_source_rect_.width, texture_source_rect_.height});
-	}
+void Sprite::update_bounds() {
+	set_bounds({round_int_cast(texture_source_rect_.width), round_int_cast(texture_source_rect_.height)});
 }
 
 rect<int> Sprite::texture_source_rect() const {
-	return texture_source_rect_;
+	return {round_int_cast(texture_source_rect_.x), round_int_cast(texture_source_rect_.y),
+	        round_int_cast(texture_source_rect_.width), round_int_cast(texture_source_rect_.height)};
 }
 
 // protected
@@ -75,8 +87,8 @@ bool Sprite::init() {
 		return false;
 	}
 
-	set_texture_wrap(texture_wrap::clamp);
-	toggle_antialiasing(true);
+	set_texture_wrap(wrap_type_arg_);
+	toggle_antialiasing(has_antialiasing_arg_);
 	enable_draw();
 
 	return true;

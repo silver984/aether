@@ -9,12 +9,24 @@
 namespace ae {
 
 Aether::Aether()
-    : ctx_(window_, audio_, renderer_, texture_repo_, texture_atlas_repo_, director_), is_initialized_(false) {}
+    : ctx_(window_, audio_, renderer_, texture_repo_, texture_atlas_repo_, director_)
+    , ran_game_loop_(false)
+    , is_initialized_(false) {}
 
 Aether::~Aether() {
-	if (is_initialized_) {
-		shutdown();
+	if (!is_initialized_ || ran_game_loop_) {
+		return;
 	}
+
+	if (director_.has_pending_state()) {
+		director_.cleanup();
+		texture_repo_.clear();
+		texture_atlas_repo_.clear();
+	}
+
+	audio_.shutdown();
+	window_.shutdown();
+	is_initialized_ = false;
 }
 
 bool Aether::init(std::string_view game_title, size<int> game_resolution, int game_fps) {
@@ -37,7 +49,7 @@ bool Aether::init(std::string_view game_title, size<int> game_resolution, int ga
 	audio_.init();
 #endif
 
-	renderer_.disable_backface_culling();
+	renderer_.reset_render_state();
 
 #ifdef AETHER_DEBUG
 	infolog("Initialized");
@@ -52,6 +64,8 @@ void Aether::run() {
 #endif
 		return;
 	}
+
+	ran_game_loop_ = true;
 
 	while (window_.is_initialized_ && !window_.should_close()) {
 		audio_.update();
@@ -90,7 +104,7 @@ void Aether::shutdown() {
 	auto const start_time = util::timer::start();
 #endif
 
-	director_.try_cleanup();
+	director_.cleanup();
 	texture_repo_.clear();
 	texture_atlas_repo_.clear();
 	audio_.shutdown();
