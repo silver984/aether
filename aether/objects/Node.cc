@@ -1,7 +1,4 @@
 #include <aether/objects/Node.hh>
-#include <aether/systems/Context.hh>
-#include <aether/systems/Renderer.hh>
-#include <aether/systems/Window.hh>
 #include <aether/util/math.hh>
 #include <algorithm>
 #include <cmath>

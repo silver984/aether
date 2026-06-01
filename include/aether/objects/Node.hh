@@ -105,11 +105,9 @@ private:
 	[[nodiscard]] mat3 calculate_transform(std::weak_ptr<Node> parent) const;
 	[[nodiscard]] rgba calculate_combined_rgba(std::weak_ptr<Node> parent) const;
 
-	std::weak_ptr<Node> parent_;
 	std::vector<std::shared_ptr<Node>> children_;
+	std::weak_ptr<Node> parent_;
 	std::string name_;
-	rgba color_;
-	rgba combined_color_;
 	mat3 transform_;
 	size<std::uint32_t> bounds_;
 	vec2<float> position_;
@@ -118,6 +116,8 @@ private:
 	vec2<float> skew_; // degrees
 	float rotation_;   // degrees
 	float time_scale_;
+	rgba color_;
+	rgba combined_color_;
 	bool is_flip_x_;
 	bool is_flip_y_;
 	bool is_transform_dirty_;

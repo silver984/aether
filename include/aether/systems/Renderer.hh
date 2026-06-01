@@ -48,8 +48,8 @@ private:
 	void define_texture_coord(vec2<float> position) const;
 	mat3 calculate_transform(size<int> screen_size) const;
 
-	rgba background_rgba_;
 	mat3 transform_;
+	rgba background_rgba_;
 };
 
 } // namespace ae

@@ -28,8 +28,8 @@ protected:
 private:
 	static constexpr std::string_view TYPE_ = "Sprite";
 	std::shared_ptr<Texture> texture_;
-	rect<int> texture_source_rect_;
 	std::string const file_arg_;
+	rect<int> texture_source_rect_;
 };
 
 } // namespace ae

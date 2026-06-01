@@ -27,9 +27,9 @@ protected:
 private:
 	static constexpr std::string_view TYPE_ = "TileMap";
 	std::shared_ptr<Texture> texture_;
+	std::string const file_arg_;
 	rect<int> texture_source_rect_;
 	vec2<std::uint32_t> tile_index_;
-	std::string const file_arg_;
 	size<std::uint32_t> const tile_bounds_arg_;
 };
 

@@ -142,10 +142,10 @@ struct Audio::impl {
 		});
 	}
 
+	std::unordered_map<std::uint32_t, scoped_sound> active_sounds;
 	ma_engine engine;
 	std::uint32_t id_hint = 0;
-	std::unordered_map<std::uint32_t, scoped_sound> active_sounds;
-	bool is_initialized = false;
+	bool is_initialized   = false;
 };
 
 // private

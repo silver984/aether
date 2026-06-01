@@ -34,20 +34,20 @@ private:
 	[[nodiscard]] size<int> calculate_bounds(std::vector<texture_atlas::subtexture> const& subtextures) const;
 
 	static constexpr std::string_view TYPE_ = "AnimatedSprite";
-	std::shared_ptr<Texture> texture_;
 	std::shared_ptr<texture_atlas> texture_atlas_;
-	rect<int> texture_source_rect_;
-	vec2<int> current_subtexture_offsets_;
-	float subtexture_elapsed_;
-	std::size_t current_subtexture_index_;
-	bool animation_was_reset_;
-	bool is_current_animation_looping_;
-	bool is_current_subtexture_rotated_;
-	mat3 subtexture_transform_;
+	std::shared_ptr<Texture> texture_;
 	std::string current_animation_name_;
 	std::string const image_file_arg_;
 	std::string const data_file_arg_;
+	std::size_t current_subtexture_index_;
 	std::uint32_t playback_fps_;
+	rect<int> texture_source_rect_;
+	vec2<int> current_subtexture_offsets_;
+	mat3 subtexture_transform_;
+	float subtexture_elapsed_;
+	bool animation_was_reset_;
+	bool is_current_animation_looping_;
+	bool is_current_subtexture_rotated_;
 };
 
 } // namespace ae
