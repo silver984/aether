@@ -4,7 +4,10 @@
 
 namespace ae {
 
-Sound::Sound(Context const& ctx) : ctx_(ctx), id_(0) {}
+Sound::Sound(Context const& ctx)
+    : ctx_(ctx)
+    , id_(0) {}
+
 Sound::~Sound() = default;
 
 std::shared_ptr<Sound> Sound::create(Context const& ctx, std::string_view file) {

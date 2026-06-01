@@ -19,28 +19,28 @@ namespace ae::log {
 	#ifdef AETHER_VERBOSE_DEBUG
 template <typename... va>
 void trace(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "TRACE", fmt::color::dark_turquoise, loc);
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "TRC", fmt::color::dark_turquoise, loc);
 }
 
 template <typename... va>
 void debug(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "DEBUG", fmt::color::medium_violet_red, loc);
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "DBG", fmt::color::medium_violet_red, loc);
 }
 	#endif
 
 template <typename... va>
 void info(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "INFO", fmt::color::green_yellow, loc);
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "INF", fmt::color::green_yellow, loc);
 }
 
 template <typename... va>
 void warning(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "WARNING", fmt::color::gold, loc);
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "WRN", fmt::color::gold, loc);
 }
 
 template <typename... va>
 void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "ERROR", fmt::color::crimson, loc);
+	impl::print(fmt::format(fmt_str, std::forward<va>(args)...), "ERR", fmt::color::crimson, loc);
 }
 
 } // namespace ae::log

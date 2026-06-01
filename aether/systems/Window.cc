@@ -12,9 +12,9 @@
 namespace ae {
 
 // private
-Window::Window() : is_initialized_(false) {}
+Window::Window()
+    : is_initialized_(false) {}
 
-// private
 Window::~Window() = default;
 
 bool Window::should_close() const {

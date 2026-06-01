@@ -15,7 +15,8 @@ namespace ae {
 
 struct Audio::impl {
 	struct scoped_sound final {
-		scoped_sound(std::weak_ptr<Sound> owner_wref) : owner(std::move(owner_wref)) {
+		scoped_sound(std::weak_ptr<Sound> owner_wref)
+		    : owner(std::move(owner_wref)) {
 			memset(&sound, 0, sizeof(ma_sound));
 		}
 
@@ -149,7 +150,9 @@ struct Audio::impl {
 };
 
 // private
-Audio::Audio() : impl_(std::make_unique<impl>()) {}
+Audio::Audio()
+    : impl_(std::make_unique<impl>()) {}
+
 Audio::~Audio() = default;
 
 std::optional<std::uint32_t> Audio::generate_handle(std::shared_ptr<Sound> owner, std::string_view file) {

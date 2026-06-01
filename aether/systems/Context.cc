@@ -6,9 +6,16 @@ namespace ae {
 // private
 Context::Context(Window& window_ref, Audio& audio_ref, Renderer& renderer_ref, TextureRepo& texture_repo_ref,
                  TextureAtlasRepo& texture_atlas_repo_ref, Director& director_ref)
-    : window(window_ref), audio(audio_ref), renderer(renderer_ref), texture_repo(texture_repo_ref),
-      texture_atlas_repo(texture_atlas_repo_ref), director(director_ref), total_time_(0.f), frame_elapsed_(0.f),
-      frame_count_(0), running_fps_(0) {}
+    : window(window_ref)
+    , audio(audio_ref)
+    , renderer(renderer_ref)
+    , texture_repo(texture_repo_ref)
+    , texture_atlas_repo(texture_atlas_repo_ref)
+    , director(director_ref)
+    , total_time_(0.f)
+    , frame_elapsed_(0.f)
+    , frame_count_(0)
+    , running_fps_(0) {}
 
 // public
 Context::~Context() = default;

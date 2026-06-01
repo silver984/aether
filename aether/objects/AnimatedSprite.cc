@@ -13,8 +13,8 @@ namespace ae {
 
 AnimatedSprite::AnimatedSprite(Context const& ctx, descriptor desc)
     : NodeIdentity<AnimatedSprite>(ctx)
-    , image_file_arg_(std::string(desc.image_file))
-    , data_file_arg_(std::string(desc.data_file))
+    , image_file_arg_(desc.image_file)
+    , data_file_arg_(desc.data_file)
     , current_subtexture_index_(0)
     , playback_fps_(static_cast<std::uint32_t>(std::max(1, desc.fps)))
     , subtexture_transform_(mat3::identity())

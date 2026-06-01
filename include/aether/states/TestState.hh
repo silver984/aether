@@ -10,6 +10,7 @@ public:
 
 protected:
 	bool init() override;
+	void update(float dt) override;
 
 private:
 	static constexpr std::string_view TYPE_ = "TestState";

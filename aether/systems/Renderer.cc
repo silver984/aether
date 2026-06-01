@@ -23,7 +23,6 @@ Renderer::Renderer()
     : background_rgba_(0, 0, 0, 255)
     , transform_(mat3::identity()) {}
 
-// private
 Renderer::~Renderer() = default;
 
 void Renderer::set_background_rgba(rgba color) {
@@ -191,7 +190,7 @@ mat3 Renderer::calculate_transform(size<int> screen_size) const {
 
 	vec2<float> const scaled_size    = {screen_size.width * scale_factor, screen_size.height * scale_factor};
 	vec2<float> const offset         = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
-	vec2<float> const snapped_offset = {std::round(offset.x * 0.5f), std::round(offset.y * 0.5f)};
+	vec2<float> const snapped_offset = {std::round(offset.x / 2.f), std::round(offset.y / 2.f)};
 
 	mat3 const t   = mat3::translation(snapped_offset);
 	mat3 const s   = mat3::scale({scale_factor, scale_factor});
