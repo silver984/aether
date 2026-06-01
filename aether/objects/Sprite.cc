@@ -5,6 +5,7 @@
 #include <aether/systems/Context.hh>
 #include <aether/systems/Renderer.hh>
 #include <aether/systems/repos/TextureRepo.hh>
+#include <cmath>
 #include <raylib.h>
 
 namespace {

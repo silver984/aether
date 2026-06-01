@@ -13,13 +13,13 @@ namespace ae {
 TileMap::TileMap(Context const& ctx, descriptor desc)
     : NodeIdentity<TileMap>(ctx)
     , file_arg_(std::string(desc.file))
-    , tile_bounds_arg_(static_cast<size<std::uint32_t>>(util::math::max({1, 1}, desc.tile_bounds))) {}
+    , tile_bounds_arg_(static_cast<size<std::uint32_t>>(util::math::max({1, 1}, desc.tile_bounds)))
+    , has_antialiasing_(desc.has_antialiasing) {}
 
 TileMap::~TileMap() = default;
 
 void TileMap::toggle_antialiasing(bool val) const {
 	if (texture_) {
-		using enum TextureFilter;
 		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
