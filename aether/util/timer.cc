@@ -1,6 +1,6 @@
-#include <aether/util/timer.hh>
+#include <util/timer.hh>
 
-namespace ae::util::timer {
+namespace aether::util::timer {
 
 std::chrono::steady_clock::time_point start() {
 	return std::chrono::steady_clock::now();
@@ -12,4 +12,4 @@ long long end(std::chrono::steady_clock::time_point start) {
 	return ms.count();
 }
 
-} // namespace ae::util::timer
+} // namespace aether::util::timer

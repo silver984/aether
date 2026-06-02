@@ -1,15 +1,27 @@
-#include <aether/objects/Node.hh>
-#include <aether/util/math.hh>
 #include <algorithm>
 #include <cmath>
+#include <objects/Node.hh>
+#include <util/math.hh>
 
-namespace ae {
+namespace aether {
 
 Node::Node(Context const& ctx)
-    : ctx_(ctx), color_(255), combined_color_(color_), transform_(mat3::identity()), anchor_(0.5f, 0.5f),
-      scale_(1.f, 1.f), rotation_(0.f), time_scale_(1.f), is_flip_x_(false), is_flip_y_(false),
-      is_transform_dirty_(false), is_rgba_dirty_(false), is_active_(false), is_draw_enabled_(false), is_visible_(true),
-      is_initialized_(false) {}
+    : ctx_(ctx)
+    , color_(255)
+    , combined_color_(color_)
+    , transform_(mat3::identity())
+    , anchor_(0.5f, 0.5f)
+    , scale_(1.f, 1.f)
+    , rotation_(0.f)
+    , time_scale_(1.f)
+    , is_flip_x_(false)
+    , is_flip_y_(false)
+    , is_transform_dirty_(false)
+    , is_rgba_dirty_(false)
+    , is_active_(false)
+    , is_draw_enabled_(false)
+    , is_visible_(true)
+    , is_initialized_(false) {}
 
 Node::~Node() = default;
 

@@ -1,9 +1,9 @@
-#include <aether/objects/AnimatedSprite.hh>
-#include <aether/objects/PopupUI.hh>
-#include <aether/systems/Context.hh>
-#include <aether/systems/Window.hh>
+#include <Context.hh>
+#include <objects/AnimatedSprite.hh>
+#include <objects/PopupUI.hh>
+#include <services/Window.hh>
 
-namespace ae {
+namespace aether {
 
 PopupUI::PopupUI(Context const& ctx)
     : NodeIdentity<PopupUI>(ctx) {}
@@ -86,4 +86,4 @@ void PopupUI::set_area_animation(AnimatedSprite& area_sprite, int index) {
 	// }
 }
 
-} // namespace ae
+} // namespace aether

@@ -1,36 +1,30 @@
-#include <aether/objects/AnimatedSprite.hh>
-#include <aether/objects/abstract/Sound.hh>
-#include <aether/states/TestState.hh>
-#include <aether/systems/Context.hh>
-#include <aether/systems/Renderer.hh>
-#include <aether/systems/Window.hh>
+#include <Context.hh>
+#include <objects/AnimatedSprite.hh>
+#include <objects/abstract/Sound.hh>
+#include <services/Renderer.hh>
+#include <services/Window.hh>
+#include <states/TestState.hh>
 
-TestState::TestState(ae::Context const& ctx)
-    : ae::NodeIdentity<TestState>(ctx) {}
+using namespace aether;
+;
+
+TestState::TestState(Context const& ctx)
+    : NodeIdentity<TestState>(ctx) {}
 
 TestState::~TestState() = default;
 
 // protected
 bool TestState::init() {
-	if (auto animation = ae::Node::create<ae::AnimatedSprite>(
-	        ctx_, ae::AnimatedSprite::descriptor{.image_file = "resources/WhittyCrazy.png",
-	                                             .data_file  = "resources/WhittyCrazy.xml",
-	                                             .fps        = 24})) {
-		animation->play_anim("Whitty idle dance", {.loop = true});
-		animation->set_position({800.f, 300.f});
-		add_child(animation);
-	}
-
-	if (auto animation = ae::Node::create<ae::AnimatedSprite>(
-	        ctx_, ae::AnimatedSprite::descriptor{.image_file = "resources/spooky_dark.png",
-	                                             .data_file  = "resources/spooky_dark.xml",
-	                                             .fps        = 24})) {
-		animation->play_anim("spooky dance idle", {.loop = true});
+	if (auto animation =
+	        Node::create<AnimatedSprite>(ctx_, AnimatedSprite::descriptor{.image_file = "resources/spooky_dark.png",
+	                                                                      .data_file  = "resources/spooky_dark.xml",
+	                                                                      .fps        = 24})) {
+		animation->play_animation("spooky dance idle", {.loop = true});
 		animation->set_position({400.f, 400.f});
 		add_child(animation);
 	}
 
-	if (auto sound = ae::Sound::create(ctx_, "resources/Inst.mp3")) {
+	if (auto sound = Sound::create(ctx_, "resources/Inst.mp3")) {
 		sound->play();
 	}
 

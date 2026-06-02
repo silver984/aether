@@ -1,8 +1,8 @@
-#include <aether/util/as_raylib.hh>
 #include <cmath>
 #include <raylib.h>
+#include <util/as_raylib.hh>
 
-namespace ae::util::rl {
+namespace aether::util::rl {
 
 Vector2 as_vector2(vec2<float> vec2) {
 	return {vec2.x, vec2.y};
@@ -29,4 +29,4 @@ Rectangle as_rectangle(rect<float> rectangle) {
 	return {rectangle.x, rectangle.y, rectangle.width, rectangle.height};
 }
 
-} // namespace ae::util::rl
+} // namespace aether::util::rl

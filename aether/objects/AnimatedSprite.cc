@@ -1,15 +1,15 @@
 #ifdef AETHER_DEBUG
-	#include <aether/debug/log.hh>
+	#include <log.hh>
 #endif
-#include <aether/objects/AnimatedSprite.hh>
-#include <aether/systems/Context.hh>
-#include <aether/systems/Renderer.hh>
-#include <aether/systems/repos/TextureAtlasRepo.hh>
-#include <aether/systems/repos/TextureRepo.hh>
-#include <aether/util/math.hh>
+#include <Context.hh>
+#include <objects/AnimatedSprite.hh>
 #include <raylib.h>
+#include <services/Renderer.hh>
+#include <services/resource/AnimationRepo.hh>
+#include <services/resource/TextureRepo.hh>
+#include <util/math.hh>
 
-namespace ae {
+namespace aether {
 
 AnimatedSprite::AnimatedSprite(Context const& ctx, descriptor desc)
     : NodeIdentity<AnimatedSprite>(ctx)
@@ -32,24 +32,24 @@ void AnimatedSprite::toggle_antialiasing(bool val) const {
 	}
 }
 
-bool AnimatedSprite::play_anim(std::string_view animation_name) {
-	if (!texture_atlas_) {
+bool AnimatedSprite::play_animation(std::string_view name) {
+	if (!data_) {
 #ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Attempted to play animation with nullptr texture atlas");
+		debuglog("Attempted to play animation with nullptr data");
 #endif
 		return false;
 	}
 
-	if (!texture_atlas_->animations.contains(animation_name)) {
+	if (!data_->contains(name)) {
 #ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Attempted to play animation not found from texture atlas | name: \"{}\"", animation_name);
+		debuglog("Attempted to play animation not found from data | name: \"{}\"", name);
 #endif
 		return false;
 	}
 
 	// just to avoid string construction when not needed
-	if (current_animation_name_ != animation_name) {
-		current_animation_name_ = std::string(animation_name);
+	if (current_animation_name_ != name) {
+		current_animation_name_ = std::string(name);
 		animation_was_reset_    = true;
 	}
 
@@ -60,8 +60,8 @@ bool AnimatedSprite::play_anim(std::string_view animation_name) {
 	return true;
 }
 
-bool AnimatedSprite::play_anim(std::string_view animation_name, anim_options options) {
-	if (!play_anim(animation_name)) {
+bool AnimatedSprite::play_animation(std::string_view name, animation_options options) {
+	if (!play_animation(name)) {
 		return false;
 	}
 
@@ -72,33 +72,6 @@ bool AnimatedSprite::play_anim(std::string_view animation_name, anim_options opt
 	}
 
 	return true;
-}
-
-std::vector<std::string> AnimatedSprite::animation_names() const {
-	if (!texture_atlas_ || texture_atlas_->animations.empty()) {
-		return {};
-	}
-
-	std::vector<std::string> animation_names;
-	animation_names.reserve(texture_atlas_->animations.size());
-
-	for (auto const& [name, _] : texture_atlas_->animations) {
-		animation_names.emplace_back(name);
-	}
-
-	return animation_names;
-}
-
-std::string_view AnimatedSprite::current_animation_name() const {
-	return current_animation_name_;
-}
-
-std::size_t AnimatedSprite::current_subtexture_index() const {
-	return current_subtexture_index_;
-}
-
-std::uint32_t AnimatedSprite::playback_fps() const {
-	return playback_fps_;
 }
 
 // protected
@@ -112,16 +85,16 @@ bool AnimatedSprite::init() {
 		return false;
 	}
 
-	texture_atlas_ = ctx_.texture_atlas_repo.fetch(data_file_arg_);
+	data_ = ctx_.texture_atlas_repo.fetch(data_file_arg_);
 
-	if (!texture_atlas_) {
+	if (!data_) {
 #ifdef AETHER_DEBUG
-		errorlog("Failed | nullptr texture atlas");
+		errorlog("Failed | nullptr data");
 #endif
 		return false;
 	}
 
-	if (texture_atlas_->animations.empty()) {
+	if (data_->empty()) {
 #ifdef AETHER_DEBUG
 		errorlog("Failed | no valid frames");
 #endif
@@ -129,12 +102,12 @@ bool AnimatedSprite::init() {
 	}
 
 	// set default animation
-	auto const first_animation     = texture_atlas_->animations.begin();
-	auto const& first_subtexture   = first_animation->second.front();
+	auto const first_animation     = data_->begin();
+	auto const& first_frame        = first_animation->second.frames.front();
 	current_animation_name_        = first_animation->first;
-	is_current_subtexture_rotated_ = first_subtexture.is_rotated;
-	texture_source_rect_           = static_cast<rect<float>>(first_subtexture.source_rect);
-	current_subtexture_offsets_    = static_cast<vec2<float>>(first_subtexture.offsets);
+	is_current_subtexture_rotated_ = first_frame.is_rotated;
+	texture_source_rect_           = static_cast<rect<float>>(first_frame.source_rect);
+	current_subtexture_offsets_    = static_cast<vec2<float>>(first_frame.offsets);
 	animation_was_reset_           = true;
 
 	toggle_antialiasing(has_antialiasing_arg_);
@@ -183,34 +156,34 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 
 // private
 void AnimatedSprite::progress_frame() {
-	if (!texture_atlas_ || texture_atlas_->animations.empty()) {
+	if (!data_ || data_->empty()) {
 		return;
 	}
 
-	auto const& current_animation = texture_atlas_->animations[current_animation_name_];
-	set_bounds(calculate_bounds(current_animation));
+	auto const& frames = (*data_)[current_animation_name_].frames;
+	set_bounds(calculate_bounds(frames));
 
 	if (is_current_animation_looping_) {
-		current_subtexture_index_ = (current_subtexture_index_ + 1) % current_animation.size();
+		current_subtexture_index_ = (current_subtexture_index_ + 1) % frames.size();
 	} else {
-		current_subtexture_index_ = std::min(current_subtexture_index_ + 1, current_animation.size() - 1);
+		current_subtexture_index_ = std::min(current_subtexture_index_ + 1, frames.size() - 1);
 	}
 
-	auto const& current_subtexture = current_animation[current_subtexture_index_];
-	is_current_subtexture_rotated_ = current_subtexture.is_rotated;
-	texture_source_rect_           = static_cast<rect<float>>(current_subtexture.source_rect);
-	current_subtexture_offsets_    = static_cast<vec2<float>>(current_subtexture.offsets);
+	auto const& current_frame      = frames[current_subtexture_index_];
+	is_current_subtexture_rotated_ = current_frame.is_rotated;
+	texture_source_rect_           = static_cast<rect<float>>(current_frame.source_rect);
+	current_subtexture_offsets_    = static_cast<vec2<float>>(current_frame.offsets);
 }
 
 // private
-size<int> AnimatedSprite::calculate_bounds(std::vector<texture_atlas::subtexture> const& subtextures) const {
+size<int> AnimatedSprite::calculate_bounds(std::vector<atlas_region> const& frames) const {
 	size<int> ret;
 
-	for (auto const& subtexture : subtextures) {
-		size<int> const lbounds = subtexture.source_rect.bounds<int>();
-		vec2<int> const offsets = util::math::abs(subtexture.offsets);
+	for (auto const& frame : frames) {
+		size<int> const lbounds = frame.source_rect.bounds<int>();
+		vec2<int> const offsets = util::math::abs(frame.offsets);
 
-		if (subtexture.is_rotated) {
+		if (frame.is_rotated) {
 			ret = util::math::max(ret, util::math::switch_sides(lbounds) + offsets);
 			continue;
 		}

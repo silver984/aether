@@ -20,7 +20,7 @@ add_subdirectory(external)
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.h.in
-    ${CMAKE_CURRENT_BINARY_DIR}/generated/aether/version.h
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
     @ONLY
 )
 

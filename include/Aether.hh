@@ -1,0 +1,42 @@
+#pragma once
+#include <Context.hh>
+#include <math_types/size.hh>
+#include <memory>
+#include <services/Audio.hh>
+#include <services/Director.hh>
+#include <services/Renderer.hh>
+#include <services/Window.hh>
+#include <services/resource/AnimationRepo.hh>
+#include <services/resource/TextureRepo.hh>
+#include <string_view>
+
+namespace aether {
+
+class Aether final {
+public:
+	Aether();
+	~Aether();
+	Aether(Aether const&)            = delete;
+	Aether(Aether&&)                 = delete;
+	Aether& operator=(Aether const&) = delete;
+	Aether& operator=(Aether&&)      = delete;
+
+	bool init(std::string_view game_title, size<int> game_resolution, int game_fps);
+	void run();
+	[[nodiscard]] Context const& context();
+
+private:
+	void shutdown();
+
+	Window window_;
+	Audio audio_;
+	Renderer renderer_;
+	Director director_;
+	TextureRepo texture_repo_;
+	AnimationRepo texture_atlas_repo_;
+	Context ctx_;
+	bool ran_game_loop_;
+	bool is_initialized_;
+};
+
+} // namespace ae

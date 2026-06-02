@@ -1,8 +1,8 @@
-#include <aether/objects/abstract/Sound.hh>
-#include <aether/systems/Audio.hh>
-#include <aether/systems/Context.hh>
+#include <Context.hh>
+#include <objects/abstract/Sound.hh>
+#include <services/Audio.hh>
 
-namespace ae {
+namespace aether {
 
 Sound::Sound(Context const& ctx)
     : ctx_(ctx)

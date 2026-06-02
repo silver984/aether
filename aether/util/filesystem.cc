@@ -1,11 +1,11 @@
 #ifdef AETHER_DEBUG
-	#include <aether/debug/log.hh>
+	#include <log.hh>
 #endif
-#include <aether/util/filesystem.hh>
 #include <algorithm>
 #include <cstdint>
+#include <util/filesystem.hh>
 
-namespace ae::util::fs {
+namespace aether::util::fs {
 
 std::optional<std::filesystem::path> normalized_filepath(std::string_view str) {
 	try {
@@ -31,4 +31,4 @@ std::string file_extension(std::filesystem::path const& file_path) {
 	return extension;
 }
 
-} // namespace ae::util::fs
+} // namespace aether::util::fs

@@ -1,12 +1,12 @@
 #ifdef AETHER_DEBUG
-	#include <aether/debug/log.hh>
+	#include <log.hh>
 #endif
-#include <aether/objects/Sprite.hh>
-#include <aether/systems/Context.hh>
-#include <aether/systems/Renderer.hh>
-#include <aether/systems/repos/TextureRepo.hh>
+#include <Context.hh>
 #include <cmath>
+#include <objects/Sprite.hh>
 #include <raylib.h>
+#include <services/Renderer.hh>
+#include <services/resource/TextureRepo.hh>
 
 namespace {
 
@@ -16,7 +16,7 @@ int round_int_cast(float val) {
 
 } // namespace
 
-namespace ae {
+namespace aether {
 
 Sprite::Sprite(Context const& ctx, descriptor desc)
     : NodeIdentity<Sprite>(ctx)

@@ -1,12 +1,12 @@
-#include <aether/Aether.hh>
+#include <Aether.hh>
 #ifdef AETHER_DEBUG
-	#include <aether/debug/log.hh>
+	#include <log.hh>
 #endif
-#include <aether/math_types/vec2.hh>
-#include <aether/util/timer.hh>
 #include <cstdint>
+#include <math_types/vec2.hh>
+#include <util/timer.hh>
 
-namespace ae {
+namespace aether {
 
 Aether::Aether()
     : ctx_(window_, audio_, renderer_, texture_repo_, texture_atlas_repo_, director_)

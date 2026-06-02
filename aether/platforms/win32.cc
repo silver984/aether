@@ -1,7 +1,7 @@
-#include <aether/platforms/win32.hh>
+#include <platforms/win32.hh>
 #include <windows.h>
 
-namespace ae::win32 {
+namespace aether::win32 {
 
 bool enable_console_colors() {
 	HANDLE h_out = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -23,4 +23,4 @@ bool enable_console_colors() {
 	return true;
 }
 
-} // namespace ae::win32
+} // namespace aether::win32

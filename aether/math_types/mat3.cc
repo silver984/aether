@@ -1,10 +1,11 @@
-#include <aether/math_types/mat3.hh>
 #include <cmath>
 #include <cstddef>
+#include <math_types/mat3.hh>
 
-namespace ae {
+namespace aether {
 
-mat3::mat3() : m{{1.f, 0.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f, 1.f}} {}
+mat3::mat3()
+    : m{{1.f, 0.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f, 1.f}} {}
 
 mat3::mat3(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22)
     : m{{m00, m01, m02}, {m10, m11, m12}, {m20, m21, m22}} {}

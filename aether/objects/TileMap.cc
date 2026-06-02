@@ -1,14 +1,14 @@
 #ifdef AETHER_DEBUG
-	#include <aether/debug/log.hh>
+	#include <log.hh>
 #endif
-#include <aether/objects/TileMap.hh>
-#include <aether/systems/Context.hh>
-#include <aether/systems/Renderer.hh>
-#include <aether/systems/repos/TextureRepo.hh>
-#include <aether/util/math.hh>
+#include <Context.hh>
+#include <objects/TileMap.hh>
 #include <raylib.h>
+#include <services/Renderer.hh>
+#include <services/resource/TextureRepo.hh>
+#include <util/math.hh>
 
-namespace ae {
+namespace aether {
 
 TileMap::TileMap(Context const& ctx, descriptor desc)
     : NodeIdentity<TileMap>(ctx)
