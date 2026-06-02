@@ -10,14 +10,14 @@ class Audio;
 class Renderer;
 class TextureRepository;
 class AnimationRepository;
-class Director;
+class SceneScheduler;
 
 class Context final {
 	friend class Aether;
 
 private:
 	Context(Window& window_ref, Audio& audio_ref, Renderer& renderer_ref, TextureRepository& texture_repo_ref,
-	        AnimationRepository& texture_atlas_repo_ref, Director& director_ref);
+	        AnimationRepository& texture_atlas_repo_ref, SceneScheduler& director_ref);
 
 public:
 	~Context();
@@ -36,7 +36,7 @@ public:
 	Renderer& renderer;
 	TextureRepository& texture_repo;
 	AnimationRepository& texture_atlas_repo;
-	Director& director;
+	SceneScheduler& director;
 
 private:
 	void update_frame_ctx();

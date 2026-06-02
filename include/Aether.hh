@@ -3,8 +3,8 @@
 #include <math/size.hh>
 #include <memory>
 #include <services/Audio.hh>
-#include <services/Director.hh>
 #include <services/Renderer.hh>
+#include <services/SceneScheduler.hh>
 #include <services/Window.hh>
 #include <services/resource/AnimationRepository.hh>
 #include <services/resource/TextureRepository.hh>
@@ -38,7 +38,7 @@ private:
 	Window window_;
 	Audio audio_;
 	Renderer renderer_;
-	Director director_;
+	SceneScheduler director_;
 	TextureRepository texture_repo_;
 	AnimationRepository texture_atlas_repo_;
 	Context ctx_;

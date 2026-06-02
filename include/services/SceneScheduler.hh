@@ -6,18 +6,18 @@ namespace aether {
 
 class Aether;
 
-class Director final {
+class SceneScheduler final {
 	friend class Aether;
 
 private:
-	Director();
+	SceneScheduler();
 
 public:
-	~Director();
-	Director(Director const&)            = delete;
-	Director(Director&&)                 = delete;
-	Director& operator=(Director const&) = delete;
-	Director& operator=(Director&&)      = delete;
+	~SceneScheduler();
+	SceneScheduler(SceneScheduler const&)            = delete;
+	SceneScheduler(SceneScheduler&&)                 = delete;
+	SceneScheduler& operator=(SceneScheduler const&) = delete;
+	SceneScheduler& operator=(SceneScheduler&&)      = delete;
 
 	void switch_state(std::shared_ptr<Node>&& new_state);
 

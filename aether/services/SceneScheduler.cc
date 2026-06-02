@@ -2,17 +2,17 @@
 	#include <log.hh>
 #endif
 #include <Context.hh>
-#include <services/Director.hh>
+#include <services/SceneScheduler.hh>
 #include <util/timer.hh>
 #include <utility>
 
 namespace aether {
 
 // private
-Director::Director()  = default;
-Director::~Director() = default;
+SceneScheduler::SceneScheduler()  = default;
+SceneScheduler::~SceneScheduler() = default;
 
-void Director::switch_state(std::shared_ptr<Node>&& new_state) {
+void SceneScheduler::switch_state(std::shared_ptr<Node>&& new_state) {
 	if (!new_state) {
 #ifdef AETHER_DEBUG
 		errorlog("Can't switch to nullptr state");
@@ -28,13 +28,13 @@ void Director::switch_state(std::shared_ptr<Node>&& new_state) {
 }
 
 // private
-void Director::cleanup() {
+void SceneScheduler::cleanup() {
 	current_state_.reset();
 	pending_state_.reset();
 }
 
 // private
-void Director::update_current_state(float dt) {
+void SceneScheduler::update_current_state(float dt) {
 	if (pending_state_) {
 		current_state_ = std::move(pending_state_);
 	}
@@ -45,14 +45,14 @@ void Director::update_current_state(float dt) {
 }
 
 // private
-void Director::draw_current_state() {
+void SceneScheduler::draw_current_state() {
 	if (current_state_) {
 		current_state_->base_draw();
 	}
 }
 
 // private
-bool Director::has_pending_state() const {
+bool SceneScheduler::has_pending_state() const {
 	return pending_state_ != nullptr;
 }
 

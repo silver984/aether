@@ -15,11 +15,11 @@
 
 namespace aether {
 
-class Director;
+class SceneScheduler;
 class Context;
 
 class Node : public std::enable_shared_from_this<Node> {
-	friend class Director;
+	friend class SceneScheduler;
 
 public:
 	Node(Context const& ctx);
