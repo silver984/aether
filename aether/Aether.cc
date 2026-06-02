@@ -3,7 +3,7 @@
 	#include <log.hh>
 #endif
 #include <cstdint>
-#include <math_types/vec2.hh>
+#include <math/vec2.hh>
 #include <util/timer.hh>
 
 namespace aether {
@@ -101,7 +101,7 @@ Context const& Aether::context() {
 void Aether::shutdown() {
 #ifdef AETHER_DEBUG
 	infolog("Shutting down");
-	auto const start_time = util::timer::start();
+	auto const start_time = util::start();
 #endif
 
 	director_.cleanup();
@@ -112,7 +112,7 @@ void Aether::shutdown() {
 	is_initialized_ = false;
 
 #ifdef AETHER_DEBUG
-	auto const end_time = util::timer::end(start_time);
+	auto const end_time = util::end(start_time);
 	infolog("Done | took {}ms", end_time);
 #endif
 }

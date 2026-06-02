@@ -7,7 +7,7 @@
 <div align="center">
     <a href="https://github.com/silver984/aether/actions"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/silver984/aether/multi-platform.yml?style=for-the-badge&label=build"></a>
     <img alt="Repo size" src="https://img.shields.io/github/repo-size/silver984/aether?style=for-the-badge">
-    <img alt="Supported platforms" src="https://img.shields.io/badge/supported_platforms-windows,_linux,_macOS-red?style=for-the-badge">
+    <img alt="Supported platforms" src="https://img.shields.io/badge/supported_platforms-windows,_linux,_macOS-blue?style=for-the-badge">
 </div>
 
 ## What's Friday Night Funkin?

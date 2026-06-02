@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <graphic/animation_map.hh>
-#include <math_types/rect.hh>
+#include <math/rect.hh>
 #include <objects/Node.hh>
 #include <optional>
 

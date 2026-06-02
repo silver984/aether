@@ -168,12 +168,14 @@ std::string_view Node::type() const {
 }
 
 void Node::set_bounds(size<int> val) {
-	size<std::uint32_t> const val_ui32 = static_cast<size<std::uint32_t>>(util::math::max({}, val));
-	if (bounds_ == val_ui32) {
+	val                               = util::max({}, val);
+	size<std::uint32_t> const valui32 = static_cast<size<std::uint32_t>>(val);
+
+	if (bounds_ == valui32) {
 		return;
 	}
 
-	bounds_ = val_ui32;
+	bounds_ = valui32;
 	mark_transform_dirty();
 }
 
@@ -225,7 +227,7 @@ void Node::set_anchor(vec2<float> val) {
 		return;
 	}
 
-	anchor_ = util::math::clamp(val, {}, {1.f, 1.f});
+	anchor_ = util::clamp(val, {}, {1.f, 1.f});
 	mark_transform_dirty();
 }
 
@@ -313,7 +315,9 @@ rgba Node::color() const {
 }
 
 void Node::set_alpha(float val) {
-	std::uint8_t valui8 = static_cast<std::uint8_t>(std::round(255.f * std::clamp(val, 0.f, 1.f)));
+	val                       = 255.f * std::clamp(val, 0.f, 1.f);
+	std::uint8_t const valui8 = static_cast<std::uint8_t>(std::round(val));
+
 	if (color_.a == valui8) {
 		return;
 	}
@@ -506,11 +510,11 @@ void Node::mark_rgba_dirty() {
 // private
 mat3 Node::calculate_transform(std::weak_ptr<Node> parent) const {
 	vec2<float> const anchor_position = {anchor_.x * bounds_.width, anchor_.y * bounds_.height};
-	vec2<float> const skew_rad     = {util::math::degrees_to_radians(skew_.x), util::math::degrees_to_radians(skew_.y)};
-	vec2<float> const scale_factor = {is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f};
+	vec2<float> const skew_rad        = {util::degrees_to_radians(skew_.x), util::degrees_to_radians(skew_.y)};
+	vec2<float> const scale_factor    = {is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f};
 
 	mat3 const t     = mat3::translation(position_);
-	mat3 const r     = mat3::rotation(util::math::degrees_to_radians(rotation_));
+	mat3 const r     = mat3::rotation(util::degrees_to_radians(rotation_));
 	mat3 const s     = mat3::scale(scale_ * scale_factor);
 	mat3 const k     = mat3::skew(skew_rad);
 	mat3 const a     = mat3::translation(-anchor_position);
@@ -532,4 +536,4 @@ rgba Node::calculate_combined_rgba(std::weak_ptr<Node> parent) const {
 	return color_;
 }
 
-} // namespace ae
+} // namespace aether

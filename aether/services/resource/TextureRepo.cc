@@ -32,7 +32,7 @@ TextureRepo::~TextureRepo() = default;
 std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	std::filesystem::path lfile;
 
-	if (auto const optional_file = util::fs::normalized_filepath(file); optional_file.has_value()) {
+	if (auto const optional_file = util::normalized_filepath(file); optional_file.has_value()) {
 		lfile = optional_file.value();
 	} else {
 #ifdef AETHER_VERBOSE_DEBUG
@@ -45,8 +45,8 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 		return from_cache;
 	}
 
-	if (auto const file_extension = util::fs::file_extension(lfile);
-	    !util::str::string_matches_any(file_extension, {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".dds"})) {
+	if (auto const file_extension = util::file_extension(lfile);
+	    !util::string_matches_any(file_extension, {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".dds"})) {
 #ifdef AETHER_DEBUG
 		errorlog("Unsupported file format | file: \"{}\"", lfile.filename().string());
 #endif
@@ -57,7 +57,7 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 
 #ifdef AETHER_VERBOSE_DEBUG
 	debuglog("Loading \"{}\"", lfile.filename().string());
-	auto const start_time = util::timer::start();
+	auto const start_time = util::start();
 #endif
 
 	Texture temporary_texture = LoadTexture(lfile.string().c_str());
@@ -80,7 +80,7 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_texture));
 
 #ifdef AETHER_VERBOSE_DEBUG
-	auto const end_time = util::timer::end(start_time);
+	auto const end_time = util::end(start_time);
 	tracelog("Successfully inserted to cache | cache size: {}", cache_.size());
 	debuglog("Done | took {}ms", end_time);
 #endif

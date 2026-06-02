@@ -1,15 +1,15 @@
 #pragma once
 #include <cstddef>
-#include <math_types/math_type.hh>
-#include <math_types/numeric_type.hh>
+#include <math/numeric.hh>
+#include <math/operators.hh>
 
 namespace aether {
 
-template <numeric_type T>
+template <numeric T>
 struct vec2;
 
-template <numeric_type T>
-struct size final : math_type<size, T, 2> {
+template <numeric T>
+struct size final : operators<size, T, 2> {
 	constexpr size() = default;
 	constexpr size(T v)
 	    : width(v)
@@ -18,7 +18,7 @@ struct size final : math_type<size, T, 2> {
 	    : width(width_val)
 	    , height(height_val) {}
 
-	template <numeric_type U>
+	template <numeric U>
 	[[nodiscard]] constexpr operator vec2<U>() const {
 		return {static_cast<U>(width), static_cast<U>(height)};
 	}
@@ -35,4 +35,4 @@ struct size final : math_type<size, T, 2> {
 	T height = T{0};
 };
 
-} // namespace ae
+} // namespace aether

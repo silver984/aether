@@ -40,7 +40,7 @@ struct Audio::impl {
 
 		std::filesystem::path lfile;
 
-		if (auto const optional_file = util::fs::normalized_filepath(file); optional_file.has_value()) {
+		if (auto const optional_file = util::normalized_filepath(file); optional_file.has_value()) {
 			lfile = optional_file.value();
 		} else {
 #ifdef AETHER_DEBUG
@@ -51,7 +51,7 @@ struct Audio::impl {
 
 #ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Generating audio handle | file: \"{}\"", lfile.filename().string());
-		auto const start_time = util::timer::start();
+		auto const start_time = util::start();
 #endif
 
 		auto [iterator, _] = active_sounds.emplace(id_hint, owner);
@@ -67,7 +67,7 @@ struct Audio::impl {
 		}
 
 #ifdef AETHER_VERBOSE_DEBUG
-		auto const end_time = util::timer::end(start_time);
+		auto const end_time = util::end(start_time);
 		ma_uint64 pcm_frames;
 		ma_sound_get_length_in_pcm_frames(&iterator->second.sound, &pcm_frames);
 		tracelog("Successful generation | handle owner: {} | pcm frames: {}", fmt::ptr(owner.get()), pcm_frames);

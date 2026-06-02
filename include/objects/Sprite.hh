@@ -1,5 +1,5 @@
 #pragma once
-#include <math_types/rect.hh>
+#include <math/rect.hh>
 #include <objects/Node.hh>
 
 struct Texture;

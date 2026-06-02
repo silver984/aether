@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include <math_types/size.hh>
+#include <math/size.hh>
 #include <string>
 #include <string_view>
 #include <vector>

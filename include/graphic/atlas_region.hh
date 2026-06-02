@@ -1,6 +1,6 @@
 #pragma once
-#include <math_types/rect.hh>
-#include <math_types/vec2.hh>
+#include <math/rect.hh>
+#include <math/vec2.hh>
 
 namespace aether {
 

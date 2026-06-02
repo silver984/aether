@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <util/filesystem.hh>
 
-namespace aether::util::fs {
+namespace aether::util {
 
 std::optional<std::filesystem::path> normalized_filepath(std::string_view str) {
 	try {
@@ -31,4 +31,4 @@ std::string file_extension(std::filesystem::path const& file_path) {
 	return extension;
 }
 
-} // namespace aether::util::fs
+} // namespace aether::util

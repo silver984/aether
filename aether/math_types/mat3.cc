@@ -1,6 +1,6 @@
 #include <cmath>
 #include <cstddef>
-#include <math_types/mat3.hh>
+#include <math/mat3.hh>
 
 namespace aether {
 

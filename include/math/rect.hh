@@ -1,18 +1,18 @@
 #pragma once
 #include <cstddef>
-#include <math_types/math_type.hh>
-#include <math_types/numeric_type.hh>
+#include <math/numeric.hh>
+#include <math/operators.hh>
 
 namespace aether {
 
-template <numeric_type T>
+template <numeric T>
 struct vec2;
 
-template <numeric_type T>
+template <numeric T>
 struct size;
 
-template <numeric_type T>
-struct rect final : math_type<rect, T, 4> {
+template <numeric T>
+struct rect final : operators<rect, T, 4> {
 	constexpr rect() = default;
 	constexpr rect(T val)
 	    : x(val)
@@ -25,12 +25,12 @@ struct rect final : math_type<rect, T, 4> {
 	    , width(width_val)
 	    , height(height_val) {}
 
-	template <numeric_type U>
+	template <numeric U>
 	[[nodiscard]] constexpr vec2<U> position() const {
 		return {static_cast<U>(x), static_cast<U>(y)};
 	}
 
-	template <numeric_type U>
+	template <numeric U>
 	[[nodiscard]] constexpr size<U> bounds() const {
 		return {static_cast<U>(width), static_cast<U>(height)};
 	};
@@ -59,4 +59,4 @@ struct rect final : math_type<rect, T, 4> {
 	T height = T{0};
 };
 
-} // namespace ae
+} // namespace aether

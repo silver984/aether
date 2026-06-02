@@ -5,6 +5,6 @@
 namespace aether {
 
 template <typename T>
-concept numeric_type = std::is_arithmetic_v<T>;
+concept numeric = std::is_arithmetic_v<T>;
 
 }

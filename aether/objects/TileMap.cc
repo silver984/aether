@@ -13,7 +13,7 @@ namespace aether {
 TileMap::TileMap(Context const& ctx, descriptor desc)
     : NodeIdentity<TileMap>(ctx)
     , file_arg_(std::string(desc.file))
-    , tile_bounds_arg_(static_cast<size<std::uint32_t>>(util::math::max({1, 1}, desc.tile_bounds)))
+    , tile_bounds_arg_(static_cast<size<std::uint32_t>>(util::max({1, 1}, desc.tile_bounds)))
     , has_antialiasing_(desc.has_antialiasing) {}
 
 TileMap::~TileMap() = default;
@@ -41,7 +41,7 @@ void TileMap::seek_tile(vec2<int> tile_index) {
 	}
 
 	tile_index_ =
-	    static_cast<vec2<std::uint32_t>>(util::math::clamp(tile_index, {}, static_cast<vec2<int>>(tile_count()) - 1));
+	    static_cast<vec2<std::uint32_t>>(util::clamp(tile_index, {}, static_cast<vec2<int>>(tile_count()) - 1));
 	texture_source_rect_.x = static_cast<float>(tile_bounds_arg_.width * tile_index_.x);
 	texture_source_rect_.y = static_cast<float>(tile_bounds_arg_.height * tile_index_.y);
 }

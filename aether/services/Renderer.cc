@@ -113,7 +113,7 @@ void Renderer::start_draw(Window& window) {
 	BeginDrawing();
 	auto lrender_bounds = render_bounds();
 	BeginScissorMode(0, 0, lrender_bounds.width, lrender_bounds.height);
-	ClearBackground(util::rl::as_color(background_rgba_));
+	ClearBackground(util::as_color(background_rgba_));
 
 	if (window.was_resized()) {
 		transform_ = calculate_transform(window.screen_size());
@@ -159,13 +159,13 @@ void Renderer::reset_render_state() const {
 // private
 void Renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
-	Matrix m = util::rl::as_matrix(matrix);
+	Matrix m = util::as_matrix(matrix);
 	rlMultMatrixf(MatrixToFloat(m));
 }
 
 // private
 void Renderer::define_color_vertex(rgba color) const {
-	Color v = util::rl::as_color(color);
+	Color v = util::as_color(color);
 	rlColor4ub(v.r, v.g, v.b, v.a);
 }
 

@@ -2,10 +2,10 @@
 #include <concepts>
 #include <cstddef>
 #include <cstdint>
-#include <math_types/mat3.hh>
-#include <math_types/rgba.hh>
-#include <math_types/size.hh>
-#include <math_types/vec2.hh>
+#include <math/mat3.hh>
+#include <math/rgba.hh>
+#include <math/size.hh>
+#include <math/vec2.hh>
 #include <memory>
 #include <string>
 #include <string_view>
