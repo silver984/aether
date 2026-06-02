@@ -1,9 +1,7 @@
-name: Build AetherEngine
+name: Build Aether Engine
 
 on:
-  push:
-    branches:
-      - "**"
+  workflow_dispatch:
   pull_request:
 
 jobs:
@@ -22,7 +20,7 @@ jobs:
           - os: Windows
             runner: windows-latest
             cmake_preset: debug-verbose
-            
+
           - os: Windows
             runner: windows-latest
             cmake_preset: release
@@ -87,7 +85,7 @@ jobs:
               print(f'{major}.{minor}.{patch}')
           ")
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          
+
       - name: Extract git hash
         id: git
         shell: bash
@@ -101,7 +99,7 @@ jobs:
       - name: Setup MSVC (Windows MSVC builds)
         if: runner.os == 'Windows' && !matrix.use_mingw
         uses: ilammy/msvc-dev-cmd@v1
-      
+
       # MSYS2 setup (Windows MinGW builds)
       - name: Setup MSYS2 (Windows MinGW builds)
         if: runner.os == 'Windows' && matrix.use_mingw
