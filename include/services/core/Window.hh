@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
+#include <functional>
 #include <math/size.hh>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -28,18 +30,20 @@ public:
 	Window& operator=(Window const&) = delete;
 	Window& operator=(Window&&)      = delete;
 
+	void on_resize(std::weak_ptr<std::function<void(Window&)>> callback);
 	[[nodiscard]] bool should_close() const;
 	[[nodiscard]] bool is_minimized() const;
-	[[nodiscard]] bool was_resized() const;
 	[[nodiscard]] std::string_view title() const;
-	[[nodiscard]] size<int> screen_size() const;
+	[[nodiscard]] size<std::uint32_t> default_size() const;
 
 private:
 	bool init(init_descriptor desc);
 	void shutdown();
+	void update();
 
+	std::vector<std::weak_ptr<std::function<void(Window&)>>> on_resize_callbacks_;
 	std::string title_;
-	size<int> screen_size_;
+	size<std::uint32_t> default_size_;
 	bool is_initialized_;
 };
 

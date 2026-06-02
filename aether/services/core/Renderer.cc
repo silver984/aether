@@ -20,8 +20,13 @@ namespace aether {
 
 // private
 Renderer::Renderer()
-    : background_rgba_(0, 0, 0, 255)
-    , transform_(mat3::identity()) {}
+    : window_resize_callback_(std::make_shared<std::function<void(Window&)>>())
+    , background_rgba_(0, 0, 0, 255)
+    , transform_(mat3::identity()) {
+	(*window_resize_callback_) = [this](Window& window) {
+		transform_ = calculate_transform(window.default_size());
+	};
+}
 
 Renderer::~Renderer() = default;
 
@@ -108,33 +113,28 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 }
 
 // private
-void Renderer::start_draw(Window& window) {
+void Renderer::setup(Window& window) {
+	window.on_resize(window_resize_callback_);
 	rlDisableBackfaceCulling();
+	rlDisableDepthTest();
+}
+
+// private
+void Renderer::start_draw() {
 	BeginDrawing();
-	auto lrender_bounds = render_bounds();
-	BeginScissorMode(0, 0, lrender_bounds.width, lrender_bounds.height);
+	size<std::uint32_t> const lrender_bounds = render_bounds();
+	BeginScissorMode(0, 0, static_cast<int>(lrender_bounds.width), static_cast<int>(lrender_bounds.height));
 	ClearBackground(util::as_color(background_rgba_));
-
-	if (window.was_resized()) {
-		transform_ = calculate_transform(window.screen_size());
-	}
-
 	push_matrix(transform_);
 }
 
 #ifdef AETHER_DEBUG
 // private
-void Renderer::end_draw(Context const& ctx) const {
+void Renderer::end_draw(std::uint32_t running_fps) const {
 	rlPopMatrix();
-	draw_debug(ctx.running_fps());
+	DrawText(fmt::format("FPS: {}", running_fps).c_str(), 5, 5, 10, WHITE);
 	EndScissorMode();
 	EndDrawing();
-}
-
-// private
-void Renderer::draw_debug(std::uint32_t running_fps) const {
-	std::string const debug_text = fmt::format("FPS: {}", running_fps);
-	DrawText(debug_text.c_str(), 5, 5, 10, WHITE);
 }
 #else
 // private
@@ -146,14 +146,8 @@ void Renderer::end_draw() const {
 #endif
 
 // private
-size<int> Renderer::render_bounds() const {
-	return {GetRenderWidth(), GetRenderHeight()};
-}
-
-// private
-void Renderer::reset_render_state() const {
-	rlDisableBackfaceCulling();
-	rlDisableDepthTest();
+size<std::uint32_t> Renderer::render_bounds() const {
+	return {static_cast<std::uint32_t>(GetRenderWidth()), static_cast<std::uint32_t>(GetRenderHeight())};
 }
 
 // private
@@ -180,24 +174,18 @@ void Renderer::define_texture_coord(vec2<float> position) const {
 }
 
 // private
-mat3 Renderer::calculate_transform(size<int> screen_size) const {
-	size<int> const lrender_bounds = render_bounds();
-
-	vec2<float> const scale_ratio = {static_cast<float>(lrender_bounds.width) / screen_size.width,
-	                                 static_cast<float>(lrender_bounds.height) / screen_size.height};
-
-	float const scale_factor = std::min(scale_ratio.x, scale_ratio.y);
-
-	vec2<float> const scaled_size    = {screen_size.width * scale_factor, screen_size.height * scale_factor};
+mat3 Renderer::calculate_transform(size<std::uint32_t> default_window_size) const {
+	size<std::uint32_t> const lrender_bounds = render_bounds();
+	vec2<float> const scale_ratio            = {lrender_bounds.width / static_cast<float>(default_window_size.width),
+	                                            lrender_bounds.height / static_cast<float>(default_window_size.height)};
+	float const scale_factor                 = std::min(scale_ratio.x, scale_ratio.y);
+	vec2<float> const scaled_size            = {default_window_size.width * scale_factor,
+	                                            default_window_size.height * scale_factor};
 	vec2<float> const offset         = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
 	vec2<float> const snapped_offset = {std::round(offset.x / 2.f), std::round(offset.y / 2.f)};
-
-	mat3 const t   = mat3::translation(snapped_offset);
-	mat3 const s   = mat3::scale({scale_factor, scale_factor});
-	mat3 result    = t * s;
-	result.m[0][2] = std::round(result.m[0][2]);
-	result.m[1][2] = std::round(result.m[1][2]);
-
+	mat3 result                      = mat3::translation(snapped_offset) * mat3::scale({scale_factor, scale_factor});
+	result.m[0][2]                   = std::round(result.m[0][2]);
+	result.m[1][2]                   = std::round(result.m[1][2]);
 	return result;
 }
 

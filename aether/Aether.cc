@@ -49,7 +49,7 @@ bool Aether::init(init_descriptor desc) {
 	audio_manager_.init();
 #endif
 
-	renderer_.reset_render_state();
+	renderer_.setup(window_);
 
 #ifdef AETHER_DEBUG
 	infolog("Initialized");
@@ -67,8 +67,9 @@ void Aether::run() {
 
 	ran_game_loop_ = true;
 
-	while (window_.is_initialized_ && !window_.should_close()) {
+	while (!window_.should_close()) {
 		audio_manager_.update();
+		window_.update();
 
 		bool const is_window_minimized = window_.is_minimized();
 
@@ -77,14 +78,14 @@ void Aether::run() {
 			scene_scheduler_.update_scene(ctx_.delta_time());
 		}
 
-		renderer_.start_draw(window_);
+		renderer_.start_draw();
 
 		if (!is_window_minimized) {
 			scene_scheduler_.draw_scene();
 		}
 
 #ifdef AETHER_DEBUG
-		renderer_.end_draw(ctx_);
+		renderer_.end_draw(ctx_.running_fps());
 #else
 		renderer_.end_draw();
 #endif
