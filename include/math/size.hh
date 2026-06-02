@@ -10,6 +10,7 @@ struct vec2;
 
 template <numeric T>
 struct size final : operators<size, T, 2> {
+	using value_type = T;
 	constexpr size() = default;
 	constexpr size(T v)
 	    : width(v)
@@ -24,11 +25,19 @@ struct size final : operators<size, T, 2> {
 	}
 
 	constexpr T& operator[](std::size_t i) {
-		return i == 0 ? width : height;
+		switch (i) {
+		case 0: return width;
+		case 1: return height;
+		default: throw;
+		}
 	}
 
 	constexpr T const& operator[](std::size_t i) const {
-		return i == 0 ? width : height;
+		switch (i) {
+		case 0: return width;
+		case 1: return height;
+		default: throw;
+		}
 	}
 
 	T width  = T{0};

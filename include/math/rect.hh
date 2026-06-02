@@ -13,6 +13,7 @@ struct size;
 
 template <numeric T>
 struct rect final : operators<rect, T, 4> {
+	using value_type = T;
 	constexpr rect() = default;
 	constexpr rect(T val)
 	    : x(val)
@@ -40,7 +41,8 @@ struct rect final : operators<rect, T, 4> {
 		case 0: return x;
 		case 1: return y;
 		case 2: return width;
-		default: return height;
+		case 3: return height;
+		default: throw;
 		}
 	}
 
@@ -49,7 +51,8 @@ struct rect final : operators<rect, T, 4> {
 		case 0: return x;
 		case 1: return y;
 		case 2: return width;
-		default: return height;
+		case 3: return height;
+		default: throw;
 		}
 	}
 

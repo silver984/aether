@@ -6,6 +6,10 @@ namespace aether {
 
 template <template <typename> class derived, numeric T, std::size_t N>
 struct operators {
+	[[nodiscard]] static std::size_t capacity() {
+		return N;
+	}
+
 	[[nodiscard]] constexpr derived<T> operator+() const {
 		return self();
 	}

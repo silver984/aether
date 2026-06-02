@@ -1,123 +1,176 @@
 #pragma once
 #include <algorithm>
 #include <cmath>
+#include <math/indexed_numeric.hh>
 #include <math/numeric.hh>
-#include <math/size.hh>
-#include <math/vec2.hh>
 #include <numbers>
+
+namespace aether {
+
+template <numeric T>
+struct vec2;
+
+template <numeric T>
+struct size;
+
+} // namespace aether
 
 namespace aether::util {
 
 template <numeric T>
-[[nodiscard]] T lerp(T a, T b, T t) {
+[[nodiscard]] T lerp(T const& a, T const& b, T const& t) {
 	return a + (b - a) * t;
 }
 
+template <indexed_numeric T>
+[[nodiscard]] T lerp(T const& a, T const& b, typename T::value_type const& t) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = a[i] + (b[i] - a[i]) * t;
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T damp(T const& a, T const& b, typename T::value_type const& l, typename T::value_type const& dt) {
+	return lerp(a, b, typename T::value_type{1} - std::exp(-l * dt));
+}
+
 template <numeric T>
-[[nodiscard]] int sign(T val) {
+[[nodiscard]] int sign(T const& val) {
 	return (val > T{0}) - (val < T{0});
 }
 
 template <numeric T>
-[[nodiscard]] T avg(T a, T b) {
+[[nodiscard]] T avg(T const& a, T const& b) {
 	return (a + b) / T{2};
 }
 
 template <numeric T>
-[[nodiscard]] T map(T val, T in_min, T in_max, T out_min, T out_max) {
+[[nodiscard]] T map(T const& val, T const& in_min, T const& in_max, T const& out_min, T const& out_max) {
 	return out_min + (out_max - out_min) * ((val - in_min) / (in_max - in_min));
 }
 
-template <numeric T>
-[[nodiscard]] vec2<T> lerp(vec2<T> a, vec2<T> b, T t) {
-	return {a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t};
+template <indexed_numeric T>
+[[nodiscard]] T clamp(T const& val, T const& min_val, T const& max_val) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::clamp(val[i], min_val[i], max_val[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T round(T const& val) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::round(val[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T ceil(T const& val) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::ceil(val[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T floor(T const& val) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::floor(val[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T abs(T const& val) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::abs(val[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T min(T const& left, T const& right) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::min(left[i], right[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T max(T const& left, T const& right) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::max(left[i], right[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T reverse(T const& val) {
+	T out;
+	std::size_t capacity = T::capacity();
+
+	for (std::size_t i = 0; i < capacity; ++i) {
+		out[i] = val[capacity - i - 1];
+	}
+
+	return out;
 }
 
 template <numeric T>
-[[nodiscard]] vec2<T> clamp(vec2<T> val, vec2<T> min_val, vec2<T> max_val) {
-	return {std::clamp(val.x, min_val.x, max_val.x), std::clamp(val.y, min_val.y, max_val.y)};
-}
-
-template <numeric T>
-[[nodiscard]] size<T> clamp(size<T> val, size<T> min_val, size<T> max_val) {
-	return {std::clamp(val.width, min_val.width, max_val.width),
-	        std::clamp(val.height, min_val.height, max_val.height)};
-}
-
-// TODO: min and max
-
-template <numeric T>
-[[nodiscard]] vec2<T> abs(vec2<T> val) {
-	return {std::abs(val.x), std::abs(val.y)};
-}
-
-template <numeric T>
-[[nodiscard]] vec2<T> max(vec2<T> left, vec2<T> right) {
-	return {std::max(left.x, right.x), std::max(left.y, right.y)};
-}
-
-template <numeric T>
-[[nodiscard]] size<T> max(size<T> left, size<T> right) {
-	return {std::max(left.width, right.width), std::max(left.height, right.height)};
-}
-
-template <numeric T>
-[[nodiscard]] size<T> switch_sides(size<T> val) {
-	return {val.height, val.width};
-}
-
-template <numeric T>
-[[nodiscard]] vec2<T> switch_sides(vec2<T> val) {
-	return {val.y, val.x};
-}
-
-template <numeric T>
-[[nodiscard]] vec2<T> normalize(vec2<T> val) {
+[[nodiscard]] vec2<T> normalize(vec2<T> const& val) {
 	T const len = std::sqrt(val.x * val.x + val.y * val.y);
 	return len == T{0} ? vec2<T>(T{0}) : vec2<T>(val.x / len, val.y / len);
 }
 
 template <numeric T>
-[[nodiscard]] T length(vec2<T> val) {
+[[nodiscard]] T length(vec2<T> const& val) {
 	return std::sqrt(val.x * val.x + val.y * val.y);
 }
 
 template <numeric T>
-[[nodiscard]] T distance(vec2<T> a, vec2<T> b) {
+[[nodiscard]] T distance(vec2<T> const& a, vec2<T> const& b) {
 	return std::sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
 }
 
 template <numeric T>
-[[nodiscard]] T dot(vec2<T> a, vec2<T> b) {
+[[nodiscard]] T dot(vec2<T> const& a, vec2<T> const& b) {
 	return a.x * b.x + a.y * b.y;
 }
 
 template <numeric T>
-[[nodiscard]] vec2<T> damp(vec2<T> current, vec2<T> target, T lambda, T dt) {
-	T const t = T{1} - std::exp(-lambda * dt);
-	return lerp(current, target, t);
-}
-
-template <numeric T>
-[[nodiscard]] T degrees_to_radians(T deg) {
+[[nodiscard]] T degrees_to_radians(T const& deg) {
 	return deg * (std::numbers::pi_v<T> / T{180});
 }
 
 template <numeric T>
-[[nodiscard]] T radians_to_degrees(T deg) {
+[[nodiscard]] T radians_to_degrees(T const& deg) {
 	return deg * (T{180} / std::numbers::pi_v<T>);
-}
-
-template <numeric T>
-[[nodiscard]] vec2<T> rotate_point(vec2<T> point, vec2<T> origin, T rotation_degree) {
-	T const rad = degrees_to_radians(rotation_degree);
-
-	vec2<T> const unrotated = {point.x - origin.x, point.y - origin.y};
-
-	vec2<T> const rotated = {unrotated.x * std::cos(rad) - unrotated.y * std::sin(rad),
-	                         unrotated.x * std::sin(rad) + unrotated.y * std::cos(rad)};
-
-	return {rotated.x + origin.x, rotated.y + origin.y};
 }
 
 } // namespace aether::util
