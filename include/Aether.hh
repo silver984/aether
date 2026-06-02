@@ -46,4 +46,4 @@ private:
 	bool is_initialized_;
 };
 
-} // namespace ae
+} // namespace aether

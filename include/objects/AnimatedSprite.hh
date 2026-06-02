@@ -61,4 +61,4 @@ private:
 	bool const has_antialiasing_arg_;
 };
 
-} // namespace ae
+} // namespace aether

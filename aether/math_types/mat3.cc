@@ -54,4 +54,4 @@ mat3 mat3::operator*(mat3 const& o) const {
 	return r;
 }
 
-} // namespace ae
+} // namespace aether

@@ -121,4 +121,4 @@ bool TextureRepo::is_texture_valid(Texture const& texture) {
 	return true;
 }
 
-} // namespace ae
+} // namespace aether

@@ -56,4 +56,4 @@ bool Director::has_pending_state() const {
 	return pending_state_ != nullptr;
 }
 
-} // namespace ae
+} // namespace aether

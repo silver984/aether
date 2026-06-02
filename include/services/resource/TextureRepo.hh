@@ -33,4 +33,4 @@ private:
 	util::path_map<std::shared_ptr<Texture>> cache_;
 };
 
-} // namespace ae
+} // namespace aether

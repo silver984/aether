@@ -178,4 +178,4 @@ void Audio::update() {
 	impl_->update();
 }
 
-} // namespace ae
+} // namespace aether

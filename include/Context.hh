@@ -47,4 +47,4 @@ private:
 	std::uint32_t running_fps_;
 };
 
-} // namespace ae
+} // namespace aether

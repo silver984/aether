@@ -201,4 +201,4 @@ mat3 Renderer::calculate_transform(size<int> screen_size) const {
 	return result;
 }
 
-} // namespace ae
+} // namespace aether

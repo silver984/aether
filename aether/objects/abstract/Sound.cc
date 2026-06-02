@@ -25,4 +25,4 @@ bool Sound::play() const {
 	return ctx_.audio.play(id_);
 }
 
-} // namespace ae
+} // namespace aether

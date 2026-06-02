@@ -51,4 +51,4 @@ private:
 	rgba background_rgba_;
 };
 
-} // namespace ae
+} // namespace aether

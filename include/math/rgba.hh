@@ -38,4 +38,4 @@ struct rgba final {
 	std::uint8_t a = 0;
 };
 
-} // namespace ae
+} // namespace aether

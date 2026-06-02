@@ -31,4 +31,4 @@ private:
 	std::shared_ptr<Node> pending_state_;
 };
 
-} // namespace ae
+} // namespace aether

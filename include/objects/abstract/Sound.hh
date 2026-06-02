@@ -20,4 +20,4 @@ private:
 	std::uint32_t id_;
 };
 
-} // namespace ae
+} // namespace aether

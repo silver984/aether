@@ -34,4 +34,4 @@ private:
 	std::unique_ptr<impl> impl_;
 };
 
-} // namespace ae
+} // namespace aether

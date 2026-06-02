@@ -10,4 +10,4 @@ struct atlas_region final {
 	bool is_rotated = false;
 };
 
-} // namespace ae
+} // namespace aether

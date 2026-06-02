@@ -50,4 +50,4 @@ void Context::update_frame_ctx() {
 	}
 }
 
-} // namespace ae
+} // namespace aether

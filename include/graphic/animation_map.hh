@@ -11,4 +11,4 @@ struct animation_data final {
 
 using animation_map = util::string_map<animation_data>;
 
-} // namespace ae
+} // namespace aether

@@ -102,4 +102,4 @@ void Sprite::draw(mat3 const& transform, rgba color) {
 	}
 }
 
-} // namespace ae
+} // namespace aether

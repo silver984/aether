@@ -194,4 +194,4 @@ size<int> AnimatedSprite::calculate_bounds(std::vector<atlas_region> const& fram
 	return ret;
 }
 
-} // namespace ae
+} // namespace aether

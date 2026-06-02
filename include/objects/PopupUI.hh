@@ -35,4 +35,4 @@ private:
 	std::array<std::shared_ptr<AnimatedSprite>, area::count> areas_;
 };
 
-} // namespace ae
+} // namespace aether

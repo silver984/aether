@@ -19,4 +19,4 @@ struct mat3 final {
 	float m[3][3];
 };
 
-} // namespace ae
+} // namespace aether

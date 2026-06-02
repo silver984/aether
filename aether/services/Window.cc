@@ -91,4 +91,4 @@ void Window::shutdown() {
 	is_initialized_ = false;
 }
 
-} // namespace ae
+} // namespace aether

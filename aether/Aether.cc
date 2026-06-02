@@ -117,4 +117,4 @@ void Aether::shutdown() {
 #endif
 }
 
-} // namespace ae
+} // namespace aether
