@@ -336,7 +336,6 @@ AnimationRepo::xml_format AnimationRepo::assess_xml_format(tinyxml2::XMLDocument
 // private
 std::string AnimationRepo::parse_frame_name(std::string_view unparsed_name) {
 	if (unparsed_name.empty()) {
-		tracelog("g");
 		return {};
 	}
 
