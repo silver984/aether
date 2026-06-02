@@ -6,7 +6,6 @@
 #include <states/TestState.hh>
 
 using namespace aether;
-;
 
 TestState::TestState(Context const& ctx)
     : NodeIdentity<TestState>(ctx) {}

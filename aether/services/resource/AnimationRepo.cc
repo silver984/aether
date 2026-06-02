@@ -307,8 +307,6 @@ std::shared_ptr<animation_map> AnimationRepo::xml_texture_packer_parse(tinyxml2:
 
 // private
 AnimationRepo::xml_format AnimationRepo::assess_xml_format(tinyxml2::XMLDocument const& document) {
-	using enum xml_format;
-
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {

@@ -20,7 +20,7 @@ class Aether;
 class AnimationRepo final {
 	friend class Aether;
 
-	enum class xml_format : int { unknown = -1, adobe_animate, texture_packer };
+	enum xml_format : int { unknown = -1, adobe_animate, texture_packer };
 
 private:
 	AnimationRepo();
