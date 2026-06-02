@@ -38,7 +38,7 @@ size<int> Window::screen_size() const {
 }
 
 // private
-bool Window::init(std::string_view title, size<int> resolution, int target_fps) {
+bool Window::init(init_descriptor desc) {
 	if (is_initialized_) {
 		// already initialized
 		return true;
@@ -58,9 +58,9 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 	using enum ConfigFlags;
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
 
-	title_                              = std::string(title);
 	size<int> const minimum_screen_size = {640, 360};
-	screen_size_                        = util::max(minimum_screen_size, resolution);
+	title_                              = std::string(desc.title);
+	screen_size_                        = util::max(minimum_screen_size, desc.resolution);
 	InitWindow(screen_size_.width, screen_size_.height, title_.c_str());
 
 	if (!IsWindowReady()) {
@@ -70,7 +70,7 @@ bool Window::init(std::string_view title, size<int> resolution, int target_fps) 
 		return false;
 	}
 
-	SetTargetFPS(std::max(1, target_fps));
+	SetTargetFPS(std::max(1, desc.fps));
 	SetExitKey(KeyboardKey::KEY_NULL);
 	SetWindowMinSize(minimum_screen_size.width, minimum_screen_size.height);
 

@@ -1,7 +1,7 @@
 #pragma once
 #include <objects/Node.hh>
 
-class TestState : public aether::NodeIdentity<TestState> {
+class TestState final : public aether::NodeIdentity<TestState> {
 	friend class aether::NodeIdentity<TestState>;
 
 public:

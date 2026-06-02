@@ -29,12 +29,12 @@ Aether::~Aether() {
 	is_initialized_ = false;
 }
 
-bool Aether::init(std::string_view game_title, size<int> game_resolution, int game_fps) {
+bool Aether::init(init_descriptor desc) {
 	if (is_initialized_) {
 		return true;
 	}
 
-	if (!window_.init(game_title, game_resolution, game_fps)) {
+	if (!window_.init({.title = desc.window_title, .resolution = desc.resolution, .fps = desc.fps})) {
 #ifdef AETHER_DEBUG
 		errorlog("Failed");
 #endif

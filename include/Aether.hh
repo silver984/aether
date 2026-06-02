@@ -14,6 +14,12 @@ namespace aether {
 
 class Aether final {
 public:
+	struct init_descriptor final {
+		std::string_view window_title;
+		size<int> resolution;
+		int fps = 240;
+	};
+
 	Aether();
 	~Aether();
 	Aether(Aether const&)            = delete;
@@ -21,11 +27,12 @@ public:
 	Aether& operator=(Aether const&) = delete;
 	Aether& operator=(Aether&&)      = delete;
 
-	bool init(std::string_view game_title, size<int> game_resolution, int game_fps);
+	bool init(init_descriptor desc);
 	void run();
 	[[nodiscard]] Context const& context();
 
 private:
+	void run_loop();
 	void shutdown();
 
 	Window window_;

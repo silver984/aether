@@ -131,9 +131,7 @@ private:
 template <typename T>
 class NodeIdentity : public Node {
 public:
-	NodeIdentity(Context const& ctx)
-	    : Node(ctx) {}
-	~NodeIdentity() override = default;
+	using Node::Node;
 
 	template <typename U, typename... va>
 	static std::shared_ptr<U> create(Context const&, va&&...) = delete;
@@ -143,4 +141,4 @@ public:
 	}
 };
 
-} // namespace ae
+} // namespace aether

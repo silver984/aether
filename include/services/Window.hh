@@ -16,6 +16,12 @@ private:
 	Window();
 
 public:
+	struct init_descriptor final {
+		std::string_view title;
+		size<int> resolution;
+		int fps;
+	};
+
 	~Window();
 	Window(Window const&)            = delete;
 	Window(Window&&)                 = delete;
@@ -29,7 +35,7 @@ public:
 	[[nodiscard]] size<int> screen_size() const;
 
 private:
-	bool init(std::string_view title, size<int> resolution, int target_fps);
+	bool init(init_descriptor desc);
 	void shutdown();
 
 	std::string title_;
