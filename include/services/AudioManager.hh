@@ -16,13 +16,18 @@ private:
 	AudioManager();
 
 public:
+	struct generation_descriptor final {
+		std::shared_ptr<Sound> owner;
+		std::string_view file;
+	};
+
 	~AudioManager();
 	AudioManager(AudioManager const&)            = delete;
 	AudioManager(AudioManager&&)                 = delete;
 	AudioManager& operator=(AudioManager const&) = delete;
 	AudioManager& operator=(AudioManager&&)      = delete;
 
-	[[nodiscard]] std::optional<std::uint32_t> generate_handle(std::shared_ptr<Sound> owner, std::string_view file);
+	[[nodiscard]] std::optional<std::uint32_t> generate_handle(generation_descriptor desc);
 	bool play(std::uint32_t id);
 
 private:

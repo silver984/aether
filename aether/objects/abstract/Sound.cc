@@ -13,7 +13,8 @@ Sound::~Sound() = default;
 std::shared_ptr<Sound> Sound::create(Context const& ctx, std::string_view file) {
 	std::shared_ptr<Sound> ptr = std::make_shared<Sound>(ctx);
 
-	if (auto const optional_handle = ctx.audio_manager.generate_handle(ptr, file); optional_handle.has_value()) {
+	if (auto const optional_handle = ctx.audio_manager.generate_handle({.owner = ptr, .file = file});
+	    optional_handle.has_value()) {
 		ptr->id_ = optional_handle.value();
 		return ptr;
 	}

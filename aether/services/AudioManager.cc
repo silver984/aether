@@ -33,14 +33,14 @@ struct AudioManager::impl {
 		ma_sound sound;
 	};
 
-	[[nodiscard]] std::optional<std::uint32_t> generate_handle(std::shared_ptr<Sound> owner, std::string_view file) {
+	[[nodiscard]] std::optional<std::uint32_t> generate_handle(generation_descriptor const& desc) {
 		if (!is_initialized) {
 			return std::nullopt;
 		}
 
 		std::filesystem::path lfile;
 
-		if (auto const optional_file = util::normalized_filepath(file); optional_file.has_value()) {
+		if (auto const optional_file = util::normalized_filepath(desc.file); optional_file.has_value()) {
 			lfile = optional_file.value();
 		} else {
 #ifdef AETHER_DEBUG
@@ -54,7 +54,7 @@ struct AudioManager::impl {
 		auto const start_time = util::start();
 #endif
 
-		auto [iterator, _] = active_sounds.emplace(id_hint, owner);
+		auto [iterator, _] = active_sounds.emplace(id_hint, desc.owner);
 
 		if (ma_result result =
 		        ma_sound_init_from_file(&engine, lfile.string().c_str(), 0, nullptr, nullptr, &iterator->second.sound);
@@ -70,7 +70,7 @@ struct AudioManager::impl {
 		auto const end_time = util::end(start_time);
 		ma_uint64 pcm_frames;
 		ma_sound_get_length_in_pcm_frames(&iterator->second.sound, &pcm_frames);
-		tracelog("Successful generation | handle owner: {} | pcm frames: {}", fmt::ptr(owner.get()), pcm_frames);
+		tracelog("Successful generation | handle owner: {} | pcm frames: {}", fmt::ptr(desc.owner.get()), pcm_frames);
 		debuglog("Done | took {}ms", end_time);
 #endif
 
@@ -155,8 +155,8 @@ AudioManager::AudioManager()
 
 AudioManager::~AudioManager() = default;
 
-std::optional<std::uint32_t> AudioManager::generate_handle(std::shared_ptr<Sound> owner, std::string_view file) {
-	return impl_->generate_handle(owner, file);
+std::optional<std::uint32_t> AudioManager::generate_handle(generation_descriptor desc) {
+	return impl_->generate_handle(desc);
 }
 
 bool AudioManager::play(std::uint32_t id) {
