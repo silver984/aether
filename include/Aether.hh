@@ -2,7 +2,7 @@
 #include <Context.hh>
 #include <math/size.hh>
 #include <memory>
-#include <services/Audio.hh>
+#include <services/AudioManager.hh>
 #include <services/Renderer.hh>
 #include <services/SceneScheduler.hh>
 #include <services/Window.hh>
@@ -35,7 +35,7 @@ private:
 	void shutdown();
 
 	Window window_;
-	Audio audio_;
+	AudioManager audio_manager_;
 	Renderer renderer_;
 	SceneScheduler scene_scheduler_;
 	TextureRepository texture_repository_;

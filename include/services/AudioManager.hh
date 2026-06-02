@@ -9,18 +9,18 @@ namespace aether {
 class Aether;
 class Sound;
 
-class Audio final {
+class AudioManager final {
 	friend class Aether;
 
 private:
-	Audio();
+	AudioManager();
 
 public:
-	~Audio();
-	Audio(Audio const&)            = delete;
-	Audio(Audio&&)                 = delete;
-	Audio& operator=(Audio const&) = delete;
-	Audio& operator=(Audio&&)      = delete;
+	~AudioManager();
+	AudioManager(AudioManager const&)            = delete;
+	AudioManager(AudioManager&&)                 = delete;
+	AudioManager& operator=(AudioManager const&) = delete;
+	AudioManager& operator=(AudioManager&&)      = delete;
 
 	[[nodiscard]] std::optional<std::uint32_t> generate_handle(std::shared_ptr<Sound> owner, std::string_view file);
 	bool play(std::uint32_t id);

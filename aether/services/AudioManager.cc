@@ -5,7 +5,7 @@
 #include <cstring>
 #include <miniaudio/miniaudio.h>
 #include <objects/abstract/Sound.hh>
-#include <services/Audio.hh>
+#include <services/AudioManager.hh>
 #include <unordered_map>
 #include <util/filesystem.hh>
 #include <util/timer.hh>
@@ -13,7 +13,7 @@
 
 namespace aether {
 
-struct Audio::impl {
+struct AudioManager::impl {
 	struct scoped_sound final {
 		scoped_sound(std::weak_ptr<Sound> owner_wref)
 		    : owner(std::move(owner_wref)) {
@@ -150,31 +150,31 @@ struct Audio::impl {
 };
 
 // private
-Audio::Audio()
+AudioManager::AudioManager()
     : impl_(std::make_unique<impl>()) {}
 
-Audio::~Audio() = default;
+AudioManager::~AudioManager() = default;
 
-std::optional<std::uint32_t> Audio::generate_handle(std::shared_ptr<Sound> owner, std::string_view file) {
+std::optional<std::uint32_t> AudioManager::generate_handle(std::shared_ptr<Sound> owner, std::string_view file) {
 	return impl_->generate_handle(owner, file);
 }
 
-bool Audio::play(std::uint32_t id) {
+bool AudioManager::play(std::uint32_t id) {
 	return impl_->play(id);
 }
 
 // private
-bool Audio::init() {
+bool AudioManager::init() {
 	return impl_->init();
 }
 
 // private
-void Audio::shutdown() {
+void AudioManager::shutdown() {
 	impl_->shutdown();
 }
 
 // private
-void Audio::update() {
+void AudioManager::update() {
 	impl_->update();
 }
 

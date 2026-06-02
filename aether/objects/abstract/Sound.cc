@@ -1,6 +1,6 @@
 #include <Context.hh>
 #include <objects/abstract/Sound.hh>
-#include <services/Audio.hh>
+#include <services/AudioManager.hh>
 
 namespace aether {
 
@@ -13,7 +13,7 @@ Sound::~Sound() = default;
 std::shared_ptr<Sound> Sound::create(Context const& ctx, std::string_view file) {
 	std::shared_ptr<Sound> ptr = std::make_shared<Sound>(ctx);
 
-	if (auto const optional_handle = ctx.audio.generate_handle(ptr, file); optional_handle.has_value()) {
+	if (auto const optional_handle = ctx.audio_manager.generate_handle(ptr, file); optional_handle.has_value()) {
 		ptr->id_ = optional_handle.value();
 		return ptr;
 	}
@@ -22,7 +22,7 @@ std::shared_ptr<Sound> Sound::create(Context const& ctx, std::string_view file) 
 }
 
 bool Sound::play() const {
-	return ctx_.audio.play(id_);
+	return ctx_.audio_manager.play(id_);
 }
 
 } // namespace aether

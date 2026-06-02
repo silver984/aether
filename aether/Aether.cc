@@ -9,7 +9,7 @@
 namespace aether {
 
 Aether::Aether()
-    : ctx_(window_, audio_, renderer_, texture_repository_, animation_repository_, scene_scheduler_)
+    : ctx_(window_, audio_manager_, renderer_, texture_repository_, animation_repository_, scene_scheduler_)
     , ran_game_loop_(false)
     , is_initialized_(false) {}
 
@@ -24,7 +24,7 @@ Aether::~Aether() {
 		animation_repository_.clear();
 	}
 
-	audio_.shutdown();
+	audio_manager_.shutdown();
 	window_.shutdown();
 	is_initialized_ = false;
 }
@@ -42,11 +42,11 @@ bool Aether::init(init_descriptor desc) {
 	}
 
 #ifdef AETHER_DEBUG
-	if (!audio_.init()) {
-		warninglog("Audio failed to initialize");
+	if (!audio_manager_.init()) {
+		warninglog("AudioManager failed to initialize");
 	}
 #else
-	audio_.init();
+	audio_manager_.init();
 #endif
 
 	renderer_.reset_render_state();
@@ -68,7 +68,7 @@ void Aether::run() {
 	ran_game_loop_ = true;
 
 	while (window_.is_initialized_ && !window_.should_close()) {
-		audio_.update();
+		audio_manager_.update();
 
 		bool const is_window_minimized = window_.is_minimized();
 
@@ -107,7 +107,7 @@ void Aether::shutdown() {
 	scene_scheduler_.cleanup();
 	texture_repository_.clear();
 	animation_repository_.clear();
-	audio_.shutdown();
+	audio_manager_.shutdown();
 	window_.shutdown();
 	is_initialized_ = false;
 

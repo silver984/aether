@@ -1,6 +1,6 @@
 target_sources(${AETHER}
     PRIVATE
-        Audio.cc
+        AudioManager.cc
         Context.cc
         SceneScheduler.cc
         Renderer.cc

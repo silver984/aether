@@ -1,5 +1,5 @@
 /*
-Audio playback and capture library. Choice of public domain or MIT-0. See license statements at the end of this file.
+AudioManager playback and capture library. Choice of public domain or MIT-0. See license statements at the end of this file.
 miniaudio - v0.11.25 - 2026-03-04
 
 David Reid - mackron@gmail.com
@@ -526,7 +526,7 @@ you'll need to disable run-time linking with `MA_NO_RUNTIME_LINKING` and link wi
 
 2.6. Emscripten
 ---------------
-The Emscripten build emits Web Audio JavaScript directly and should compile cleanly out of the box.
+The Emscripten build emits Web AudioManager JavaScript directly and should compile cleanly out of the box.
 You cannot use `-std=c*` compiler flags, nor `-ansi`.
 
 You can enable the use of AudioWorklets by defining `MA_ENABLE_AUDIO_WORKLETS` and then compiling
@@ -563,7 +563,7 @@ To run locally, you'll need to use emrun:
     +----------------------------------+--------------------------------------------------------------------+
     | MA_NO_JACK                       | Disables the JACK backend.                                         |
     +----------------------------------+--------------------------------------------------------------------+
-    | MA_NO_COREAUDIO                  | Disables the Core Audio backend.                                   |
+    | MA_NO_COREAUDIO                  | Disables the Core AudioManager backend.                                   |
     +----------------------------------+--------------------------------------------------------------------+
     | MA_NO_SNDIO                      | Disables the sndio backend.                                        |
     +----------------------------------+--------------------------------------------------------------------+
@@ -575,7 +575,7 @@ To run locally, you'll need to use emrun:
     +----------------------------------+--------------------------------------------------------------------+
     | MA_NO_OPENSL                     | Disables the OpenSL|ES backend.                                    |
     +----------------------------------+--------------------------------------------------------------------+
-    | MA_NO_WEBAUDIO                   | Disables the Web Audio backend.                                    |
+    | MA_NO_WEBAUDIO                   | Disables the Web AudioManager backend.                                    |
     +----------------------------------+--------------------------------------------------------------------+
     | MA_NO_CUSTOM                     | Disables support for custom backends.                              |
     +----------------------------------+--------------------------------------------------------------------+
@@ -603,7 +603,7 @@ To run locally, you'll need to use emrun:
     |                                  | enable the JACK backend.                                           |
     +----------------------------------+--------------------------------------------------------------------+
     | MA_ENABLE_COREAUDIO              | Used in conjunction with MA_ENABLE_ONLY_SPECIFIC_BACKENDS to       |
-    |                                  | enable the Core Audio backend.                                     |
+    |                                  | enable the Core AudioManager backend.                                     |
     +----------------------------------+--------------------------------------------------------------------+
     | MA_ENABLE_SNDIO                  | Used in conjunction with MA_ENABLE_ONLY_SPECIFIC_BACKENDS to       |
     |                                  | enable the sndio backend.                                          |
@@ -621,7 +621,7 @@ To run locally, you'll need to use emrun:
     |                                  | enable the OpenSL|ES backend.                                      |
     +----------------------------------+--------------------------------------------------------------------+
     | MA_ENABLE_WEBAUDIO               | Used in conjunction with MA_ENABLE_ONLY_SPECIFIC_BACKENDS to       |
-    |                                  | enable the Web Audio backend.                                      |
+    |                                  | enable the Web AudioManager backend.                                      |
     +----------------------------------+--------------------------------------------------------------------+
     | MA_ENABLE_CUSTOM                 | Used in conjunction with MA_ENABLE_ONLY_SPECIFIC_BACKENDS to       |
     |                                  | enable custom backends.                                            |
@@ -3434,13 +3434,13 @@ Below are the supported noise types.
 
 
 
-13. Audio Buffers
+13. AudioManager Buffers
 =================
 miniaudio supports reading from a buffer of raw audio data via the `ma_audio_buffer` API. This can
 read from memory that's managed by the application, but can also handle the memory management for
 you internally. Memory management is flexible and should support most use cases.
 
-Audio buffers are initialized using the standard configuration system used everywhere in miniaudio:
+AudioManager buffers are initialized using the standard configuration system used everywhere in miniaudio:
 
     ```c
     ma_audio_buffer_config config = ma_audio_buffer_config_init(
@@ -3620,7 +3620,7 @@ example, ALSA, which is specific to Linux, will not be included in the Windows b
     | WASAPI      | ma_backend_wasapi     | Windows Vista+                                         |
     | DirectSound | ma_backend_dsound     | Windows XP+                                            |
     | WinMM       | ma_backend_winmm      | Windows 95+                                            |
-    | Core Audio  | ma_backend_coreaudio  | macOS, iOS                                             |
+    | Core AudioManager  | ma_backend_coreaudio  | macOS, iOS                                             |
     | sndio       | ma_backend_sndio      | OpenBSD                                                |
     | audio(4)    | ma_backend_audio4     | NetBSD, OpenBSD                                        |
     | OSS         | ma_backend_oss        | FreeBSD                                                |
@@ -3629,7 +3629,7 @@ example, ALSA, which is specific to Linux, will not be included in the Windows b
     | JACK        | ma_backend_jack       | Cross Platform (disabled on BSD and Android)           |
     | AAudio      | ma_backend_aaudio     | Android 8+                                             |
     | OpenSL ES   | ma_backend_opensl     | Android (API level 16+)                                |
-    | Web Audio   | ma_backend_webaudio   | Web (via Emscripten)                                   |
+    | Web AudioManager   | ma_backend_webaudio   | Web (via Emscripten)                                   |
     | Custom      | ma_backend_custom     | Cross Platform                                         |
     | Null        | ma_backend_null       | Cross Platform (not used on Web)                       |
     +-------------+-----------------------+--------------------------------------------------------+
@@ -3685,12 +3685,12 @@ BSD
     </Package>
     ```
 
-15.5. Web Audio / Emscripten
+15.5. Web AudioManager / Emscripten
 ----------------------------
 - You cannot use `-std=c*` compiler flags, nor `-ansi`. This only applies to the Emscripten build.
 - The first time a context is initialized it will create a global object called "miniaudio" whose
   primary purpose is to act as a factory for device objects.
-- Currently the Web Audio backend uses ScriptProcessorNode's, but this may need to change later as
+- Currently the Web AudioManager backend uses ScriptProcessorNode's, but this may need to change later as
   they've been deprecated.
 - Google has implemented a policy in their browsers that prevent automatic media output without
   first receiving some kind of user input. The following web page has additional details:
@@ -3729,7 +3729,7 @@ See below for some tips on improving performance.
 17. Miscellaneous Notes
 =======================
 - Automatic stream routing is enabled on a per-backend basis. Support is explicitly enabled for
-  WASAPI and Core Audio, however other backends such as PulseAudio may naturally support it, though
+  WASAPI and Core AudioManager, however other backends such as PulseAudio may naturally support it, though
   not all have been tested.
 - When compiling with VC6 and earlier, decoding is restricted to files less than 2GB in size. This
   is due to 64-bit file APIs not being available.
@@ -5958,7 +5958,7 @@ MA_API ma_result ma_audio_buffer_get_available_frames(const ma_audio_buffer* pAu
 
 
 /*
-Paged Audio Buffer
+Paged AudioManager Buffer
 ==================
 A paged audio buffer is made up of a linked list of pages. It's expandable, but not shrinkable. It
 can be used for cases where audio data is streamed in asynchronously while allowing data to be read
@@ -6006,7 +6006,7 @@ MA_API ma_paged_audio_buffer_config ma_paged_audio_buffer_config_init(ma_paged_a
 typedef struct
 {
     ma_data_source_base ds;
-    ma_paged_audio_buffer_data* pData;              /* Audio data is read from here. Cannot be null. */
+    ma_paged_audio_buffer_data* pData;              /* AudioManager data is read from here. Cannot be null. */
     ma_paged_audio_buffer_page* pCurrent;
     ma_uint64 relativeCursor;                       /* Relative to the current page. */
     ma_uint64 absoluteCursor;
@@ -7053,13 +7053,13 @@ typedef union
     char alsa[256];                 /* ALSA uses a name string for identification. */
     char pulse[256];                /* PulseAudio uses a name string for identification. */
     int jack;                       /* JACK always uses default devices. */
-    char coreaudio[256];            /* Core Audio uses a string for identification. */
+    char coreaudio[256];            /* Core AudioManager uses a string for identification. */
     char sndio[256];                /* "snd/0", etc. */
     char audio4[256];               /* "/dev/audio", etc. */
     char oss[64];                   /* "dev/dsp0", etc. "dev/dsp" for the default device. */
     ma_int32 aaudio;                /* AAudio uses a 32-bit integer for identification. */
     ma_uint32 opensl;               /* OpenSL|ES uses a 32-bit unsigned integer for identification. */
-    char webaudio[32];              /* Web Audio always uses default devices for now, but if this changes it'll be a GUID. */
+    char webaudio[32];              /* Web AudioManager always uses default devices for now, but if this changes it'll be a GUID. */
     union
     {
         int i;
@@ -8146,7 +8146,7 @@ When `backends` is NULL, the default priority order will be used. Below is a lis
     | WASAPI      | ma_backend_wasapi     | Windows Vista+                                         |
     | DirectSound | ma_backend_dsound     | Windows XP+                                            |
     | WinMM       | ma_backend_winmm      | Windows XP+ (may work on older versions, but untested) |
-    | Core Audio  | ma_backend_coreaudio  | macOS, iOS                                             |
+    | Core AudioManager  | ma_backend_coreaudio  | macOS, iOS                                             |
     | ALSA        | ma_backend_alsa       | Linux                                                  |
     | PulseAudio  | ma_backend_pulseaudio | Cross Platform (disabled on Windows, BSD and Android)  |
     | JACK        | ma_backend_jack       | Cross Platform (disabled on BSD and Android)           |
@@ -8155,7 +8155,7 @@ When `backends` is NULL, the default priority order will be used. Below is a lis
     | OSS         | ma_backend_oss        | FreeBSD                                                |
     | AAudio      | ma_backend_aaudio     | Android 8+                                             |
     | OpenSL|ES   | ma_backend_opensl     | Android (API level 16+)                                |
-    | Web Audio   | ma_backend_webaudio   | Web (via Emscripten)                                   |
+    | Web AudioManager   | ma_backend_webaudio   | Web (via Emscripten)                                   |
     | Null        | ma_backend_null       | Cross Platform (not used on Web)                       |
     |-------------|-----------------------|--------------------------------------------------------|
 
@@ -8209,10 +8209,10 @@ can then be set directly on the structure. Below are the members of the `ma_cont
         intrusive for the end user.
 
     coreaudio.sessionCategory
-        iOS only. The session category to use for the shared AudioSession instance. Below is a list of allowable values and their Core Audio equivalents.
+        iOS only. The session category to use for the shared AudioSession instance. Below is a list of allowable values and their Core AudioManager equivalents.
 
         |-----------------------------------------|-------------------------------------|
-        | miniaudio Token                         | Core Audio Token                    |
+        | miniaudio Token                         | Core AudioManager Token                    |
         |-----------------------------------------|-------------------------------------|
         | ma_ios_session_category_ambient         | AVAudioSessionCategoryAmbient       |
         | ma_ios_session_category_solo_ambient    | AVAudioSessionCategorySoloAmbient   |
@@ -8225,10 +8225,10 @@ can then be set directly on the structure. Below are the members of the `ma_cont
         |-----------------------------------------|-------------------------------------|
 
     coreaudio.sessionCategoryOptions
-        iOS only. Session category options to use with the shared AudioSession instance. Below is a list of allowable values and their Core Audio equivalents.
+        iOS only. Session category options to use with the shared AudioSession instance. Below is a list of allowable values and their Core AudioManager equivalents.
 
         |---------------------------------------------------------------------------|------------------------------------------------------------------|
-        | miniaudio Token                                                           | Core Audio Token                                                 |
+        | miniaudio Token                                                           | Core AudioManager Token                                                 |
         |---------------------------------------------------------------------------|------------------------------------------------------------------|
         | ma_ios_session_category_option_mix_with_others                            | AVAudioSessionCategoryOptionMixWithOthers                        |
         | ma_ios_session_category_option_duck_others                                | AVAudioSessionCategoryOptionDuckOthers                           |
@@ -8819,7 +8819,7 @@ then be set directly on the structure. Below are the members of the `ma_device_c
         PulseAudio only. Sets the channel map that is requested from PulseAudio. See MA_PA_CHANNEL_MAP_* constants. Defaults to MA_PA_CHANNEL_MAP_AIFF.
 
     coreaudio.allowNominalSampleRateChange
-        Core Audio only. Desktop only. When enabled, allows the sample rate of the device to be changed at the operating system level. This
+        Core AudioManager only. Desktop only. When enabled, allows the sample rate of the device to be changed at the operating system level. This
         is disabled by default in order to prevent intrusive changes to the user's system. This is useful if you want to use a sample rate
         that is known to be natively supported by the hardware thereby avoiding the cost of resampling. When set to true, miniaudio will
         find the closest match between the sample rate requested in the device config and the sample rates natively supported by the
@@ -19523,7 +19523,7 @@ static ma_backend_info gBackendInfo[] = /* Indexed by the backend enum. Must be 
     {ma_backend_wasapi,     "WASAPI"},
     {ma_backend_dsound,     "DirectSound"},
     {ma_backend_winmm,      "WinMM"},
-    {ma_backend_coreaudio,  "Core Audio"},
+    {ma_backend_coreaudio,  "Core AudioManager"},
     {ma_backend_sndio,      "sndio"},
     {ma_backend_audio4,     "audio(4)"},
     {ma_backend_oss,        "OSS"},
@@ -19532,7 +19532,7 @@ static ma_backend_info gBackendInfo[] = /* Indexed by the backend enum. Must be 
     {ma_backend_jack,       "JACK"},
     {ma_backend_aaudio,     "AAudio"},
     {ma_backend_opensl,     "OpenSL|ES"},
-    {ma_backend_webaudio,   "Web Audio"},
+    {ma_backend_webaudio,   "Web AudioManager"},
     {ma_backend_custom,     "Custom"},
     {ma_backend_null,       "Null"}
 };
@@ -22605,7 +22605,7 @@ static const char* ma_to_usage_string__wasapi(ma_wasapi_usage usage)
     {
         case ma_wasapi_usage_default:   return NULL;
         case ma_wasapi_usage_games:     return "Games";
-        case ma_wasapi_usage_pro_audio: return "Pro Audio";
+        case ma_wasapi_usage_pro_audio: return "Pro AudioManager";
         default: break;
     }
 
@@ -27297,7 +27297,7 @@ static ma_result ma_context_get_device_info_from_WAVECAPS(ma_context* pContext, 
     - The name GUID can be null, in which we case we just need to stick to the original 31 characters.
     - If the name GUID is not present in the registry we'll also need to stick to the original 31 characters.
     - I like consistency, so I want the returned device names to be consistent with those returned by WASAPI and DirectSound. The
-      problem, however is that WASAPI and DirectSound use "<component> (<name>)" format (such as "Speakers (High Definition Audio)"),
+      problem, however is that WASAPI and DirectSound use "<component> (<name>)" format (such as "Speakers (High Definition AudioManager)"),
       but WinMM does not specify the component name. From my admittedly limited testing, I've notice the component name seems to
       usually fit within the 31 characters of the fixed sized buffer, so what I'm going to do is parse that string for the component
       name, and then concatenate the name from the registry.
@@ -30262,7 +30262,7 @@ PulseAudio Backend
 ******************************************************************************/
 #ifdef MA_HAS_PULSEAUDIO
 /*
-The PulseAudio API, along with Apple's Core Audio, is the worst of the mainstream audio APIs. This is a brief description of what's going on
+The PulseAudio API, along with Apple's Core AudioManager, is the worst of the mainstream audio APIs. This is a brief description of what's going on
 in the PulseAudio backend. I apologize if this gets a bit ranty for your liking - you might want to skip this discussion.
 
 PulseAudio has something they call the "Simple API", which unfortunately isn't suitable for miniaudio. I've not seen anywhere where it
@@ -33466,11 +33466,11 @@ static ma_result ma_context_init__jack(ma_context* pContext, const ma_context_co
 
 /******************************************************************************
 
-Core Audio Backend
+Core AudioManager Backend
 
 References
 ==========
-- Technical Note TN2091: Device input using the HAL Output Audio Unit
+- Technical Note TN2091: Device input using the HAL Output AudioManager Unit
     https://developer.apple.com/library/archive/technotes/tn2091/_index.html
 
 ******************************************************************************/
@@ -33539,9 +33539,9 @@ static ma_result ma_device_reinit_internal__coreaudio(ma_device* pDevice, ma_dev
 #endif
 
 /*
-Core Audio
+Core AudioManager
 
-So far, Core Audio has been the worst backend to work with due to being both unintuitive and having almost no documentation
+So far, Core AudioManager has been the worst backend to work with due to being both unintuitive and having almost no documentation
 apart from comments in the headers (which admittedly are quite good). For my own purposes, and for anybody out there whose
 needing to figure out how this darn thing works, I'm going to outline a few things here.
 
@@ -34260,7 +34260,7 @@ static ma_result ma_get_AudioObject_get_closest_sample_rate(ma_context* pContext
 
         /*
         If we get here it means none of miniaudio's standard sample rates matched any of the supported sample rates from the device. In this
-        case we just fall back to the first one reported by Core Audio.
+        case we just fall back to the first one reported by Core AudioManager.
         */
         MA_ASSERT(sampleRateRangeCount > 0);
 
@@ -34874,7 +34874,7 @@ static ma_result ma_context_get_device_info__coreaudio(ma_context* pContext, ma_
                 }
 
                 /*
-                Annoyingly Core Audio reports a sample rate range. We just get all the standard rates that are
+                Annoyingly Core AudioManager reports a sample rate range. We just get all the standard rates that are
                 between this range.
                 */
                 for (iSampleRate = 0; iSampleRate < sampleRateRangeCount; ++iSampleRate) {
@@ -35206,7 +35206,7 @@ static OSStatus ma_on_input__coreaudio(void* pUserData, AudioUnitRenderActionFla
     MA_ASSERT(pRenderedBufferList);
 
     /*
-    When you call AudioUnitRender(), Core Audio tries to be helpful by setting the mDataByteSize to the number of bytes
+    When you call AudioUnitRender(), Core AudioManager tries to be helpful by setting the mDataByteSize to the number of bytes
     that were actually rendered. The problem with this is that the next call can fail with -50 due to the size no longer
     being set to the capacity of the buffer, but instead the size in bytes of the previous render. This will cause a
     problem when a future call to this callback specifies a larger number of frames.
@@ -35311,7 +35311,7 @@ static void on_start_stop__coreaudio(void* pUserData, AudioUnit audioUnit, Audio
     There's been a report of a deadlock here when triggered by ma_device_uninit(). It looks like
     AudioUnitGetProprty (called below) and AudioComponentInstanceDispose (called in ma_device_uninit)
     can try waiting on the same lock. I'm going to try working around this by not calling any Core
-    Audio APIs in the callback when the device has been stopped or uninitialized.
+    AudioManager APIs in the callback when the device has been stopped or uninitialized.
     */
     if (ma_device_get_state(pDevice) == ma_device_state_uninitialized || ma_device_get_state(pDevice) == ma_device_state_stopping || ma_device_get_state(pDevice) == ma_device_state_stopped) {
         ma_device__on_notification_stopped(pDevice);
@@ -35325,7 +35325,7 @@ static void on_start_stop__coreaudio(void* pUserData, AudioUnit audioUnit, Audio
 
         if (!isRunning) {
             /*
-            The stop event is a bit annoying in Core Audio because it will be called when we automatically switch the default device. Some scenarios to consider:
+            The stop event is a bit annoying in Core AudioManager because it will be called when we automatically switch the default device. Some scenarios to consider:
 
             1) When the device is unplugged, this will be called _before_ the default device change notification.
             2) When the device is changed via the default device change notification, this will be called _after_ the switch.
@@ -35346,11 +35346,11 @@ static void on_start_stop__coreaudio(void* pUserData, AudioUnit audioUnit, Audio
                 }
 
                 /*
-                Getting here means the device is not reinitializing which means it may have been unplugged. From what I can see, it looks like Core Audio
-                will try switching to the new default device seamlessly. We need to somehow find a way to determine whether or not Core Audio will most
+                Getting here means the device is not reinitializing which means it may have been unplugged. From what I can see, it looks like Core AudioManager
+                will try switching to the new default device seamlessly. We need to somehow find a way to determine whether or not Core AudioManager will most
                 likely be successful in switching to the new device.
 
-                TODO: Try to predict if Core Audio will switch devices. If not, the stopped callback needs to be posted.
+                TODO: Try to predict if Core AudioManager will switch devices. If not, the stopped callback needs to be posted.
                 */
                 goto done;
             }
@@ -35626,10 +35626,10 @@ static ma_result ma_device__untrack__coreaudio(ma_device* pDevice)
     {
         case AVAudioSessionInterruptionTypeBegan:
         {
-            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core Audio] Interruption: AVAudioSessionInterruptionTypeBegan\n");
+            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core AudioManager] Interruption: AVAudioSessionInterruptionTypeBegan\n");
 
             /*
-            Core Audio will have stopped the internal device automatically, but we need explicitly
+            Core AudioManager will have stopped the internal device automatically, but we need explicitly
             stop it at a higher level to ensure miniaudio-specific state is updated for consistency.
             */
             ma_device_stop(m_pDevice);
@@ -35643,7 +35643,7 @@ static ma_result ma_device__untrack__coreaudio(ma_device* pDevice)
 
         case AVAudioSessionInterruptionTypeEnded:
         {
-            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core Audio] Interruption: AVAudioSessionInterruptionTypeEnded\n");
+            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core AudioManager] Interruption: AVAudioSessionInterruptionTypeEnded\n");
             ma_device__on_notification_interruption_ended(m_pDevice);
         } break;
     }
@@ -35658,42 +35658,42 @@ static ma_result ma_device__untrack__coreaudio(ma_device* pDevice)
     {
         case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
         {
-            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core Audio] Route Changed: AVAudioSessionRouteChangeReasonOldDeviceUnavailable\n");
+            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core AudioManager] Route Changed: AVAudioSessionRouteChangeReasonOldDeviceUnavailable\n");
         } break;
 
         case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
         {
-            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core Audio] Route Changed: AVAudioSessionRouteChangeReasonNewDeviceAvailable\n");
+            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core AudioManager] Route Changed: AVAudioSessionRouteChangeReasonNewDeviceAvailable\n");
         } break;
 
         case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
         {
-            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core Audio] Route Changed: AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory\n");
+            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core AudioManager] Route Changed: AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory\n");
         } break;
 
         case AVAudioSessionRouteChangeReasonWakeFromSleep:
         {
-            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core Audio] Route Changed: AVAudioSessionRouteChangeReasonWakeFromSleep\n");
+            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core AudioManager] Route Changed: AVAudioSessionRouteChangeReasonWakeFromSleep\n");
         } break;
 
         case AVAudioSessionRouteChangeReasonOverride:
         {
-            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core Audio] Route Changed: AVAudioSessionRouteChangeReasonOverride\n");
+            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core AudioManager] Route Changed: AVAudioSessionRouteChangeReasonOverride\n");
         } break;
 
         case AVAudioSessionRouteChangeReasonCategoryChange:
         {
-            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core Audio] Route Changed: AVAudioSessionRouteChangeReasonCategoryChange\n");
+            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core AudioManager] Route Changed: AVAudioSessionRouteChangeReasonCategoryChange\n");
         } break;
 
         case AVAudioSessionRouteChangeReasonUnknown:
         default:
         {
-            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core Audio] Route Changed: AVAudioSessionRouteChangeReasonUnknown\n");
+            ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_INFO, "[Core AudioManager] Route Changed: AVAudioSessionRouteChangeReasonUnknown\n");
         } break;
     }
 
-    ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_DEBUG, "[Core Audio] Changing Route. inputNumberChannels=%d; outputNumberOfChannels=%d\n", (int)pSession.inputNumberOfChannels, (int)pSession.outputNumberOfChannels);
+    ma_log_postf(ma_device_get_log(m_pDevice), MA_LOG_LEVEL_DEBUG, "[Core AudioManager] Changing Route. inputNumberChannels=%d; outputNumberOfChannels=%d\n", (int)pSession.inputNumberOfChannels, (int)pSession.outputNumberOfChannels);
 
     /* Let the application know about the route change. */
     ma_device__on_notification_rerouted(m_pDevice);
@@ -35812,7 +35812,7 @@ static ma_result ma_device_init_internal__coreaudio(ma_context* pContext, ma_dev
     }
 
 
-    /* Audio unit. */
+    /* AudioManager unit. */
     status = ((ma_AudioComponentInstanceNew_proc)pContext->coreaudio.AudioComponentInstanceNew)((AudioComponent)pContext->coreaudio.component, (AudioUnit*)&pData->audioUnit);
     if (status != noErr) {
         return ma_result_from_OSStatus(status);
@@ -35906,7 +35906,7 @@ static ma_result ma_device_init_internal__coreaudio(ma_context* pContext, ma_dev
         }
 
         /*
-        Technical Note TN2091: Device input using the HAL Output Audio Unit
+        Technical Note TN2091: Device input using the HAL Output AudioManager Unit
             https://developer.apple.com/library/archive/technotes/tn2091/_index.html
 
         This documentation says the following:
@@ -35929,7 +35929,7 @@ static ma_result ma_device_init_internal__coreaudio(ma_context* pContext, ma_dev
         could be intrusive to the user, however, so I don't think it's wise to make this the default. Instead I'm making this a
         configuration option. When the `coreaudio.allowNominalSampleRateChange` config option is set to true, changing the sample
         rate will be allowed. Otherwise it'll be fixed to the current sample rate. To check the system-defined sample rate, run
-        the Audio MIDI Setup program that comes installed on macOS and observe how the sample rate changes as the sample rate is
+        the AudioManager MIDI Setup program that comes installed on macOS and observe how the sample rate changes as the sample rate is
         changed by miniaudio.
         */
         if (pData->allowNominalSampleRateChange) {
@@ -36269,7 +36269,7 @@ static ma_result ma_device_init__coreaudio(ma_device* pDevice, const ma_device_c
         return MA_DEVICE_TYPE_NOT_SUPPORTED;
     }
 
-    /* No exclusive mode with the Core Audio backend for now. */
+    /* No exclusive mode with the Core AudioManager backend for now. */
     if (((pConfig->deviceType == ma_device_type_capture  || pConfig->deviceType == ma_device_type_duplex) && pDescriptorCapture->shareMode  == ma_share_mode_exclusive) ||
         ((pConfig->deviceType == ma_device_type_playback || pConfig->deviceType == ma_device_type_duplex) && pDescriptorPlayback->shareMode == ma_share_mode_exclusive)) {
         return MA_SHARE_MODE_NOT_SUPPORTED;
@@ -36653,7 +36653,7 @@ static ma_result ma_context_init__coreaudio(ma_context* pContext, const ma_conte
     pContext->coreaudio.AudioUnitRender                   = (ma_proc)AudioUnitRender;
 #endif
 
-    /* Audio component. */
+    /* AudioManager component. */
     {
         AudioComponentDescription desc;
         desc.componentType         = kAudioUnitType_Output;
@@ -41489,7 +41489,7 @@ static ma_result ma_context_init__opensl(ma_context* pContext, const ma_context_
 
 /******************************************************************************
 
-Web Audio Backend
+Web AudioManager Backend
 
 ******************************************************************************/
 #ifdef MA_HAS_WEBAUDIO
@@ -41627,7 +41627,7 @@ static ma_result ma_context_get_device_info__webaudio(ma_context* pContext, ma_d
     /* Only supporting default devices. */
     pDeviceInfo->isDefault = MA_TRUE;
 
-    /* Web Audio can support any number of channels and sample rates. It only supports f32 formats, however. */
+    /* Web AudioManager can support any number of channels and sample rates. It only supports f32 formats, however. */
     pDeviceInfo->nativeDataFormats[0].flags      = 0;
     pDeviceInfo->nativeDataFormats[0].format     = ma_format_unknown;
     pDeviceInfo->nativeDataFormats[0].channels   = 0; /* All channels are supported. */
@@ -41853,7 +41853,7 @@ static void ma_audio_worklet_processor_created__webaudio(EMSCRIPTEN_WEBAUDIO_T a
     MA_ZERO_OBJECT(&audioWorkletOptions);
 
     /*
-    The way channel counts work with Web Audio is confusing. As far as I can tell, there's no way to know the channel
+    The way channel counts work with Web AudioManager is confusing. As far as I can tell, there's no way to know the channel
     count from MediaStreamAudioSourceNode (what we use for capture)? The only way to have control is to configure an
     output channel count on the capture side. This is slightly confusing for capture mode because intuitively you
     wouldn't actually connect an output to an input-only node, but this is what we'll have to do in order to have
@@ -41922,7 +41922,7 @@ static void ma_audio_worklet_processor_created__webaudio(EMSCRIPTEN_WEBAUDIO_T a
         }, pParameters->pDevice->webaudio.audioWorklet, audioContext);
 
         if (attachmentResult != MA_SUCCESS) {
-            ma_log_postf(ma_device_get_log(pParameters->pDevice), MA_LOG_LEVEL_ERROR, "Web Audio: Failed to connect capture node.");
+            ma_log_postf(ma_device_get_log(pParameters->pDevice), MA_LOG_LEVEL_ERROR, "Web AudioManager: Failed to connect capture node.");
             emscripten_destroy_web_audio_node(pParameters->pDevice->webaudio.audioWorklet);
             pParameters->pDevice->webaudio.initResult = attachmentResult;
             ma_free(pParameters, &pParameters->pDevice->pContext->allocationCallbacks);
@@ -41940,7 +41940,7 @@ static void ma_audio_worklet_processor_created__webaudio(EMSCRIPTEN_WEBAUDIO_T a
         }, pParameters->pDevice->webaudio.audioWorklet, audioContext);
 
         if (attachmentResult != MA_SUCCESS) {
-            ma_log_postf(ma_device_get_log(pParameters->pDevice), MA_LOG_LEVEL_ERROR, "Web Audio: Failed to connect playback node.");
+            ma_log_postf(ma_device_get_log(pParameters->pDevice), MA_LOG_LEVEL_ERROR, "Web AudioManager: Failed to connect playback node.");
             pParameters->pDevice->webaudio.initResult = attachmentResult;
             ma_free(pParameters, &pParameters->pDevice->pContext->allocationCallbacks);
             return;
@@ -41999,7 +41999,7 @@ static ma_result ma_device_init__webaudio(ma_device* pDevice, const ma_device_co
         return MA_DEVICE_TYPE_NOT_SUPPORTED;
     }
 
-    /* No exclusive mode with Web Audio. */
+    /* No exclusive mode with Web AudioManager. */
     if (((pConfig->deviceType == ma_device_type_playback || pConfig->deviceType == ma_device_type_duplex) && pDescriptorPlayback->shareMode == ma_share_mode_exclusive) ||
         ((pConfig->deviceType == ma_device_type_capture  || pConfig->deviceType == ma_device_type_duplex) && pDescriptorCapture->shareMode  == ma_share_mode_exclusive)) {
         return MA_SHARE_MODE_NOT_SUPPORTED;
@@ -42333,7 +42333,7 @@ static ma_result ma_context_init__webaudio(ma_context* pContext, const ma_contex
     /* Here is where our global JavaScript object is initialized. */
     resultFromJS = EM_ASM_INT({
         if (typeof window === 'undefined' || (window.AudioContext || window.webkitAudioContext) === undefined) {
-            return 0;   /* Web Audio not supported. */
+            return 0;   /* Web AudioManager not supported. */
         }
 
         if (typeof(window.miniaudio) === 'undefined') {

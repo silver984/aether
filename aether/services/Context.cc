@@ -4,10 +4,11 @@
 namespace aether {
 
 // private
-Context::Context(Window& _window, Audio& _audio, Renderer& _renderer, TextureRepository& _texture_repository,
-                 AnimationRepository& _animation_repository, SceneScheduler& _scene_scheduler)
+Context::Context(Window& _window, AudioManager& _audio_manager, Renderer& _renderer,
+                 TextureRepository& _texture_repository, AnimationRepository& _animation_repository,
+                 SceneScheduler& _scene_scheduler)
     : window(_window)
-    , audio(_audio)
+    , audio_manager(_audio_manager)
     , renderer(_renderer)
     , texture_repository(_texture_repository)
     , animation_repository(_animation_repository)
