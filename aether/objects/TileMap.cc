@@ -4,7 +4,7 @@
 #include <Context.hh>
 #include <objects/TileMap.hh>
 #include <raylib.h>
-#include <services/Renderer.hh>
+#include <services/core/Renderer.hh>
 #include <services/resource/TextureRepository.hh>
 #include <util/math.hh>
 
@@ -52,7 +52,7 @@ vec2<std::uint32_t> TileMap::tile_index() const {
 
 // protected
 bool TileMap::init() {
-	texture_ = ctx_.texture_repository.fetch(file_arg_);
+	texture_ = ctx_.resource_services.texture_repository.fetch(file_arg_);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG
@@ -73,7 +73,7 @@ bool TileMap::init() {
 // protected
 void TileMap::draw(mat3 const& transform, rgba color) {
 	if (texture_) {
-		ctx_.renderer.draw_texture(*texture_, texture_source_rect_, transform, color);
+		ctx_.core_services.renderer.draw_texture(*texture_, texture_source_rect_, transform, color);
 	}
 }
 

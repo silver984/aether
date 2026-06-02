@@ -1,10 +1,7 @@
 target_sources(${AETHER}
     PRIVATE
-        AudioManager.cc
-        Context.cc
         SceneScheduler.cc
-        Renderer.cc
-        Window.cc
 )
 
+add_subdirectory(core)
 add_subdirectory(resource)

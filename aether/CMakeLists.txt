@@ -1,7 +1,10 @@
 target_sources(${AETHER}
     PRIVATE
         Aether.cc
+        Context.cc
+        CoreServices.cc
         main.cc
+        ResourceServices.cc
 )
 
 add_subdirectory(math_types)

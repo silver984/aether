@@ -5,7 +5,7 @@
 #include <cmath>
 #include <objects/Sprite.hh>
 #include <raylib.h>
-#include <services/Renderer.hh>
+#include <services/core/Renderer.hh>
 #include <services/resource/TextureRepository.hh>
 
 namespace {
@@ -33,7 +33,7 @@ void Sprite::toggle_antialiasing(bool val) const {
 }
 
 bool Sprite::set_texture(std::string_view file) {
-	texture_ = ctx_.texture_repository.fetch(file);
+	texture_ = ctx_.resource_services.texture_repository.fetch(file);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG
@@ -98,7 +98,7 @@ bool Sprite::init() {
 // protected
 void Sprite::draw(mat3 const& transform, rgba color) {
 	if (texture_) {
-		ctx_.renderer.draw_texture(*texture_, texture_source_rect_, transform, color);
+		ctx_.core_services.renderer.draw_texture(*texture_, texture_source_rect_, transform, color);
 	}
 }
 

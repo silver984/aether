@@ -1,7 +1,7 @@
 #include <Context.hh>
 #include <objects/AnimatedSprite.hh>
 #include <objects/PopupUI.hh>
-#include <services/Window.hh>
+#include <services/core/Window.hh>
 
 namespace aether {
 

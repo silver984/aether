@@ -5,7 +5,7 @@
 #include <cstring>
 #include <miniaudio/miniaudio.h>
 #include <objects/abstract/Sound.hh>
-#include <services/AudioManager.hh>
+#include <services/core/AudioManager.hh>
 #include <unordered_map>
 #include <util/filesystem.hh>
 #include <util/timer.hh>

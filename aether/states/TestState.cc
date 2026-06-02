@@ -1,8 +1,8 @@
 #include <Context.hh>
 #include <objects/AnimatedSprite.hh>
 #include <objects/abstract/Sound.hh>
-#include <services/Renderer.hh>
-#include <services/Window.hh>
+#include <services/core/Renderer.hh>
+#include <services/core/Window.hh>
 #include <states/TestState.hh>
 
 using namespace aether;
@@ -27,7 +27,7 @@ bool TestState::init() {
 		sound->play();
 	}
 
-	ctx_.renderer.set_background_rgba({128, 128, 128, 255});
+	ctx_.core_services.renderer.set_background_rgba({128, 128, 128, 255});
 	activate();
 
 	return true;

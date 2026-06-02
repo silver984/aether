@@ -5,8 +5,8 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
-#include <services/Renderer.hh>
-#include <services/Window.hh>
+#include <services/core/Renderer.hh>
+#include <services/core/Window.hh>
 #include <util/as_raylib.hh>
 
 // namespace {

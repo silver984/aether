@@ -1,15 +1,12 @@
 #pragma once
+#include <CoreServices.hh>
+#include <ResourceServices.hh>
 #include <cstdint>
 #include <memory>
 
 namespace aether {
 
 class Aether;
-class Window;
-class AudioManager;
-class Renderer;
-class TextureRepository;
-class AnimationRepository;
 class SceneScheduler;
 
 class Context final {
@@ -31,11 +28,8 @@ public:
 	[[nodiscard]] std::uint32_t frame_count() const;
 	[[nodiscard]] std::uint32_t running_fps() const;
 
-	Window& window;
-	AudioManager& audio_manager;
-	Renderer& renderer;
-	TextureRepository& texture_repository;
-	AnimationRepository& animation_repository;
+	CoreServices core_services;
+	ResourceServices resource_services;
 	SceneScheduler& scene_scheduler;
 
 private:

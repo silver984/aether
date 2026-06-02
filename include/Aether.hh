@@ -2,10 +2,10 @@
 #include <Context.hh>
 #include <math/size.hh>
 #include <memory>
-#include <services/AudioManager.hh>
-#include <services/Renderer.hh>
 #include <services/SceneScheduler.hh>
-#include <services/Window.hh>
+#include <services/core/AudioManager.hh>
+#include <services/core/Renderer.hh>
+#include <services/core/Window.hh>
 #include <services/resource/AnimationRepository.hh>
 #include <services/resource/TextureRepository.hh>
 #include <string_view>

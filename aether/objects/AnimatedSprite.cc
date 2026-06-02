@@ -4,7 +4,7 @@
 #include <Context.hh>
 #include <objects/AnimatedSprite.hh>
 #include <raylib.h>
-#include <services/Renderer.hh>
+#include <services/core/Renderer.hh>
 #include <services/resource/AnimationRepository.hh>
 #include <services/resource/TextureRepository.hh>
 #include <util/math.hh>
@@ -76,7 +76,7 @@ bool AnimatedSprite::play_animation(std::string_view name, animation_options opt
 
 // protected
 bool AnimatedSprite::init() {
-	texture_ = ctx_.texture_repository.fetch(image_file_arg_);
+	texture_ = ctx_.resource_services.texture_repository.fetch(image_file_arg_);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG
@@ -85,7 +85,7 @@ bool AnimatedSprite::init() {
 		return false;
 	}
 
-	data_ = ctx_.animation_repository.fetch(data_file_arg_);
+	data_ = ctx_.resource_services.animation_repository.fetch(data_file_arg_);
 
 	if (!data_) {
 #ifdef AETHER_DEBUG
@@ -151,7 +151,7 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 		subtexture_transform_ = transform * t;
 	}
 
-	ctx_.renderer.draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
+	ctx_.core_services.renderer.draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
 }
 
 // private

@@ -1,7 +1,7 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <services/Window.hh>
+#include <services/core/Window.hh>
 #include <util/math.hh>
 #ifdef WIN32
 	#include <platforms/win32.hh>
