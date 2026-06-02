@@ -76,7 +76,7 @@ bool AnimatedSprite::play_animation(std::string_view name, animation_options opt
 
 // protected
 bool AnimatedSprite::init() {
-	texture_ = ctx_.texture_repo.fetch(image_file_arg_);
+	texture_ = ctx_.texture_repository.fetch(image_file_arg_);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG
@@ -85,7 +85,7 @@ bool AnimatedSprite::init() {
 		return false;
 	}
 
-	data_ = ctx_.texture_atlas_repo.fetch(data_file_arg_);
+	data_ = ctx_.animation_repository.fetch(data_file_arg_);
 
 	if (!data_) {
 #ifdef AETHER_DEBUG

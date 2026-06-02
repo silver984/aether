@@ -33,7 +33,7 @@ void Sprite::toggle_antialiasing(bool val) const {
 }
 
 bool Sprite::set_texture(std::string_view file) {
-	texture_ = ctx_.texture_repo.fetch(file);
+	texture_ = ctx_.texture_repository.fetch(file);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG

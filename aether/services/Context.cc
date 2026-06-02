@@ -4,14 +4,14 @@
 namespace aether {
 
 // private
-Context::Context(Window& window_ref, Audio& audio_ref, Renderer& renderer_ref, TextureRepository& texture_repo_ref,
-                 AnimationRepository& texture_atlas_repo_ref, SceneScheduler& director_ref)
-    : window(window_ref)
-    , audio(audio_ref)
-    , renderer(renderer_ref)
-    , texture_repo(texture_repo_ref)
-    , texture_atlas_repo(texture_atlas_repo_ref)
-    , director(director_ref)
+Context::Context(Window& _window, Audio& _audio, Renderer& _renderer, TextureRepository& _texture_repository,
+                 AnimationRepository& _animation_repository, SceneScheduler& _scene_scheduler)
+    : window(_window)
+    , audio(_audio)
+    , renderer(_renderer)
+    , texture_repository(_texture_repository)
+    , animation_repository(_animation_repository)
+    , scene_scheduler(_scene_scheduler)
     , total_time_(0.f)
     , frame_elapsed_(0.f)
     , frame_count_(0)
@@ -37,7 +37,7 @@ std::uint32_t Context::running_fps() const {
 }
 
 // private
-void Context::update_frame_ctx() {
+void Context::update_frame_context() {
 	float dt = delta_time();
 	frame_elapsed_ += dt;
 	total_time_ += dt;

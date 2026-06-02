@@ -52,7 +52,7 @@ vec2<std::uint32_t> TileMap::tile_index() const {
 
 // protected
 bool TileMap::init() {
-	texture_ = ctx_.texture_repo.fetch(file_arg_);
+	texture_ = ctx_.texture_repository.fetch(file_arg_);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG

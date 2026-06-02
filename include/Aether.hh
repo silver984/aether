@@ -32,15 +32,14 @@ public:
 	[[nodiscard]] Context const& context();
 
 private:
-	void run_loop();
 	void shutdown();
 
 	Window window_;
 	Audio audio_;
 	Renderer renderer_;
-	SceneScheduler director_;
-	TextureRepository texture_repo_;
-	AnimationRepository texture_atlas_repo_;
+	SceneScheduler scene_scheduler_;
+	TextureRepository texture_repository_;
+	AnimationRepository animation_repository_;
 	Context ctx_;
 	bool ran_game_loop_;
 	bool is_initialized_;

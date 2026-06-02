@@ -16,8 +16,8 @@ class Context final {
 	friend class Aether;
 
 private:
-	Context(Window& window_ref, Audio& audio_ref, Renderer& renderer_ref, TextureRepository& texture_repo_ref,
-	        AnimationRepository& texture_atlas_repo_ref, SceneScheduler& director_ref);
+	Context(Window& _window, Audio& _audio, Renderer& _renderer, TextureRepository& _texture_repository,
+	        AnimationRepository& _animation_repository, SceneScheduler& _scene_scheduler);
 
 public:
 	~Context();
@@ -34,12 +34,12 @@ public:
 	Window& window;
 	Audio& audio;
 	Renderer& renderer;
-	TextureRepository& texture_repo;
-	AnimationRepository& texture_atlas_repo;
-	SceneScheduler& director;
+	TextureRepository& texture_repository;
+	AnimationRepository& animation_repository;
+	SceneScheduler& scene_scheduler;
 
 private:
-	void update_frame_ctx();
+	void update_frame_context();
 
 	float total_time_;
 	float frame_elapsed_;

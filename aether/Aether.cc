@@ -9,7 +9,7 @@
 namespace aether {
 
 Aether::Aether()
-    : ctx_(window_, audio_, renderer_, texture_repo_, texture_atlas_repo_, director_)
+    : ctx_(window_, audio_, renderer_, texture_repository_, animation_repository_, scene_scheduler_)
     , ran_game_loop_(false)
     , is_initialized_(false) {}
 
@@ -18,10 +18,10 @@ Aether::~Aether() {
 		return;
 	}
 
-	if (director_.has_pending_state()) {
-		director_.cleanup();
-		texture_repo_.clear();
-		texture_atlas_repo_.clear();
+	if (scene_scheduler_.has_pending_scene()) {
+		scene_scheduler_.cleanup();
+		texture_repository_.clear();
+		animation_repository_.clear();
 	}
 
 	audio_.shutdown();
@@ -73,14 +73,14 @@ void Aether::run() {
 		bool const is_window_minimized = window_.is_minimized();
 
 		if (!is_window_minimized) {
-			ctx_.update_frame_ctx();
-			director_.update_current_state(ctx_.delta_time());
+			ctx_.update_frame_context();
+			scene_scheduler_.update_scene(ctx_.delta_time());
 		}
 
 		renderer_.start_draw(window_);
 
 		if (!is_window_minimized) {
-			director_.draw_current_state();
+			scene_scheduler_.draw_scene();
 		}
 
 #ifdef AETHER_DEBUG
@@ -104,9 +104,9 @@ void Aether::shutdown() {
 	auto const start_time = util::start();
 #endif
 
-	director_.cleanup();
-	texture_repo_.clear();
-	texture_atlas_repo_.clear();
+	scene_scheduler_.cleanup();
+	texture_repository_.clear();
+	animation_repository_.clear();
 	audio_.shutdown();
 	window_.shutdown();
 	is_initialized_ = false;
