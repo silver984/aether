@@ -18,7 +18,7 @@ struct size;
 namespace aether::util {
 
 template <numeric T>
-[[nodiscard]] T lerp(T const& a, T const& b, T const& t) {
+[[nodiscard]] constexpr T lerp(T const& a, T const& b, T const& t) {
 	return a + (b - a) * t;
 }
 
@@ -39,17 +39,17 @@ template <indexed_numeric T>
 }
 
 template <numeric T>
-[[nodiscard]] int sign(T const& val) {
+[[nodiscard]] constexpr int sign(T const& val) {
 	return (val > T{0}) - (val < T{0});
 }
 
 template <numeric T>
-[[nodiscard]] T avg(T const& a, T const& b) {
+[[nodiscard]] constexpr T avg(T const& a, T const& b) {
 	return (a + b) / T{2};
 }
 
 template <numeric T>
-[[nodiscard]] T map(T const& val, T const& in_min, T const& in_max, T const& out_min, T const& out_max) {
+[[nodiscard]] constexpr T map(T const& val, T const& in_min, T const& in_max, T const& out_min, T const& out_max) {
 	return out_min + (out_max - out_min) * ((val - in_min) / (in_max - in_min));
 }
 
@@ -145,7 +145,7 @@ template <indexed_numeric T>
 template <numeric T>
 [[nodiscard]] vec2<T> normalize(vec2<T> const& val) {
 	T const len = std::sqrt(val.x * val.x + val.y * val.y);
-	return len == T{0} ? vec2<T>(T{0}) : vec2<T>(val.x / len, val.y / len);
+	return len == T{0} ? vec2<T>() : vec2<T>(val.x / len, val.y / len);
 }
 
 template <numeric T>
@@ -159,17 +159,17 @@ template <numeric T>
 }
 
 template <numeric T>
-[[nodiscard]] T dot(vec2<T> const& a, vec2<T> const& b) {
+[[nodiscard]] constexpr T dot(vec2<T> const& a, vec2<T> const& b) {
 	return a.x * b.x + a.y * b.y;
 }
 
 template <numeric T>
-[[nodiscard]] T degrees_to_radians(T const& deg) {
+[[nodiscard]] constexpr T degrees_to_radians(T const& deg) {
 	return deg * (std::numbers::pi_v<T> / T{180});
 }
 
 template <numeric T>
-[[nodiscard]] T radians_to_degrees(T const& deg) {
+[[nodiscard]] constexpr T radians_to_degrees(T const& deg) {
 	return deg * (T{180} / std::numbers::pi_v<T>);
 }
 

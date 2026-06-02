@@ -26,14 +26,12 @@ struct rect final : operators<rect, T, 4> {
 	    , width(width_val)
 	    , height(height_val) {}
 
-	template <numeric U>
-	[[nodiscard]] constexpr vec2<U> position() const {
-		return {static_cast<U>(x), static_cast<U>(y)};
+	[[nodiscard]] constexpr vec2<T> position() const {
+		return {x, y};
 	}
 
-	template <numeric U>
-	[[nodiscard]] constexpr size<U> bounds() const {
-		return {static_cast<U>(width), static_cast<U>(height)};
+	[[nodiscard]] constexpr size<T> bounds() const {
+		return {width, height};
 	};
 
 	constexpr T& operator[](std::size_t i) {

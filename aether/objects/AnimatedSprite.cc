@@ -180,7 +180,7 @@ size<int> AnimatedSprite::calculate_bounds(std::vector<atlas_region> const& fram
 	size<int> ret;
 
 	for (auto const& frame : frames) {
-		size<int> const lbounds = frame.source_rect.bounds<int>();
+		size<int> const lbounds = frame.source_rect.bounds();
 		vec2<int> const offsets = util::abs(frame.offsets);
 
 		if (frame.is_rotated) {

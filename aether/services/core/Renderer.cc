@@ -8,6 +8,7 @@
 #include <services/core/Renderer.hh>
 #include <services/core/Window.hh>
 #include <util/as_raylib.hh>
+#include <util/math.hh>
 
 // namespace {
 
@@ -63,7 +64,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 	rlNormal3f(0.f, 0.f, 1.f);
 
 	{ // top left
-		vec2<float> coord = source_rect.position<float>();
+		vec2<float> coord = source_rect.position();
 
 		if (flip_x) {
 			coord.x += source_rect.width;
@@ -74,7 +75,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 	}
 
 	{ // bottom left
-		vec2<float> coord = source_rect.position<float>();
+		vec2<float> coord = source_rect.position();
 		coord.y += source_rect.height;
 
 		if (flip_x) {
@@ -86,7 +87,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 	}
 
 	{ // bottom right
-		vec2<float> coord = source_rect.position<float>() + source_rect.bounds<float>();
+		vec2<float> coord = source_rect.position() + source_rect.bounds();
 
 		if (flip_x) {
 			coord.x -= source_rect.width;
@@ -97,7 +98,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 	}
 
 	{ // top right
-		vec2<float> coord = source_rect.position<float>();
+		vec2<float> coord = source_rect.position();
 
 		if (!flip_x) {
 			coord.x += source_rect.width;
@@ -182,7 +183,7 @@ mat3 Renderer::calculate_transform(size<std::uint32_t> default_window_size) cons
 	vec2<float> const scaled_size            = {default_window_size.width * scale_factor,
 	                                            default_window_size.height * scale_factor};
 	vec2<float> const offset         = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
-	vec2<float> const snapped_offset = {std::round(offset.x / 2.f), std::round(offset.y / 2.f)};
+	vec2<float> const snapped_offset = util::round(offset / 2.f);
 	mat3 result                      = mat3::translation(snapped_offset) * mat3::scale({scale_factor, scale_factor});
 	result.m[0][2]                   = std::round(result.m[0][2]);
 	result.m[1][2]                   = std::round(result.m[1][2]);
