@@ -374,12 +374,12 @@ std::string AnimationRepo::parse_frame_name(std::string_view unparsed_name) {
 // private
 void AnimationRepo::log_defective_frame(std::string_view message, std::optional<std::string_view> name) {
 	if (name.has_value()) {
-		tracelog("Skipping subtexture with {} | on: \"{}\"", message, name.value());
+		tracelog("Skipping frame with {} | on: \"{}\"", message, name.value());
 		return;
 	}
 
-	tracelog("Skipping subtexture with {}", message);
+	tracelog("Skipping frame with {}", message);
 }
 #endif
 
-} // namespace ae
+} // namespace aether
