@@ -208,31 +208,31 @@ std::shared_ptr<animation_map> AnimationRepo::xml_adobe_animate_parse(tinyxml2::
 			    return;
 		    }
 
-		    atlas_region region;
+		    atlas_region frame;
 
 		    using enum tinyxml2::XMLError;
-		    if (current_element.QueryIntAttribute("x", &region.source_rect.x) != XML_SUCCESS) {
+		    if (current_element.QueryIntAttribute("x", &frame.source_rect.x) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_frame("no x attribute", frame_name);
 #endif
 			    return;
 		    }
 
-		    if (current_element.QueryIntAttribute("y", &region.source_rect.y) != XML_SUCCESS) {
+		    if (current_element.QueryIntAttribute("y", &frame.source_rect.y) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_frame("no y attribute", frame_name);
 #endif
 			    return;
 		    }
 
-		    if (current_element.QueryIntAttribute("width", &region.source_rect.width) != XML_SUCCESS) {
+		    if (current_element.QueryIntAttribute("width", &frame.source_rect.width) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_frame("no width attribute", frame_name);
 #endif
 			    return;
 		    }
 
-		    if (current_element.QueryIntAttribute("height", &region.source_rect.height) != XML_SUCCESS) {
+		    if (current_element.QueryIntAttribute("height", &frame.source_rect.height) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_frame("no height attribute", frame_name);
 #endif
@@ -241,11 +241,11 @@ std::shared_ptr<animation_map> AnimationRepo::xml_adobe_animate_parse(tinyxml2::
 
 		    // these dont need to have valid values
 		    // they simply fallback to their defaults
-		    current_element.QueryIntAttribute("frameX", &region.offsets.x);
-		    current_element.QueryIntAttribute("frameY", &region.offsets.y);
-		    current_element.QueryBoolAttribute("rotated", &region.is_rotated);
+		    current_element.QueryIntAttribute("frameX", &frame.offsets.x);
+		    current_element.QueryIntAttribute("frameY", &frame.offsets.y);
+		    current_element.QueryBoolAttribute("rotated", &frame.is_rotated);
 
-		    map[parsed_frame_name].frames.emplace_back(std::move(region));
+		    map[parsed_frame_name].frames.emplace_back(std::move(frame));
 	    });
 }
 
@@ -270,38 +270,38 @@ std::shared_ptr<animation_map> AnimationRepo::xml_texture_packer_parse(tinyxml2:
 			    return;
 		    }
 
-		    atlas_region region;
+		    atlas_region frame;
 
 		    using enum tinyxml2::XMLError;
-		    if (current_element.QueryIntAttribute("x", &region.source_rect.x) != XML_SUCCESS) {
+		    if (current_element.QueryIntAttribute("x", &frame.source_rect.x) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_frame("no x attribute", frame_name);
 #endif
 			    return;
 		    }
 
-		    if (current_element.QueryIntAttribute("y", &region.source_rect.y) != XML_SUCCESS) {
+		    if (current_element.QueryIntAttribute("y", &frame.source_rect.y) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_frame("no y attribute", frame_name);
 #endif
 			    return;
 		    }
 
-		    if (current_element.QueryIntAttribute("w", &region.source_rect.width) != XML_SUCCESS) {
+		    if (current_element.QueryIntAttribute("w", &frame.source_rect.width) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_frame("no w attribute", frame_name);
 #endif
 			    return;
 		    }
 
-		    if (current_element.QueryIntAttribute("h", &region.source_rect.height) != XML_SUCCESS) {
+		    if (current_element.QueryIntAttribute("h", &frame.source_rect.height) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
 			    log_defective_frame("no h attribute", frame_name);
 #endif
 			    return;
 		    }
 
-		    map[parsed_frame_name].frames.emplace_back(std::move(region));
+		    map[parsed_frame_name].frames.emplace_back(std::move(frame));
 	    });
 }
 
