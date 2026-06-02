@@ -194,7 +194,7 @@ std::shared_ptr<animation_map> AnimationRepo::xml_adobe_animate_parse(tinyxml2::
 
 		    if (!frame_name) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no name attribute");
+			    log_defective_frame("no name attribute");
 #endif
 			    return;
 		    }
@@ -203,7 +203,7 @@ std::shared_ptr<animation_map> AnimationRepo::xml_adobe_animate_parse(tinyxml2::
 
 		    if (parsed_frame_name.empty()) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("invalid name", frame_name);
+			    log_defective_frame("invalid name", frame_name);
 #endif
 			    return;
 		    }
@@ -213,28 +213,28 @@ std::shared_ptr<animation_map> AnimationRepo::xml_adobe_animate_parse(tinyxml2::
 		    using enum tinyxml2::XMLError;
 		    if (current_element.QueryIntAttribute("x", &region.source_rect.x) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no x attribute", frame_name);
+			    log_defective_frame("no x attribute", frame_name);
 #endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("y", &region.source_rect.y) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no y attribute", frame_name);
+			    log_defective_frame("no y attribute", frame_name);
 #endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("width", &region.source_rect.width) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no width attribute", frame_name);
+			    log_defective_frame("no width attribute", frame_name);
 #endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("height", &region.source_rect.height) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no height attribute", frame_name);
+			    log_defective_frame("no height attribute", frame_name);
 #endif
 			    return;
 		    }
@@ -256,7 +256,7 @@ std::shared_ptr<animation_map> AnimationRepo::xml_texture_packer_parse(tinyxml2:
 
 		    if (!frame_name) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no n attribute");
+			    log_defective_frame("no n attribute");
 #endif
 			    return;
 		    }
@@ -265,7 +265,7 @@ std::shared_ptr<animation_map> AnimationRepo::xml_texture_packer_parse(tinyxml2:
 
 		    if (parsed_frame_name.empty()) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("invalid name", frame_name);
+			    log_defective_frame("invalid name", frame_name);
 #endif
 			    return;
 		    }
@@ -275,28 +275,28 @@ std::shared_ptr<animation_map> AnimationRepo::xml_texture_packer_parse(tinyxml2:
 		    using enum tinyxml2::XMLError;
 		    if (current_element.QueryIntAttribute("x", &region.source_rect.x) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no x attribute", frame_name);
+			    log_defective_frame("no x attribute", frame_name);
 #endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("y", &region.source_rect.y) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no y attribute", frame_name);
+			    log_defective_frame("no y attribute", frame_name);
 #endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("w", &region.source_rect.width) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no w attribute", frame_name);
+			    log_defective_frame("no w attribute", frame_name);
 #endif
 			    return;
 		    }
 
 		    if (current_element.QueryIntAttribute("h", &region.source_rect.height) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_subtexture("no h attribute", frame_name);
+			    log_defective_frame("no h attribute", frame_name);
 #endif
 			    return;
 		    }
@@ -372,9 +372,9 @@ std::string AnimationRepo::parse_frame_name(std::string_view unparsed_name) {
 
 #ifdef AETHER_VERBOSE_DEBUG
 // private
-void AnimationRepo::log_defective_subtexture(std::string_view message, std::optional<std::string_view> name_attribute) {
-	if (name_attribute.has_value()) {
-		tracelog("Skipping subtexture with {} | on: \"{}\"", message, name_attribute.value());
+void AnimationRepo::log_defective_frame(std::string_view message, std::optional<std::string_view> name) {
+	if (name.has_value()) {
+		tracelog("Skipping subtexture with {} | on: \"{}\"", message, name.value());
 		return;
 	}
 

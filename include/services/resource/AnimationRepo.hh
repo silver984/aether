@@ -50,11 +50,10 @@ private:
 	[[nodiscard]] std::string parse_frame_name(std::string_view unparsed_name);
 
 #ifdef AETHER_VERBOSE_DEBUG
-	void log_defective_subtexture(std::string_view message,
-	                              std::optional<std::string_view> name_attribute = std::nullopt);
+	void log_defective_frame(std::string_view message, std::optional<std::string_view> name = std::nullopt);
 #endif
 
 	util::path_map<std::shared_ptr<animation_map>> cache_;
 };
 
-} // namespace ae
+} // namespace aether
