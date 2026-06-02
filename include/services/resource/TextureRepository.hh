@@ -9,18 +9,18 @@ namespace aether {
 
 class Aether;
 
-class TextureRepo final {
+class TextureRepository final {
 	friend class Aether;
 
 private:
-	TextureRepo();
+	TextureRepository();
 
 public:
-	~TextureRepo();
-	TextureRepo(TextureRepo const&)            = delete;
-	TextureRepo(TextureRepo&&)                 = delete;
-	TextureRepo& operator=(TextureRepo const&) = delete;
-	TextureRepo& operator=(TextureRepo&&)      = delete;
+	~TextureRepository();
+	TextureRepository(TextureRepository const&)            = delete;
+	TextureRepository(TextureRepository&&)                 = delete;
+	TextureRepository& operator=(TextureRepository const&) = delete;
+	TextureRepository& operator=(TextureRepository&&)      = delete;
 
 	std::shared_ptr<Texture> fetch(std::string_view file);
 	void purge_unused();

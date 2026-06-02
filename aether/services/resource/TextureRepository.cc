@@ -3,7 +3,7 @@
 #endif
 #include <Context.hh>
 #include <raylib.h>
-#include <services/resource/TextureRepo.hh>
+#include <services/resource/TextureRepository.hh>
 #include <util/filesystem.hh>
 #include <util/string.hh>
 #include <util/timer.hh>
@@ -26,10 +26,10 @@ struct texture_deleter {
 namespace aether {
 
 // private
-TextureRepo::TextureRepo()  = default;
-TextureRepo::~TextureRepo() = default;
+TextureRepository::TextureRepository()  = default;
+TextureRepository::~TextureRepository() = default;
 
-std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
+std::shared_ptr<Texture> TextureRepository::fetch(std::string_view file) {
 	std::filesystem::path lfile;
 
 	if (auto const optional_file = util::normalized_filepath(file); optional_file.has_value()) {
@@ -88,19 +88,19 @@ std::shared_ptr<Texture> TextureRepo::fetch(std::string_view file) {
 	return iterator->second;
 }
 
-void TextureRepo::purge_unused() {
+void TextureRepository::purge_unused() {
 	std::erase_if(cache_, [](auto& pair) {
 		return pair.second.use_count() <= 1;
 	});
 }
 
 // private
-void TextureRepo::clear() {
+void TextureRepository::clear() {
 	cache_.clear();
 }
 
 // private
-std::shared_ptr<Texture> TextureRepo::try_fetch_from_cache(std::filesystem::path const& file) {
+std::shared_ptr<Texture> TextureRepository::try_fetch_from_cache(std::filesystem::path const& file) {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}
@@ -109,7 +109,7 @@ std::shared_ptr<Texture> TextureRepo::try_fetch_from_cache(std::filesystem::path
 }
 
 // private
-bool TextureRepo::is_texture_valid(Texture const& texture) {
+bool TextureRepository::is_texture_valid(Texture const& texture) {
 	if (texture.id < 1) {
 		return false;
 	}

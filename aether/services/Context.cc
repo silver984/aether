@@ -4,8 +4,8 @@
 namespace aether {
 
 // private
-Context::Context(Window& window_ref, Audio& audio_ref, Renderer& renderer_ref, TextureRepo& texture_repo_ref,
-                 AnimationRepo& texture_atlas_repo_ref, Director& director_ref)
+Context::Context(Window& window_ref, Audio& audio_ref, Renderer& renderer_ref, TextureRepository& texture_repo_ref,
+                 AnimationRepository& texture_atlas_repo_ref, Director& director_ref)
     : window(window_ref)
     , audio(audio_ref)
     , renderer(renderer_ref)

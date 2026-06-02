@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
-#include <services/resource/AnimationRepo.hh>
+#include <services/resource/AnimationRepository.hh>
 #include <tinyxml2/tinyxml2.h>
 #include <util/filesystem.hh>
 #include <util/string.hh>
@@ -13,10 +13,10 @@
 namespace aether {
 
 // private
-AnimationRepo::AnimationRepo()  = default;
-AnimationRepo::~AnimationRepo() = default;
+AnimationRepository::AnimationRepository()  = default;
+AnimationRepository::~AnimationRepository() = default;
 
-std::shared_ptr<animation_map> AnimationRepo::fetch(std::string_view file) {
+std::shared_ptr<animation_map> AnimationRepository::fetch(std::string_view file) {
 	std::filesystem::path lfile;
 
 	if (auto const optional_file = util::normalized_filepath(file); optional_file.has_value()) {
@@ -73,19 +73,19 @@ std::shared_ptr<animation_map> AnimationRepo::fetch(std::string_view file) {
 	return iterator->second;
 }
 
-void AnimationRepo::purge_unused() {
+void AnimationRepository::purge_unused() {
 	std::erase_if(cache_, [](auto& pair) {
 		return pair.second.use_count() <= 1;
 	});
 }
 
 // private
-void AnimationRepo::clear() {
+void AnimationRepository::clear() {
 	cache_.clear();
 }
 
 // private
-std::shared_ptr<animation_map> AnimationRepo::try_fetch_from_cache(std::filesystem::path const& file) {
+std::shared_ptr<animation_map> AnimationRepository::try_fetch_from_cache(std::filesystem::path const& file) {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}
@@ -94,7 +94,7 @@ std::shared_ptr<animation_map> AnimationRepo::try_fetch_from_cache(std::filesyst
 }
 
 // private
-std::shared_ptr<animation_map> AnimationRepo::xml_parse(std::filesystem::path const& file) {
+std::shared_ptr<animation_map> AnimationRepository::xml_parse(std::filesystem::path const& file) {
 	tinyxml2::XMLDocument document;
 
 	using enum tinyxml2::XMLError;
@@ -136,8 +136,8 @@ std::shared_ptr<animation_map> AnimationRepo::xml_parse(std::filesystem::path co
 
 // private
 std::shared_ptr<animation_map>
-AnimationRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std::string_view element_name,
-                                  std::function<void(tinyxml2::XMLElement const&, animation_map&)> callback) {
+AnimationRepository::xml_parse_delegate(tinyxml2::XMLDocument const& document, std::string_view element_name,
+                                        std::function<void(tinyxml2::XMLElement const&, animation_map&)> callback) {
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
@@ -187,7 +187,7 @@ AnimationRepo::xml_parse_delegate(tinyxml2::XMLDocument const& document, std::st
 }
 
 // private
-std::shared_ptr<animation_map> AnimationRepo::xml_adobe_animate_parse(tinyxml2::XMLDocument const& document) {
+std::shared_ptr<animation_map> AnimationRepository::xml_adobe_animate_parse(tinyxml2::XMLDocument const& document) {
 	return xml_parse_delegate(
 	    document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
 		    char const* frame_name = current_element.Attribute("name");
@@ -249,7 +249,7 @@ std::shared_ptr<animation_map> AnimationRepo::xml_adobe_animate_parse(tinyxml2::
 	    });
 }
 
-std::shared_ptr<animation_map> AnimationRepo::xml_texture_packer_parse(tinyxml2::XMLDocument const& document) {
+std::shared_ptr<animation_map> AnimationRepository::xml_texture_packer_parse(tinyxml2::XMLDocument const& document) {
 	return xml_parse_delegate(
 	    document, "sprite", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
 		    char const* frame_name = current_element.Attribute("n");
@@ -306,7 +306,7 @@ std::shared_ptr<animation_map> AnimationRepo::xml_texture_packer_parse(tinyxml2:
 }
 
 // private
-AnimationRepo::xml_format AnimationRepo::assess_xml_format(tinyxml2::XMLDocument const& document) {
+AnimationRepository::xml_format AnimationRepository::assess_xml_format(tinyxml2::XMLDocument const& document) {
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
@@ -332,7 +332,7 @@ AnimationRepo::xml_format AnimationRepo::assess_xml_format(tinyxml2::XMLDocument
 }
 
 // private
-std::string AnimationRepo::parse_frame_name(std::string_view unparsed_name) {
+std::string AnimationRepository::parse_frame_name(std::string_view unparsed_name) {
 	if (unparsed_name.empty()) {
 		return {};
 	}
@@ -370,7 +370,7 @@ std::string AnimationRepo::parse_frame_name(std::string_view unparsed_name) {
 
 #ifdef AETHER_VERBOSE_DEBUG
 // private
-void AnimationRepo::log_defective_frame(std::string_view message, std::optional<std::string_view> name) {
+void AnimationRepository::log_defective_frame(std::string_view message, std::optional<std::string_view> name) {
 	if (name.has_value()) {
 		tracelog("Skipping frame with {} | on: \"{}\"", message, name.value());
 		return;

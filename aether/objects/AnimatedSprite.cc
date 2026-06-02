@@ -5,8 +5,8 @@
 #include <objects/AnimatedSprite.hh>
 #include <raylib.h>
 #include <services/Renderer.hh>
-#include <services/resource/AnimationRepo.hh>
-#include <services/resource/TextureRepo.hh>
+#include <services/resource/AnimationRepository.hh>
+#include <services/resource/TextureRepository.hh>
 #include <util/math.hh>
 
 namespace aether {

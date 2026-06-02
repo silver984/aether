@@ -17,20 +17,20 @@ namespace aether {
 
 class Aether;
 
-class AnimationRepo final {
+class AnimationRepository final {
 	friend class Aether;
 
 	enum xml_format : int { unknown = -1, adobe_animate, texture_packer };
 
 private:
-	AnimationRepo();
+	AnimationRepository();
 
 public:
-	~AnimationRepo();
-	AnimationRepo(AnimationRepo const&)            = delete;
-	AnimationRepo(AnimationRepo&&)                 = delete;
-	AnimationRepo& operator=(AnimationRepo const&) = delete;
-	AnimationRepo& operator=(AnimationRepo&&)      = delete;
+	~AnimationRepository();
+	AnimationRepository(AnimationRepository const&)            = delete;
+	AnimationRepository(AnimationRepository&&)                 = delete;
+	AnimationRepository& operator=(AnimationRepository const&) = delete;
+	AnimationRepository& operator=(AnimationRepository&&)      = delete;
 
 	std::shared_ptr<animation_map> fetch(std::string_view file);
 	void purge_unused();

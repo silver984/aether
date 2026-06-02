@@ -5,7 +5,7 @@
 #include <objects/TileMap.hh>
 #include <raylib.h>
 #include <services/Renderer.hh>
-#include <services/resource/TextureRepo.hh>
+#include <services/resource/TextureRepository.hh>
 #include <util/math.hh>
 
 namespace aether {

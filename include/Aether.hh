@@ -6,8 +6,8 @@
 #include <services/Director.hh>
 #include <services/Renderer.hh>
 #include <services/Window.hh>
-#include <services/resource/AnimationRepo.hh>
-#include <services/resource/TextureRepo.hh>
+#include <services/resource/AnimationRepository.hh>
+#include <services/resource/TextureRepository.hh>
 #include <string_view>
 
 namespace aether {
@@ -39,8 +39,8 @@ private:
 	Audio audio_;
 	Renderer renderer_;
 	Director director_;
-	TextureRepo texture_repo_;
-	AnimationRepo texture_atlas_repo_;
+	TextureRepository texture_repo_;
+	AnimationRepository texture_atlas_repo_;
 	Context ctx_;
 	bool ran_game_loop_;
 	bool is_initialized_;
