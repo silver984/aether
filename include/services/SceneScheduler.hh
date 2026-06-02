@@ -19,16 +19,16 @@ public:
 	SceneScheduler& operator=(SceneScheduler const&) = delete;
 	SceneScheduler& operator=(SceneScheduler&&)      = delete;
 
-	void switch_state(std::shared_ptr<Node>&& new_state);
+	void replace_scene(std::shared_ptr<Node>&& new_scene);
 
 private:
 	void cleanup();
-	void update_current_state(float dt);
-	void draw_current_state();
-	[[nodiscard]] bool has_pending_state() const;
+	void update_scene(float dt);
+	void draw_scene();
+	[[nodiscard]] bool has_pending_scene() const;
 
-	std::shared_ptr<Node> current_state_;
-	std::shared_ptr<Node> pending_state_;
+	std::shared_ptr<Node> current_scene_;
+	std::shared_ptr<Node> pending_scene_;
 };
 
 } // namespace aether

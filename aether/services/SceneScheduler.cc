@@ -12,48 +12,52 @@ namespace aether {
 SceneScheduler::SceneScheduler()  = default;
 SceneScheduler::~SceneScheduler() = default;
 
-void SceneScheduler::switch_state(std::shared_ptr<Node>&& new_state) {
-	if (!new_state) {
+void SceneScheduler::replace_scene(std::shared_ptr<Node>&& new_scene) {
+	if (!new_scene) {
 #ifdef AETHER_DEBUG
-		errorlog("Can't switch to nullptr state");
+		errorlog("Can't switch to nullptr scene");
 #endif
 		return;
 	}
 
-	pending_state_ = std::move(new_state);
+	pending_scene_ = std::move(new_scene);
 
 #ifdef AETHER_VERBOSE_DEBUG
-	tracelog("Switching states | pending: {}", fmt::ptr(pending_state_.get()));
+	debuglog("Replacing scene");
+	tracelog("Pending scene: {}", fmt::ptr(pending_scene_.get()));
 #endif
 }
 
 // private
 void SceneScheduler::cleanup() {
-	current_state_.reset();
-	pending_state_.reset();
+	current_scene_.reset();
+	pending_scene_.reset();
 }
 
 // private
-void SceneScheduler::update_current_state(float dt) {
-	if (pending_state_) {
-		current_state_ = std::move(pending_state_);
+void SceneScheduler::update_scene(float dt) {
+	if (pending_scene_) {
+		current_scene_ = std::move(pending_scene_);
+#ifdef AETHER_VERBOSE_DEBUG
+		debuglog("Scene replaced");
+#endif
 	}
 
-	if (current_state_) {
-		current_state_->base_update(dt);
-	}
-}
-
-// private
-void SceneScheduler::draw_current_state() {
-	if (current_state_) {
-		current_state_->base_draw();
+	if (current_scene_) {
+		current_scene_->base_update(dt);
 	}
 }
 
 // private
-bool SceneScheduler::has_pending_state() const {
-	return pending_state_ != nullptr;
+void SceneScheduler::draw_scene() {
+	if (current_scene_) {
+		current_scene_->base_draw();
+	}
+}
+
+// private
+bool SceneScheduler::has_pending_scene() const {
+	return pending_scene_ != nullptr;
 }
 
 } // namespace aether
