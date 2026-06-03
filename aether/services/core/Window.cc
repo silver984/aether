@@ -48,10 +48,8 @@ bool Window::init(init_descriptor desc) {
 	#endif
 #endif
 
-	SetTraceLogCallback([](int, char const*, va_list) {});
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
-
-	size<int> const minimum_size = {640, 360};
+	size<int> const minimum_size = size<int>(640, 360);
 	title_                       = std::string(desc.title);
 	default_size_                = static_cast<size<std::uint32_t>>(util::max(minimum_size, desc.resolution));
 	InitWindow(default_size_.width, default_size_.height, title_.c_str());
