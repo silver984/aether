@@ -109,6 +109,39 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
+[[nodiscard]] T sin(T const& val) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::sin(val[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T cos(T const& val) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::cos(val[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
+[[nodiscard]] T tan(T const& val) {
+	T out;
+
+	for (std::size_t i = 0; i < T::capacity(); ++i) {
+		out[i] = std::tan(val[i]);
+	}
+
+	return out;
+}
+
+template <indexed_numeric T>
 [[nodiscard]] T min(T const& left, T const& right) {
 	T out;
 
