@@ -1,15 +1,15 @@
 #include <cmath>
 #include <raylib.h>
-#include <util/as_raylib.hh>
+#include <util/rltype.hh>
 
 namespace aether::util {
 
-Vector2 as_vector2(vec2<float> vec2) {
+rlvec2 to_rlvec2(vec2<float> vec2) {
 	return {vec2.x, vec2.y};
 }
 
-Matrix as_matrix(mat3 const& matrix) {
-	Matrix r{};
+rlmat4 to_rlmat4(mat3 const& matrix) {
+	rlmat4 r{};
 	r.m0  = matrix.m[0][0];
 	r.m4  = matrix.m[0][1];
 	r.m12 = matrix.m[0][2];
@@ -21,11 +21,11 @@ Matrix as_matrix(mat3 const& matrix) {
 	return r;
 }
 
-Color as_color(rgba color) {
-	return {color.r, color.g, color.b, color.a};
+rlrgba to_rlrgba(rgba color) {
+	return {(unsigned char)color.r, (unsigned char)color.g, (unsigned char)color.b, (unsigned char)color.a};
 }
 
-Rectangle as_rectangle(rect<float> rectangle) {
+rlrect to_rlrect(rect<float> rectangle) {
 	return {rectangle.x, rectangle.y, rectangle.width, rectangle.height};
 }
 

@@ -1,14 +1,12 @@
 #include <Context.hh>
-#include <algorithm>
-#include <cmath>
 #include <fmt/format.h>
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
 #include <services/core/Renderer.hh>
 #include <services/core/Window.hh>
-#include <util/as_raylib.hh>
 #include <util/math.hh>
+#include <util/rltype.hh>
 
 // namespace {
 
@@ -124,8 +122,8 @@ void Renderer::setup(Window& window) {
 void Renderer::start_draw() {
 	BeginDrawing();
 	size<std::uint32_t> const lrender_bounds = render_bounds();
-	BeginScissorMode(0, 0, static_cast<int>(lrender_bounds.width), static_cast<int>(lrender_bounds.height));
-	ClearBackground(util::as_color(background_rgba_));
+	BeginScissorMode(0, 0, (int)lrender_bounds.width, (int)lrender_bounds.height);
+	ClearBackground(util::to_rlrgba(background_rgba_));
 	push_matrix(transform_);
 }
 
@@ -148,19 +146,21 @@ void Renderer::end_draw() const {
 
 // private
 size<std::uint32_t> Renderer::render_bounds() const {
-	return {static_cast<std::uint32_t>(GetRenderWidth()), static_cast<std::uint32_t>(GetRenderHeight())};
+	int const width  = std::max(0, GetRenderWidth());
+	int const height = std::max(0, GetRenderHeight());
+	return {(std::uint32_t)width, (std::uint32_t)height};
 }
 
 // private
 void Renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
-	Matrix m = util::as_matrix(matrix);
+	rlmat4 const m = util::to_rlmat4(matrix);
 	rlMultMatrixf(MatrixToFloat(m));
 }
 
 // private
 void Renderer::define_color_vertex(rgba color) const {
-	Color v = util::as_color(color);
+	rlrgba const v = util::to_rlrgba(color);
 	rlColor4ub(v.r, v.g, v.b, v.a);
 }
 
@@ -177,8 +177,8 @@ void Renderer::define_texture_coord(vec2<float> position) const {
 // private
 mat3 Renderer::calculate_transform(size<std::uint32_t> default_window_size) const {
 	size<std::uint32_t> const lrender_bounds = render_bounds();
-	vec2<float> const scale_ratio            = {lrender_bounds.width / static_cast<float>(default_window_size.width),
-	                                            lrender_bounds.height / static_cast<float>(default_window_size.height)};
+	vec2<float> const scale_ratio            = {lrender_bounds.width / (float)default_window_size.width,
+	                                            lrender_bounds.height / (float)default_window_size.height};
 	float const scale_factor                 = std::min(scale_ratio.x, scale_ratio.y);
 	vec2<float> const scaled_size            = {default_window_size.width * scale_factor,
 	                                            default_window_size.height * scale_factor};
