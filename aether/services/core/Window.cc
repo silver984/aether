@@ -13,9 +13,7 @@
 namespace aether {
 
 // private
-Window::Window()
-    : is_initialized_(false) {}
-
+Window::Window()  = default;
 Window::~Window() = default;
 
 void Window::on_resize(std::weak_ptr<std::function<void(Window&)>> callback) {
@@ -40,11 +38,6 @@ size<std::uint32_t> Window::default_size() const {
 
 // private
 bool Window::init(init_descriptor desc) {
-	if (is_initialized_) {
-		// already initialized
-		return true;
-	}
-
 #ifdef AETHER_DEBUG
 	log::impl::create_log_file();
 
@@ -77,26 +70,16 @@ bool Window::init(init_descriptor desc) {
 #ifdef AETHER_VERBOSE_DEBUG
 	debuglog("Initialized");
 #endif
-	return is_initialized_ = true;
+	return true;
 }
 
 // private
 void Window::shutdown() {
-	if (!is_initialized_) {
-		// not initialized yet
-		return;
-	}
-
 	CloseWindow();
-	is_initialized_ = false;
 }
 
 // private
 void Window::update() {
-	if (!IsWindowResized()) {
-		return;
-	}
-
 	for (auto iterator = on_resize_callbacks_.begin(); iterator != on_resize_callbacks_.end();) {
 		auto callback = iterator->lock();
 

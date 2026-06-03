@@ -19,25 +19,16 @@ struct size final : operators<size, T, 2> {
 	    : width(width_val)
 	    , height(height_val) {}
 
-	template <numeric U>
-	[[nodiscard]] constexpr operator vec2<U>() const {
-		return {static_cast<U>(width), static_cast<U>(height)};
+	[[nodiscard]] constexpr operator vec2<T>() const {
+		return vec2<T>(width, height);
 	}
 
 	constexpr T& operator[](std::size_t i) {
-		switch (i) {
-		case 0: return width;
-		case 1: return height;
-		default: throw;
-		}
+		return i == 0 ? width : height;
 	}
 
 	constexpr T const& operator[](std::size_t i) const {
-		switch (i) {
-		case 0: return width;
-		case 1: return height;
-		default: throw;
-		}
+		return i == 0 ? width : height;
 	}
 
 	T width  = T{0};

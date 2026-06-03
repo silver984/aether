@@ -69,7 +69,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex({});
+		define_vertex(vec2<float>(0.f));
 	}
 
 	{ // bottom left
@@ -81,7 +81,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex({0.f, source_rect.height});
+		define_vertex(vec2<float>(0.f, source_rect.height));
 	}
 
 	{ // bottom right
@@ -92,7 +92,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex({source_rect.width, source_rect.height});
+		define_vertex(vec2<float>(source_rect.width, source_rect.height));
 	}
 
 	{ // top right
@@ -103,7 +103,7 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 		}
 
 		define_texture_coord(coord / texture_bounds);
-		define_vertex({source_rect.width, 0.f});
+		define_vertex(vec2<float>(source_rect.width, 0.f));
 	}
 
 	rlEnd();
@@ -146,9 +146,8 @@ void Renderer::end_draw() const {
 
 // private
 size<std::uint32_t> Renderer::render_bounds() const {
-	int const width  = std::max(0, GetRenderWidth());
-	int const height = std::max(0, GetRenderHeight());
-	return {(std::uint32_t)width, (std::uint32_t)height};
+	// this should be fine...
+	return size<std::uint32_t>((std::uint32_t)GetRenderWidth(), (std::uint32_t)GetRenderHeight());
 }
 
 // private
@@ -184,7 +183,7 @@ mat3 Renderer::calculate_transform(size<std::uint32_t> default_window_size) cons
 	                                            default_window_size.height * scale_factor};
 	vec2<float> const offset         = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
 	vec2<float> const snapped_offset = util::round(offset / 2.f);
-	mat3 result                      = mat3::translation(snapped_offset) * mat3::scale({scale_factor, scale_factor});
+	mat3 result                      = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
 	result.m[0][2]                   = std::round(result.m[0][2]);
 	result.m[1][2]                   = std::round(result.m[1][2]);
 	return result;

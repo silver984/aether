@@ -12,32 +12,23 @@ template <numeric T>
 struct vec2 final : operators<vec2, T, 2> {
 	using value_type = T;
 	constexpr vec2() = default;
-	constexpr vec2(T v)
-	    : x(v)
-	    , y(v) {}
+	constexpr vec2(T val)
+	    : x(val)
+	    , y(val) {}
 	constexpr vec2(T x_val, T y_val)
 	    : x(x_val)
 	    , y(y_val) {}
 
-	template <numeric U>
-	[[nodiscard]] constexpr operator size<U>() const {
-		return {static_cast<U>(x), static_cast<U>(y)};
+	[[nodiscard]] constexpr operator size<T>() const {
+		return size<T>(x, y);
 	}
 
 	constexpr T& operator[](std::size_t i) {
-		switch (i) {
-		case 0: return x;
-		case 1: return y;
-		default: throw;
-		}
+		return i == 0 ? x : y;
 	}
 
 	constexpr T const& operator[](std::size_t i) const {
-		switch (i) {
-		case 0: return x;
-		case 1: return y;
-		default: throw;
-		}
+		return i == 0 ? x : y;
 	}
 
 	T x = T{0};

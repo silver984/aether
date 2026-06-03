@@ -44,7 +44,6 @@ private:
 	std::vector<std::weak_ptr<std::function<void(Window&)>>> on_resize_callbacks_;
 	std::string title_;
 	size<std::uint32_t> default_size_;
-	bool is_initialized_;
 };
 
 } // namespace aether

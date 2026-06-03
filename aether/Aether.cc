@@ -65,8 +65,6 @@ void Aether::run() {
 		return;
 	}
 
-	ran_game_loop_ = true;
-
 	while (!window_.should_close()) {
 		audio_manager_.update();
 		window_.update();
@@ -91,6 +89,7 @@ void Aether::run() {
 #endif
 	}
 
+	ran_game_loop_ = true;
 	shutdown();
 }
 

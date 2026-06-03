@@ -227,7 +227,7 @@ void Node::set_anchor(vec2<float> val) {
 		return;
 	}
 
-	anchor_ = util::clamp(val, {}, {1.f, 1.f});
+	anchor_ = util::clamp(val, vec2<float>(0.f), vec2<float>(1.f));
 	mark_transform_dirty();
 }
 
@@ -249,7 +249,7 @@ void Node::set_scale(float val) {
 		return;
 	}
 
-	scale_ = {val, val};
+	scale_ = vec2<float>(val);
 	mark_transform_dirty();
 }
 

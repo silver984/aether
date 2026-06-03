@@ -39,8 +39,7 @@ struct rect final : operators<rect, T, 4> {
 		case 0: return x;
 		case 1: return y;
 		case 2: return width;
-		case 3: return height;
-		default: throw;
+		default: return height;
 		}
 	}
 
@@ -49,8 +48,7 @@ struct rect final : operators<rect, T, 4> {
 		case 0: return x;
 		case 1: return y;
 		case 2: return width;
-		case 3: return height;
-		default: throw;
+		default: return height;
 		}
 	}
 

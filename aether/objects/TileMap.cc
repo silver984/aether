@@ -13,7 +13,7 @@ namespace aether {
 TileMap::TileMap(Context const& ctx, descriptor desc)
     : NodeIdentity<TileMap>(ctx)
     , file_arg_(std::string(desc.file))
-    , tile_bounds_arg_(static_cast<size<std::uint32_t>>(util::max({1, 1}, desc.tile_bounds)))
+    , tile_bounds_arg_(static_cast<size<std::uint32_t>>(util::max(size<int>(1), desc.tile_bounds)))
     , has_antialiasing_(desc.has_antialiasing) {}
 
 TileMap::~TileMap() = default;
@@ -29,7 +29,7 @@ vec2<std::uint32_t> TileMap::tile_count() const {
 		return {};
 	}
 
-	return {texture_->width / tile_bounds_arg_.width, texture_->height / tile_bounds_arg_.height};
+	return vec2<std::uint32_t>(texture_->width / tile_bounds_arg_.width, texture_->height / tile_bounds_arg_.height);
 }
 
 void TileMap::seek_tile(vec2<int> tile_index) {
@@ -40,10 +40,10 @@ void TileMap::seek_tile(vec2<int> tile_index) {
 		return;
 	}
 
-	tile_index_ =
-	    static_cast<vec2<std::uint32_t>>(util::clamp(tile_index, {}, static_cast<vec2<int>>(tile_count()) - 1));
-	texture_source_rect_.x = static_cast<float>(tile_bounds_arg_.width * tile_index_.x);
-	texture_source_rect_.y = static_cast<float>(tile_bounds_arg_.height * tile_index_.y);
+	vec2<int> const ltile_count = static_cast<vec2<int>>(tile_count());
+	tile_index_            = static_cast<vec2<std::uint32_t>>(util::clamp(tile_index, vec2<int>(0.f), ltile_count - 1));
+	texture_source_rect_.x = tile_bounds_arg_.width * (float)tile_index_.x;
+	texture_source_rect_.y = tile_bounds_arg_.height * (float)tile_index_.y;
 }
 
 vec2<std::uint32_t> TileMap::tile_index() const {
@@ -61,9 +61,9 @@ bool TileMap::init() {
 		return false;
 	}
 
-	texture_source_rect_.width  = static_cast<float>(tile_bounds_arg_.width);
-	texture_source_rect_.height = static_cast<float>(tile_bounds_arg_.height);
-	set_bounds({static_cast<int>(tile_bounds_arg_.width), static_cast<int>(tile_bounds_arg_.height)});
+	texture_source_rect_.width  = (float)tile_bounds_arg_.width;
+	texture_source_rect_.height = (float)tile_bounds_arg_.height;
+	set_bounds(size<int>((int)tile_bounds_arg_.width, (int)tile_bounds_arg_.height));
 	toggle_antialiasing(true);
 	enable_draw();
 

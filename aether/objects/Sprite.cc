@@ -8,14 +8,6 @@
 #include <services/core/Renderer.hh>
 #include <services/resource/TextureRepository.hh>
 
-namespace {
-
-int round_int_cast(float val) {
-	return static_cast<int>(std::round(val));
-}
-
-} // namespace
-
 namespace aether {
 
 Sprite::Sprite(Context const& ctx, descriptor desc)
@@ -42,8 +34,8 @@ bool Sprite::set_texture(std::string_view file) {
 		return false;
 	}
 
-	size<int> new_bounds = {texture_->width, texture_->height};
-	texture_source_rect_ = {0.f, 0.f, static_cast<float>(new_bounds.width), static_cast<float>(new_bounds.height)};
+	size<int> const new_bounds = size<int>(texture_->width, texture_->height);
+	texture_source_rect_       = rect<float>(0.f, 0.f, (float)new_bounds.width, (float)new_bounds.height);
 	set_bounds(new_bounds);
 
 	return true;
@@ -71,12 +63,12 @@ void Sprite::set_texture_source_rect(rect<int> val) {
 }
 
 void Sprite::update_bounds() {
-	set_bounds({round_int_cast(texture_source_rect_.width), round_int_cast(texture_source_rect_.height)});
+	set_bounds(size<int>((int)std::round(texture_source_rect_.width), (int)std::round(texture_source_rect_.height)));
 }
 
 rect<int> Sprite::texture_source_rect() const {
-	return {round_int_cast(texture_source_rect_.x), round_int_cast(texture_source_rect_.y),
-	        round_int_cast(texture_source_rect_.width), round_int_cast(texture_source_rect_.height)};
+	return rect<int>((int)std::round(texture_source_rect_.x), (int)std::round(texture_source_rect_.y),
+	                 (int)std::round(texture_source_rect_.width), (int)std::round(texture_source_rect_.height));
 }
 
 // protected
