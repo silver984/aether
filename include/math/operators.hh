@@ -160,7 +160,7 @@ struct operators {
 		return self();
 	}
 
-	template <typename U>
+	template <numeric U>
 	constexpr derived<T>& operator+=(derived<U> rhs) {
 		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] += static_cast<T>(rhs[i]);
@@ -169,7 +169,7 @@ struct operators {
 		return self();
 	}
 
-	template <typename U>
+	template <numeric U>
 	constexpr derived<T>& operator+=(U rhs) {
 		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] += static_cast<T>(rhs);
@@ -186,7 +186,7 @@ struct operators {
 		return self();
 	}
 
-	template <typename U>
+	template <numeric U>
 	constexpr derived<T>& operator-=(derived<U> rhs) {
 		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] -= static_cast<T>(rhs[i]);
@@ -195,7 +195,7 @@ struct operators {
 		return self();
 	}
 
-	template <typename U>
+	template <numeric U>
 	constexpr derived<T>& operator-=(U rhs) {
 		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] -= static_cast<T>(rhs);
@@ -212,7 +212,7 @@ struct operators {
 		return self();
 	}
 
-	template <typename U>
+	template <numeric U>
 	constexpr derived<T>& operator*=(derived<U> rhs) {
 		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] *= static_cast<T>(rhs[i]);
@@ -221,7 +221,7 @@ struct operators {
 		return self();
 	}
 
-	template <typename U>
+	template <numeric U>
 	constexpr derived<T>& operator*=(U rhs) {
 		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] *= static_cast<T>(rhs);
@@ -238,7 +238,7 @@ struct operators {
 		return self();
 	}
 
-	template <typename U>
+	template <numeric U>
 	constexpr derived<T>& operator/=(derived<U> rhs) {
 		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] /= static_cast<T>(rhs[i]);
@@ -247,7 +247,7 @@ struct operators {
 		return self();
 	}
 
-	template <typename U>
+	template <numeric U>
 	constexpr derived<T>& operator/=(U rhs) {
 		for (std::size_t i = 0; i < N; ++i) {
 			self()[i] /= static_cast<T>(rhs);
