@@ -15,8 +15,8 @@
 
 namespace aether {
 
-class SceneScheduler;
 class Context;
+class SceneScheduler;
 
 class Node : public std::enable_shared_from_this<Node> {
 	friend class SceneScheduler;

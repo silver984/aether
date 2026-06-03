@@ -137,7 +137,7 @@ std::shared_ptr<animation_map> AnimationRepository::xml_parse(std::filesystem::p
 // private
 std::shared_ptr<animation_map>
 AnimationRepository::xml_parse_delegate(tinyxml2::XMLDocument const& document, std::string_view element_name,
-                                        std::function<void(tinyxml2::XMLElement const&, animation_map&)> callback) {
+                                        std::function<void(tinyxml2::XMLElement const&, animation_map&)>&& callback) {
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {

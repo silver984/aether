@@ -1,6 +1,6 @@
 #include <Aether.hh>
+#include <scenes/TestScene.hh>
 #include <services/SceneScheduler.hh>
-#include <states/TestState.hh>
 #include <version.h>
 
 using namespace aether;
@@ -10,7 +10,7 @@ int main() {
 
 	if (aether.init({.window_title = "Aether Engine " AETHER_VERSION, .resolution = {1280, 720}})) {
 		Context const& ctx = aether.context();
-		ctx.scene_scheduler.replace_scene(Node::create<TestState>(ctx));
+		ctx.scene_scheduler.replace_scene(Scene::create<TestScene>(ctx));
 		aether.run();
 	}
 

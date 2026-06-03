@@ -10,7 +10,7 @@ target_sources(${AETHER}
 add_subdirectory(math)
 add_subdirectory(objects)
 add_subdirectory(platforms)
-add_subdirectory(states)
+add_subdirectory(scenes)
 add_subdirectory(services)
 add_subdirectory(util)
 

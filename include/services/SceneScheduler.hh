@@ -1,10 +1,10 @@
 #pragma once
 #include <memory>
-#include <objects/Node.hh>
 
 namespace aether {
 
 class Aether;
+class Scene;
 
 class SceneScheduler final {
 	friend class Aether;
@@ -19,7 +19,7 @@ public:
 	SceneScheduler& operator=(SceneScheduler const&) = delete;
 	SceneScheduler& operator=(SceneScheduler&&)      = delete;
 
-	void replace_scene(std::shared_ptr<Node>&& new_scene);
+	void replace_scene(std::shared_ptr<Scene>&& new_scene);
 
 private:
 	void cleanup();
@@ -27,8 +27,8 @@ private:
 	void draw_scene();
 	[[nodiscard]] bool has_pending_scene() const;
 
-	std::shared_ptr<Node> current_scene_;
-	std::shared_ptr<Node> pending_scene_;
+	std::shared_ptr<Scene> current_scene_;
+	std::shared_ptr<Scene> pending_scene_;
 };
 
 } // namespace aether

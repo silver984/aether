@@ -42,7 +42,7 @@ private:
 
 	[[nodiscard]] std::shared_ptr<animation_map>
 	xml_parse_delegate(tinyxml2::XMLDocument const& document, std::string_view element_name,
-	                   std::function<void(tinyxml2::XMLElement const&, animation_map&)> callback);
+	                   std::function<void(tinyxml2::XMLElement const&, animation_map&)>&& callback);
 
 	[[nodiscard]] std::shared_ptr<animation_map> xml_adobe_animate_parse(tinyxml2::XMLDocument const& document);
 	[[nodiscard]] std::shared_ptr<animation_map> xml_texture_packer_parse(tinyxml2::XMLDocument const& document);
