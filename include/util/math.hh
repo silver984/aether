@@ -23,7 +23,7 @@ template <numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T lerp(T const& a, T const& b, typename T::value_type const& t) {
+[[nodiscard]] constexpr T lerp(T const& a, T const& b, typename T::value_type const& t) {
 	T out;
 
 	for (std::size_t i = 0; i < T::capacity(); ++i) {
@@ -54,7 +54,7 @@ template <numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T clamp(T const& val, T const& min_val, T const& max_val) {
+[[nodiscard]] constexpr T clamp(T const& val, T const& min_val, T const& max_val) {
 	T out;
 
 	for (std::size_t i = 0; i < T::capacity(); ++i) {
@@ -76,7 +76,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T ceil(T const& val) {
+[[nodiscard]] constexpr T ceil(T const& val) {
 	T out;
 
 	for (std::size_t i = 0; i < T::capacity(); ++i) {
@@ -98,7 +98,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T abs(T const& val) {
+[[nodiscard]] constexpr T abs(T const& val) {
 	T out;
 
 	for (std::size_t i = 0; i < T::capacity(); ++i) {
@@ -142,7 +142,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T min(T const& left, T const& right) {
+[[nodiscard]] constexpr T min(T const& left, T const& right) {
 	T out;
 
 	for (std::size_t i = 0; i < T::capacity(); ++i) {
@@ -153,7 +153,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T max(T const& left, T const& right) {
+[[nodiscard]] constexpr T max(T const& left, T const& right) {
 	T out;
 
 	for (std::size_t i = 0; i < T::capacity(); ++i) {
@@ -164,9 +164,9 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T reverse(T const& val) {
+[[nodiscard]] constexpr T reverse(T const& val) {
 	T out;
-	std::size_t capacity = T::capacity();
+	std::size_t const capacity = T::capacity();
 
 	for (std::size_t i = 0; i < capacity; ++i) {
 		out[i] = val[capacity - i - 1];
