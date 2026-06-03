@@ -1,7 +1,6 @@
 #pragma once
 #include <algorithm>
 #include <cmath>
-#include <math/indexed_numeric.hh>
 #include <math/numeric.hh>
 #include <numbers>
 
