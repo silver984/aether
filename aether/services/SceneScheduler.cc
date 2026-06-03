@@ -38,8 +38,11 @@ void SceneScheduler::cleanup() {
 void SceneScheduler::update_scene(float dt) {
 	if (pending_scene_) {
 		current_scene_ = std::move(pending_scene_);
-#ifdef AETHER_VERBOSE_DEBUG
+#ifdef AETHER_DEBUG
+	#ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Scene replaced");
+	#endif
+		infolog("Scene replaced");
 #endif
 	}
 

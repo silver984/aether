@@ -34,6 +34,9 @@ private:
 	bool init();
 	void shutdown();
 	void update();
+	void pause();
+	void resume();
+	[[nodiscard]] bool is_paused();
 
 	struct impl;
 	std::unique_ptr<impl> impl_;

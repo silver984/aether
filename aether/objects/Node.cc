@@ -68,14 +68,14 @@ void Node::remove_child(std::shared_ptr<Node> node) {
 		return;
 	}
 
-	auto it = std::find(children_.begin(), children_.end(), node);
+	auto const iterator = std::find(children_.begin(), children_.end(), node);
 
-	if (it == children_.end()) {
+	if (iterator == children_.end()) {
 		return;
 	}
 
 	node->parent_.reset();
-	children_.erase(it);
+	children_.erase(iterator);
 	node->mark_transform_dirty();
 	node->mark_rgba_dirty();
 }
@@ -95,6 +95,14 @@ void Node::destroy() {
 			child->destroy();
 		}
 	}
+}
+
+std::shared_ptr<Node> Node::fetch_child(std::string_view name) {
+	auto const iterator = std::find_if(children_.begin(), children_.end(), [&](std::shared_ptr<Node> const& child) {
+		return child && child->name() == name;
+	});
+
+	return (iterator != children_.end()) ? *iterator : nullptr;
 }
 
 void Node::activate() {

@@ -34,10 +34,6 @@ struct AudioManager::impl {
 	};
 
 	[[nodiscard]] std::optional<std::uint32_t> generate_handle(generation_descriptor const& desc) {
-		if (!is_initialized) {
-			return std::nullopt;
-		}
-
 		std::filesystem::path lfile;
 
 		if (auto const optional_file = util::normalized_filepath(desc.file); optional_file.has_value()) {
@@ -60,7 +56,7 @@ struct AudioManager::impl {
 		        ma_sound_init_from_file(&engine, lfile.string().c_str(), 0, nullptr, nullptr, &iterator->second.sound);
 		    result != MA_SUCCESS) {
 #ifdef AETHER_DEBUG
-			errorlog("Failed to initialize sound | error code: {}", static_cast<int>(result));
+			errorlog("Failed to initialize sound | error code: {}", (int)result);
 #endif
 			active_sounds.erase(iterator);
 			return std::nullopt;
@@ -78,10 +74,6 @@ struct AudioManager::impl {
 	}
 
 	bool play(std::uint32_t id) {
-		if (!is_initialized) {
-			return false;
-		}
-
 		auto iterator = active_sounds.find(id);
 
 		if (iterator == active_sounds.end()) {
@@ -90,7 +82,7 @@ struct AudioManager::impl {
 
 		if (ma_result result = ma_sound_start(&iterator->second.sound); result != MA_SUCCESS) {
 #ifdef AETHER_DEBUG
-			errorlog("Failed | error code: {}", static_cast<int>(result));
+			errorlog("Failed | error code: {}", (int)result);
 #endif
 			return false;
 		}
@@ -99,41 +91,28 @@ struct AudioManager::impl {
 	}
 
 	bool init() {
-		if (is_initialized) {
-			// already initialized
-			return true;
-		}
-
 		if (ma_result result = ma_engine_init(nullptr, &engine); result != MA_SUCCESS) {
 #ifdef AETHER_DEBUG
-			errorlog("Couldn't initialize engine | error code: {}", static_cast<int>(result));
+			errorlog("Couldn't initialize engine | error code: {}", (int)result);
 #endif
 			return false;
 		}
 
+		device = ma_engine_get_device(&engine);
+
 #ifdef AETHER_VERBOSE_DEBUG
+		tracelog("Device address: {}", fmt::ptr(device));
 		debuglog("Initialized");
 #endif
-
-		return is_initialized = true;
+		return true;
 	}
 
 	void shutdown() {
-		if (!is_initialized) {
-			// not yet initialized
-			return;
-		}
-
 		active_sounds.clear();
 		ma_engine_uninit(&engine);
-		is_initialized = false;
 	}
 
 	void update() {
-		if (!is_initialized) {
-			return;
-		}
-
 		std::erase_if(active_sounds, [](auto& pair) {
 			if (ma_sound_is_looping(&pair.second.sound)) {
 				return pair.second.owner.expired();
@@ -143,10 +122,23 @@ struct AudioManager::impl {
 		});
 	}
 
+	void pause() {
+		is_audio_paused = ma_device_stop(device) == MA_SUCCESS;
+	}
+
+	void resume() {
+		is_audio_paused = !(ma_device_start(device) == MA_SUCCESS);
+	}
+
+	[[nodiscard]] bool is_paused() {
+		return is_audio_paused;
+	}
+
 	std::unordered_map<std::uint32_t, scoped_sound> active_sounds;
+	ma_device* device = nullptr;
 	ma_engine engine;
 	std::uint32_t id_hint = 0;
-	bool is_initialized   = false;
+	bool is_audio_paused  = false;
 };
 
 // private
@@ -176,6 +168,21 @@ void AudioManager::shutdown() {
 // private
 void AudioManager::update() {
 	impl_->update();
+}
+
+// private
+void AudioManager::pause() {
+	impl_->pause();
+}
+
+// private
+void AudioManager::resume() {
+	impl_->resume();
+}
+
+// private
+bool AudioManager::is_paused() {
+	return impl_->is_paused();
 }
 
 } // namespace aether

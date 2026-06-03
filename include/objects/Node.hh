@@ -39,6 +39,15 @@ public:
 
 	void add_child(std::shared_ptr<Node> node);
 	void remove_child(std::shared_ptr<Node> node);
+	[[nodiscard]] std::shared_ptr<Node> fetch_child(std::string_view name);
+
+	template <typename T>
+	    requires std::is_base_of_v<Node, T>
+	[[nodiscard]] std::shared_ptr<T> fetch_child_as(std::string_view name) {
+		auto node = fetch_child(name);
+		return std::dynamic_pointer_cast<T>(node);
+	}
+
 	void destroy();
 	void activate();
 	void deactivate();
@@ -51,7 +60,7 @@ public:
 	[[nodiscard]] std::size_t child_count() const;
 	[[nodiscard]] std::size_t recursed_child_count() const;
 	[[nodiscard]] std::weak_ptr<Node> parent() const;
-	void set_name(std::string_view name);
+	void set_name(std::string_view name); // TODO: better naming system
 	[[nodiscard]] std::string_view name() const;
 	[[nodiscard]] virtual std::string_view type() const;
 	void set_bounds(size<int> val); // TODO: set_width, set_height

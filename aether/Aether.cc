@@ -46,7 +46,7 @@ bool Aether::init(init_descriptor desc) {
 		warninglog("AudioManager failed to initialize");
 	}
 #else
-	audio_manager_.init();
+	(void)audio_manager_.init();
 #endif
 
 	renderer_.setup(window_);
@@ -66,14 +66,22 @@ void Aether::run() {
 	}
 
 	while (!window_.should_close()) {
-		audio_manager_.update();
 		window_.update();
 
 		bool const is_window_minimized = window_.is_minimized();
 
 		if (!is_window_minimized) {
+			if (audio_manager_.is_paused()) {
+				audio_manager_.resume();
+			}
+
+			audio_manager_.update();
 			ctx_.update_frame_context();
 			scene_scheduler_.update_scene(ctx_.delta_time());
+		} else {
+			if (!audio_manager_.is_paused()) {
+				audio_manager_.pause();
+			}
 		}
 
 		renderer_.start_draw();
