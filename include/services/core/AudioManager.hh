@@ -27,7 +27,7 @@ public:
 	AudioManager& operator=(AudioManager const&) = delete;
 	AudioManager& operator=(AudioManager&&)      = delete;
 
-	[[nodiscard]] std::optional<std::uint32_t> generate_handle(generation_descriptor desc) const;
+	[[nodiscard]] std::optional<std::uint32_t> generate_key(generation_descriptor desc) const;
 	bool play(std::uint32_t id) const;
 	bool pause(std::uint32_t id) const;
 	[[nodiscard]] float duration(std::uint32_t id) const;

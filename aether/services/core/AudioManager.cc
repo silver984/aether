@@ -36,7 +36,7 @@ struct AudioManager::impl {
 		ma_uint64 pcm_frames;
 	};
 
-	[[nodiscard]] std::optional<std::uint32_t> generate_handle(generation_descriptor const& desc) {
+	[[nodiscard]] std::optional<std::uint32_t> generate_key(generation_descriptor const& desc) {
 		std::filesystem::path lfile;
 
 		if (auto const optional_file = util::normalized_filepath(desc.file); optional_file.has_value()) {
@@ -53,7 +53,7 @@ struct AudioManager::impl {
 		auto const start_time = util::start();
 #endif
 
-		auto [iterator, _] = active_sounds.emplace(id_hint, desc.owner);
+		auto const [iterator, _] = active_sounds.emplace(id_hint, desc.owner);
 
 		if (ma_result result =
 		        ma_sound_init_from_file(&engine, lfile.string().c_str(), 0, nullptr, nullptr, &iterator->second.sound);
@@ -222,8 +222,8 @@ AudioManager::AudioManager()
 
 AudioManager::~AudioManager() = default;
 
-std::optional<std::uint32_t> AudioManager::generate_handle(generation_descriptor desc) const {
-	return impl_->generate_handle(desc);
+std::optional<std::uint32_t> AudioManager::generate_key(generation_descriptor desc) const {
+	return impl_->generate_key(desc);
 }
 
 bool AudioManager::play(std::uint32_t id) const {
