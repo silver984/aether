@@ -2,6 +2,7 @@
 	#include <log.hh>
 #endif
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <miniaudio/miniaudio.h>
 #include <objects/abstract/Sound.hh>
@@ -16,7 +17,8 @@ namespace aether {
 struct AudioManager::impl {
 	struct scoped_sound final {
 		scoped_sound(std::weak_ptr<Sound> owner_wref)
-		    : owner(std::move(owner_wref)) {
+		    : owner(std::move(owner_wref))
+		    , pcm_frames(0) {
 			memset(&sound, 0, sizeof(ma_sound));
 		}
 
@@ -31,6 +33,7 @@ struct AudioManager::impl {
 
 		std::weak_ptr<Sound> owner;
 		ma_sound sound;
+		ma_uint64 pcm_frames;
 	};
 
 	[[nodiscard]] std::optional<std::uint32_t> generate_handle(generation_descriptor const& desc) {
@@ -62,11 +65,12 @@ struct AudioManager::impl {
 			return std::nullopt;
 		}
 
+		ma_sound_get_length_in_pcm_frames(&iterator->second.sound, &iterator->second.pcm_frames);
+
 #ifdef AETHER_VERBOSE_DEBUG
 		auto const end_time = util::end(start_time);
-		ma_uint64 pcm_frames;
-		ma_sound_get_length_in_pcm_frames(&iterator->second.sound, &pcm_frames);
-		tracelog("Successful generation | handle owner: {} | pcm frames: {}", fmt::ptr(desc.owner.get()), pcm_frames);
+		tracelog("Successful generation | handle owner: {} | pcm frames: {}", fmt::ptr(desc.owner.get()),
+		         iterator->second.pcm_frames);
 		debuglog("Done | took {}ms", end_time);
 #endif
 
@@ -74,13 +78,82 @@ struct AudioManager::impl {
 	}
 
 	bool play(std::uint32_t id) {
-		auto iterator = active_sounds.find(id);
+		auto const iterator = active_sounds.find(id);
 
 		if (iterator == active_sounds.end()) {
 			return false;
 		}
 
 		if (ma_result result = ma_sound_start(&iterator->second.sound); result != MA_SUCCESS) {
+#ifdef AETHER_DEBUG
+			errorlog("Failed | error code: {}", (int)result);
+#endif
+			return false;
+		}
+
+		return true;
+	}
+
+	bool pause(std::uint32_t id) {
+		auto const iterator = active_sounds.find(id);
+
+		if (iterator == active_sounds.end()) {
+			return false;
+		}
+
+		if (ma_result result = ma_sound_stop(&iterator->second.sound); result != MA_SUCCESS) {
+#ifdef AETHER_DEBUG
+			errorlog("Failed | error code: {}", (int)result);
+#endif
+			return false;
+		}
+
+		return true;
+	}
+
+	[[nodiscard]] float duration(std::uint32_t id) const {
+		auto const iterator = active_sounds.find(id);
+		if (iterator == active_sounds.end()) {
+			return 0.f;
+		}
+		return (float)iterator->second.pcm_frames / sample_rate;
+	}
+
+	[[nodiscard]] float time(std::uint32_t id) const {
+		auto const iterator = active_sounds.find(id);
+		if (iterator == active_sounds.end()) {
+			return 0.f;
+		}
+		return (float)ma_sound_get_time_in_pcm_frames(&iterator->second.sound) / sample_rate;
+	}
+
+	[[nodiscard]] bool is_playing(std::uint32_t id) const {
+		auto const iterator = active_sounds.find(id);
+		if (iterator == active_sounds.end()) {
+			return false;
+		}
+		return ma_sound_is_playing(&iterator->second.sound);
+	}
+
+	[[nodiscard]] bool is_finished(std::uint32_t id) const {
+		auto const iterator = active_sounds.find(id);
+		if (iterator == active_sounds.end()) {
+			return false;
+		}
+		return ma_sound_at_end(&iterator->second.sound);
+	}
+
+	bool seek_time(std::uint32_t id, float seconds) {
+		auto const iterator = active_sounds.find(id);
+
+		if (iterator == active_sounds.end()) {
+			return false;
+		}
+
+		seconds         = std::min(seconds, duration(id));
+		ma_uint64 frame = (ma_uint64)std::llround(sample_rate * seconds);
+
+		if (ma_result result = ma_sound_seek_to_pcm_frame(&iterator->second.sound, frame); result != MA_SUCCESS) {
 #ifdef AETHER_DEBUG
 			errorlog("Failed | error code: {}", (int)result);
 #endif
@@ -98,7 +171,8 @@ struct AudioManager::impl {
 			return false;
 		}
 
-		device = ma_engine_get_device(&engine);
+		device      = ma_engine_get_device(&engine);
+		sample_rate = ma_engine_get_sample_rate(&engine);
 
 #ifdef AETHER_VERBOSE_DEBUG
 		tracelog("Device address: {}", fmt::ptr(device));
@@ -113,7 +187,7 @@ struct AudioManager::impl {
 	}
 
 	void update() {
-		std::erase_if(active_sounds, [](auto& pair) {
+		std::erase_if(active_sounds, [](auto const& pair) {
 			if (ma_sound_is_looping(&pair.second.sound)) {
 				return pair.second.owner.expired();
 			}
@@ -122,23 +196,24 @@ struct AudioManager::impl {
 		});
 	}
 
-	void pause() {
-		is_audio_paused = ma_device_stop(device) == MA_SUCCESS;
+	void pause_device() {
+		device_paused = ma_device_stop(device) == MA_SUCCESS;
 	}
 
-	void resume() {
-		is_audio_paused = !(ma_device_start(device) == MA_SUCCESS);
+	void resume_device() {
+		device_paused = !(ma_device_start(device) == MA_SUCCESS);
 	}
 
-	[[nodiscard]] bool is_paused() {
-		return is_audio_paused;
+	[[nodiscard]] bool is_device_paused() const {
+		return device_paused;
 	}
 
 	std::unordered_map<std::uint32_t, scoped_sound> active_sounds;
 	ma_device* device = nullptr;
 	ma_engine engine;
 	std::uint32_t id_hint = 0;
-	bool is_audio_paused  = false;
+	ma_uint32 sample_rate = 0;
+	bool device_paused    = false;
 };
 
 // private
@@ -147,42 +222,66 @@ AudioManager::AudioManager()
 
 AudioManager::~AudioManager() = default;
 
-std::optional<std::uint32_t> AudioManager::generate_handle(generation_descriptor desc) {
+std::optional<std::uint32_t> AudioManager::generate_handle(generation_descriptor desc) const {
 	return impl_->generate_handle(desc);
 }
 
-bool AudioManager::play(std::uint32_t id) {
+bool AudioManager::play(std::uint32_t id) const {
 	return impl_->play(id);
 }
 
+bool AudioManager::pause(std::uint32_t id) const {
+	return impl_->pause(id);
+}
+
+float AudioManager::duration(std::uint32_t id) const {
+	return impl_->duration(id);
+}
+
+float AudioManager::time(std::uint32_t id) const {
+	return impl_->time(id);
+}
+
+bool AudioManager::is_playing(std::uint32_t id) const {
+	return impl_->is_playing(id);
+}
+
+bool AudioManager::is_finished(std::uint32_t id) const {
+	return impl_->is_finished(id);
+}
+
+bool AudioManager::seek_time(std::uint32_t id, float seconds) const {
+	return impl_->seek_time(id, seconds);
+}
+
 // private
-bool AudioManager::init() {
+bool AudioManager::init() const {
 	return impl_->init();
 }
 
 // private
-void AudioManager::shutdown() {
+void AudioManager::shutdown() const {
 	impl_->shutdown();
 }
 
 // private
-void AudioManager::update() {
+void AudioManager::update() const {
 	impl_->update();
 }
 
 // private
-void AudioManager::pause() {
-	impl_->pause();
+void AudioManager::pause_device() const {
+	impl_->pause_device();
 }
 
 // private
-void AudioManager::resume() {
-	impl_->resume();
+void AudioManager::resume_device() const {
+	impl_->resume_device();
 }
 
 // private
-bool AudioManager::is_paused() {
-	return impl_->is_paused();
+bool AudioManager::is_device_paused() const {
+	return impl_->is_device_paused();
 }
 
 } // namespace aether

@@ -71,16 +71,16 @@ void Aether::run() {
 		bool const is_window_minimized = window_.is_minimized();
 
 		if (!is_window_minimized) {
-			if (audio_manager_.is_paused()) {
-				audio_manager_.resume();
+			if (audio_manager_.is_device_paused()) {
+				audio_manager_.resume_device();
 			}
 
 			audio_manager_.update();
 			ctx_.update_frame_context();
 			scene_scheduler_.update_scene(ctx_.delta_time());
 		} else {
-			if (!audio_manager_.is_paused()) {
-				audio_manager_.pause();
+			if (!audio_manager_.is_device_paused()) {
+				audio_manager_.pause_device();
 			}
 		}
 

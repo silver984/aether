@@ -27,16 +27,22 @@ public:
 	AudioManager& operator=(AudioManager const&) = delete;
 	AudioManager& operator=(AudioManager&&)      = delete;
 
-	[[nodiscard]] std::optional<std::uint32_t> generate_handle(generation_descriptor desc);
-	bool play(std::uint32_t id);
+	[[nodiscard]] std::optional<std::uint32_t> generate_handle(generation_descriptor desc) const;
+	bool play(std::uint32_t id) const;
+	bool pause(std::uint32_t id) const;
+	[[nodiscard]] float duration(std::uint32_t id) const;
+	[[nodiscard]] float time(std::uint32_t id) const;
+	[[nodiscard]] bool is_playing(std::uint32_t id) const;
+	[[nodiscard]] bool is_finished(std::uint32_t id) const;
+	bool seek_time(std::uint32_t id, float seconds) const;
 
 private:
-	bool init();
-	void shutdown();
-	void update();
-	void pause();
-	void resume();
-	[[nodiscard]] bool is_paused();
+	bool init() const;
+	void shutdown() const;
+	void update() const;
+	void pause_device() const;
+	void resume_device() const;
+	[[nodiscard]] bool is_device_paused() const;
 
 	struct impl;
 	std::unique_ptr<impl> impl_;

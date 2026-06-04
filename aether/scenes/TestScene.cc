@@ -13,7 +13,8 @@
 using namespace aether;
 
 TestScene::TestScene(Context const& ctx)
-    : Scene(ctx) {}
+    : Scene(ctx)
+    , elapsed_(0.f) {}
 
 TestScene::~TestScene() = default;
 
@@ -53,8 +54,8 @@ bool TestScene::init() {
 	});
 
 	queue_work([this]() -> void {
-		if (auto sound = Sound::create(ctx_, "resources/Inst.mp3")) {
-			sound->play();
+		if (sound_ = Sound::create(ctx_, "resources/Inst.mp3")) {
+			(void)sound_->play();
 		}
 	});
 
@@ -69,5 +70,17 @@ void TestScene::enter() {
 
 // protected
 void TestScene::update(float dt) {
-	set_rotation(rotation() + (90.f * dt));
+	if (!sound_ || sound_->is_finished()) {
+		return;
+	}
+
+	elapsed_ += dt;
+	while (elapsed_ >= 1.f) {
+		(void)sound_->seek_time(sound_->time() + 5.f);
+		elapsed_ -= 1.f;
+	}
+
+#ifdef AETHER_VERBOSE_DEBUG
+	tracelog("Sound time: {:.2f}", sound_->time());
+#endif
 }

@@ -26,4 +26,28 @@ bool Sound::play() const {
 	return ctx_.core_services.audio_manager.play(id_);
 }
 
+bool Sound::pause() const {
+	return ctx_.core_services.audio_manager.pause(id_);
+}
+
+float Sound::duration() const {
+	return ctx_.core_services.audio_manager.duration(id_);
+}
+
+float Sound::time() const {
+	return ctx_.core_services.audio_manager.time(id_);
+}
+
+bool Sound::is_playing() const {
+	return ctx_.core_services.audio_manager.is_playing(id_);
+}
+
+bool Sound::seek_time(float seconds) const {
+	return ctx_.core_services.audio_manager.seek_time(id_, seconds);
+}
+
+bool Sound::is_finished() const {
+	return ctx_.core_services.audio_manager.is_finished(id_);
+}
+
 } // namespace aether

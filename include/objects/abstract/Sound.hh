@@ -14,6 +14,12 @@ public:
 
 	static std::shared_ptr<Sound> create(Context const& ctx, std::string_view file);
 	bool play() const;
+	bool pause() const;
+	[[nodiscard]] float duration() const;
+	[[nodiscard]] float time() const;
+	[[nodiscard]] bool is_playing() const;
+	[[nodiscard]] bool is_finished() const;
+	bool seek_time(float seconds) const;
 
 private:
 	Context const& ctx_;
