@@ -35,7 +35,7 @@ Unlike traditional engines like [_Psych Engine_](https://github.com/ShadowMario/
 
 > These features are planned. The engine is early in development, and nothing is final.
 
-- Mods made with Aether Engine will be written purely in [Lua,](https://www.lua.org/) enabled by [LuaBridge3.](https://github.com/kunitoki/LuaBridge3) These mods will be distributed as _packages,_ taking a form of a `.aether` archive.
+- Mods made with Aether Engine will be written purely in [Lua,](https://www.lua.org/) enabled by [Sol3.](https://github.com/ThePhD/sol2) These mods will be distributed as _packages,_ taking a form of a `.aether` archive.
 - Aether Engine will aim to modernize modding development by taking an SDK-like approach, making modding an easier process.
 
 ## How to Build
