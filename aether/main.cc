@@ -1,4 +1,5 @@
 #include <Aether.hh>
+#include <Context.hh>
 #include <scenes/TestScene.hh>
 #include <services/SceneScheduler.hh>
 #include <version.h>

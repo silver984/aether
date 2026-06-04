@@ -1,5 +1,11 @@
 #pragma once
 
+namespace SoLoud {
+
+class Soloud;
+
+}
+
 namespace aether {
 
 class Context;
@@ -10,7 +16,7 @@ class CoreServices final {
 	friend class Context;
 
 private:
-	CoreServices(Window& _window, Renderer& _renderer);
+	CoreServices(Window& _window, Renderer& _renderer, SoLoud::Soloud& _soloud);
 
 public:
 	~CoreServices();
@@ -21,6 +27,7 @@ public:
 
 	Window& window;
 	Renderer& renderer;
+	SoLoud::Soloud& soloud;
 };
 
-}
+} // namespace aether

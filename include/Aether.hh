@@ -1,15 +1,11 @@
 #pragma once
-#include <Context.hh>
 #include <math/size.hh>
 #include <memory>
-#include <services/SceneScheduler.hh>
-#include <services/core/Renderer.hh>
-#include <services/core/Window.hh>
-#include <services/resource/AnimationRepository.hh>
-#include <services/resource/TextureRepository.hh>
 #include <string_view>
 
 namespace aether {
+
+class Context;
 
 class Aether final {
 public:
@@ -26,21 +22,13 @@ public:
 	Aether& operator=(Aether const&) = delete;
 	Aether& operator=(Aether&&)      = delete;
 
-	bool init(init_descriptor desc);
-	void run();
-	[[nodiscard]] Context const& context();
+	bool init(init_descriptor desc) const;
+	void run() const;
+	[[nodiscard]] Context const& context() const;
 
 private:
-	void shutdown();
-
-	Window window_;
-	Renderer renderer_;
-	SceneScheduler scene_scheduler_;
-	TextureRepository texture_repository_;
-	AnimationRepository animation_repository_;
-	Context ctx_;
-	bool ran_game_loop_;
-	bool is_initialized_;
+	struct impl;
+	std::unique_ptr<impl> impl_;
 };
 
 } // namespace aether

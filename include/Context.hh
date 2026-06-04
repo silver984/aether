@@ -13,7 +13,7 @@ class Context final {
 	friend class Aether;
 
 private:
-	Context(Window& _window, Renderer& _renderer, TextureRepository& _texture_repository,
+	Context(Window& _window, Renderer& _renderer, SoLoud::Soloud& _soloud, TextureRepository& _texture_repository,
 	        AnimationRepository& _animation_repository, SceneScheduler& _scene_scheduler);
 
 public:
