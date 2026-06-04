@@ -33,7 +33,7 @@ protected:
 private:
 	static constexpr std::string_view TYPE_ = "TileMap";
 	std::shared_ptr<Texture> texture_;
-	std::string_view const file_arg_;
+	std::string const file_arg_;
 	rect<float> texture_source_rect_;
 	vec2<std::uint32_t> tile_index_;
 	size<std::uint32_t> const tile_bounds_arg_;

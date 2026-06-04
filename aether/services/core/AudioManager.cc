@@ -7,37 +7,37 @@
 #include <miniaudio/miniaudio.h>
 #include <objects/abstract/Sound.hh>
 #include <services/core/AudioManager.hh>
-#include <unordered_map>
 #include <util/filesystem.hh>
+#include <util/path_map.hh>
 #include <util/timer.hh>
 #include <utility>
 
 namespace aether {
 
-struct AudioManager::impl {
-	struct scoped_sound final {
-		scoped_sound(std::weak_ptr<Sound> owner_wref)
-		    : owner(std::move(owner_wref))
-		    , pcm_frames(0) {
-			memset(&sound, 0, sizeof(ma_sound));
-		}
+struct scoped_sound final {
+	scoped_sound(std::string_view file) {
+		memset(&sound, 0, sizeof(ma_sound));
+	}
 
-		~scoped_sound() {
-			ma_sound_uninit(&sound);
-		}
+	~scoped_sound() {
+		ma_sound_uninit(&sound);
+	}
 
-		scoped_sound(scoped_sound const&)            = delete;
-		scoped_sound(scoped_sound&&)                 = delete;
-		scoped_sound& operator=(scoped_sound const&) = delete;
-		scoped_sound& operator=(scoped_sound&&)      = delete;
+	ma_sound sound;
+};
 
-		std::weak_ptr<Sound> owner;
-		ma_sound sound;
-		ma_uint64 pcm_frames;
-	};
+struct active_sound final {
+	active_sound(std::weak_ptr<Sound> _owner)
+	    : owner(std::move(_owner)) {}
+	std::vector<scoped_sound> instances;
+	std::weak_ptr<Sound> owner;
+	std::filesystem::path file;
+};
 
+struct AudioManager::impl final {
 	[[nodiscard]] std::optional<std::uint32_t> generate_key(generation_descriptor const& desc) {
 		std::filesystem::path lfile;
+		sizeof(std::filesystem::path);
 
 		if (auto const optional_file = util::normalized_filepath(desc.file); optional_file.has_value()) {
 			lfile = optional_file.value();
@@ -48,32 +48,12 @@ struct AudioManager::impl {
 			return std::nullopt;
 		}
 
-#ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Generating audio handle | file: \"{}\"", lfile.filename().string());
-		auto const start_time = util::start();
-#endif
-
-		auto const [iterator, _] = active_sounds.emplace(id_hint, desc.owner);
-
-		if (ma_result result =
-		        ma_sound_init_from_file(&engine, lfile.string().c_str(), 0, nullptr, nullptr, &iterator->second.sound);
-		    result != MA_SUCCESS) {
-#ifdef AETHER_DEBUG
-			errorlog("Failed to initialize sound | error code: {}", (int)result);
-#endif
-			active_sounds.erase(iterator);
-			return std::nullopt;
+		if (auto const iterator = sound_lookup.find(lfile); iterator != sound_lookup.end()) {
+			return iterator->second;
 		}
 
-		ma_sound_get_length_in_pcm_frames(&iterator->second.sound, &iterator->second.pcm_frames);
-
-#ifdef AETHER_VERBOSE_DEBUG
-		auto const end_time = util::end(start_time);
-		tracelog("Successful generation | handle owner: {} | pcm frames: {}", fmt::ptr(desc.owner.get()),
-		         iterator->second.pcm_frames);
-		debuglog("Done | took {}ms", end_time);
-#endif
-
+		active_sounds.emplace(id_hint, desc.owner);
+		sound_lookup.emplace(lfile, id_hint);
 		return id_hint++;
 	}
 
@@ -84,12 +64,7 @@ struct AudioManager::impl {
 			return false;
 		}
 
-		if (ma_result result = ma_sound_start(&iterator->second.sound); result != MA_SUCCESS) {
-#ifdef AETHER_DEBUG
-			errorlog("Failed | error code: {}", (int)result);
-#endif
-			return false;
-		}
+		// TODO
 
 		return true;
 	}
@@ -208,10 +183,11 @@ struct AudioManager::impl {
 		return device_paused;
 	}
 
-	std::unordered_map<std::uint32_t, scoped_sound> active_sounds;
+	util::path_map<std::uint32_t> sound_lookup;                    // ugh... i dont like this at all
+	std::unordered_map<std::uint32_t, active_sound> active_sounds; // ugh... i dont like this at all
 	ma_device* device = nullptr;
 	ma_engine engine;
-	std::uint32_t id_hint = 0;
+	std::uint32_t id_hint = 1; // intentionally start with 1
 	ma_uint32 sample_rate = 0;
 	bool device_paused    = false;
 };

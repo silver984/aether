@@ -4,14 +4,13 @@ namespace aether {
 
 class Context;
 class Window;
-class AudioManager;
 class Renderer;
 
 class CoreServices final {
 	friend class Context;
 
 private:
-	CoreServices(Window& _window, AudioManager& _audio_manager, Renderer& _renderer);
+	CoreServices(Window& _window, Renderer& _renderer);
 
 public:
 	~CoreServices();
@@ -21,7 +20,6 @@ public:
 	CoreServices& operator=(CoreServices&&)      = delete;
 
 	Window& window;
-	AudioManager& audio_manager;
 	Renderer& renderer;
 };
 

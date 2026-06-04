@@ -47,8 +47,8 @@ private:
 	std::shared_ptr<animation_map> data_;
 	std::shared_ptr<Texture> texture_;
 	std::string current_animation_name_;
-	std::string_view const image_file_arg_;
-	std::string_view const data_file_arg_;
+	std::string const image_file_arg_;
+	std::string const data_file_arg_;
 	std::size_t current_subtexture_index_;
 	std::uint32_t playback_fps_;
 	rect<float> texture_source_rect_;

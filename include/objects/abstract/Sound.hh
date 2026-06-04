@@ -13,6 +13,7 @@ public:
 	~Sound();
 
 	static std::shared_ptr<Sound> create(Context const& ctx, std::string_view file);
+	[[nodiscard]] std::uint32_t id() const;
 	bool play() const;
 	bool pause() const;
 	[[nodiscard]] float duration() const;

@@ -22,6 +22,10 @@ std::shared_ptr<Sound> Sound::create(Context const& ctx, std::string_view file) 
 	return nullptr;
 }
 
+std::uint32_t Sound::id() const {
+	return id_;
+}
+
 bool Sound::play() const {
 	return ctx_.core_services.audio_manager.play(id_);
 }
