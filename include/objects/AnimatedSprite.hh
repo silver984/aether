@@ -1,12 +1,13 @@
 #pragma once
 #include <cstddef>
 #include <cstdint>
-#include <graphic/animation_map.hh>
+#include <data/animation_map.hh>
 #include <math/rect.hh>
 #include <objects/Node.hh>
 #include <optional>
 
 struct Texture;
+using rltexture = Texture;
 
 namespace aether {
 
@@ -45,12 +46,12 @@ private:
 
 	static constexpr std::string_view TYPE_ = "AnimatedSprite";
 	std::shared_ptr<animation_map> data_;
-	std::shared_ptr<Texture> texture_;
+	std::shared_ptr<rltexture> texture_;
 	std::string current_animation_name_;
 	std::string const image_file_arg_;
 	std::string const data_file_arg_;
-	std::size_t current_subtexture_index_;
-	std::uint32_t playback_fps_;
+	size_t current_subtexture_index_;
+	uint32_t playback_fps_;
 	rect<float> texture_source_rect_;
 	vec2<float> current_subtexture_offsets_;
 	mat3 subtexture_transform_;

@@ -34,7 +34,7 @@ public:
 	[[nodiscard]] bool should_close() const;
 	[[nodiscard]] bool is_minimized() const;
 	[[nodiscard]] std::string_view title() const;
-	[[nodiscard]] size<std::uint32_t> default_size() const;
+	[[nodiscard]] size<uint32_t> default_size() const;
 
 private:
 	bool init(init_descriptor desc);
@@ -43,7 +43,7 @@ private:
 
 	std::vector<std::weak_ptr<std::function<void(Window&)>>> on_resize_callbacks_;
 	std::string title_;
-	size<std::uint32_t> default_size_;
+	size<uint32_t> default_size_;
 };
 
 } // namespace aether

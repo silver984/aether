@@ -17,6 +17,6 @@ namespace aether::util {
 rlvec2 to_rlvec2(vec2<float> vec2);
 rlmat4 to_rlmat4(mat3 const& matrix);
 rlrgba to_rlrgba(rgba color);
-rlrect to_rlrect(rect<float> rectangle);
+rlrect to_rlrect(rect<float> const& rectangle);
 
 } // namespace aether::util

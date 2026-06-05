@@ -5,12 +5,14 @@ namespace aether {
 class Context;
 class TextureRepository;
 class AnimationRepository;
+class AudioRepository;
 
 class ResourceServices final {
 	friend class Context;
 
 private:
-	ResourceServices(TextureRepository& _texture_repository, AnimationRepository& _animation_repository);
+	ResourceServices(TextureRepository& _texture_repository, AnimationRepository& _animation_repository,
+	                 AudioRepository& _audio_repository);
 
 public:
 	~ResourceServices();
@@ -21,6 +23,7 @@ public:
 
 	TextureRepository& texture_repository;
 	AnimationRepository& animation_repository;
+	AudioRepository& audio_repository;
 };
 
 } // namespace aether

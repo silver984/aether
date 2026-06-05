@@ -23,11 +23,11 @@ struct vec2 final : operators<vec2, T, 2> {
 		return size<T>(x, y);
 	}
 
-	constexpr T& operator[](std::size_t i) {
+	constexpr T& operator[](size_t i) {
 		return i == 0 ? x : y;
 	}
 
-	constexpr T const& operator[](std::size_t i) const {
+	constexpr T const& operator[](size_t i) const {
 		return i == 0 ? x : y;
 	}
 

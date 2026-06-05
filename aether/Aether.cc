@@ -7,15 +7,19 @@
 #include <services/core/Renderer.hh>
 #include <services/core/Window.hh>
 #include <services/resource/AnimationRepository.hh>
+#include <services/resource/AudioRepository.hh>
 #include <services/resource/TextureRepository.hh>
 #include <soloud.h>
+#include <soloud_error.h>
 #include <util/timer.hh>
+
+using enum SoLoud::SOLOUD_ERRORS;
 
 namespace aether {
 
 struct Aether::impl final {
 	impl()
-	    : ctx(window, renderer, soloud, texture_repository, animation_repository, scene_scheduler)
+	    : ctx(window, renderer, soloud, texture_repository, animation_repository, audio_repository, scene_scheduler)
 	    , is_initialized(false) {}
 
 	~impl() {
@@ -25,8 +29,8 @@ struct Aether::impl final {
 
 		if (scene_scheduler.has_pending_scene()) {
 			scene_scheduler.cleanup();
-			texture_repository.clear();
-			animation_repository.clear();
+			texture_repository.clear_cache();
+			animation_repository.clear_cache();
 		}
 
 		soloud.deinit();
@@ -47,8 +51,12 @@ struct Aether::impl final {
 		}
 
 #ifdef AETHER_DEBUG
-		if (SoLoud::result result = soloud.init(); result != 0) {
-			warninglog("Audio failed to initialize | result: {}", result);
+		if (SoLoud::result result = soloud.init(); result != SO_NO_ERROR) {
+			warninglog("Audio engine failed to initialize | result: {}", result);
+		} else {
+	#ifdef AETHER_VERBOSE_DEBUG
+			debuglog("Audio engine initialized");
+	#endif
 		}
 #else
 		(void)soloud.init();
@@ -103,8 +111,8 @@ struct Aether::impl final {
 #endif
 
 		scene_scheduler.cleanup();
-		texture_repository.clear();
-		animation_repository.clear();
+		texture_repository.clear_cache();
+		animation_repository.clear_cache();
 		soloud.deinit();
 		window.shutdown();
 		is_initialized = false;
@@ -121,6 +129,7 @@ struct Aether::impl final {
 	SceneScheduler scene_scheduler;
 	TextureRepository texture_repository;
 	AnimationRepository animation_repository;
+	AudioRepository audio_repository;
 	Context ctx;
 	bool is_initialized;
 };

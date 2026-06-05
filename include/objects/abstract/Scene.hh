@@ -30,7 +30,7 @@ private:
 	[[nodiscard]] bool entered() const;
 
 	std::vector<std::function<void()>> work_queue_;
-	std::size_t work_step_;
+	size_t work_step_;
 	bool is_ready_;
 	bool entered_;
 };

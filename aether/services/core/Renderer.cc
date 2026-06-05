@@ -121,7 +121,7 @@ void Renderer::setup(Window& window) {
 // private
 void Renderer::start_draw() {
 	BeginDrawing();
-	size<std::uint32_t> const lrender_bounds = render_bounds();
+	size<uint32_t> const lrender_bounds = render_bounds();
 	BeginScissorMode(0, 0, (int)lrender_bounds.width, (int)lrender_bounds.height);
 	ClearBackground(util::to_rlrgba(background_rgba_));
 	push_matrix(transform_);
@@ -129,7 +129,7 @@ void Renderer::start_draw() {
 
 #ifdef AETHER_DEBUG
 // private
-void Renderer::end_draw(std::uint32_t running_fps) const {
+void Renderer::end_draw(uint32_t running_fps) const {
 	rlPopMatrix();
 	DrawText(fmt::format("FPS: {}", running_fps).c_str(), 5, 5, 10, WHITE);
 	EndScissorMode();
@@ -145,9 +145,9 @@ void Renderer::end_draw() const {
 #endif
 
 // private
-size<std::uint32_t> Renderer::render_bounds() const {
+size<uint32_t> Renderer::render_bounds() const {
 	// this should be fine...
-	return size<std::uint32_t>((std::uint32_t)GetRenderWidth(), (std::uint32_t)GetRenderHeight());
+	return size<uint32_t>((uint32_t)GetRenderWidth(), (uint32_t)GetRenderHeight());
 }
 
 // private
@@ -174,18 +174,18 @@ void Renderer::define_texture_coord(vec2<float> position) const {
 }
 
 // private
-mat3 Renderer::calculate_transform(size<std::uint32_t> default_window_size) const {
-	size<std::uint32_t> const lrender_bounds = render_bounds();
-	vec2<float> const scale_ratio            = {lrender_bounds.width / (float)default_window_size.width,
-	                                            lrender_bounds.height / (float)default_window_size.height};
-	float const scale_factor                 = std::min(scale_ratio.x, scale_ratio.y);
-	vec2<float> const scaled_size            = {default_window_size.width * scale_factor,
-	                                            default_window_size.height * scale_factor};
-	vec2<float> const offset         = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
-	vec2<float> const snapped_offset = util::round(offset / 2.f);
-	mat3 result                      = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
-	result.m[0][2]                   = std::round(result.m[0][2]);
-	result.m[1][2]                   = std::round(result.m[1][2]);
+mat3 Renderer::calculate_transform(size<uint32_t> default_window_size) const {
+	size<uint32_t> const lrender_bounds = render_bounds();
+	vec2<float> const scale_ratio       = {lrender_bounds.width / (float)default_window_size.width,
+	                                       lrender_bounds.height / (float)default_window_size.height};
+	float const scale_factor            = std::min(scale_ratio.x, scale_ratio.y);
+	vec2<float> const scaled_size       = {default_window_size.width * scale_factor,
+	                                       default_window_size.height * scale_factor};
+	vec2<float> const offset            = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
+	vec2<float> const snapped_offset    = util::round(offset / 2.f);
+	mat3 result                         = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
+	result.m[0][2]                      = std::round(result.m[0][2]);
+	result.m[1][2]                      = std::round(result.m[1][2]);
 	return result;
 }
 

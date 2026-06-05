@@ -5,7 +5,7 @@
 namespace aether::util {
 
 rlvec2 to_rlvec2(vec2<float> vec2) {
-	return {vec2.x, vec2.y};
+	return {.x = vec2.x, .y = vec2.y};
 }
 
 rlmat4 to_rlmat4(mat3 const& matrix) {
@@ -22,11 +22,14 @@ rlmat4 to_rlmat4(mat3 const& matrix) {
 }
 
 rlrgba to_rlrgba(rgba color) {
-	return {(unsigned char)color.r, (unsigned char)color.g, (unsigned char)color.b, (unsigned char)color.a};
+	return {.r = (unsigned char)color.r,
+	        .g = (unsigned char)color.g,
+	        .b = (unsigned char)color.b,
+	        .a = (unsigned char)color.a};
 }
 
-rlrect to_rlrect(rect<float> rectangle) {
-	return {rectangle.x, rectangle.y, rectangle.width, rectangle.height};
+rlrect to_rlrect(rect<float> const& rectangle) {
+	return {.x = rectangle.x, .y = rectangle.y, .width = rectangle.width, .height = rectangle.height};
 }
 
 } // namespace aether::util

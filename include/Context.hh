@@ -14,7 +14,8 @@ class Context final {
 
 private:
 	Context(Window& _window, Renderer& _renderer, SoLoud::Soloud& _soloud, TextureRepository& _texture_repository,
-	        AnimationRepository& _animation_repository, SceneScheduler& _scene_scheduler);
+	        AnimationRepository& _animation_repository, AudioRepository& _audio_repository,
+	        SceneScheduler& _scene_scheduler);
 
 public:
 	~Context();
@@ -25,8 +26,8 @@ public:
 
 	[[nodiscard]] float delta_time() const;
 	[[nodiscard]] float total_time() const;
-	[[nodiscard]] std::uint32_t frame_count() const;
-	[[nodiscard]] std::uint32_t running_fps() const;
+	[[nodiscard]] uint32_t frame_count() const;
+	[[nodiscard]] uint32_t running_fps() const;
 
 	CoreServices core_services;
 	ResourceServices resource_services;
@@ -37,8 +38,8 @@ private:
 
 	float total_time_;
 	float frame_elapsed_;
-	std::uint32_t frame_count_;
-	std::uint32_t running_fps_;
+	uint32_t frame_count_;
+	uint32_t running_fps_;
 };
 
 } // namespace aether

@@ -16,7 +16,7 @@ AnimatedSprite::AnimatedSprite(Context const& ctx, descriptor desc)
     , image_file_arg_(std::string(desc.image_file))
     , data_file_arg_(std::string(desc.data_file))
     , current_subtexture_index_(0)
-    , playback_fps_((std::uint32_t)std::max(1, desc.fps))
+    , playback_fps_((uint32_t)std::max(1, desc.fps))
     , subtexture_transform_(mat3::identity())
     , subtexture_elapsed_(0.f)
     , animation_was_reset_(false)
@@ -142,7 +142,7 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 	}
 
 	if (is_current_subtexture_rotated_) {
-		mat3 const fix        = mat3::translation({0.f, bounds().height - current_subtexture_offsets_.y});
+		mat3 const fix        = mat3::translation(vec2<float>(0.f, bounds().height - current_subtexture_offsets_.y));
 		mat3 const r          = mat3::rotation(util::degrees_to_radians(-90.f));
 		mat3 const t          = mat3::translation(util::reverse(-current_subtexture_offsets_));
 		subtexture_transform_ = transform * fix * r * t;

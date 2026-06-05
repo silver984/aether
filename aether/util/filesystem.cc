@@ -1,34 +1,43 @@
+#include <algorithm>
+#include <cstdint>
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <algorithm>
-#include <cstdint>
+#include <fstream>
 #include <util/filesystem.hh>
 
 namespace aether::util {
 
-std::optional<std::filesystem::path> normalized_filepath(std::string_view str) {
-	try {
-		return std::filesystem::canonical(str);
-	} catch (std::filesystem::filesystem_error const& err) {
-#ifdef AETHER_DEBUG
-		errorlog("Caught filesystem error | arg: \"{}\" | what: {}", str, err.what());
-#endif
-		return std::nullopt;
-	}
-}
-
-std::string file_extension(std::filesystem::path const& file_path) {
-	if (!file_path.has_extension()) {
+std::string file_extension(std::filesystem::path const& file) {
+	if (!file.has_extension()) {
 		return {};
 	}
 
-	auto extension = file_path.extension().string();
-	std::transform(extension.begin(), extension.end(), extension.begin(), [](std::uint8_t c) {
+	std::string extension = file.extension().string();
+	std::transform(extension.begin(), extension.end(), extension.begin(), [](uint8_t c) {
 		return std::tolower(c);
 	});
 
 	return extension;
+}
+
+byte_buffer read_file_to_byte_buffer(std::filesystem::path const& file) {
+	std::ifstream lfile(file, std::ios::binary | std::ios::ate);
+
+	if (!lfile.is_open()) {
+		return {};
+	}
+
+	std::streamsize size = lfile.tellg();
+	lfile.seekg(0, std::ios::beg);
+
+	byte_buffer out(size);
+
+	if (!lfile.read(reinterpret_cast<char*>(out.data()), size)) {
+		return {};
+	}
+
+	return out;
 }
 
 } // namespace aether::util

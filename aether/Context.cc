@@ -5,9 +5,10 @@ namespace aether {
 
 // private
 Context::Context(Window& _window, Renderer& _renderer, SoLoud::Soloud& _soloud, TextureRepository& _texture_repository,
-                 AnimationRepository& _animation_repository, SceneScheduler& _scene_scheduler)
+                 AnimationRepository& _animation_repository, AudioRepository& _audio_repository,
+                 SceneScheduler& _scene_scheduler)
     : core_services(_window, _renderer, _soloud)
-    , resource_services(_texture_repository, _animation_repository)
+    , resource_services(_texture_repository, _animation_repository, _audio_repository)
     , scene_scheduler(_scene_scheduler)
     , total_time_(0.f)
     , frame_elapsed_(0.f)
@@ -25,11 +26,11 @@ float Context::total_time() const {
 	return total_time_;
 }
 
-std::uint32_t Context::frame_count() const {
+uint32_t Context::frame_count() const {
 	return frame_count_;
 }
 
-std::uint32_t Context::running_fps() const {
+uint32_t Context::running_fps() const {
 	return running_fps_;
 }
 

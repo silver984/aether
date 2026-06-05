@@ -3,6 +3,7 @@
 #include <objects/Node.hh>
 
 struct Texture;
+using rltexture = Texture;
 
 namespace aether {
 
@@ -34,7 +35,7 @@ protected:
 
 private:
 	static constexpr std::string_view TYPE_ = "Sprite";
-	std::shared_ptr<Texture> texture_;
+	std::shared_ptr<rltexture> texture_;
 	std::string const file_arg_;
 	texture_wrap const wrap_type_arg_;
 	rect<float> texture_source_rect_;

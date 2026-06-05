@@ -1,9 +1,11 @@
 #pragma once
+#include <data/animation_map.hh>
+#include <filesystem>
 #include <functional>
-#include <graphic/animation_map.hh>
 #include <memory>
 #include <optional>
-#include <util/path_map.hh>
+#include <string_view>
+#include <unordered_map>
 #include <utility>
 
 namespace tinyxml2 {
@@ -36,8 +38,8 @@ public:
 	void purge_unused();
 
 private:
-	void clear();
-	[[nodiscard]] std::shared_ptr<animation_map> try_fetch_from_cache(std::filesystem::path const& file);
+	void clear_cache();
+	[[nodiscard]] std::shared_ptr<animation_map> try_fetch_from_cache(std::filesystem::path const& file) const;
 	[[nodiscard]] std::shared_ptr<animation_map> xml_parse(std::filesystem::path const& file);
 
 	[[nodiscard]] std::shared_ptr<animation_map>
@@ -46,14 +48,14 @@ private:
 
 	[[nodiscard]] std::shared_ptr<animation_map> xml_adobe_animate_parse(tinyxml2::XMLDocument const& document);
 	[[nodiscard]] std::shared_ptr<animation_map> xml_texture_packer_parse(tinyxml2::XMLDocument const& document);
-	[[nodiscard]] xml_format assess_xml_format(tinyxml2::XMLDocument const& document);
-	[[nodiscard]] std::string parse_frame_name(std::string_view unparsed_name);
+	[[nodiscard]] xml_format assess_xml_format(tinyxml2::XMLDocument const& document) const;
+	[[nodiscard]] std::string parse_frame_name(std::string_view unparsed_name) const;
 
 #ifdef AETHER_VERBOSE_DEBUG
-	void log_defective_frame(std::string_view message, std::optional<std::string_view> name = std::nullopt);
+	void log_defective_frame(std::string_view message, std::optional<std::string_view> name = std::nullopt) const;
 #endif
 
-	util::path_map<std::shared_ptr<animation_map>> cache_;
+	std::unordered_map<std::filesystem::path, std::shared_ptr<animation_map>> cache_;
 };
 
 } // namespace aether

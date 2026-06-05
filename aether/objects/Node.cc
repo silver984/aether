@@ -137,12 +137,12 @@ bool Node::is_draw_enabled() const {
 	return is_draw_enabled_;
 }
 
-std::size_t Node::child_count() const {
+size_t Node::child_count() const {
 	return children_.size();
 }
 
-std::size_t Node::recursed_child_count() const {
-	std::size_t c = children_.size();
+size_t Node::recursed_child_count() const {
+	size_t c = children_.size();
 
 	for (auto const& child : children_) {
 		if (!child) {
@@ -176,8 +176,8 @@ std::string_view Node::type() const {
 }
 
 void Node::set_bounds(size<int> val) {
-	val                               = util::max({}, val);
-	size<std::uint32_t> const valui32 = static_cast<size<std::uint32_t>>(val);
+	val                          = util::max({}, val);
+	size<uint32_t> const valui32 = static_cast<size<uint32_t>>(val);
 
 	if (bounds_ == valui32) {
 		return;
@@ -187,15 +187,15 @@ void Node::set_bounds(size<int> val) {
 	mark_transform_dirty();
 }
 
-size<std::uint32_t> Node::bounds() const {
+size<uint32_t> Node::bounds() const {
 	return bounds_;
 }
 
-std::uint32_t Node::width() const {
+uint32_t Node::width() const {
 	return bounds_.width;
 }
 
-std::uint32_t Node::height() const {
+uint32_t Node::height() const {
 	return bounds_.height;
 }
 
@@ -323,8 +323,8 @@ rgba Node::color() const {
 }
 
 void Node::set_alpha(float val) {
-	val                       = 255.f * std::clamp(val, 0.f, 1.f);
-	std::uint8_t const valui8 = (std::uint8_t)std::round(val);
+	val                  = 255.f * std::clamp(val, 0.f, 1.f);
+	uint8_t const valui8 = (uint8_t)std::round(val);
 
 	if (color_.a == valui8) {
 		return;

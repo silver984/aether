@@ -1,9 +1,11 @@
 #pragma once
+#include <filesystem>
 #include <memory>
-#include <unordered_set>
-#include <util/path_map.hh>
+#include <string_view>
+#include <unordered_map>
 
 struct Texture;
+using rltexture = Texture;
 
 namespace aether {
 
@@ -22,15 +24,15 @@ public:
 	TextureRepository& operator=(TextureRepository const&) = delete;
 	TextureRepository& operator=(TextureRepository&&)      = delete;
 
-	std::shared_ptr<Texture> fetch(std::string_view file);
+	[[nodiscard]] std::shared_ptr<rltexture> fetch(std::string_view file);
 	void purge_unused();
 
 private:
-	void clear();
-	[[nodiscard]] std::shared_ptr<Texture> try_fetch_from_cache(std::filesystem::path const& file);
-	[[nodiscard]] bool is_texture_valid(Texture const& texture);
+	void clear_cache();
+	[[nodiscard]] std::shared_ptr<rltexture> try_fetch_from_cache(std::filesystem::path const& file) const;
+	[[nodiscard]] bool is_texture_valid(rltexture const& texture) const;
 
-	util::path_map<std::shared_ptr<Texture>> cache_;
+	std::unordered_map<std::filesystem::path, std::shared_ptr<rltexture>> cache_;
 };
 
 } // namespace aether

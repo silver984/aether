@@ -23,11 +23,11 @@ struct size final : operators<size, T, 2> {
 		return vec2<T>(width, height);
 	}
 
-	constexpr T& operator[](std::size_t i) {
+	constexpr T& operator[](size_t i) {
 		return i == 0 ? width : height;
 	}
 
-	constexpr T const& operator[](std::size_t i) const {
+	constexpr T const& operator[](size_t i) const {
 		return i == 0 ? width : height;
 	}
 

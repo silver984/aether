@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <objects/abstract/Scene.hh>
+#include <objects/abstract/Sound.hh>
 
 class TestScene final : public aether::Scene {
 public:
@@ -10,4 +11,7 @@ public:
 protected:
 	bool init() override;
 	void enter() override;
+
+private:
+	std::shared_ptr<aether::Sound> sound_;
 };

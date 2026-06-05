@@ -1,4 +1,5 @@
 #pragma once
+#include <data/byte_buffer.hh>
 #include <filesystem>
 #include <optional>
 #include <string>
@@ -6,7 +7,7 @@
 
 namespace aether::util {
 
-[[nodiscard]] std::optional<std::filesystem::path> normalized_filepath(std::string_view str);
-[[nodiscard]] std::string file_extension(std::filesystem::path const& file_path);
+[[nodiscard]] std::string file_extension(std::filesystem::path const& file);
+[[nodiscard]] byte_buffer read_file_to_byte_buffer(std::filesystem::path const& file);
 
 } // namespace aether::util

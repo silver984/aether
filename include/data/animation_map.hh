@@ -1,5 +1,5 @@
 #pragma once
-#include <graphic/atlas_region.hh>
+#include <data/atlas_region.hh>
 #include <util/string_map.hh>
 #include <vector>
 

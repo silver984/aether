@@ -34,7 +34,7 @@ struct rect final : operators<rect, T, 4> {
 		return {width, height};
 	};
 
-	constexpr T& operator[](std::size_t i) {
+	constexpr T& operator[](size_t i) {
 		switch (i) {
 		case 0: return x;
 		case 1: return y;
@@ -43,7 +43,7 @@ struct rect final : operators<rect, T, 4> {
 		}
 	}
 
-	constexpr T const& operator[](std::size_t i) const {
+	constexpr T const& operator[](size_t i) const {
 		switch (i) {
 		case 0: return x;
 		case 1: return y;

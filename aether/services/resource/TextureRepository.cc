@@ -1,7 +1,6 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <Context.hh>
 #include <raylib.h>
 #include <services/resource/TextureRepository.hh>
 #include <util/filesystem.hh>
@@ -12,7 +11,7 @@
 namespace {
 
 struct texture_deleter {
-	void operator()(Texture* ptr) const {
+	void operator()(rltexture* ptr) const {
 		if (ptr && ptr->id > 0) {
 			UnloadTexture(*ptr);
 		}
@@ -29,26 +28,24 @@ namespace aether {
 TextureRepository::TextureRepository()  = default;
 TextureRepository::~TextureRepository() = default;
 
-std::shared_ptr<Texture> TextureRepository::fetch(std::string_view file) {
-	std::filesystem::path lfile;
+std::shared_ptr<rltexture> TextureRepository::fetch(std::string_view file) {
+	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
-	if (auto const optional_file = util::normalized_filepath(file); optional_file.has_value()) {
-		lfile = optional_file.value();
-	} else {
-#ifdef AETHER_VERBOSE_DEBUG
-		errorlog("Filesystem gave an error");
+	if (!std::filesystem::exists(lfile)) {
+#ifdef AETHER_DEBUG
+		errorlog("File doesn't exist | file: \"{}\"", file);
 #endif
 		return nullptr;
 	}
 
-	if (auto from_cache = try_fetch_from_cache(lfile)) {
+	if (std::shared_ptr<rltexture> from_cache = try_fetch_from_cache(lfile)) {
 		return from_cache;
 	}
 
-	if (auto const file_extension = util::file_extension(lfile);
+	if (std::string const file_extension = util::file_extension(lfile);
 	    !util::string_matches_any(file_extension, {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".dds"})) {
 #ifdef AETHER_DEBUG
-		errorlog("Unsupported file format | file: \"{}\"", lfile.filename().string());
+		errorlog("Unsupported file format | file: \"{}\"", file);
 #endif
 		return nullptr;
 	}
@@ -56,11 +53,11 @@ std::shared_ptr<Texture> TextureRepository::fetch(std::string_view file) {
 	purge_unused();
 
 #ifdef AETHER_VERBOSE_DEBUG
-	debuglog("Loading \"{}\"", lfile.filename().string());
+	debuglog("Loading \"{}\"", file);
 	auto const start_time = util::start();
 #endif
 
-	Texture temporary_texture = LoadTexture(lfile.string().c_str());
+	rltexture temporary_texture = LoadTexture(lfile.string().c_str());
 
 	if (!is_texture_valid(temporary_texture)) {
 #ifdef AETHER_DEBUG
@@ -69,8 +66,8 @@ std::shared_ptr<Texture> TextureRepository::fetch(std::string_view file) {
 		UnloadTexture(temporary_texture);
 	}
 
-	std::shared_ptr<Texture> shared_texture =
-	    std::shared_ptr<Texture>(new Texture(std::move(temporary_texture)), texture_deleter{});
+	std::shared_ptr<rltexture> shared_texture =
+	    std::shared_ptr<rltexture>(new rltexture(std::move(temporary_texture)), texture_deleter{});
 
 #ifdef AETHER_VERBOSE_DEBUG
 	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width,
@@ -89,18 +86,18 @@ std::shared_ptr<Texture> TextureRepository::fetch(std::string_view file) {
 }
 
 void TextureRepository::purge_unused() {
-	std::erase_if(cache_, [](auto& pair) {
+	std::erase_if(cache_, [](auto const& pair) {
 		return pair.second.use_count() <= 1;
 	});
 }
 
 // private
-void TextureRepository::clear() {
+void TextureRepository::clear_cache() {
 	cache_.clear();
 }
 
 // private
-std::shared_ptr<Texture> TextureRepository::try_fetch_from_cache(std::filesystem::path const& file) {
+std::shared_ptr<rltexture> TextureRepository::try_fetch_from_cache(std::filesystem::path const& file) const {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}
@@ -109,16 +106,8 @@ std::shared_ptr<Texture> TextureRepository::try_fetch_from_cache(std::filesystem
 }
 
 // private
-bool TextureRepository::is_texture_valid(Texture const& texture) {
-	if (texture.id < 1) {
-		return false;
-	}
-
-	if (texture.width < 1 || texture.height < 1) {
-		return false;
-	}
-
-	return true;
+bool TextureRepository::is_texture_valid(rltexture const& texture) const {
+	return texture.id > 0 && texture.width > 0 && texture.height > 0;
 }
 
 } // namespace aether

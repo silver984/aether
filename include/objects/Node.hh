@@ -27,7 +27,7 @@ public:
 
 	template <typename T, typename... va>
 	    requires std::is_base_of_v<Node, T>
-	static std::shared_ptr<T> create(Context const& ctx, va&&... args) {
+	[[nodiscard]] static std::shared_ptr<T> create(Context const& ctx, va&&... args) {
 		std::shared_ptr<T> ptr = std::make_shared<T>(ctx, std::forward<va>(args)...);
 
 		if (!ptr->base_init()) {
@@ -57,16 +57,16 @@ public:
 	void disable_draw();
 	void toggle_draw(bool val);
 	[[nodiscard]] bool is_draw_enabled() const;
-	[[nodiscard]] std::size_t child_count() const;
-	[[nodiscard]] std::size_t recursed_child_count() const;
+	[[nodiscard]] size_t child_count() const;
+	[[nodiscard]] size_t recursed_child_count() const;
 	[[nodiscard]] std::weak_ptr<Node> parent() const;
 	void set_name(std::string_view name); // TODO: better naming system
 	[[nodiscard]] std::string_view name() const;
 	[[nodiscard]] virtual std::string_view type() const;
 	void set_bounds(size<int> val); // TODO: set_width, set_height
-	[[nodiscard]] size<std::uint32_t> bounds() const;
-	[[nodiscard]] std::uint32_t width() const;
-	[[nodiscard]] std::uint32_t height() const;
+	[[nodiscard]] size<uint32_t> bounds() const;
+	[[nodiscard]] uint32_t width() const;
+	[[nodiscard]] uint32_t height() const;
 	void set_position(vec2<float> val);
 	void set_position_x(float val);
 	void set_position_y(float val);
@@ -118,7 +118,7 @@ private:
 	std::weak_ptr<Node> parent_;
 	std::string name_;
 	mat3 transform_;
-	size<std::uint32_t> bounds_;
+	size<uint32_t> bounds_;
 	vec2<float> position_;
 	vec2<float> anchor_;
 	vec2<float> scale_;

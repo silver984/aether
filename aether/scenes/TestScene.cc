@@ -5,9 +5,12 @@
 #endif
 #include <objects/AnimatedSprite.hh>
 #include <objects/TileMap.hh>
+#include <objects/abstract/Sound.hh>
 #include <scenes/TestScene.hh>
 #include <services/core/Renderer.hh>
 #include <services/core/Window.hh>
+#include <soloud.h>
+#include <soloud_wav.h>
 
 using namespace aether;
 
@@ -56,4 +59,8 @@ bool TestScene::init() {
 // protected
 void TestScene::enter() {
 	ctx_.core_services.renderer.set_background_rgba(rgba(128, 128, 128, 255));
+
+	if (sound_ = Sound::create(ctx_, "resources/sound.ogg")) {
+		(void)sound_->play();
+	}
 }

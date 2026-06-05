@@ -10,7 +10,7 @@ Scene::Scene(Context const& ctx)
     , work_step_(0)
     , is_ready_(false)
     , entered_(false) {
-	size<std::uint32_t> const window_size = ctx.core_services.window.default_size();
+	size<uint32_t> const window_size = ctx.core_services.window.default_size();
 	set_bounds(static_cast<size<int>>(window_size));
 	set_position(window_size / 2.f);
 }

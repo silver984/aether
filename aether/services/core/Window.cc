@@ -32,7 +32,7 @@ std::string_view Window::title() const {
 	return title_;
 }
 
-size<std::uint32_t> Window::default_size() const {
+size<uint32_t> Window::default_size() const {
 	return default_size_;
 }
 
@@ -51,7 +51,7 @@ bool Window::init(init_descriptor desc) {
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
 	size<int> const minimum_size = size<int>(640, 360);
 	title_                       = std::string(desc.title);
-	default_size_                = static_cast<size<std::uint32_t>>(util::max(minimum_size, desc.resolution));
+	default_size_                = static_cast<size<uint32_t>>(util::max(minimum_size, desc.resolution));
 	InitWindow(default_size_.width, default_size_.height, title_.c_str());
 
 	if (!IsWindowReady()) {

@@ -24,7 +24,7 @@ template <numeric T>
 template <indexed_numeric T>
 [[nodiscard]] constexpr T lerp(T const& a, T const& b, typename T::value_type const& t) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = a[i] + (b[i] - a[i]) * t;
 	}
 	return out;
@@ -53,7 +53,7 @@ template <numeric T>
 template <indexed_numeric T>
 [[nodiscard]] constexpr T clamp(T const& val, T const& min_val, T const& max_val) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::clamp(val[i], min_val[i], max_val[i]);
 	}
 	return out;
@@ -62,7 +62,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] T round(T const& val) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::round(val[i]);
 	}
 	return out;
@@ -71,7 +71,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] constexpr T ceil(T const& val) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::ceil(val[i]);
 	}
 	return out;
@@ -80,7 +80,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] T floor(T const& val) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::floor(val[i]);
 	}
 	return out;
@@ -89,7 +89,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] constexpr T abs(T const& val) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::abs(val[i]);
 	}
 	return out;
@@ -98,7 +98,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] T sin(T const& val) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::sin(val[i]);
 	}
 	return out;
@@ -107,7 +107,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] T cos(T const& val) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::cos(val[i]);
 	}
 	return out;
@@ -116,7 +116,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] T tan(T const& val) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::tan(val[i]);
 	}
 	return out;
@@ -125,7 +125,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] constexpr T min(T const& left, T const& right) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::min(left[i], right[i]);
 	}
 	return out;
@@ -134,7 +134,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] constexpr T max(T const& left, T const& right) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::max(left[i], right[i]);
 	}
 	return out;
@@ -143,7 +143,7 @@ template <indexed_numeric T>
 template <indexed_numeric T>
 [[nodiscard]] constexpr T reverse(T const& val) {
 	T out;
-	for (std::size_t i = 0; i < T::capacity(); ++i) {
+	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = val[T::capacity() - i - 1];
 	}
 	return out;
