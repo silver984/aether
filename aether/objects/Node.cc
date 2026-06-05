@@ -19,9 +19,8 @@ Node::Node(Context const& ctx)
     , is_transform_dirty_(false)
     , is_rgba_dirty_(false)
     , is_active_(false)
-    , is_draw_enabled_(false)
-    , is_visible_(true)
-    , is_initialized_(false) {}
+    , is_draw_scheduled_(false)
+    , is_visible_(true) {}
 
 Node::~Node() = default;
 
@@ -113,28 +112,12 @@ void Node::deactivate() {
 	is_active_ = false;
 }
 
-void Node::toggle_active(bool val) {
-	is_active_ = val;
+void Node::schedule_draw() {
+	is_draw_scheduled_ = true;
 }
 
-bool Node::is_active() const {
-	return is_active_;
-}
-
-void Node::enable_draw() {
-	is_draw_enabled_ = true;
-}
-
-void Node::disable_draw() {
-	is_draw_enabled_ = false;
-}
-
-void Node::toggle_draw(bool val) {
-	is_draw_enabled_ = val;
-}
-
-bool Node::is_draw_enabled() const {
-	return is_draw_enabled_;
+void Node::unschedule_draw() {
+	is_draw_scheduled_ = false;
 }
 
 size_t Node::child_count() const {
@@ -406,20 +389,12 @@ void Node::update(float dt) {}
 void Node::draw(mat3 const& transform, rgba color) {}
 
 // private
-bool Node::base_init() {
-	if (is_initialized_) {
-		return true;
-	}
-
-	return is_initialized_ = init();
+bool Node::init_node() {
+	return init();
 }
 
 // private
-void Node::base_update(float dt) {
-	if (!is_initialized_) {
-		return;
-	}
-
+void Node::update_all(float dt) {
 	float const world_dt = dt * time_scale_;
 
 	if (is_active_) {
@@ -431,13 +406,13 @@ void Node::base_update(float dt) {
 			continue;
 		}
 
-		node->base_update(world_dt);
+		node->update_all(world_dt);
 	}
 }
 
 // private
-void Node::base_draw() {
-	if (!is_initialized_ || !is_visible_) {
+void Node::draw_all() {
+	if (!is_visible_) {
 		return;
 	}
 
@@ -455,7 +430,7 @@ void Node::base_draw() {
 		is_transform_dirty_ = false;
 	}
 
-	if (is_draw_enabled_) {
+	if (is_draw_scheduled_) {
 		draw(transform_, combined_color_);
 	}
 
@@ -464,7 +439,7 @@ void Node::base_draw() {
 			continue;
 		}
 
-		node->base_draw();
+		node->draw_all();
 	}
 }
 

@@ -113,7 +113,7 @@ bool AnimatedSprite::init() {
 	toggle_antialiasing(has_antialiasing_arg_);
 	activate();
 	update(0.f);
-	enable_draw();
+	schedule_draw();
 
 	return true;
 }

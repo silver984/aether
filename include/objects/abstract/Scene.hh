@@ -1,38 +1,53 @@
 #pragma once
-#include <functional>
-#include <objects/Node.hh>
+#include <concepts>
+#include <memory>
+#include <utility>
 
 namespace aether {
 
 class SceneScheduler;
+class Context;
+class Node;
 
-class Scene : public Node {
+class Scene {
 	friend class SceneScheduler;
 
 public:
 	Scene(Context const& ctx);
-	~Scene() override;
+	virtual ~Scene();
 
-	void destroy()                  = delete;
-	void set_name(std::string_view) = delete;
-	std::string_view name() const   = delete;
-	[[nodiscard]] std::string_view type() const override;
+	template <typename T, typename... va>
+	    requires std::derived_from<T, Scene>
+	[[nodiscard]] static std::unique_ptr<T> create(Context const& ctx, va&&... args) {
+		std::unique_ptr<T> ptr = std::make_unique<T>(ctx, std::forward<va>(args)...);
+
+		if (!ptr->init_scene()) {
+			return nullptr;
+		}
+
+		return ptr;
+	}
 
 protected:
-	virtual void enter();
-	void queue_work(std::function<void()>&& workload);
+	virtual bool init();
+	virtual void update(float dt);
+	virtual void visit();
+	void activate();
+	void deactivate();
+	void schedule_visit();
+	void unschedule_visit();
+	void add(std::shared_ptr<Node> node);
+
+	Context const& ctx_;
 
 private:
-	using Node::set_bounds;
-	void base_enter();
-	void step_work_queue();
-	[[nodiscard]] bool is_ready() const;
-	[[nodiscard]] bool entered() const;
+	bool init_scene();
+	void update_all(float dt);
+	void draw_all();
 
-	std::vector<std::function<void()>> work_queue_;
-	size_t work_step_;
-	bool is_ready_;
-	bool entered_;
+	std::shared_ptr<Node> root_node_;
+	bool is_active_;
+	bool is_visit_scheduled_;
 };
 
 } // namespace aether

@@ -4,7 +4,6 @@
 #include <Context.hh>
 #include <objects/abstract/Scene.hh>
 #include <services/SceneScheduler.hh>
-#include <util/timer.hh>
 #include <utility>
 
 namespace aether {
@@ -13,10 +12,10 @@ namespace aether {
 SceneScheduler::SceneScheduler()  = default;
 SceneScheduler::~SceneScheduler() = default;
 
-void SceneScheduler::replace_scene(std::shared_ptr<Scene>&& new_scene) {
+void SceneScheduler::replace_scene(std::unique_ptr<Scene> new_scene) {
 	if (!new_scene) {
 #ifdef AETHER_DEBUG
-		errorlog("Can't switch to nullptr scene");
+		errorlog("Can't switch to a nullptr scene");
 #endif
 		return;
 	}
@@ -47,27 +46,12 @@ void SceneScheduler::update_scene(float dt) {
 #endif
 	}
 
-	if (!current_scene_) {
-		return;
-	}
-
-	if (!current_scene_->is_ready()) {
-		current_scene_->step_work_queue();
-		return;
-	}
-
-	if (!current_scene_->entered()) {
-		current_scene_->base_enter();
-	}
-
-	current_scene_->base_update(dt);
+	current_scene_->update_all(dt);
 }
 
 // private
 void SceneScheduler::draw_scene() {
-	if (current_scene_ && current_scene_->is_ready()) {
-		current_scene_->base_draw();
-	}
+	current_scene_->draw_all();
 }
 
 // private

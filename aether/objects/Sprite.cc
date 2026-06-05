@@ -82,7 +82,7 @@ bool Sprite::init() {
 
 	set_texture_wrap(wrap_type_arg_);
 	toggle_antialiasing(has_antialiasing_arg_);
-	enable_draw();
+	schedule_draw();
 
 	return true;
 }

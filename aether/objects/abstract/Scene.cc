@@ -1,65 +1,81 @@
 #include <Context.hh>
-#include <log.hh>
+#include <cassert>
+#include <objects/Node.hh>
 #include <objects/abstract/Scene.hh>
 #include <services/core/Window.hh>
 
 namespace aether {
 
 Scene::Scene(Context const& ctx)
-    : Node(ctx)
-    , work_step_(0)
-    , is_ready_(false)
-    , entered_(false) {
+    : ctx_(ctx)
+    , root_node_(Node::create<Node>(ctx))
+    , is_active_(false)
+    , is_visit_scheduled_(false) {
+	assert(root_node_ != nullptr);
 	size<uint32_t> const window_size = ctx.core_services.window.default_size();
-	set_bounds(static_cast<size<int>>(window_size));
-	set_position(window_size / 2.f);
+	root_node_->set_bounds(static_cast<size<int>>(window_size));
+	root_node_->set_position(window_size / 2.f);
 }
 
 Scene::~Scene() = default;
 
-std::string_view Scene::type() const {
-	return "Scene";
+// protected
+bool Scene::init() {
+	return true;
 }
 
 // protected
-void Scene::enter() {}
+void Scene::update(float dt) {}
 
 // protected
-void Scene::queue_work(std::function<void()>&& workload) {
-	if (is_ready_) {
-		return;
-	}
+void Scene::visit() {}
 
-	work_queue_.emplace_back(std::move(workload));
+// protected
+void Scene::activate() {
+	is_active_ = true;
+}
+
+// protected
+void Scene::deactivate() {
+	is_active_ = false;
+}
+
+// protected
+void Scene::schedule_visit() {
+	is_visit_scheduled_ = true;
+}
+
+// protected
+void Scene::unschedule_visit() {
+	is_visit_scheduled_ = false;
+}
+
+// protected
+void Scene::add(std::shared_ptr<Node> node) {
+	root_node_->add_child(node);
 }
 
 // private
-void Scene::base_enter() {
-	enter();
-	entered_ = true;
+bool Scene::init_scene() {
+	return init();
 }
 
 // private
-void Scene::step_work_queue() {
-	if (is_ready_) {
-		return;
-	}
+void Scene::update_all(float dt) {
+	root_node_->update_all(dt);
 
-	if (work_step_ < work_queue_.size()) {
-		work_queue_[work_step_++](); // run workload
-		return;
+	if (is_active_) {
+		update(dt);
 	}
-
-	work_queue_.clear();
-	is_ready_ = true;
 }
 
-bool Scene::is_ready() const {
-	return is_ready_;
-}
+// private
+void Scene::draw_all() {
+	root_node_->draw_all();
 
-bool Scene::entered() const {
-	return entered_;
+	if (is_visit_scheduled_) {
+		visit();
+	}
 }
 
 } // namespace aether
