@@ -65,9 +65,9 @@ std::filesystem::path log_file_path;
 
 } // namespace
 
-namespace aether::log::impl {
+namespace aether::log::__impl {
 
-void print(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
+void __print(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
 	std::string time_and_loc_str = fmt::format("{:<12} {} ", time_str(), function_name(loc));
 	std::string level_str        = fmt::format("[{}] ", level);
 
@@ -84,7 +84,7 @@ void print(std::string_view msg, std::string_view level, fmt::color level_color,
 	fmt::print("{}\n", msg);
 }
 
-void create_log_file() {
+void __create_log_file() {
 	std::filesystem::create_directory("logs");
 	std::string file_name = fmt::format("logs/aether-{}-{}.log", file_date_str(), file_time_str());
 	log_file_path         = std::filesystem::absolute(file_name);
@@ -92,5 +92,5 @@ void create_log_file() {
 	file.close();
 }
 
-} // namespace aether::log::impl
+} // namespace aether::log::__impl
 #endif

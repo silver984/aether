@@ -39,7 +39,7 @@ size<uint32_t> Window::default_size() const {
 // private
 bool Window::init(init_descriptor desc) {
 #ifdef AETHER_DEBUG
-	log::impl::create_log_file();
+	log::__impl::__create_log_file();
 
 	#ifdef WIN32
 	if (!win32::enable_console_colors()) {

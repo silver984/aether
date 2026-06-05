@@ -2,6 +2,7 @@
 #include <cassert>
 #include <objects/Node.hh>
 #include <objects/abstract/Scene.hh>
+#include <objects/abstract/Sound.hh>
 #include <services/core/Window.hh>
 
 namespace aether {
@@ -18,6 +19,10 @@ Scene::Scene(Context const& ctx)
 }
 
 Scene::~Scene() = default;
+
+std::string_view Scene::name() const {
+	return "Unnamed scene";
+}
 
 // protected
 bool Scene::init() {
@@ -55,6 +60,15 @@ void Scene::add(std::shared_ptr<Node> node) {
 	root_node_->add_child(node);
 }
 
+// protected
+void Scene::add(std::shared_ptr<Sound> sound) {
+	if (!sound) {
+		return;
+	}
+
+	sounds_.emplace_back(sound);
+}
+
 // private
 bool Scene::init_scene() {
 	return init();
@@ -62,6 +76,11 @@ bool Scene::init_scene() {
 
 // private
 void Scene::update_all(float dt) {
+	// auto release sounds
+	std::erase_if(sounds_, [](auto const& sound) {
+		return sound.use_count() <= 1 && sound->voice_count() == 0;
+	});
+
 	root_node_->update_all(dt);
 
 	if (is_active_) {

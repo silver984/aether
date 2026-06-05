@@ -24,10 +24,10 @@ public:
 	Node(Context const& ctx);
 	virtual ~Node();
 
-	template <typename T, typename... va>
-	    requires std::derived_from<T, Node>
-	[[nodiscard]] static std::shared_ptr<T> create(Context const& ctx, va&&... args) {
-		std::shared_ptr<T> ptr = std::make_shared<T>(ctx, std::forward<va>(args)...);
+	template <typename Derived, typename... Args>
+	    requires std::derived_from<Derived, Node>
+	[[nodiscard]] static std::shared_ptr<Derived> create(Context const& ctx, Args&&... args) {
+		std::shared_ptr<Derived> ptr = std::make_shared<Derived>(ctx, std::forward<Args>(args)...);
 
 		if (!ptr->init_node()) {
 			return nullptr;
@@ -36,11 +36,11 @@ public:
 		return ptr;
 	}
 
-	template <typename T>
-	    requires std::derived_from<T, Node>
-	[[nodiscard]] std::shared_ptr<T> fetch_child_as(std::string_view name) {
+	template <typename Derived>
+	    requires std::derived_from<Derived, Node>
+	[[nodiscard]] std::shared_ptr<Derived> fetch_child_as(std::string_view name) {
 		std::shared_ptr<Node> node = fetch_child(name);
-		return std::dynamic_pointer_cast<T>(node);
+		return std::dynamic_pointer_cast<Derived>(node);
 	}
 
 	void add_child(std::shared_ptr<Node> node);
@@ -135,8 +135,8 @@ class NodeIdentity : public Node {
 public:
 	using Node::Node;
 
-	template <typename U, typename... va>
-	static std::shared_ptr<U> create(Context const&, va&&...) = delete;
+	template <typename U, typename... V>
+	static std::shared_ptr<U> create(Context const&, V&&...) = delete;
 
 	std::string_view type() const override {
 		return T::TYPE_;
