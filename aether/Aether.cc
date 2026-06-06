@@ -9,6 +9,7 @@
 #include <services/resource/AnimationRepository.hh>
 #include <services/resource/AudioRepository.hh>
 #include <services/resource/TextureRepository.hh>
+#include <sol/state.hpp>
 #include <soloud.h>
 #include <soloud_error.h>
 #include <util/timer.hh>
@@ -63,6 +64,9 @@ struct Aether::impl final {
 #endif
 
 		renderer_.setup(window_);
+
+		using enum sol::lib;
+		lua_.open_libraries(base, string, table, math, utf8);
 
 #ifdef AETHER_DEBUG
 		infolog("Initialized");
@@ -126,6 +130,7 @@ struct Aether::impl final {
 	Window window_;
 	Renderer renderer_;
 	SoLoud::Soloud soloud_;
+	sol::state lua_;
 	SceneScheduler scene_scheduler_;
 	TextureRepository textures;
 	AnimationRepository animations_;

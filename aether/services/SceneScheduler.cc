@@ -2,7 +2,7 @@
 	#include <log.hh>
 #endif
 #include <Context.hh>
-#include <objects/abstract/Scene.hh>
+#include <abstract/Scene.hh>
 #include <services/SceneScheduler.hh>
 #include <utility>
 

@@ -1,9 +1,9 @@
 #include <Context.hh>
+#include <abstract/Scene.hh>
+#include <abstract/Sound.hh>
 #include <cassert>
 #include <log.hh>
 #include <objects/Node.hh>
-#include <objects/abstract/Scene.hh>
-#include <objects/abstract/Sound.hh>
 #include <services/core/Window.hh>
 
 namespace aether {

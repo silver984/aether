@@ -3,9 +3,9 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
+#include <abstract/Sound.hh>
 #include <objects/AnimatedSprite.hh>
 #include <objects/TileMap.hh>
-#include <objects/abstract/Sound.hh>
 #include <scenes/TestScene.hh>
 #include <services/core/Renderer.hh>
 #include <services/core/Window.hh>

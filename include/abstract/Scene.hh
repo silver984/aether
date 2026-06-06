@@ -1,7 +1,7 @@
 #pragma once
+#include <abstract/Camera.hh>
 #include <concepts>
 #include <memory>
-#include <objects/abstract/Camera.hh>
 #include <string_view>
 #include <utility>
 #include <vector>

@@ -1,5 +1,5 @@
+#include <abstract/Camera.hh>
 #include <objects/Node.hh>
-#include <objects/abstract/Camera.hh>
 
 namespace aether {
 

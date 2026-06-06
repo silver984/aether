@@ -2,8 +2,8 @@
 	#include <log.hh>
 #endif
 #include <Context.hh>
+#include <abstract/Scene.hh>
 #include <objects/AnimatedSprite.hh>
-#include <objects/abstract/Scene.hh>
 #include <raylib.h>
 #include <services/core/Renderer.hh>
 #include <services/resource/AnimationRepository.hh>

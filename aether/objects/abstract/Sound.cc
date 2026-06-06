@@ -3,7 +3,7 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <objects/abstract/Sound.hh>
+#include <abstract/Sound.hh>
 #include <services/resource/AudioRepository.hh>
 #include <soloud.h>
 #include <soloud_error.h>
