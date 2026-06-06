@@ -4,12 +4,11 @@
 namespace aether {
 
 // private
-Context::Context(Window& _window, Renderer& _renderer, SoLoud::Soloud& _soloud, TextureRepository& _texture_repository,
-                 AnimationRepository& _animation_repository, AudioRepository& _audio_repository,
-                 SceneScheduler& _scene_scheduler)
-    : core_services(_window, _renderer, _soloud)
-    , resource_services(_texture_repository, _animation_repository, _audio_repository)
-    , scene_scheduler(_scene_scheduler)
+Context::Context(Window& window, Renderer& renderer, SoLoud::Soloud& soloud, TextureRepository& textures,
+                 AnimationRepository& animations, AudioRepository& audios, SceneScheduler& scene_scheduler)
+    : core_(window, renderer, soloud)
+    , resource_(textures, animations, audios)
+    , scene_scheduler_(scene_scheduler)
     , total_time_(0.f)
     , frame_elapsed_(0.f)
     , frame_count_(0)
@@ -17,6 +16,18 @@ Context::Context(Window& _window, Renderer& _renderer, SoLoud::Soloud& _soloud, 
 
 // public
 Context::~Context() = default;
+
+CoreServices const& Context::core() const {
+	return core_;
+}
+
+ResourceServices const& Context::resource() const {
+	return resource_;
+}
+
+SceneScheduler& Context::scene_scheduler() const {
+	return scene_scheduler_;
+}
 
 float Context::delta_time() const {
 	return GetFrameTime();

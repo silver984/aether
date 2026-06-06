@@ -15,13 +15,13 @@ namespace aether {
 
 struct Sound::impl final {
 	impl(Context const& ctx)
-	    : soloud_(ctx.core_services.soloud)
+	    : soloud_(ctx.core().soloud())
 	    , wave_handle_(0)
 	    , volume_(1.f)
 	    , pan_(0.f) {}
 
-	bool init(AudioRepository& audio_repository, std::string_view file) {
-		buffer_ = audio_repository.fetch(file);
+	bool init(AudioRepository& audios, std::string_view file) {
+		buffer_ = audios.fetch(file);
 
 		if (!buffer_) {
 			return false;
@@ -117,7 +117,7 @@ Sound::~Sound() = default;
 std::shared_ptr<Sound> Sound::create(Context const& ctx, std::string_view file) {
 	std::shared_ptr<Sound> ptr = std::make_shared<Sound>(ctx);
 
-	if (!ptr->impl_->init(ctx.resource_services.audio_repository, file)) {
+	if (!ptr->impl_->init(ctx.resource().audios(), file)) {
 		return nullptr;
 	}
 

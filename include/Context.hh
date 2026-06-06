@@ -13,29 +13,26 @@ class Context final {
 	friend class Aether;
 
 private:
-	Context(Window& _window, Renderer& _renderer, SoLoud::Soloud& _soloud, TextureRepository& _texture_repository,
-	        AnimationRepository& _animation_repository, AudioRepository& _audio_repository,
-	        SceneScheduler& _scene_scheduler);
+	Context(Window& window, Renderer& renderer, SoLoud::Soloud& soloud, TextureRepository& textures,
+	        AnimationRepository& animations, AudioRepository& audios, SceneScheduler& scene_scheduler);
 
 public:
 	~Context();
-	Context(Context const&)            = delete;
-	Context(Context&&)                 = delete;
-	Context& operator=(Context const&) = delete;
-	Context& operator=(Context&&)      = delete;
 
+	[[nodiscard]] CoreServices const& core() const;
+	[[nodiscard]] ResourceServices const& resource() const;
+	[[nodiscard]] SceneScheduler& scene_scheduler() const;
 	[[nodiscard]] float delta_time() const;
 	[[nodiscard]] float total_time() const;
 	[[nodiscard]] uint32_t frame_count() const;
 	[[nodiscard]] uint32_t running_fps() const;
 
-	CoreServices core_services;
-	ResourceServices resource_services;
-	SceneScheduler& scene_scheduler;
-
 private:
 	void update_frame_context();
 
+	CoreServices core_;
+	ResourceServices resource_;
+	SceneScheduler& scene_scheduler_;
 	float total_time_;
 	float frame_elapsed_;
 	uint32_t frame_count_;

@@ -1,5 +1,6 @@
 #include <Context.hh>
 #include <cassert>
+#include <log.hh>
 #include <objects/Node.hh>
 #include <objects/abstract/Scene.hh>
 #include <objects/abstract/Sound.hh>
@@ -13,15 +14,44 @@ Scene::Scene(Context const& ctx)
     , is_active_(false)
     , is_visit_scheduled_(false) {
 	assert(root_node_ != nullptr);
-	size<uint32_t> const window_size = ctx.core_services.window.default_size();
+	root_node_->scene_               = this;
+	size<uint32_t> const window_size = ctx.core().window().default_size();
 	root_node_->set_bounds(static_cast<size<int>>(window_size));
 	root_node_->set_position(window_size / 2.f);
 }
 
 Scene::~Scene() = default;
 
-std::string_view Scene::name() const {
-	return "Unnamed scene";
+void Scene::activate() {
+	is_active_ = true;
+}
+
+void Scene::deactivate() {
+	is_active_ = false;
+}
+
+void Scene::schedule_visit() {
+	is_visit_scheduled_ = true;
+}
+
+void Scene::unschedule_visit() {
+	is_visit_scheduled_ = false;
+}
+
+bool Scene::add(std::shared_ptr<Node> node) {
+	return root_node_->add_child(node);
+}
+
+void Scene::add(std::shared_ptr<Sound> sound) {
+	if (!sound) {
+		return;
+	}
+
+	sounds_.emplace_back(sound);
+}
+
+std::shared_ptr<Node> Scene::root_node() const {
+	return root_node_;
 }
 
 // protected
@@ -36,37 +66,8 @@ void Scene::update(float dt) {}
 void Scene::visit() {}
 
 // protected
-void Scene::activate() {
-	is_active_ = true;
-}
-
-// protected
-void Scene::deactivate() {
-	is_active_ = false;
-}
-
-// protected
-void Scene::schedule_visit() {
-	is_visit_scheduled_ = true;
-}
-
-// protected
-void Scene::unschedule_visit() {
-	is_visit_scheduled_ = false;
-}
-
-// protected
-void Scene::add(std::shared_ptr<Node> node) {
-	root_node_->add_child(node);
-}
-
-// protected
-void Scene::add(std::shared_ptr<Sound> sound) {
-	if (!sound) {
-		return;
-	}
-
-	sounds_.emplace_back(sound);
+Context const& Scene::ctx() const {
+	return ctx_;
 }
 
 // private

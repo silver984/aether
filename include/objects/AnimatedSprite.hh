@@ -11,9 +11,7 @@ using rltexture = Texture;
 
 namespace aether {
 
-class AnimatedSprite : public NodeIdentity<AnimatedSprite> {
-	friend class NodeIdentity<AnimatedSprite>;
-
+class AnimatedSprite : public Node {
 public:
 	struct descriptor final {
 		std::string_view image_file;
@@ -27,7 +25,7 @@ public:
 		bool loop              = false;
 	};
 
-	AnimatedSprite(Context const& ctx, descriptor desc);
+	AnimatedSprite(Context const& ctx, descriptor const& desc);
 	~AnimatedSprite() override;
 
 	void toggle_antialiasing(bool val) const;
@@ -44,7 +42,6 @@ private:
 	void progress_frame();
 	[[nodiscard]] size<int> calculate_bounds(std::vector<atlas_region> const& frames) const;
 
-	static constexpr std::string_view TYPE_ = "AnimatedSprite";
 	std::shared_ptr<animation_map> data_;
 	std::shared_ptr<rltexture> texture_;
 	std::string current_animation_name_;

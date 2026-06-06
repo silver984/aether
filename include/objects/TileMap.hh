@@ -8,9 +8,7 @@ using rltexture = Texture;
 
 namespace aether {
 
-class TileMap : public NodeIdentity<TileMap> {
-	friend class NodeIdentity<TileMap>;
-
+class TileMap : public Node {
 public:
 	struct descriptor final {
 		std::string_view file;
@@ -18,7 +16,7 @@ public:
 		bool has_antialiasing = true;
 	};
 
-	TileMap(Context const& ctx, descriptor desc);
+	TileMap(Context const& ctx, descriptor const& desc);
 	~TileMap() override;
 
 	void toggle_antialiasing(bool val) const;
@@ -32,7 +30,6 @@ protected:
 	void draw(mat3 const& transform, rgba color) override;
 
 private:
-	static constexpr std::string_view TYPE_ = "TileMap";
 	std::shared_ptr<rltexture> texture_;
 	std::string const file_arg_;
 	rect<float> texture_source_rect_;

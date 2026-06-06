@@ -11,19 +11,19 @@ class ResourceServices final {
 	friend class Context;
 
 private:
-	ResourceServices(TextureRepository& _texture_repository, AnimationRepository& _animation_repository,
-	                 AudioRepository& _audio_repository);
+	ResourceServices(TextureRepository& textures, AnimationRepository& animations, AudioRepository& audios);
 
 public:
 	~ResourceServices();
-	ResourceServices(ResourceServices const&)            = delete;
-	ResourceServices(ResourceServices&&)                 = delete;
-	ResourceServices& operator=(ResourceServices const&) = delete;
-	ResourceServices& operator=(ResourceServices&&)      = delete;
 
-	TextureRepository& texture_repository;
-	AnimationRepository& animation_repository;
-	AudioRepository& audio_repository;
+	[[nodiscard]] TextureRepository& textures() const;
+	[[nodiscard]] AnimationRepository& animations() const;
+	[[nodiscard]] AudioRepository& audios() const;
+
+private:
+	TextureRepository& textures_;
+	AnimationRepository& animations_;
+	AudioRepository& audios_;
 };
 
 } // namespace aether

@@ -19,31 +19,31 @@ namespace aether {
 
 struct Aether::impl final {
 	impl()
-	    : ctx(window, renderer, soloud, texture_repository, animation_repository, audio_repository, scene_scheduler)
-	    , is_initialized(false) {}
+	    : ctx_(window_, renderer_, soloud_, textures, animations_, audios_, scene_scheduler_)
+	    , is_initialized_(false) {}
 
 	~impl() {
-		if (!is_initialized) {
+		if (!is_initialized_) {
 			return;
 		}
 
-		if (scene_scheduler.has_pending_scene()) {
-			scene_scheduler.cleanup();
-			texture_repository.clear_cache();
-			animation_repository.clear_cache();
+		if (scene_scheduler_.has_pending_scene()) {
+			scene_scheduler_.cleanup();
+			textures.clear_cache();
+			animations_.clear_cache();
 		}
 
-		soloud.deinit();
-		window.shutdown();
-		is_initialized = false;
+		soloud_.deinit();
+		window_.shutdown();
+		is_initialized_ = false;
 	}
 
 	bool init(init_descriptor const& desc) {
-		if (is_initialized) {
+		if (is_initialized_) {
 			return true;
 		}
 
-		if (!window.init({.title = desc.window_title, .resolution = desc.resolution, .fps = desc.fps})) {
+		if (!window_.init({.title = desc.window_title, .resolution = desc.resolution, .fps = desc.fps})) {
 #ifdef AETHER_DEBUG
 			errorlog("Failed");
 #endif
@@ -51,7 +51,7 @@ struct Aether::impl final {
 		}
 
 #ifdef AETHER_DEBUG
-		if (SoLoud::result result = soloud.init(); result != SO_NO_ERROR) {
+		if (SoLoud::result result = soloud_.init(); result != SO_NO_ERROR) {
 			warninglog("Audio engine failed to initialize | result: {}", result);
 		} else {
 	#ifdef AETHER_VERBOSE_DEBUG
@@ -59,45 +59,45 @@ struct Aether::impl final {
 	#endif
 		}
 #else
-		(void)soloud.init();
+		(void)soloud_.init();
 #endif
 
-		renderer.setup(window);
+		renderer_.setup(window_);
 
 #ifdef AETHER_DEBUG
 		infolog("Initialized");
 #endif
-		return is_initialized = true;
+		return is_initialized_ = true;
 	}
 
 	void run() {
-		if (!is_initialized) {
+		if (!is_initialized_) {
 #ifdef AETHER_DEBUG
 			errorlog("Can't run loop while uninitialized");
 #endif
 			return;
 		}
 
-		while (!window.should_close()) {
-			window.update();
+		while (!window_.should_close()) {
+			window_.update();
 
-			bool const is_window_minimized = window.is_minimized();
+			bool const is_window_minimized = window_.is_minimized();
 
 			if (!is_window_minimized) {
-				ctx.update_frame_context();
-				scene_scheduler.update_scene(ctx.delta_time());
+				ctx_.update_frame_context();
+				scene_scheduler_.update_scene(ctx_.delta_time());
 			}
 
-			renderer.start_draw();
+			renderer_.start_draw();
 
 			if (!is_window_minimized) {
-				scene_scheduler.draw_scene();
+				scene_scheduler_.draw_scene();
 			}
 
 #ifdef AETHER_DEBUG
-			renderer.end_draw(ctx.running_fps());
+			renderer_.end_draw(ctx_.running_fps());
 #else
-			renderer.end_draw();
+			renderer_.end_draw();
 #endif
 		}
 
@@ -110,12 +110,12 @@ struct Aether::impl final {
 		auto const start_time = util::start();
 #endif
 
-		scene_scheduler.cleanup();
-		texture_repository.clear_cache();
-		animation_repository.clear_cache();
-		soloud.deinit();
-		window.shutdown();
-		is_initialized = false;
+		scene_scheduler_.cleanup();
+		textures.clear_cache();
+		animations_.clear_cache();
+		soloud_.deinit();
+		window_.shutdown();
+		is_initialized_ = false;
 
 #ifdef AETHER_DEBUG
 		auto const end_time = util::end(start_time);
@@ -123,15 +123,15 @@ struct Aether::impl final {
 #endif
 	}
 
-	Window window;
-	Renderer renderer;
-	SoLoud::Soloud soloud;
-	SceneScheduler scene_scheduler;
-	TextureRepository texture_repository;
-	AnimationRepository animation_repository;
-	AudioRepository audio_repository;
-	Context ctx;
-	bool is_initialized;
+	Window window_;
+	Renderer renderer_;
+	SoLoud::Soloud soloud_;
+	SceneScheduler scene_scheduler_;
+	TextureRepository textures;
+	AnimationRepository animations_;
+	AudioRepository audios_;
+	Context ctx_;
+	bool is_initialized_;
 };
 
 Aether::Aether()
@@ -148,7 +148,7 @@ void Aether::run() const {
 }
 
 Context const& Aether::context() const {
-	return impl_->ctx;
+	return impl_->ctx_;
 }
 
 } // namespace aether

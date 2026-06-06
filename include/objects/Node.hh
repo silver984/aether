@@ -43,10 +43,11 @@ public:
 		return std::dynamic_pointer_cast<Derived>(node);
 	}
 
-	void add_child(std::shared_ptr<Node> node);
-	void remove_child(std::shared_ptr<Node> node);
+	bool add_child(std::shared_ptr<Node> node);
+	bool remove_child(std::shared_ptr<Node> node);
 	[[nodiscard]] std::shared_ptr<Node> fetch_child(std::string_view name);
-	void destroy();
+	void destroy_all();
+	bool detach_from_parent();
 	void activate();
 	void deactivate();
 	void schedule_draw();
@@ -56,8 +57,7 @@ public:
 	[[nodiscard]] std::weak_ptr<Node> parent() const;
 	void set_name(std::string_view name); // TODO: better naming system
 	[[nodiscard]] std::string_view name() const;
-	[[nodiscard]] virtual std::string_view type() const;
-	void set_bounds(size<int> val); // TODO: set_width, set_height
+	void set_bounds(size<int> val);       // TODO: set_width, set_height
 	[[nodiscard]] size<uint32_t> bounds() const;
 	[[nodiscard]] uint32_t width() const;
 	[[nodiscard]] uint32_t height() const;
@@ -74,6 +74,8 @@ public:
 	[[nodiscard]] vec2<float> scale() const;
 	void set_skew(vec2<float> val);
 	[[nodiscard]] vec2<float> skew() const;
+	void set_scroll_factor(vec2<float> val);
+	[[nodiscard]] vec2<float> scroll_factor() const;
 	void set_rotation(float val);
 	[[nodiscard]] float rotation() const;
 	void set_color(rgba val);
@@ -95,8 +97,8 @@ protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void draw(mat3 const& transform, rgba color);
-
-	Context const& ctx_;
+	[[nodiscard]] Context const& ctx() const;
+	[[nodiscard]] Scene* scene() const;
 
 private:
 	bool init_node();
@@ -108,6 +110,8 @@ private:
 	[[nodiscard]] mat3 calculate_transform(std::weak_ptr<Node> parent) const;
 	[[nodiscard]] rgba calculate_combined_rgba(std::weak_ptr<Node> parent) const;
 
+	Context const& ctx_;
+	Scene* scene_;
 	std::vector<std::shared_ptr<Node>> children_;
 	std::weak_ptr<Node> parent_;
 	std::string name_;
@@ -117,6 +121,7 @@ private:
 	vec2<float> anchor_;
 	vec2<float> scale_;
 	vec2<float> skew_; // degrees
+	vec2<float> scroll_factor_;
 	float rotation_;   // degrees
 	float time_scale_;
 	rgba color_;
@@ -128,19 +133,6 @@ private:
 	bool is_active_;
 	bool is_draw_scheduled_;
 	bool is_visible_;
-};
-
-template <typename T>
-class NodeIdentity : public Node {
-public:
-	using Node::Node;
-
-	template <typename U, typename... V>
-	static std::shared_ptr<U> create(Context const&, V&&...) = delete;
-
-	std::string_view type() const override {
-		return T::TYPE_;
-	}
 };
 
 } // namespace aether

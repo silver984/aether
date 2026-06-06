@@ -3,12 +3,24 @@
 namespace aether {
 
 // private
-ResourceServices::ResourceServices(TextureRepository& _texture_repository, AnimationRepository& _animation_repository,
-                                   AudioRepository& _audio_repository)
-    : texture_repository(_texture_repository)
-    , animation_repository(_animation_repository)
-    , audio_repository(_audio_repository) {}
+ResourceServices::ResourceServices(TextureRepository& textures, AnimationRepository& animations,
+                                   AudioRepository& audios)
+    : textures_(textures)
+    , animations_(animations)
+    , audios_(audios) {}
 
 ResourceServices::~ResourceServices() = default;
+
+TextureRepository& ResourceServices::textures() const {
+	return textures_;
+}
+
+AnimationRepository& ResourceServices::animations() const {
+	return animations_;
+}
+
+AudioRepository& ResourceServices::audios() const {
+	return audios_;
+}
 
 } // namespace aether

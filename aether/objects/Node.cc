@@ -7,11 +7,13 @@ namespace aether {
 
 Node::Node(Context const& ctx)
     : ctx_(ctx)
+    , scene_(nullptr)
     , color_(255)
     , combined_color_(color_)
     , transform_(mat3::identity())
-    , anchor_(0.5f, 0.5f)
-    , scale_(1.f, 1.f)
+    , anchor_(0.5f)
+    , scale_(1.f)
+    , scroll_factor_(1.f)
     , rotation_(0.f)
     , time_scale_(1.f)
     , is_flip_x_(false)
@@ -24,80 +26,87 @@ Node::Node(Context const& ctx)
 
 Node::~Node() = default;
 
-void Node::add_child(std::shared_ptr<Node> node) {
+bool Node::add_child(std::shared_ptr<Node> node) {
 	if (!node) {
-		return;
+		return false;
 	}
 
 	auto self = shared_from_this();
 
 	if (node == self) {
 		// prevent self-parenting
-		return;
+		return false;
 	}
 
 	if (node->has_ancestor(self)) {
 		// prevent hierarchy cycle
-		return;
+		return false;
 	}
 
 	if (std::find(children_.begin(), children_.end(), node) != children_.end()) {
 		// prevent duplicates
-		return;
+		return false;
 	}
 
-	if (auto old_parent = node->parent().lock()) {
+	if (auto old_parent = node->parent_.lock()) {
 		// remove from old parent
 		old_parent->remove_child(node);
 	}
 
 	node->parent_ = weak_from_this();
+	node->scene_  = scene_;
 	children_.emplace_back(node);
 	node->mark_transform_dirty();
 	node->mark_rgba_dirty();
+
+	return true;
 }
 
-void Node::remove_child(std::shared_ptr<Node> node) {
+bool Node::remove_child(std::shared_ptr<Node> node) {
 	if (!node) {
-		return;
+		return false;
 	}
 
 	if (node == shared_from_this()) {
 		// prevent self-remove
-		return;
+		return false;
 	}
 
 	auto const iterator = std::find(children_.begin(), children_.end(), node);
 
 	if (iterator == children_.end()) {
-		return;
+		return false;
 	}
 
 	node->parent_.reset();
+	node->scene_ = nullptr;
 	children_.erase(iterator);
-	node->mark_transform_dirty();
-	node->mark_rgba_dirty();
+
+	return true;
 }
 
-void Node::destroy() {
-	if (auto parent = parent_.lock()) {
-		parent->remove_child(shared_from_this());
-	}
+void Node::destroy_all() {
+	(void)detach_from_parent();
 
-	// recursively destroy children
+	// recursive destroy
 	while (!children_.empty()) {
 		auto child = children_.back();
 		children_.pop_back();
-
-		if (child) {
-			child->parent_.reset();
-			child->destroy();
-		}
+		child->parent_.reset();
+		child->destroy_all();
 	}
 }
 
+bool Node::detach_from_parent() {
+	if (auto parent = parent_.lock()) {
+		return parent->remove_child(shared_from_this());
+	}
+
+	return false;
+}
+
 std::shared_ptr<Node> Node::fetch_child(std::string_view name) {
-	auto const iterator = std::find_if(children_.begin(), children_.end(), [&](std::shared_ptr<Node> const& child) {
+	auto const iterator = std::find_if(children_.begin(), children_.end(), [&](auto const& child) {
 		return child && child->name() == name;
 	});
 
@@ -154,12 +163,8 @@ std::string_view Node::name() const {
 	return name_;
 }
 
-std::string_view Node::type() const {
-	return "Node";
-}
-
 void Node::set_bounds(size<int> val) {
-	val                          = util::max({}, val);
+	val                          = util::max(size<int>(0), val);
 	size<uint32_t> const valui32 = static_cast<size<uint32_t>>(val);
 
 	if (bounds_ == valui32) {
@@ -279,6 +284,19 @@ vec2<float> Node::skew() const {
 	return skew_;
 }
 
+void Node::set_scroll_factor(vec2<float> val) {
+	if (scroll_factor_ == val) {
+		return;
+	}
+
+	scroll_factor_ = val;
+	mark_transform_dirty();
+}
+
+vec2<float> Node::scroll_factor() const {
+	return scroll_factor_;
+}
+
 void Node::set_rotation(float val) {
 	if (rotation_ == val) {
 		return;
@@ -388,6 +406,16 @@ void Node::update(float dt) {}
 // protected
 void Node::draw(mat3 const& transform, rgba color) {}
 
+// protected
+Context const& Node::ctx() const {
+	return ctx_;
+}
+
+// protected
+Scene* Node::scene() const {
+	return scene_;
+}
+
 // private
 bool Node::init_node() {
 	return init();
@@ -468,9 +496,7 @@ void Node::mark_transform_dirty() {
 	is_transform_dirty_ = true;
 
 	for (auto& child : children_) {
-		if (child) {
-			child->mark_transform_dirty();
-		}
+		child->mark_transform_dirty();
 	}
 }
 
@@ -484,23 +510,21 @@ void Node::mark_rgba_dirty() {
 	is_rgba_dirty_ = true;
 
 	for (auto& child : children_) {
-		if (child) {
-			child->mark_rgba_dirty();
-		}
+		child->mark_rgba_dirty();
 	}
 }
 
 // private
 mat3 Node::calculate_transform(std::weak_ptr<Node> parent) const {
-	vec2<float> const anchor_position = {anchor_.x * bounds_.width, anchor_.y * bounds_.height};
-	vec2<float> const skew_rad        = {util::degrees_to_radians(skew_.x), util::degrees_to_radians(skew_.y)};
-	vec2<float> const scale_factor    = {is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f};
-	mat3 const t                      = mat3::translation(position_);
-	mat3 const r                      = mat3::rotation(util::degrees_to_radians(rotation_));
-	mat3 const s                      = mat3::scale(scale_ * scale_factor);
-	mat3 const k                      = mat3::skew(skew_rad);
-	mat3 const a                      = mat3::translation(-anchor_position);
-	mat3 const local                  = t * r * s * k * a;
+	vec2<float> const anchor_position = vec2<float>(anchor_.x * bounds_.width, anchor_.y * bounds_.height);
+	vec2<float> const skew_rad     = vec2<float>(util::degrees_to_radians(skew_.x), util::degrees_to_radians(skew_.y));
+	vec2<float> const scale_factor = vec2<float>(is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f);
+	mat3 const t                   = mat3::translation(position_ * scroll_factor_);
+	mat3 const r                   = mat3::rotation(util::degrees_to_radians(rotation_));
+	mat3 const s                   = mat3::scale(scale_ * scale_factor);
+	mat3 const k                   = mat3::skew(skew_rad);
+	mat3 const a                   = mat3::translation(-anchor_position);
+	mat3 const local               = t * r * s * k * a;
 
 	if (auto p = parent.lock()) {
 		return p->transform_ * local;

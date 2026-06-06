@@ -6,9 +6,7 @@ namespace aether {
 
 class AnimatedSprite;
 
-class PopupUI : public NodeIdentity<PopupUI> {
-	friend class NodeIdentity<PopupUI>;
-
+class PopupUI : public Node {
 	enum area {
 		top_left_corner,
 		top,
@@ -26,12 +24,11 @@ public:
 	~PopupUI() override;
 
 protected:
-	virtual bool init();
+	bool init() override;
 
 private:
 	void set_area_animation(AnimatedSprite& area_sprite, int index);
 
-	static constexpr std::string_view TYPE_ = "PopupUI";
 	std::array<std::shared_ptr<AnimatedSprite>, area::count> areas_;
 };
 

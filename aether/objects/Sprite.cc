@@ -10,8 +10,8 @@
 
 namespace aether {
 
-Sprite::Sprite(Context const& ctx, descriptor desc)
-    : NodeIdentity<Sprite>(ctx)
+Sprite::Sprite(Context const& ctx, descriptor const& desc)
+    : Node(ctx)
     , file_arg_(std::string(desc.file))
     , wrap_type_arg_(desc.wrap_type)
     , has_antialiasing_arg_(desc.has_antialiasing) {}
@@ -25,7 +25,7 @@ void Sprite::toggle_antialiasing(bool val) const {
 }
 
 bool Sprite::set_texture(std::string_view file) {
-	texture_ = ctx_.resource_services.texture_repository.fetch(file);
+	texture_ = ctx().resource().textures().fetch(file);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG
@@ -90,7 +90,7 @@ bool Sprite::init() {
 // protected
 void Sprite::draw(mat3 const& transform, rgba color) {
 	if (texture_) {
-		ctx_.core_services.renderer.draw_texture(*texture_, texture_source_rect_, transform, color);
+		ctx().core().renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
 	}
 }
 

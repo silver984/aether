@@ -6,7 +6,7 @@
 namespace aether {
 
 PopupUI::PopupUI(Context const& ctx)
-    : NodeIdentity<PopupUI>(ctx) {}
+    : Node(ctx) {}
 
 PopupUI::~PopupUI() = default;
 

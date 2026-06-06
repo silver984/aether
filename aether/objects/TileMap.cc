@@ -10,8 +10,8 @@
 
 namespace aether {
 
-TileMap::TileMap(Context const& ctx, descriptor desc)
-    : NodeIdentity<TileMap>(ctx)
+TileMap::TileMap(Context const& ctx, descriptor const& desc)
+    : Node(ctx)
     , file_arg_(std::string(desc.file))
     , tile_bounds_arg_(static_cast<size<uint32_t>>(util::max(size<int>(1), desc.tile_bounds)))
     , has_antialiasing_(desc.has_antialiasing) {}
@@ -52,7 +52,7 @@ vec2<uint32_t> TileMap::tile_index() const {
 
 // protected
 bool TileMap::init() {
-	texture_ = ctx_.resource_services.texture_repository.fetch(file_arg_);
+	texture_ = ctx().resource().textures().fetch(file_arg_);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG
@@ -73,7 +73,7 @@ bool TileMap::init() {
 // protected
 void TileMap::draw(mat3 const& transform, rgba color) {
 	if (texture_) {
-		ctx_.core_services.renderer.draw_texture(*texture_, texture_source_rect_, transform, color);
+		ctx().core().renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
 	}
 }
 

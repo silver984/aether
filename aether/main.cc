@@ -11,7 +11,7 @@ int main() {
 
 	if (aether.init({.window_title = "Aether Engine " AETHER_VERSION, .resolution = {1280, 720}})) {
 		Context const& ctx = aether.context();
-		ctx.scene_scheduler.replace_scene(Scene::create<TestScene>(ctx));
+		ctx.scene_scheduler().replace_scene(Scene::create<TestScene>(ctx));
 		aether.run();
 	}
 

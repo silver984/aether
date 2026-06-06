@@ -3,6 +3,7 @@
 #endif
 #include <Context.hh>
 #include <objects/AnimatedSprite.hh>
+#include <objects/abstract/Scene.hh>
 #include <raylib.h>
 #include <services/core/Renderer.hh>
 #include <services/resource/AnimationRepository.hh>
@@ -11,8 +12,8 @@
 
 namespace aether {
 
-AnimatedSprite::AnimatedSprite(Context const& ctx, descriptor desc)
-    : NodeIdentity<AnimatedSprite>(ctx)
+AnimatedSprite::AnimatedSprite(Context const& ctx, descriptor const& desc)
+    : Node(ctx)
     , image_file_arg_(std::string(desc.image_file))
     , data_file_arg_(std::string(desc.data_file))
     , current_subtexture_index_(0)
@@ -76,7 +77,9 @@ bool AnimatedSprite::play_animation(std::string_view name, animation_options opt
 
 // protected
 bool AnimatedSprite::init() {
-	texture_ = ctx_.resource_services.texture_repository.fetch(image_file_arg_);
+	auto const& resource = ctx().resource();
+	texture_             = resource.textures().fetch(image_file_arg_);
+	data_                = resource.animations().fetch(data_file_arg_);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG
@@ -84,8 +87,6 @@ bool AnimatedSprite::init() {
 #endif
 		return false;
 	}
-
-	data_ = ctx_.resource_services.animation_repository.fetch(data_file_arg_);
 
 	if (!data_) {
 #ifdef AETHER_DEBUG
@@ -111,8 +112,8 @@ bool AnimatedSprite::init() {
 	animation_was_reset_           = true;
 
 	toggle_antialiasing(has_antialiasing_arg_);
-	activate();
 	update(0.f);
+	activate();
 	schedule_draw();
 
 	return true;
@@ -151,7 +152,7 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 		subtexture_transform_ = transform * t;
 	}
 
-	ctx_.core_services.renderer.draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
+	ctx().core().renderer().draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
 }
 
 // private

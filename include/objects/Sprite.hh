@@ -7,9 +7,7 @@ using rltexture = Texture;
 
 namespace aether {
 
-class Sprite : public NodeIdentity<Sprite> {
-	friend class NodeIdentity<Sprite>;
-
+class Sprite : public Node {
 public:
 	enum class texture_wrap : int { clamp, repeat, mirror_clamp, mirror_repeat };
 
@@ -19,7 +17,7 @@ public:
 		bool has_antialiasing  = true;
 	};
 
-	Sprite(Context const& ctx, descriptor desc);
+	Sprite(Context const& ctx, descriptor const& desc);
 	~Sprite() override;
 
 	void toggle_antialiasing(bool val) const;
@@ -34,7 +32,6 @@ protected:
 	void draw(mat3 const& transform, rgba color) override;
 
 private:
-	static constexpr std::string_view TYPE_ = "Sprite";
 	std::shared_ptr<rltexture> texture_;
 	std::string const file_arg_;
 	texture_wrap const wrap_type_arg_;
