@@ -13,7 +13,8 @@
 using namespace aether;
 
 TestScene::TestScene(Context const& ctx)
-    : Scene(ctx) {}
+    : Scene(ctx)
+    , elapsed_(0.f) {}
 
 TestScene::~TestScene() = default;
 
@@ -21,22 +22,21 @@ TestScene::~TestScene() = default;
 bool TestScene::init() {
 	auto const& lctx = ctx();
 
-	if (auto animation =
-	        Node::create<AnimatedSprite>(lctx, AnimatedSprite::descriptor{.image_file = "resources/spooky_dark.png",
-	                                                                      .data_file  = "resources/spooky_dark.xml",
-	                                                                      .fps        = 24})) {
-		animation->play_animation("spooky dance idle", {.loop = true});
-		animation->set_position(vec2<float>(600.f, 400.f));
-		animation->set_scroll_factor(vec2<float>(1.33f, 0.5f));
+	if (auto animation = Node::create<AnimatedSprite>(
+	        lctx,
+	        AnimatedSprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
+		animation->play_animation("idle", {.loop = true});
+		animation->set_position(vec2<float>(0.f, 400.f));
+		animation->set_scroll_factor(vec2<float>(0.6f, 1.f));
+		animation->set_color(rgba(128, 128, 128, 255));
 		add(animation);
 	}
 
-	if (auto animation =
-	        Node::create<AnimatedSprite>(lctx, AnimatedSprite::descriptor{.image_file = "resources/spooky_dark.png",
-	                                                                      .data_file  = "resources/spooky_dark.xml",
-	                                                                      .fps        = 24})) {
-		animation->play_animation("spooky dance idle", {.loop = true});
-		animation->set_position(vec2<float>(600.f, 400.f));
+	if (auto animation = Node::create<AnimatedSprite>(
+	        lctx,
+	        AnimatedSprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
+		animation->play_animation("idle", {.loop = true});
+		animation->set_position(vec2<float>(0.f, 400.f));
 		add(animation);
 	}
 
@@ -46,6 +46,14 @@ bool TestScene::init() {
 	}
 
 	lctx.core().renderer().set_background_rgba(rgba(128, 128, 128, 255));
+	activate();
 
 	return true;
+}
+
+// protected
+void TestScene::update(float dt) {
+	elapsed_ += dt;
+	auto& lcamera = camera();
+	lcamera.set_position(vec2<float>(lcamera.position().x + (100.f * dt), 0.f));
 }

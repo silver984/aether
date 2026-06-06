@@ -10,6 +10,7 @@ namespace aether {
 
 Scene::Scene(Context const& ctx)
     : ctx_(ctx)
+    , camera_(root_node_)
     , root_node_(Node::create<Node>(ctx))
     , is_active_(false)
     , is_visit_scheduled_(false) {
@@ -52,6 +53,10 @@ void Scene::add(std::shared_ptr<Sound> sound) {
 
 std::shared_ptr<Node> Scene::root_node() const {
 	return root_node_;
+}
+
+Camera& Scene::camera() {
+	return camera_;
 }
 
 // protected

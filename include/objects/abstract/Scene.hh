@@ -1,6 +1,7 @@
 #pragma once
 #include <concepts>
 #include <memory>
+#include <objects/abstract/Camera.hh>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -38,6 +39,7 @@ public:
 	bool add(std::shared_ptr<Node> node);
 	void add(std::shared_ptr<Sound> sound);
 	[[nodiscard]] std::shared_ptr<Node> root_node() const;
+	[[nodiscard]] Camera& camera();
 
 protected:
 	virtual bool init();
@@ -55,6 +57,7 @@ private:
 	// TODO: make nodes aware of the scene
 
 	Context const& ctx_;
+	Camera camera_;
 	std::shared_ptr<Node> root_node_;
 	std::vector<std::shared_ptr<Sound>> sounds_;
 	bool is_active_;

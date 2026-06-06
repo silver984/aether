@@ -16,9 +16,11 @@ namespace aether {
 
 class Context;
 class Scene;
+class Camera;
 
 class Node : public std::enable_shared_from_this<Node> {
 	friend class Scene;
+	friend class Camera;
 
 public:
 	Node(Context const& ctx);

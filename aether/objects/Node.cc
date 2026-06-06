@@ -1,7 +1,11 @@
 #include <algorithm>
 #include <cmath>
 #include <objects/Node.hh>
+#include <objects/abstract/Scene.hh>
 #include <util/math.hh>
+
+#include <log.hh>
+#include <util/timer.hh>
 
 namespace aether {
 
@@ -516,15 +520,21 @@ void Node::mark_rgba_dirty() {
 
 // private
 mat3 Node::calculate_transform(std::weak_ptr<Node> parent) const {
+	auto const start_timer = util::start();
+
 	vec2<float> const anchor_position = vec2<float>(anchor_.x * bounds_.width, anchor_.y * bounds_.height);
 	vec2<float> const skew_rad     = vec2<float>(util::degrees_to_radians(skew_.x), util::degrees_to_radians(skew_.y));
 	vec2<float> const scale_factor = vec2<float>(is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f);
-	mat3 const t                   = mat3::translation(position_ * scroll_factor_);
-	mat3 const r                   = mat3::rotation(util::degrees_to_radians(rotation_));
-	mat3 const s                   = mat3::scale(scale_ * scale_factor);
-	mat3 const k                   = mat3::skew(skew_rad);
-	mat3 const a                   = mat3::translation(-anchor_position);
-	mat3 const local               = t * r * s * k * a;
+	mat3 const t     = mat3::translation(scene_ ? (position_ + scene_->camera().position()) * scroll_factor_
+	                                            : position_ * scroll_factor_);
+	mat3 const r     = mat3::rotation(util::degrees_to_radians(rotation_));
+	mat3 const s     = mat3::scale(scale_ * scale_factor);
+	mat3 const k     = mat3::skew(skew_rad);
+	mat3 const a     = mat3::translation(-anchor_position);
+	mat3 const local = t * r * s * k * a;
+
+	auto const end_timer = util::end(start_timer);
+	tracelog("{}", end_timer);
 
 	if (auto p = parent.lock()) {
 		return p->transform_ * local;

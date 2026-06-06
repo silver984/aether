@@ -9,4 +9,8 @@ public:
 
 protected:
 	bool init() override;
+	void update(float dt) override;
+
+private:
+	float elapsed_;
 };
