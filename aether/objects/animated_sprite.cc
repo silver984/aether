@@ -1,19 +1,19 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <Context.hh>
-#include <abstract/Scene.hh>
-#include <objects/AnimatedSprite.hh>
+#include <abstract/scene.hh>
+#include <context.hh>
+#include <objects/animated_sprite.hh>
 #include <raylib.h>
-#include <services/core/Renderer.hh>
-#include <services/resource/AnimationRepository.hh>
-#include <services/resource/TextureRepository.hh>
+#include <services/core/renderer.hh>
+#include <services/resource/animation_repository.hh>
+#include <services/resource/texture_repository.hh>
 #include <util/math.hh>
 
 namespace aether {
 
-AnimatedSprite::AnimatedSprite(Context const& ctx, descriptor const& desc)
-    : Node(ctx)
+animated_sprite::animated_sprite(context const& ctx, descriptor const& desc)
+    : node(ctx)
     , image_file_arg_(std::string(desc.image_file))
     , data_file_arg_(std::string(desc.data_file))
     , current_subtexture_index_(0)
@@ -25,15 +25,15 @@ AnimatedSprite::AnimatedSprite(Context const& ctx, descriptor const& desc)
     , is_current_subtexture_rotated_(false)
     , has_antialiasing_arg_(desc.has_antialiasing) {}
 
-AnimatedSprite::~AnimatedSprite() = default;
+animated_sprite::~animated_sprite() = default;
 
-void AnimatedSprite::toggle_antialiasing(bool val) const {
+void animated_sprite::toggle_antialiasing(bool val) const {
 	if (texture_) {
 		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
 
-bool AnimatedSprite::play_animation(std::string_view name) {
+bool animated_sprite::play_animation(std::string_view name) {
 	if (!data_) {
 #ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Attempted to play animation with nullptr data");
@@ -61,7 +61,7 @@ bool AnimatedSprite::play_animation(std::string_view name) {
 	return true;
 }
 
-bool AnimatedSprite::play_animation(std::string_view name, animation_options options) {
+bool animated_sprite::play_animation(std::string_view name, animation_options options) {
 	if (!play_animation(name)) {
 		return false;
 	}
@@ -76,7 +76,7 @@ bool AnimatedSprite::play_animation(std::string_view name, animation_options opt
 }
 
 // protected
-bool AnimatedSprite::init() {
+bool animated_sprite::init() {
 	auto const& resource = ctx().resource();
 	texture_             = resource.textures().fetch(image_file_arg_);
 	data_                = resource.animations().fetch(data_file_arg_);
@@ -120,7 +120,7 @@ bool AnimatedSprite::init() {
 }
 
 // protected
-void AnimatedSprite::update(float dt) {
+void animated_sprite::update(float dt) {
 	if (animation_was_reset_) {
 		progress_frame();
 		animation_was_reset_ = false;
@@ -137,11 +137,7 @@ void AnimatedSprite::update(float dt) {
 }
 
 // protected
-void AnimatedSprite::draw(mat3 const& transform, rgba color) {
-	if (!texture_) {
-		return;
-	}
-
+void animated_sprite::draw(mat3 const& transform, rgba color) {
 	if (is_current_subtexture_rotated_) {
 		mat3 const fix        = mat3::translation(vec2<float>(0.f, bounds().height - current_subtexture_offsets_.y));
 		mat3 const r          = mat3::rotation(util::degrees_to_radians(-90.f));
@@ -152,15 +148,11 @@ void AnimatedSprite::draw(mat3 const& transform, rgba color) {
 		subtexture_transform_ = transform * t;
 	}
 
-	ctx().core().renderer().draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
+	ctx().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
 }
 
 // private
-void AnimatedSprite::progress_frame() {
-	if (!data_ || data_->empty()) {
-		return;
-	}
-
+void animated_sprite::progress_frame() {
 	auto const& frames = (*data_)[current_animation_name_].frames;
 	set_bounds(calculate_bounds(frames));
 
@@ -177,7 +169,7 @@ void AnimatedSprite::progress_frame() {
 }
 
 // private
-size<int> AnimatedSprite::calculate_bounds(std::vector<atlas_region> const& frames) const {
+size<int> animated_sprite::calculate_bounds(std::vector<atlas_region> const& frames) const {
 	size<int> ret;
 
 	for (auto const& frame : frames) {

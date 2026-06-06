@@ -1,87 +1,88 @@
-#include <Context.hh>
-#include <abstract/Scene.hh>
-#include <abstract/Sound.hh>
+#include <abstract/scene.hh>
+#include <abstract/sound.hh>
 #include <cassert>
+#include <context.hh>
 #include <log.hh>
-#include <objects/Node.hh>
-#include <services/core/Window.hh>
+#include <objects/node.hh>
+#include <services/core/window.hh>
 
 namespace aether {
 
-Scene::Scene(Context const& ctx)
+scene::scene(context const& ctx)
     : ctx_(ctx)
     , camera_(root_node_)
-    , root_node_(Node::create<Node>(ctx))
+    , root_node_(node::create<node>(ctx))
     , is_active_(false)
     , is_visit_scheduled_(false) {
 	assert(root_node_ != nullptr);
 	root_node_->scene_               = this;
-	size<uint32_t> const window_size = ctx.core().window().default_size();
+	size<uint32_t> const window_size = ctx.core().fetch_window().default_size();
 	root_node_->set_bounds(static_cast<size<int>>(window_size));
 	root_node_->set_position(window_size / 2.f);
 }
 
-Scene::~Scene() = default;
+scene::~scene() = default;
 
-void Scene::activate() {
+void scene::activate() {
 	is_active_ = true;
 }
 
-void Scene::deactivate() {
+void scene::deactivate() {
 	is_active_ = false;
 }
 
-void Scene::schedule_visit() {
+void scene::schedule_visit() {
 	is_visit_scheduled_ = true;
 }
 
-void Scene::unschedule_visit() {
+void scene::unschedule_visit() {
 	is_visit_scheduled_ = false;
 }
 
-bool Scene::add(std::shared_ptr<Node> node) {
-	return root_node_->add_child(node);
+bool scene::add(std::shared_ptr<node> _node) {
+	return root_node_->add_child(_node);
 }
 
-void Scene::add(std::shared_ptr<Sound> sound) {
-	if (!sound) {
-		return;
+bool scene::add(std::shared_ptr<sound> _sound) {
+	if (!_sound) {
+		return false;
 	}
 
-	sounds_.emplace_back(sound);
+	sounds_.emplace_back(_sound);
+	return true;
 }
 
-std::shared_ptr<Node> Scene::root_node() const {
+std::shared_ptr<node> scene::root_node() const {
 	return root_node_;
 }
 
-Camera& Scene::camera() {
+camera& scene::fetch_camera() {
 	return camera_;
 }
 
 // protected
-bool Scene::init() {
+bool scene::init() {
 	return true;
 }
 
 // protected
-void Scene::update(float dt) {}
+void scene::update(float dt) {}
 
 // protected
-void Scene::visit() {}
+void scene::visit() {}
 
 // protected
-Context const& Scene::ctx() const {
+context const& scene::ctx() const {
 	return ctx_;
 }
 
 // private
-bool Scene::init_scene() {
+bool scene::init_scene() {
 	return init();
 }
 
 // private
-void Scene::update_all(float dt) {
+void scene::update_all(float dt) {
 	// auto release sounds
 	std::erase_if(sounds_, [](auto const& sound) {
 		return sound.use_count() <= 1 && sound->voice_count() == 0;
@@ -95,7 +96,7 @@ void Scene::update_all(float dt) {
 }
 
 // private
-void Scene::draw_all() {
+void scene::draw_all() {
 	root_node_->draw_all();
 
 	if (is_visit_scheduled_) {

@@ -1,30 +1,30 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <Context.hh>
 #include <cmath>
-#include <objects/Sprite.hh>
+#include <context.hh>
+#include <objects/sprite.hh>
 #include <raylib.h>
-#include <services/core/Renderer.hh>
-#include <services/resource/TextureRepository.hh>
+#include <services/core/renderer.hh>
+#include <services/resource/texture_repository.hh>
 
 namespace aether {
 
-Sprite::Sprite(Context const& ctx, descriptor const& desc)
-    : Node(ctx)
+sprite::sprite(context const& ctx, descriptor const& desc)
+    : node(ctx)
     , file_arg_(std::string(desc.file))
     , wrap_type_arg_(desc.wrap_type)
     , has_antialiasing_arg_(desc.has_antialiasing) {}
 
-Sprite::~Sprite() = default;
+sprite::~sprite() = default;
 
-void Sprite::toggle_antialiasing(bool val) const {
+void sprite::toggle_antialiasing(bool val) const {
 	if (texture_) {
 		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
 
-bool Sprite::set_texture(std::string_view file) {
+bool sprite::set_texture(std::string_view file) {
 	texture_ = ctx().resource().textures().fetch(file);
 
 	if (!texture_) {
@@ -41,7 +41,7 @@ bool Sprite::set_texture(std::string_view file) {
 	return true;
 }
 
-void Sprite::set_texture_wrap(texture_wrap type) {
+void sprite::set_texture_wrap(texture_wrap type) {
 	if (!texture_) {
 #ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Attempted to set texture wrap with nullptr texture");
@@ -58,21 +58,21 @@ void Sprite::set_texture_wrap(texture_wrap type) {
 	}
 }
 
-void Sprite::set_texture_source_rect(rect<int> val) {
+void sprite::set_texture_source_rect(rect<int> val) {
 	texture_source_rect_ = static_cast<rect<float>>(val);
 }
 
-void Sprite::update_bounds() {
+void sprite::update_bounds() {
 	set_bounds(size<int>((int)std::round(texture_source_rect_.width), (int)std::round(texture_source_rect_.height)));
 }
 
-rect<int> Sprite::texture_source_rect() const {
+rect<int> sprite::texture_source_rect() const {
 	return rect<int>((int)std::round(texture_source_rect_.x), (int)std::round(texture_source_rect_.y),
 	                 (int)std::round(texture_source_rect_.width), (int)std::round(texture_source_rect_.height));
 }
 
 // protected
-bool Sprite::init() {
+bool sprite::init() {
 	if (!set_texture(file_arg_)) {
 #ifdef AETHER_DEBUG
 		errorlog("Failed");
@@ -88,9 +88,9 @@ bool Sprite::init() {
 }
 
 // protected
-void Sprite::draw(mat3 const& transform, rgba color) {
+void sprite::draw(mat3 const& transform, rgba color) {
 	if (texture_) {
-		ctx().core().renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
+		ctx().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
 	}
 }
 

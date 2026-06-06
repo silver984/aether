@@ -1,14 +1,14 @@
 #pragma once
 #include <cstdint>
 #include <math/rect.hh>
-#include <objects/Node.hh>
+#include <objects/node.hh>
 
 struct Texture;
 using rltexture = Texture;
 
 namespace aether {
 
-class TileMap : public Node {
+class tilemap : public node {
 public:
 	struct descriptor final {
 		std::string_view file;
@@ -16,8 +16,8 @@ public:
 		bool has_antialiasing = true;
 	};
 
-	TileMap(Context const& ctx, descriptor const& desc);
-	~TileMap() override;
+	tilemap(context const& ctx, descriptor const& desc);
+	~tilemap() override;
 
 	void toggle_antialiasing(bool val) const;
 	[[nodiscard]] vec2<uint32_t> tile_count() const;

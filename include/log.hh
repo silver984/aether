@@ -17,30 +17,30 @@ void __create_log_file();
 namespace aether::log {
 
 	#ifdef AETHER_VERBOSE_DEBUG
-template <typename... Args>
-void trace(std::source_location const& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	__impl::__print(fmt::format(fmt_str, std::forward<Args>(args)...), "TRC", fmt::color::dark_turquoise, loc);
+template <typename... va>
+void trace(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	__impl::__print(fmt::format(fmt_str, std::forward<va>(args)...), "TRC", fmt::color::dark_turquoise, loc);
 }
 
-template <typename... Args>
-void debug(std::source_location const& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	__impl::__print(fmt::format(fmt_str, std::forward<Args>(args)...), "DBG", fmt::color::medium_violet_red, loc);
+template <typename... va>
+void debug(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	__impl::__print(fmt::format(fmt_str, std::forward<va>(args)...), "DBG", fmt::color::medium_violet_red, loc);
 }
 	#endif
 
-template <typename... Args>
-void info(std::source_location const& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	__impl::__print(fmt::format(fmt_str, std::forward<Args>(args)...), "INF", fmt::color::green_yellow, loc);
+template <typename... va>
+void info(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	__impl::__print(fmt::format(fmt_str, std::forward<va>(args)...), "INF", fmt::color::green_yellow, loc);
 }
 
-template <typename... Args>
-void warning(std::source_location const& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	__impl::__print(fmt::format(fmt_str, std::forward<Args>(args)...), "WRN", fmt::color::gold, loc);
+template <typename... va>
+void warning(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	__impl::__print(fmt::format(fmt_str, std::forward<va>(args)...), "WRN", fmt::color::gold, loc);
 }
 
-template <typename... Args>
-void error(std::source_location const& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	__impl::__print(fmt::format(fmt_str, std::forward<Args>(args)...), "ERR", fmt::color::crimson, loc);
+template <typename... va>
+void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
+	__impl::__print(fmt::format(fmt_str, std::forward<va>(args)...), "ERR", fmt::color::crimson, loc);
 }
 
 } // namespace aether::log

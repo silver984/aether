@@ -1,7 +1,7 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <services/core/Window.hh>
+#include <services/core/window.hh>
 #include <util/math.hh>
 #ifdef WIN32
 	#include <platforms/win32.hh>
@@ -13,31 +13,31 @@
 namespace aether {
 
 // private
-Window::Window()  = default;
-Window::~Window() = default;
+window::window()  = default;
+window::~window() = default;
 
-void Window::on_resize(std::weak_ptr<std::function<void(Window&)>> callback) {
+void window::on_resize(std::weak_ptr<std::function<void(window&)>> callback) {
 	on_resize_callbacks_.emplace_back(std::move(callback));
 }
 
-bool Window::should_close() const {
+bool window::should_close() const {
 	return WindowShouldClose();
 }
 
-bool Window::is_minimized() const {
+bool window::is_minimized() const {
 	return IsWindowMinimized();
 }
 
-std::string_view Window::title() const {
+std::string_view window::title() const {
 	return title_;
 }
 
-size<uint32_t> Window::default_size() const {
+size<uint32_t> window::default_size() const {
 	return default_size_;
 }
 
 // private
-bool Window::init(init_descriptor desc) {
+bool window::init(init_descriptor desc) {
 #ifdef AETHER_DEBUG
 	log::__impl::__create_log_file();
 
@@ -72,12 +72,12 @@ bool Window::init(init_descriptor desc) {
 }
 
 // private
-void Window::shutdown() {
+void window::shutdown() {
 	CloseWindow();
 }
 
 // private
-void Window::update() {
+void window::update() {
 	for (auto iterator = on_resize_callbacks_.begin(); iterator != on_resize_callbacks_.end();) {
 		auto callback = iterator->lock();
 

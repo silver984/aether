@@ -1,18 +1,18 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <Context.hh>
-#include <abstract/Scene.hh>
-#include <services/SceneScheduler.hh>
+#include <abstract/scene.hh>
+#include <context.hh>
+#include <services/scene_scheduler.hh>
 #include <utility>
 
 namespace aether {
 
 // private
-SceneScheduler::SceneScheduler()  = default;
-SceneScheduler::~SceneScheduler() = default;
+scene_scheduler::scene_scheduler()  = default;
+scene_scheduler::~scene_scheduler() = default;
 
-void SceneScheduler::replace_scene(std::unique_ptr<Scene> new_scene) {
+void scene_scheduler::replace_scene(std::unique_ptr<scene> new_scene) {
 	if (!new_scene) {
 #ifdef AETHER_DEBUG
 		errorlog("Can't switch to a nullptr scene");
@@ -29,20 +29,20 @@ void SceneScheduler::replace_scene(std::unique_ptr<Scene> new_scene) {
 }
 
 // private
-void SceneScheduler::cleanup() {
+void scene_scheduler::cleanup() {
 	current_scene_.reset();
 	pending_scene_.reset();
 }
 
 // private
-void SceneScheduler::update_scene(float dt) {
+void scene_scheduler::update_scene(float dt) {
 	if (pending_scene_) {
 		current_scene_ = std::move(pending_scene_);
 #ifdef AETHER_DEBUG
 	#ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Scene replaced");
+		debuglog("scene replaced");
 	#endif
-		infolog("Scene replaced");
+		infolog("scene replaced");
 #endif
 	}
 
@@ -50,12 +50,12 @@ void SceneScheduler::update_scene(float dt) {
 }
 
 // private
-void SceneScheduler::draw_scene() {
+void scene_scheduler::draw_scene() {
 	current_scene_->draw_all();
 }
 
 // private
-bool SceneScheduler::has_pending_scene() const {
+bool scene_scheduler::has_pending_scene() const {
 	return pending_scene_ != nullptr;
 }
 

@@ -9,32 +9,33 @@
 #include <memory>
 
 struct Texture;
+using rltexture = Texture;
 
 namespace aether {
 
-class Aether;
-class Window;
-class Context;
+class app;
+class window;
+class context;
 
-class Renderer final {
-	friend class Aether;
+class renderer final {
+	friend class app;
 
 private:
-	Renderer();
+	renderer();
 
 public:
-	~Renderer();
-	Renderer(Renderer const&)            = delete;
-	Renderer(Renderer&&)                 = delete;
-	Renderer& operator=(Renderer const&) = delete;
-	Renderer& operator=(Renderer&&)      = delete;
+	~renderer();
+	renderer(renderer const&)            = delete;
+	renderer(renderer&&)                 = delete;
+	renderer& operator=(renderer const&) = delete;
+	renderer& operator=(renderer&&)      = delete;
 
 	void set_background_rgba(rgba color);
 	[[nodiscard]] rgba background_rgba() const;
-	void draw_texture(Texture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
+	void draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
 
 private:
-	void setup(Window& window);
+	void setup(window& window);
 	void start_draw();
 #ifdef AETHER_DEBUG
 	void end_draw(uint32_t running_fps) const;
@@ -48,7 +49,7 @@ private:
 	void define_texture_coord(vec2<float> position) const;
 	[[nodiscard]] mat3 calculate_transform(size<uint32_t> default_window_size) const;
 
-	std::shared_ptr<std::function<void(Window&)>> window_resize_callback_;
+	std::shared_ptr<std::function<void(window&)>> window_resize_callback_;
 	mat3 transform_;
 	rgba background_rgba_;
 };

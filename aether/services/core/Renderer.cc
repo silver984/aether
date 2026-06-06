@@ -1,43 +1,37 @@
-#include <Context.hh>
+#include <context.hh>
 #include <fmt/format.h>
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
-#include <services/core/Renderer.hh>
-#include <services/core/Window.hh>
+#include <services/core/renderer.hh>
+#include <services/core/window.hh>
 #include <util/math.hh>
 #include <util/rltype.hh>
-
-// namespace {
-
-// Texture tex_shapes              = {1, 1, 1, 1, 7};
-// aether::size<float> tex_shapes_size = {1.f, 1.f};
-
-// } // namespace
 
 namespace aether {
 
 // private
-Renderer::Renderer()
-    : window_resize_callback_(std::make_shared<std::function<void(Window&)>>())
+renderer::renderer()
+    : window_resize_callback_(std::make_shared<std::function<void(window&)>>())
     , background_rgba_(0, 0, 0, 255)
     , transform_(mat3::identity()) {
-	(*window_resize_callback_) = [this](Window& window) {
+	(*window_resize_callback_) = [this](window& window) {
 		transform_ = calculate_transform(window.default_size());
 	};
 }
 
-Renderer::~Renderer() = default;
+renderer::~renderer() = default;
 
-void Renderer::set_background_rgba(rgba color) {
+void renderer::set_background_rgba(rgba color) {
 	background_rgba_ = color;
 }
 
-rgba Renderer::background_rgba() const {
+rgba renderer::background_rgba() const {
 	return background_rgba_;
 }
 
-void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const {
+void renderer::draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform,
+                            rgba color) const {
 	if (texture.id < 1) {
 		return;
 	}
@@ -112,14 +106,14 @@ void Renderer::draw_texture(Texture const& texture, rect<float> source_rect, mat
 }
 
 // private
-void Renderer::setup(Window& window) {
+void renderer::setup(window& window) {
 	window.on_resize(window_resize_callback_);
 	rlDisableBackfaceCulling();
 	rlDisableDepthTest();
 }
 
 // private
-void Renderer::start_draw() {
+void renderer::start_draw() {
 	BeginDrawing();
 	size<uint32_t> const lrender_bounds = render_bounds();
 	BeginScissorMode(0, 0, (int)lrender_bounds.width, (int)lrender_bounds.height);
@@ -129,7 +123,7 @@ void Renderer::start_draw() {
 
 #ifdef AETHER_DEBUG
 // private
-void Renderer::end_draw(uint32_t running_fps) const {
+void renderer::end_draw(uint32_t running_fps) const {
 	rlPopMatrix();
 	DrawText(fmt::format("FPS: {}", running_fps).c_str(), 5, 5, 10, WHITE);
 	EndScissorMode();
@@ -137,7 +131,7 @@ void Renderer::end_draw(uint32_t running_fps) const {
 }
 #else
 // private
-void Renderer::end_draw() const {
+void renderer::end_draw() const {
 	rlPopMatrix();
 	EndScissorMode();
 	EndDrawing();
@@ -145,47 +139,47 @@ void Renderer::end_draw() const {
 #endif
 
 // private
-size<uint32_t> Renderer::render_bounds() const {
+size<uint32_t> renderer::render_bounds() const {
 	// this should be fine...
 	return size<uint32_t>((uint32_t)GetRenderWidth(), (uint32_t)GetRenderHeight());
 }
 
 // private
-void Renderer::push_matrix(mat3 const& matrix) const {
+void renderer::push_matrix(mat3 const& matrix) const {
 	rlPushMatrix();
 	rlmat4 const m = util::to_rlmat4(matrix);
 	rlMultMatrixf(MatrixToFloat(m));
 }
 
 // private
-void Renderer::define_color_vertex(rgba color) const {
+void renderer::define_color_vertex(rgba color) const {
 	rlrgba const v = util::to_rlrgba(color);
 	rlColor4ub(v.r, v.g, v.b, v.a);
 }
 
 // private
-void Renderer::define_vertex(vec2<float> position) const {
+void renderer::define_vertex(vec2<float> position) const {
 	rlVertex2f(position.x, position.y);
 }
 
 // private
-void Renderer::define_texture_coord(vec2<float> position) const {
+void renderer::define_texture_coord(vec2<float> position) const {
 	rlTexCoord2f(position.x, position.y);
 }
 
 // private
-mat3 Renderer::calculate_transform(size<uint32_t> default_window_size) const {
+mat3 renderer::calculate_transform(size<uint32_t> default_window_size) const {
 	size<uint32_t> const lrender_bounds = render_bounds();
-	vec2<float> const scale_ratio       = {lrender_bounds.width / (float)default_window_size.width,
-	                                       lrender_bounds.height / (float)default_window_size.height};
+	vec2<float> const scale_ratio       = vec2<float>(lrender_bounds.width / (float)default_window_size.width,
+	                                                  lrender_bounds.height / (float)default_window_size.height);
 	float const scale_factor            = std::min(scale_ratio.x, scale_ratio.y);
-	vec2<float> const scaled_size       = {default_window_size.width * scale_factor,
-	                                       default_window_size.height * scale_factor};
-	vec2<float> const offset            = {lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y};
-	vec2<float> const snapped_offset    = util::round(offset / 2.f);
-	mat3 result                         = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
-	result.m[0][2]                      = std::round(result.m[0][2]);
-	result.m[1][2]                      = std::round(result.m[1][2]);
+	vec2<float> const scaled_size =
+	    vec2<float>(default_window_size.width * scale_factor, default_window_size.height * scale_factor);
+	vec2<float> const offset = vec2<float>(lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y);
+	vec2<float> const snapped_offset = util::round(offset / 2.f);
+	mat3 result                      = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
+	result.m[0][2]                   = std::round(result.m[0][2]);
+	result.m[1][2]                   = std::round(result.m[1][2]);
 	return result;
 }
 

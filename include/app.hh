@@ -5,9 +5,9 @@
 
 namespace aether {
 
-class Context;
+class context;
 
-class Aether final {
+class app final {
 public:
 	struct init_descriptor final {
 		std::string_view window_title;
@@ -15,16 +15,16 @@ public:
 		int fps = 240;
 	};
 
-	Aether();
-	~Aether();
-	Aether(Aether const&)            = delete;
-	Aether(Aether&&)                 = delete;
-	Aether& operator=(Aether const&) = delete;
-	Aether& operator=(Aether&&)      = delete;
+	app();
+	~app();
+	app(app const&)            = delete;
+	app(app&&)                 = delete;
+	app& operator=(app const&) = delete;
+	app& operator=(app&&)      = delete;
 
 	bool init(init_descriptor desc) const;
 	void run() const;
-	[[nodiscard]] Context const& context() const;
+	[[nodiscard]] context const& fetch_context() const;
 
 private:
 	struct impl;

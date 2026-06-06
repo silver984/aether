@@ -9,20 +9,20 @@ using rltexture = Texture;
 
 namespace aether {
 
-class Aether;
+class app;
 
-class TextureRepository final {
-	friend class Aether;
+class texture_repository final {
+	friend class app;
 
 private:
-	TextureRepository();
+	texture_repository();
 
 public:
-	~TextureRepository();
-	TextureRepository(TextureRepository const&)            = delete;
-	TextureRepository(TextureRepository&&)                 = delete;
-	TextureRepository& operator=(TextureRepository const&) = delete;
-	TextureRepository& operator=(TextureRepository&&)      = delete;
+	~texture_repository();
+	texture_repository(texture_repository const&)            = delete;
+	texture_repository(texture_repository&&)                 = delete;
+	texture_repository& operator=(texture_repository const&) = delete;
+	texture_repository& operator=(texture_repository&&)      = delete;
 
 	[[nodiscard]] std::shared_ptr<rltexture> fetch(std::string_view file);
 	void purge_unused();

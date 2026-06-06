@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <data/animation_map.hh>
 #include <math/rect.hh>
-#include <objects/Node.hh>
+#include <objects/node.hh>
 #include <optional>
 
 struct Texture;
@@ -11,7 +11,7 @@ using rltexture = Texture;
 
 namespace aether {
 
-class AnimatedSprite : public Node {
+class animated_sprite : public node {
 public:
 	struct descriptor final {
 		std::string_view image_file;
@@ -25,8 +25,8 @@ public:
 		bool loop              = false;
 	};
 
-	AnimatedSprite(Context const& ctx, descriptor const& desc);
-	~AnimatedSprite() override;
+	animated_sprite(context const& ctx, descriptor const& desc);
+	~animated_sprite() override;
 
 	void toggle_antialiasing(bool val) const;
 	bool play_animation(std::string_view name);
@@ -38,7 +38,7 @@ protected:
 	void draw(mat3 const& transform, rgba color) override;
 
 private:
-	using Node::set_bounds;
+	using node::set_bounds;
 	void progress_frame();
 	[[nodiscard]] size<int> calculate_bounds(std::vector<atlas_region> const& frames) const;
 

@@ -1,10 +1,7 @@
 target_sources(${AETHER}
     PRIVATE
-        AnimatedSprite.cc
-        Node.cc
-        PopupUI.cc
-        Sprite.cc
-        TileMap.cc
+        animated_sprite.cc
+        node.cc
+        sprite.cc
+        tilemap.cc
 )
-
-add_subdirectory(abstract)

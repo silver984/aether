@@ -14,22 +14,22 @@
 
 namespace aether {
 
-class Context;
-class Scene;
-class Camera;
+class context;
+class scene;
+class camera;
 
-class Node : public std::enable_shared_from_this<Node> {
-	friend class Scene;
-	friend class Camera;
+class node : public std::enable_shared_from_this<node> {
+	friend class scene;
+	friend class camera;
 
 public:
-	Node(Context const& ctx);
-	virtual ~Node();
+	node(context const& ctx);
+	virtual ~node();
 
-	template <typename Derived, typename... Args>
-	    requires std::derived_from<Derived, Node>
-	[[nodiscard]] static std::shared_ptr<Derived> create(Context const& ctx, Args&&... args) {
-		std::shared_ptr<Derived> ptr = std::make_shared<Derived>(ctx, std::forward<Args>(args)...);
+	template <typename derived, typename... va>
+	    requires std::derived_from<derived, node>
+	[[nodiscard]] static std::shared_ptr<derived> create(context const& ctx, va&&... args) {
+		std::shared_ptr<derived> ptr = std::make_shared<derived>(ctx, std::forward<va>(args)...);
 
 		if (!ptr->init_node()) {
 			return nullptr;
@@ -38,16 +38,16 @@ public:
 		return ptr;
 	}
 
-	template <typename Derived>
-	    requires std::derived_from<Derived, Node>
-	[[nodiscard]] std::shared_ptr<Derived> fetch_child_as(std::string_view name) {
-		std::shared_ptr<Node> node = fetch_child(name);
-		return std::dynamic_pointer_cast<Derived>(node);
+	template <typename derived>
+	    requires std::derived_from<derived, node>
+	[[nodiscard]] std::shared_ptr<derived> fetch_child_as(std::string_view name) {
+		std::shared_ptr<node> node = fetch_child(name);
+		return std::dynamic_pointer_cast<derived>(node);
 	}
 
-	bool add_child(std::shared_ptr<Node> node);
-	bool remove_child(std::shared_ptr<Node> node);
-	[[nodiscard]] std::shared_ptr<Node> fetch_child(std::string_view name);
+	bool add_child(std::shared_ptr<node> node);
+	bool remove_child(std::shared_ptr<node> node);
+	[[nodiscard]] std::shared_ptr<node> fetch_child(std::string_view name);
 	void destroy_all();
 	bool detach_from_parent();
 	void activate();
@@ -56,7 +56,7 @@ public:
 	void unschedule_draw();
 	[[nodiscard]] size_t child_count() const;
 	[[nodiscard]] size_t recursed_child_count() const;
-	[[nodiscard]] std::weak_ptr<Node> parent() const;
+	[[nodiscard]] std::weak_ptr<node> parent() const;
 	void set_name(std::string_view name); // TODO: better naming system
 	[[nodiscard]] std::string_view name() const;
 	void set_bounds(size<int> val);       // TODO: set_width, set_height
@@ -93,29 +93,29 @@ public:
 	[[nodiscard]] bool is_flip_x() const;
 	void toggle_flip_y(bool val);
 	[[nodiscard]] bool is_flip_y() const;
-	[[nodiscard]] std::vector<std::shared_ptr<Node>> children() const;
+	[[nodiscard]] std::vector<std::shared_ptr<node>> children() const;
 
 protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void draw(mat3 const& transform, rgba color);
-	[[nodiscard]] Context const& ctx() const;
-	[[nodiscard]] Scene* scene() const;
+	[[nodiscard]] context const& ctx() const;
+	[[nodiscard]] scene* fetch_scene() const;
 
 private:
 	bool init_node();
 	void update_all(float dt);
 	void draw_all();
-	[[nodiscard]] bool has_ancestor(std::shared_ptr<Node> node) const;
+	[[nodiscard]] bool has_ancestor(std::shared_ptr<node> node) const;
 	void mark_transform_dirty();
 	void mark_rgba_dirty();
-	[[nodiscard]] mat3 calculate_transform(std::weak_ptr<Node> parent) const;
-	[[nodiscard]] rgba calculate_combined_rgba(std::weak_ptr<Node> parent) const;
+	[[nodiscard]] mat3 calculate_transform(std::weak_ptr<node> parent) const;
+	[[nodiscard]] rgba calculate_combined_rgba(std::weak_ptr<node> parent) const;
 
-	Context const& ctx_;
-	Scene* scene_;
-	std::vector<std::shared_ptr<Node>> children_;
-	std::weak_ptr<Node> parent_;
+	context const& ctx_;
+	scene* scene_;
+	std::vector<std::shared_ptr<node>> children_;
+	std::weak_ptr<node> parent_;
 	std::string name_;
 	mat3 transform_;
 	size<uint32_t> bounds_;

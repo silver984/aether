@@ -1,10 +1,10 @@
-#include <Context.hh>
 #include <algorithm>
+#include <context.hh>
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <abstract/Sound.hh>
-#include <services/resource/AudioRepository.hh>
+#include <abstract/sound.hh>
+#include <services/resource/audio_repository.hh>
 #include <soloud.h>
 #include <soloud_error.h>
 #include <soloud_wav.h>
@@ -13,14 +13,14 @@ using enum SoLoud::SOLOUD_ERRORS;
 
 namespace aether {
 
-struct Sound::impl final {
-	impl(Context const& ctx)
+struct sound::impl final {
+	impl(context const& ctx)
 	    : soloud_(ctx.core().soloud())
 	    , wave_handle_(0)
 	    , volume_(1.f)
 	    , pan_(0.f) {}
 
-	bool init(AudioRepository& audios, std::string_view file) {
+	bool init(audio_repository& audios, std::string_view file) {
 		buffer_ = audios.fetch(file);
 
 		if (!buffer_) {
@@ -109,13 +109,13 @@ struct Sound::impl final {
 	float pan_;
 };
 
-Sound::Sound(Context const& ctx)
+sound::sound(context const& ctx)
     : impl_(std::make_unique<impl>(ctx)) {}
 
-Sound::~Sound() = default;
+sound::~sound() = default;
 
-std::shared_ptr<Sound> Sound::create(Context const& ctx, std::string_view file) {
-	std::shared_ptr<Sound> ptr = std::make_shared<Sound>(ctx);
+std::shared_ptr<sound> sound::create(context const& ctx, std::string_view file) {
+	std::shared_ptr<sound> ptr = std::make_shared<sound>(ctx);
 
 	if (!ptr->impl_->init(ctx.resource().audios(), file)) {
 		return nullptr;
@@ -124,39 +124,39 @@ std::shared_ptr<Sound> Sound::create(Context const& ctx, std::string_view file) 
 	return ptr;
 }
 
-bool Sound::play() const {
+bool sound::play() const {
 	return impl_->play();
 }
 
-void Sound::set_volume(float val) const {
+void sound::set_volume(float val) const {
 	return impl_->set_volume(val);
 }
 
-float Sound::volume() const {
+float sound::volume() const {
 	return impl_->volume_;
 }
 
-void Sound::set_pan(float val) const {
+void sound::set_pan(float val) const {
 	return impl_->set_pan(val);
 }
 
-float Sound::pan() const {
+float sound::pan() const {
 	return impl_->pan_;
 }
 
-void Sound::pause() const {
+void sound::pause() const {
 	impl_->pause();
 }
 
-bool Sound::is_paused() const {
+bool sound::is_paused() const {
 	return impl_->is_paused();
 }
 
-void Sound::resume() const {
+void sound::resume() const {
 	impl_->resume();
 }
 
-uint32_t Sound::voice_count() const {
+uint32_t sound::voice_count() const {
 	return impl_->voice_count();
 }
 

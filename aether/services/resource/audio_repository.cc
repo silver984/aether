@@ -1,7 +1,7 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <services/resource/AudioRepository.hh>
+#include <services/resource/audio_repository.hh>
 #include <util/filesystem.hh>
 #include <util/string.hh>
 #include <utility>
@@ -9,10 +9,10 @@
 namespace aether {
 
 // private
-AudioRepository::AudioRepository()  = default;
-AudioRepository::~AudioRepository() = default;
+audio_repository::audio_repository()  = default;
+audio_repository::~audio_repository() = default;
 
-std::shared_ptr<byte_buffer> AudioRepository::fetch(std::string_view file) {
+std::shared_ptr<byte_buffer> audio_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
@@ -50,19 +50,19 @@ std::shared_ptr<byte_buffer> AudioRepository::fetch(std::string_view file) {
 	return iterator->second;
 }
 
-void AudioRepository::purge_unused() {
+void audio_repository::purge_unused() {
 	std::erase_if(cache_, [](auto const& pair) {
 		return pair.second.use_count() <= 1;
 	});
 }
 
 // private
-void AudioRepository::clear_cache() {
+void audio_repository::clear_cache() {
 	cache_.clear();
 }
 
 // private
-std::shared_ptr<byte_buffer> AudioRepository::try_fetch_from_cache(std::filesystem::path const& file) const {
+std::shared_ptr<byte_buffer> audio_repository::try_fetch_from_cache(std::filesystem::path const& file) const {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}

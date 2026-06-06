@@ -1,27 +1,27 @@
 #pragma once
-#include <CoreServices.hh>
-#include <ResourceServices.hh>
+#include <core_services.hh>
 #include <cstdint>
 #include <memory>
+#include <resource_services.hh>
 
 namespace aether {
 
-class Aether;
-class SceneScheduler;
+class app;
+class scene_scheduler;
 
-class Context final {
-	friend class Aether;
+class context final {
+	friend class app;
 
 private:
-	Context(Window& window, Renderer& renderer, SoLoud::Soloud& soloud, TextureRepository& textures,
-	        AnimationRepository& animations, AudioRepository& audios, SceneScheduler& scene_scheduler);
+	context(window& _window, renderer& _renderer, SoLoud::Soloud& soloud, texture_repository& textures,
+	        animation_repository& animations, audio_repository& audios, scene_scheduler& _scene_scheduler);
 
 public:
-	~Context();
+	~context();
 
-	[[nodiscard]] CoreServices const& core() const;
-	[[nodiscard]] ResourceServices const& resource() const;
-	[[nodiscard]] SceneScheduler& scene_scheduler() const;
+	[[nodiscard]] core_services const& core() const;
+	[[nodiscard]] resource_services const& resource() const;
+	[[nodiscard]] scene_scheduler& fetch_scene_scheduler() const;
 	[[nodiscard]] float delta_time() const;
 	[[nodiscard]] float total_time() const;
 	[[nodiscard]] uint32_t frame_count() const;
@@ -30,9 +30,9 @@ public:
 private:
 	void update_frame_context();
 
-	CoreServices core_;
-	ResourceServices resource_;
-	SceneScheduler& scene_scheduler_;
+	core_services core_;
+	resource_services resource_;
+	scene_scheduler& scene_scheduler_;
 	float total_time_;
 	float frame_elapsed_;
 	uint32_t frame_count_;

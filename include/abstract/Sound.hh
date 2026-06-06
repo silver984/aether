@@ -5,14 +5,14 @@
 
 namespace aether {
 
-class Context;
+class context;
 
-class Sound final {
+class sound final {
 public:
-	Sound(Context const& ctx);
-	~Sound();
+	sound(context const& ctx);
+	~sound();
 
-	[[nodiscard]] static std::shared_ptr<Sound> create(Context const& ctx, std::string_view file);
+	[[nodiscard]] static std::shared_ptr<sound> create(context const& ctx, std::string_view file);
 	bool play() const;
 	void set_volume(float val) const;
 	[[nodiscard]] float volume() const;

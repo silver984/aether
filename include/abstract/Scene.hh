@@ -1,5 +1,5 @@
 #pragma once
-#include <abstract/Camera.hh>
+#include <abstract/camera.hh>
 #include <concepts>
 #include <memory>
 #include <string_view>
@@ -8,22 +8,22 @@
 
 namespace aether {
 
-class SceneScheduler;
-class Context;
-class Node;
-class Sound;
+class scene_scheduler;
+class context;
+class node;
+class sound;
 
-class Scene {
-	friend class SceneScheduler;
+class scene {
+	friend class scene_scheduler;
 
 public:
-	Scene(Context const& ctx);
-	virtual ~Scene();
+	scene(context const& ctx);
+	virtual ~scene();
 
-	template <typename Derived, typename... Args>
-	    requires std::derived_from<Derived, Scene>
-	[[nodiscard]] static std::unique_ptr<Derived> create(Context const& ctx, Args&&... args) {
-		std::unique_ptr<Derived> ptr = std::make_unique<Derived>(ctx, std::forward<Args>(args)...);
+	template <typename derived, typename... va>
+	    requires std::derived_from<derived, scene>
+	[[nodiscard]] static std::unique_ptr<derived> create(context const& ctx, va&&... args) {
+		std::unique_ptr<derived> ptr = std::make_unique<derived>(ctx, std::forward<va>(args)...);
 
 		if (!ptr->init_scene()) {
 			return nullptr;
@@ -36,16 +36,16 @@ public:
 	void deactivate();
 	void schedule_visit();
 	void unschedule_visit();
-	bool add(std::shared_ptr<Node> node);
-	void add(std::shared_ptr<Sound> sound);
-	[[nodiscard]] std::shared_ptr<Node> root_node() const;
-	[[nodiscard]] Camera& camera();
+	bool add(std::shared_ptr<node> _node);
+	bool add(std::shared_ptr<sound> _sound);
+	[[nodiscard]] std::shared_ptr<node> root_node() const;
+	[[nodiscard]] camera& fetch_camera();
 
 protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void visit();
-	[[nodiscard]] Context const& ctx() const;
+	[[nodiscard]] context const& ctx() const;
 
 private:
 	bool init_scene();
@@ -54,12 +54,11 @@ private:
 
 	// TODO: music member
 	// TODO: camera member
-	// TODO: make nodes aware of the scene
 
-	Context const& ctx_;
-	Camera camera_;
-	std::shared_ptr<Node> root_node_;
-	std::vector<std::shared_ptr<Sound>> sounds_;
+	context const& ctx_;
+	camera camera_;
+	std::shared_ptr<node> root_node_;
+	std::vector<std::shared_ptr<sound>> sounds_;
 	bool is_active_;
 	bool is_visit_scheduled_;
 };

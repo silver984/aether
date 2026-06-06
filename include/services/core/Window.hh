@@ -9,13 +9,13 @@
 
 namespace aether {
 
-class Aether;
+class app;
 
-class Window final {
-	friend class Aether;
+class window final {
+	friend class app;
 
 private:
-	Window();
+	window();
 
 public:
 	struct init_descriptor final {
@@ -24,13 +24,13 @@ public:
 		int fps;
 	};
 
-	~Window();
-	Window(Window const&)            = delete;
-	Window(Window&&)                 = delete;
-	Window& operator=(Window const&) = delete;
-	Window& operator=(Window&&)      = delete;
+	~window();
+	window(window const&)            = delete;
+	window(window&&)                 = delete;
+	window& operator=(window const&) = delete;
+	window& operator=(window&&)      = delete;
 
-	void on_resize(std::weak_ptr<std::function<void(Window&)>> callback);
+	void on_resize(std::weak_ptr<std::function<void(window&)>> callback);
 	[[nodiscard]] bool should_close() const;
 	[[nodiscard]] bool is_minimized() const;
 	[[nodiscard]] std::string_view title() const;
@@ -41,7 +41,7 @@ private:
 	void shutdown();
 	void update();
 
-	std::vector<std::weak_ptr<std::function<void(Window&)>>> on_resize_callbacks_;
+	std::vector<std::weak_ptr<std::function<void(window&)>>> on_resize_callbacks_;
 	std::string title_;
 	size<uint32_t> default_size_;
 };

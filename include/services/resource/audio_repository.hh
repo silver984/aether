@@ -7,20 +7,20 @@
 
 namespace aether {
 
-class Aether;
+class app;
 
-class AudioRepository final {
-	friend class Aether;
+class audio_repository final {
+	friend class app;
 
 private:
-	AudioRepository();
+	audio_repository();
 
 public:
-	~AudioRepository();
-	AudioRepository(AudioRepository const&)            = delete;
-	AudioRepository(AudioRepository&&)                 = delete;
-	AudioRepository& operator=(AudioRepository const&) = delete;
-	AudioRepository& operator=(AudioRepository&&)      = delete;
+	~audio_repository();
+	audio_repository(audio_repository const&)            = delete;
+	audio_repository(audio_repository&&)                 = delete;
+	audio_repository& operator=(audio_repository const&) = delete;
+	audio_repository& operator=(audio_repository&&)      = delete;
 
 	[[nodiscard]] std::shared_ptr<byte_buffer> fetch(std::string_view file);
 	void purge_unused();

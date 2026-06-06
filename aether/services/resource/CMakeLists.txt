@@ -1,6 +1,6 @@
 target_sources(${AETHER}
     PRIVATE
-        AnimationRepository.cc
-        AudioRepository.cc
-        TextureRepository.cc
+        animation_repository.cc
+        audio_repository.cc
+        texture_repository.cc
 )

@@ -17,22 +17,22 @@ class XMLElement;
 
 namespace aether {
 
-class Aether;
+class app;
 
-class AnimationRepository final {
-	friend class Aether;
+class animation_repository final {
+	friend class app;
 
 	enum xml_format : int { unknown = -1, adobe_animate, texture_packer };
 
 private:
-	AnimationRepository();
+	animation_repository();
 
 public:
-	~AnimationRepository();
-	AnimationRepository(AnimationRepository const&)            = delete;
-	AnimationRepository(AnimationRepository&&)                 = delete;
-	AnimationRepository& operator=(AnimationRepository const&) = delete;
-	AnimationRepository& operator=(AnimationRepository&&)      = delete;
+	~animation_repository();
+	animation_repository(animation_repository const&)            = delete;
+	animation_repository(animation_repository&&)                 = delete;
+	animation_repository& operator=(animation_repository const&) = delete;
+	animation_repository& operator=(animation_repository&&)      = delete;
 
 	std::shared_ptr<animation_map> fetch(std::string_view file);
 	void purge_unused();

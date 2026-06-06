@@ -1,17 +1,17 @@
-#include <Aether.hh>
-#include <Context.hh>
-#include <scenes/TestScene.hh>
-#include <services/SceneScheduler.hh>
+#include <app.hh>
+#include <context.hh>
+#include <scenes/test_scene.hh>
+#include <services/scene_scheduler.hh>
 #include <version.h>
 
 using namespace aether;
 
 int main() {
-	Aether aether;
+	app aether;
 
 	if (aether.init({.window_title = "Aether Engine " AETHER_VERSION, .resolution = {1280, 720}})) {
-		Context const& ctx = aether.context();
-		ctx.scene_scheduler().replace_scene(Scene::create<TestScene>(ctx));
+		context const& ctx = aether.fetch_context();
+		ctx.fetch_scene_scheduler().replace_scene(scene::create<test_scene>(ctx));
 		aether.run();
 	}
 

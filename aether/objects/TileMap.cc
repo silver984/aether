@@ -1,30 +1,30 @@
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <Context.hh>
-#include <objects/TileMap.hh>
+#include <context.hh>
+#include <objects/tilemap.hh>
 #include <raylib.h>
-#include <services/core/Renderer.hh>
-#include <services/resource/TextureRepository.hh>
+#include <services/core/renderer.hh>
+#include <services/resource/texture_repository.hh>
 #include <util/math.hh>
 
 namespace aether {
 
-TileMap::TileMap(Context const& ctx, descriptor const& desc)
-    : Node(ctx)
+tilemap::tilemap(context const& ctx, descriptor const& desc)
+    : node(ctx)
     , file_arg_(std::string(desc.file))
     , tile_bounds_arg_(static_cast<size<uint32_t>>(util::max(size<int>(1), desc.tile_bounds)))
     , has_antialiasing_(desc.has_antialiasing) {}
 
-TileMap::~TileMap() = default;
+tilemap::~tilemap() = default;
 
-void TileMap::toggle_antialiasing(bool val) const {
+void tilemap::toggle_antialiasing(bool val) const {
 	if (texture_) {
 		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 	}
 }
 
-vec2<uint32_t> TileMap::tile_count() const {
+vec2<uint32_t> tilemap::tile_count() const {
 	if (!texture_) {
 		return {};
 	}
@@ -32,7 +32,7 @@ vec2<uint32_t> TileMap::tile_count() const {
 	return vec2<uint32_t>(texture_->width / tile_bounds_arg_.width, texture_->height / tile_bounds_arg_.height);
 }
 
-void TileMap::seek_tile(vec2<int> tile_index) {
+void tilemap::seek_tile(vec2<int> tile_index) {
 	if (!texture_) {
 #ifdef AETHER_VERBOSE_DEBUG
 		debuglog("Attempted to seek tile with nullptr texture");
@@ -46,12 +46,12 @@ void TileMap::seek_tile(vec2<int> tile_index) {
 	texture_source_rect_.y      = tile_bounds_arg_.height * (float)tile_index_.y;
 }
 
-vec2<uint32_t> TileMap::tile_index() const {
+vec2<uint32_t> tilemap::tile_index() const {
 	return tile_index_;
 }
 
 // protected
-bool TileMap::init() {
+bool tilemap::init() {
 	texture_ = ctx().resource().textures().fetch(file_arg_);
 
 	if (!texture_) {
@@ -71,9 +71,9 @@ bool TileMap::init() {
 }
 
 // protected
-void TileMap::draw(mat3 const& transform, rgba color) {
+void tilemap::draw(mat3 const& transform, rgba color) {
 	if (texture_) {
-		ctx().core().renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
+		ctx().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
 	}
 }
 

@@ -1,14 +1,14 @@
-#include <Aether.hh>
-#include <Context.hh>
+#include <app.hh>
+#include <context.hh>
 #ifdef AETHER_DEBUG
 	#include <log.hh>
 #endif
-#include <services/SceneScheduler.hh>
-#include <services/core/Renderer.hh>
-#include <services/core/Window.hh>
-#include <services/resource/AnimationRepository.hh>
-#include <services/resource/AudioRepository.hh>
-#include <services/resource/TextureRepository.hh>
+#include <services/core/renderer.hh>
+#include <services/core/window.hh>
+#include <services/resource/animation_repository.hh>
+#include <services/resource/audio_repository.hh>
+#include <services/resource/texture_repository.hh>
+#include <services/scene_scheduler.hh>
 #include <sol/state.hpp>
 #include <soloud.h>
 #include <soloud_error.h>
@@ -18,7 +18,7 @@ using enum SoLoud::SOLOUD_ERRORS;
 
 namespace aether {
 
-struct Aether::impl final {
+struct app::impl final {
 	impl()
 	    : ctx_(window_, renderer_, soloud_, textures, animations_, audios_, scene_scheduler_)
 	    , is_initialized_(false) {}
@@ -127,32 +127,32 @@ struct Aether::impl final {
 #endif
 	}
 
-	Window window_;
-	Renderer renderer_;
+	window window_;
+	renderer renderer_;
 	SoLoud::Soloud soloud_;
 	sol::state lua_;
-	SceneScheduler scene_scheduler_;
-	TextureRepository textures;
-	AnimationRepository animations_;
-	AudioRepository audios_;
-	Context ctx_;
+	scene_scheduler scene_scheduler_;
+	texture_repository textures;
+	animation_repository animations_;
+	audio_repository audios_;
+	context ctx_;
 	bool is_initialized_;
 };
 
-Aether::Aether()
+app::app()
     : impl_(std::make_unique<impl>()) {}
 
-Aether::~Aether() = default;
+app::~app() = default;
 
-bool Aether::init(init_descriptor desc) const {
+bool app::init(init_descriptor desc) const {
 	return impl_->init(desc);
 }
 
-void Aether::run() const {
+void app::run() const {
 	impl_->run();
 }
 
-Context const& Aether::context() const {
+context const& app::fetch_context() const {
 	return impl_->ctx_;
 }
 

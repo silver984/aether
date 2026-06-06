@@ -1,13 +1,13 @@
 #pragma once
 #include <math/rect.hh>
-#include <objects/Node.hh>
+#include <objects/node.hh>
 
 struct Texture;
 using rltexture = Texture;
 
 namespace aether {
 
-class Sprite : public Node {
+class sprite : public node {
 public:
 	enum class texture_wrap : int { clamp, repeat, mirror_clamp, mirror_repeat };
 
@@ -17,8 +17,8 @@ public:
 		bool has_antialiasing  = true;
 	};
 
-	Sprite(Context const& ctx, descriptor const& desc);
-	~Sprite() override;
+	sprite(context const& ctx, descriptor const& desc);
+	~sprite() override;
 
 	void toggle_antialiasing(bool val) const;
 	bool set_texture(std::string_view file);
