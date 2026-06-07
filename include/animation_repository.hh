@@ -17,10 +17,10 @@ class XMLElement;
 
 namespace aether {
 
-class app;
+class game;
 
 class animation_repository final {
-	friend class app;
+	friend class game;
 
 	enum xml_format : int { unknown = -1, adobe_animate, texture_packer };
 

@@ -13,12 +13,12 @@ using rltexture = Texture;
 
 namespace aether {
 
-class app;
+class game;
 class window;
 class context;
 
 class renderer final {
-	friend class app;
+	friend class game;
 
 private:
 	renderer();

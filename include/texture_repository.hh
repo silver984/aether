@@ -9,10 +9,10 @@ using rltexture = Texture;
 
 namespace aether {
 
-class app;
+class game;
 
 class texture_repository final {
-	friend class app;
+	friend class game;
 
 private:
 	texture_repository();

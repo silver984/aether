@@ -9,21 +9,15 @@
 
 namespace aether {
 
-class app;
+class game;
 
 class window final {
-	friend class app;
+	friend class game;
 
 private:
 	window();
 
 public:
-	struct init_descriptor final {
-		std::string_view title;
-		size<int> resolution;
-		int fps;
-	};
-
 	~window();
 	window(window const&)            = delete;
 	window(window&&)                 = delete;
@@ -37,7 +31,7 @@ public:
 	[[nodiscard]] size<uint32_t> default_size() const;
 
 private:
-	bool init(init_descriptor desc);
+	bool init(std::string_view title, size<int> resolution, int fps);
 	void shutdown();
 	void update();
 

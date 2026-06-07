@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <math/rect.hh>
-#include <objects/node.hh>
+#include <nodes/node.hh>
 
 struct Texture;
 using rltexture = Texture;

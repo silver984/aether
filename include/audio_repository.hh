@@ -7,10 +7,10 @@
 
 namespace aether {
 
-class app;
+class game;
 
 class audio_repository final {
-	friend class app;
+	friend class game;
 
 private:
 	audio_repository();

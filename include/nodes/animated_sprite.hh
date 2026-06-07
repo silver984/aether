@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <math/rect.hh>
-#include <objects/node.hh>
+#include <nodes/node.hh>
 #include <optional>
 
 struct Texture;

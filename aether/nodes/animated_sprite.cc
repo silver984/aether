@@ -3,7 +3,7 @@
 #endif
 #include <animation_repository.hh>
 #include <context.hh>
-#include <objects/animated_sprite.hh>
+#include <nodes/animated_sprite.hh>
 #include <raylib.h>
 #include <renderer.hh>
 #include <scene.hh>
@@ -28,9 +28,7 @@ animated_sprite::animated_sprite(context const& ctx, descriptor const& desc)
 animated_sprite::~animated_sprite() = default;
 
 void animated_sprite::toggle_antialiasing(bool val) const {
-	if (texture_) {
-		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
-	}
+	SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 }
 
 bool animated_sprite::play_animation(std::string_view name) {

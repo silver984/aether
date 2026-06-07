@@ -1,5 +1,5 @@
-#include <app.hh>
 #include <context.hh>
+#include <game.hh>
 #ifdef AETHER_DEBUG
 	#include <debug/log.hh>
 #endif
@@ -18,9 +18,9 @@ using enum SoLoud::SOLOUD_ERRORS;
 
 namespace aether {
 
-struct app::impl final {
+struct game::impl final {
 	impl()
-	    : ctx_(window_, renderer_, soloud_, textures, animations_, audios_, scene_scheduler_)
+	    : ctx_(window_, renderer_, soloud_, textures_, animations_, audios_, scene_scheduler_)
 	    , is_initialized_(false) {}
 
 	~impl() {
@@ -30,7 +30,7 @@ struct app::impl final {
 
 		if (scene_scheduler_.has_pending_scene()) {
 			scene_scheduler_.cleanup();
-			textures.clear_cache();
+			textures_.clear_cache();
 			animations_.clear_cache();
 		}
 
@@ -44,7 +44,7 @@ struct app::impl final {
 			return true;
 		}
 
-		if (!window_.init({.title = desc.window_title, .resolution = desc.resolution, .fps = desc.fps})) {
+		if (!window_.init(desc.window_title, desc.resolution, desc.fps)) {
 #ifdef AETHER_DEBUG
 			errorlog("Failed");
 #endif
@@ -115,7 +115,7 @@ struct app::impl final {
 #endif
 
 		scene_scheduler_.cleanup();
-		textures.clear_cache();
+		textures_.clear_cache();
 		animations_.clear_cache();
 		soloud_.deinit();
 		window_.shutdown();
@@ -132,27 +132,27 @@ struct app::impl final {
 	SoLoud::Soloud soloud_;
 	sol::state lua_;
 	scene_scheduler scene_scheduler_;
-	texture_repository textures;
+	texture_repository textures_;
 	animation_repository animations_;
 	audio_repository audios_;
 	context ctx_;
 	bool is_initialized_;
 };
 
-app::app()
+game::game()
     : impl_(std::make_unique<impl>()) {}
 
-app::~app() = default;
+game::~game() = default;
 
-bool app::init(init_descriptor desc) const {
+bool game::init(init_descriptor const& desc) const {
 	return impl_->init(desc);
 }
 
-void app::run() const {
+void game::run() const {
 	impl_->run();
 }
 
-context const& app::fetch_context() const {
+context const& game::fetch_context() const {
 	return impl_->ctx_;
 }
 

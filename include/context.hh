@@ -6,11 +6,11 @@
 
 namespace aether {
 
-class app;
+class game;
 class scene_scheduler;
 
 class context final {
-	friend class app;
+	friend class game;
 
 private:
 	context(window& _window, renderer& _renderer, SoLoud::Soloud& soloud, texture_repository& textures,

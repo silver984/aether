@@ -3,11 +3,11 @@
 
 namespace aether {
 
-class app;
+class game;
 class scene;
 
 class scene_scheduler final {
-	friend class app;
+	friend class game;
 
 private:
 	scene_scheduler();

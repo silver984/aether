@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <cmath>
-#include <objects/node.hh>
+#include <nodes/node.hh>
 #include <scene.hh>
 #include <util/math.hh>
 

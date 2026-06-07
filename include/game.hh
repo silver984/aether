@@ -7,7 +7,7 @@ namespace aether {
 
 class context;
 
-class app final {
+class game final {
 public:
 	struct init_descriptor final {
 		std::string_view window_title;
@@ -15,14 +15,14 @@ public:
 		int fps = 240;
 	};
 
-	app();
-	~app();
-	app(app const&)            = delete;
-	app(app&&)                 = delete;
-	app& operator=(app const&) = delete;
-	app& operator=(app&&)      = delete;
+	game();
+	~game();
+	game(game const&)            = delete;
+	game(game&&)                 = delete;
+	game& operator=(game const&) = delete;
+	game& operator=(game&&)      = delete;
 
-	bool init(init_descriptor desc) const;
+	bool init(init_descriptor const& desc) const;
 	void run() const;
 	[[nodiscard]] context const& fetch_context() const;
 

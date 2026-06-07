@@ -2,7 +2,7 @@
 	#include <debug/log.hh>
 #endif
 #include <context.hh>
-#include <objects/tilemap.hh>
+#include <nodes/tilemap.hh>
 #include <raylib.h>
 #include <renderer.hh>
 #include <texture_repository.hh>
@@ -19,16 +19,10 @@ tilemap::tilemap(context const& ctx, descriptor const& desc)
 tilemap::~tilemap() = default;
 
 void tilemap::toggle_antialiasing(bool val) const {
-	if (texture_) {
-		SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
-	}
+	SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 }
 
 vec2<uint32_t> tilemap::tile_count() const {
-	if (!texture_) {
-		return {};
-	}
-
 	return vec2<uint32_t>(texture_->width / tile_bounds_arg_.width, texture_->height / tile_bounds_arg_.height);
 }
 
@@ -40,8 +34,8 @@ void tilemap::seek_tile(vec2<int> tile_index) {
 		return;
 	}
 
-	vec2<int> const ltile_count = static_cast<vec2<int>>(tile_count());
-	tile_index_                 = static_cast<vec2<uint32_t>>(util::clamp(tile_index, vec2<int>(0.f), ltile_count - 1));
+	vec2<int> const tile_counti = static_cast<vec2<int>>(tile_count());
+	tile_index_                 = static_cast<vec2<uint32_t>>(util::clamp(tile_index, vec2<int>(0), tile_counti - 1));
 	texture_source_rect_.x      = tile_bounds_arg_.width * (float)tile_index_.x;
 	texture_source_rect_.y      = tile_bounds_arg_.height * (float)tile_index_.y;
 }
@@ -61,6 +55,13 @@ bool tilemap::init() {
 		return false;
 	}
 
+	if (tile_bounds_arg_.width > texture_->width || tile_bounds_arg_.height > texture_->height) {
+#ifdef AETHER_DEBUG
+		errorlog("Invalid parameters");
+#endif
+		return false;
+	}
+
 	texture_source_rect_.width  = (float)tile_bounds_arg_.width;
 	texture_source_rect_.height = (float)tile_bounds_arg_.height;
 	set_bounds(size<int>((int)tile_bounds_arg_.width, (int)tile_bounds_arg_.height));
@@ -72,9 +73,7 @@ bool tilemap::init() {
 
 // protected
 void tilemap::draw(mat3 const& transform, rgba color) {
-	if (texture_) {
-		ctx().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
-	}
+	ctx().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
 }
 
 } // namespace aether

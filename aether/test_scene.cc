@@ -3,8 +3,8 @@
 #ifdef AETHER_DEBUG
 	#include <debug/log.hh>
 #endif
-#include <objects/animated_sprite.hh>
-#include <objects/tilemap.hh>
+#include <nodes/animated_sprite.hh>
+#include <nodes/tilemap.hh>
 #include <renderer.hh>
 #include <sound.hh>
 #include <test_scene.hh>

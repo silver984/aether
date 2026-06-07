@@ -37,7 +37,7 @@ size<uint32_t> window::default_size() const {
 }
 
 // private
-bool window::init(init_descriptor desc) {
+bool window::init(std::string_view title, size<int> resolution, int fps) {
 #ifdef AETHER_DEBUG
 	log::__impl::__create_log_file();
 
@@ -50,8 +50,8 @@ bool window::init(init_descriptor desc) {
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
 	size<int> const minimum_size = size<int>(640, 360);
-	title_                       = std::string(desc.title);
-	default_size_                = static_cast<size<uint32_t>>(util::max(minimum_size, desc.resolution));
+	title_                       = std::string(title);
+	default_size_                = static_cast<size<uint32_t>>(util::max(minimum_size, resolution));
 	InitWindow(default_size_.width, default_size_.height, title_.c_str());
 
 	if (!IsWindowReady()) {
@@ -61,7 +61,7 @@ bool window::init(init_descriptor desc) {
 		return false;
 	}
 
-	SetTargetFPS(std::max(1, desc.fps));
+	SetTargetFPS(std::max(1, fps));
 	SetExitKey(KEY_NULL);
 	SetWindowMinSize(minimum_size.width, minimum_size.height);
 

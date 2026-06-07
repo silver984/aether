@@ -1,7 +1,7 @@
 #include <cassert>
 #include <context.hh>
 #include <debug/log.hh>
-#include <objects/node.hh>
+#include <nodes/node.hh>
 #include <scene.hh>
 #include <sound.hh>
 #include <window.hh>
