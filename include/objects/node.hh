@@ -57,9 +57,9 @@ public:
 	[[nodiscard]] size_t child_count() const;
 	[[nodiscard]] size_t recursed_child_count() const;
 	[[nodiscard]] std::weak_ptr<node> parent() const;
-	void set_name(std::string_view name); // TODO: better naming system
+	void set_name(std::string_view name); // todo: better naming system
 	[[nodiscard]] std::string_view name() const;
-	void set_bounds(size<int> val);       // TODO: set_width, set_height
+	void set_bounds(size<int> val);       // todo: set_width, set_height
 	[[nodiscard]] size<uint32_t> bounds() const;
 	[[nodiscard]] uint32_t width() const;
 	[[nodiscard]] uint32_t height() const;
@@ -67,7 +67,7 @@ public:
 	void set_position_x(float val);
 	void set_position_y(float val);
 	[[nodiscard]] vec2<float> position() const;
-	void set_anchor(vec2<float> val); // TODO: set_anchor_x, set_anchor_y
+	void set_anchor(vec2<float> val); // todo: set_anchor_x, set_anchor_y
 	[[nodiscard]] vec2<float> anchor() const;
 	void set_scale(vec2<float> val);
 	void set_scale(float val);

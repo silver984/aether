@@ -31,7 +31,7 @@ std::shared_ptr<animation_map> animation_repository::fetch(std::string_view file
 
 	std::string const file_extension = util::file_extension(lfile);
 
-	// TODO: json, plist, and txt
+	// todo: json, plist, and txt
 	if (!util::string_matches_any(file_extension, {".xml"})) {
 #ifdef AETHER_DEBUG
 		errorlog("Unsupported file format | file: \"{}\"", lfile.filename().string());

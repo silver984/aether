@@ -18,6 +18,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 add_subdirectory(abstract)
+add_subdirectory(lua)
 add_subdirectory(objects)
 add_subdirectory(services)
 add_subdirectory(util)

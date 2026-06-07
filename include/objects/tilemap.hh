@@ -23,7 +23,7 @@ public:
 	[[nodiscard]] vec2<uint32_t> tile_count() const;
 	void seek_tile(vec2<int> tile_index);
 	[[nodiscard]] vec2<uint32_t> tile_index() const;
-	// TODO: set_texture
+	// todo: set_texture
 
 protected:
 	bool init() override;

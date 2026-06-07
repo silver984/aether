@@ -23,7 +23,7 @@ public:
 	void toggle_antialiasing(bool val) const;
 	bool set_texture(std::string_view file);
 	void set_texture_wrap(texture_wrap type);
-	void set_texture_source_rect(rect<int> val); // TODO: pos, bounds, x, y, width, height
+	void set_texture_source_rect(rect<int> val); // todo: pos, bounds, x, y, width, height
 	void update_bounds();
 	[[nodiscard]] rect<int> texture_source_rect() const;
 

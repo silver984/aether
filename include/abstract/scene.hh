@@ -52,8 +52,8 @@ private:
 	void update_all(float dt);
 	void draw_all();
 
-	// TODO: music member
-	// TODO: camera member
+	// todo: music member
+	// todo: camera member
 
 	context const& ctx_;
 	camera camera_;
