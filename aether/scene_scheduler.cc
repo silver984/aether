@@ -1,9 +1,9 @@
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
-#include <abstract/scene.hh>
 #include <context.hh>
-#include <services/scene_scheduler.hh>
+#include <scene.hh>
+#include <scene_scheduler.hh>
 #include <utility>
 
 namespace aether {

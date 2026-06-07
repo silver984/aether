@@ -1,7 +1,7 @@
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
-#include <services/resource/audio_repository.hh>
+#include <audio_repository.hh>
 #include <util/filesystem.hh>
 #include <util/string.hh>
 #include <utility>

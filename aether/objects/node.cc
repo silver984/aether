@@ -1,7 +1,7 @@
-#include <abstract/scene.hh>
 #include <algorithm>
 #include <cmath>
 #include <objects/node.hh>
+#include <scene.hh>
 #include <util/math.hh>
 
 namespace aether {

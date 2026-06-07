@@ -1,10 +1,10 @@
-#include <abstract/scene.hh>
-#include <abstract/sound.hh>
 #include <cassert>
 #include <context.hh>
-#include <log.hh>
+#include <debug/log.hh>
 #include <objects/node.hh>
-#include <services/core/window.hh>
+#include <scene.hh>
+#include <sound.hh>
+#include <window.hh>
 
 namespace aether {
 

@@ -1,24 +1,12 @@
-target_sources(${AETHER}
-    PRIVATE
-        math/mat3.cc
-        scenes/test_scene.cc
-        app.cc
-        context.cc
-        core_services.cc
-        main.cc
-        resource_services.cc
+file(GLOB AETHER_GENERAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
+file(GLOB AETHER_OBJECTS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/objects/*.cc)
+file(GLOB AETHER_UTIL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/util/*.cc)
+
+target_sources(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/math/mat3.cc
+    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/debug/log.cc>
+    $<$<AND:$<CONFIG:Debug>,$<PLATFORM_ID:Windows>>:${CMAKE_CURRENT_SOURCE_DIR}/debug/win32.cc>
+    ${AETHER_GENERAL_SRC}
+    ${AETHER_OBJECTS_SRC}
+    ${AETHER_UTIL_SRC}
 )
-
-if(WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_sources(${AETHER} PRIVATE platforms/win32.cc)
-endif()
-
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_sources(${AETHER} PRIVATE log.cc)
-endif()
-
-add_subdirectory(abstract)
-add_subdirectory(lua)
-add_subdirectory(objects)
-add_subdirectory(services)
-add_subdirectory(util)

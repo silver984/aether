@@ -1,12 +1,12 @@
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
 #include <cmath>
 #include <context.hh>
 #include <objects/sprite.hh>
 #include <raylib.h>
-#include <services/core/renderer.hh>
-#include <services/resource/texture_repository.hh>
+#include <renderer.hh>
+#include <texture_repository.hh>
 
 namespace aether {
 

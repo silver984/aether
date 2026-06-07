@@ -1,18 +1,18 @@
 #include <app.hh>
 #include <context.hh>
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
-#include <services/core/renderer.hh>
-#include <services/core/window.hh>
-#include <services/resource/animation_repository.hh>
-#include <services/resource/audio_repository.hh>
-#include <services/resource/texture_repository.hh>
-#include <services/scene_scheduler.hh>
+#include <animation_repository.hh>
+#include <audio_repository.hh>
+#include <renderer.hh>
+#include <scene_scheduler.hh>
 #include <sol/state.hpp>
 #include <soloud.h>
 #include <soloud_error.h>
+#include <texture_repository.hh>
 #include <util/timer.hh>
+#include <window.hh>
 
 using enum SoLoud::SOLOUD_ERRORS;
 

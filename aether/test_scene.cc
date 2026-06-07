@@ -1,14 +1,14 @@
 #include <cmath>
 #include <context.hh>
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
-#include <abstract/sound.hh>
 #include <objects/animated_sprite.hh>
 #include <objects/tilemap.hh>
-#include <scenes/test_scene.hh>
-#include <services/core/renderer.hh>
-#include <services/core/window.hh>
+#include <renderer.hh>
+#include <sound.hh>
+#include <test_scene.hh>
+#include <window.hh>
 
 using namespace aether;
 

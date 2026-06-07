@@ -1,9 +1,9 @@
 #include <cctype>
 #include <cstddef>
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
-#include <services/resource/animation_repository.hh>
+#include <animation_repository.hh>
 #include <tinyxml2/tinyxml2.h>
 #include <util/filesystem.hh>
 #include <util/string.hh>

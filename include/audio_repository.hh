@@ -1,5 +1,5 @@
 #pragma once
-#include <data/byte_buffer.hh>
+#include <byte_buffer.hh>
 #include <filesystem>
 #include <memory>
 #include <string_view>

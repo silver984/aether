@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <cstdint>
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
 #include <fstream>
 #include <util/filesystem.hh>

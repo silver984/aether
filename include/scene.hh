@@ -1,5 +1,5 @@
 #pragma once
-#include <abstract/camera.hh>
+#include <camera.hh>
 #include <concepts>
 #include <memory>
 #include <string_view>

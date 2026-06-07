@@ -1,6 +1,6 @@
 #pragma once
-#include <abstract/scene.hh>
 #include <memory>
+#include <scene.hh>
 
 class test_scene final : public aether::scene {
 public:

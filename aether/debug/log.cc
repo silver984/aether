@@ -1,10 +1,10 @@
 #ifdef AETHER_DEBUG
 	#include <algorithm>
 	#include <chrono>
+	#include <debug/log.hh>
 	#include <filesystem>
 	#include <fmt/chrono.h>
 	#include <fstream>
-	#include <log.hh>
 
 namespace {
 

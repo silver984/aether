@@ -2,11 +2,11 @@
 #include <fmt/format.h>
 #include <raylib.h>
 #include <raymath.h>
+#include <renderer.hh>
 #include <rlgl.h>
-#include <services/core/renderer.hh>
-#include <services/core/window.hh>
 #include <util/math.hh>
 #include <util/rltype.hh>
+#include <window.hh>
 
 namespace aether {
 

@@ -1,10 +1,10 @@
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
-#include <services/core/window.hh>
 #include <util/math.hh>
+#include <window.hh>
 #ifdef WIN32
-	#include <platforms/win32.hh>
+	#include <debug/win32.hh>
 #endif
 #include <algorithm>
 #include <raylib.h>

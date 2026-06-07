@@ -1,8 +1,8 @@
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
 #include <raylib.h>
-#include <services/resource/texture_repository.hh>
+#include <texture_repository.hh>
 #include <util/filesystem.hh>
 #include <util/string.hh>
 #include <util/timer.hh>

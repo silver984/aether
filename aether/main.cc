@@ -1,7 +1,7 @@
 #include <app.hh>
 #include <context.hh>
-#include <scenes/test_scene.hh>
-#include <services/scene_scheduler.hh>
+#include <scene_scheduler.hh>
+#include <test_scene.hh>
 #include <version.h>
 
 using namespace aether;

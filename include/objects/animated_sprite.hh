@@ -1,7 +1,7 @@
 #pragma once
+#include <animation_map.hh>
 #include <cstddef>
 #include <cstdint>
-#include <data/animation_map.hh>
 #include <math/rect.hh>
 #include <objects/node.hh>
 #include <optional>

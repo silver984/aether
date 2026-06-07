@@ -1,13 +1,13 @@
 #include <algorithm>
 #include <context.hh>
 #ifdef AETHER_DEBUG
-	#include <log.hh>
+	#include <debug/log.hh>
 #endif
-#include <abstract/sound.hh>
-#include <services/resource/audio_repository.hh>
+#include <audio_repository.hh>
 #include <soloud.h>
 #include <soloud_error.h>
 #include <soloud_wav.h>
+#include <sound.hh>
 
 using enum SoLoud::SOLOUD_ERRORS;
 
