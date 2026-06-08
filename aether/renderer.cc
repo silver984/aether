@@ -30,8 +30,7 @@ rgba renderer::background_rgba() const {
 	return background_rgba_;
 }
 
-void renderer::draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform,
-                            rgba color) const {
+void renderer::draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const {
 	if (texture.id < 1) {
 		return;
 	}
@@ -115,33 +114,39 @@ void renderer::setup(window& window) {
 // private
 void renderer::start_draw() {
 	BeginDrawing();
-	size<uint32_t> const lrender_bounds = render_bounds();
-	BeginScissorMode(0, 0, (int)lrender_bounds.width, (int)lrender_bounds.height);
+	size<int> const lrender_bounds = render_bounds();
+	BeginScissorMode(0, 0, lrender_bounds.width, lrender_bounds.height);
 	ClearBackground(util::to_rlrgba(background_rgba_));
 	push_matrix(transform_);
 }
 
-#ifdef AETHER_DEBUG
-// private
-void renderer::end_draw(uint32_t running_fps) const {
-	rlPopMatrix();
-	DrawText(fmt::format("FPS: {}", running_fps).c_str(), 5, 5, 10, WHITE);
-	EndScissorMode();
-	EndDrawing();
-}
-#else
+// #ifdef AETHER_DEBUG
+// // private
+// void renderer::end_draw(uint32_t running_fps) const {
+// 	rlPopMatrix();
+// 	DrawText(fmt::format("FPS: {}", running_fps).c_str(), 5, 5, 10, WHITE);
+// 	EndScissorMode();
+// 	EndDrawing();
+// }
+// #else
+// // private
+// void renderer::end_draw() const {
+// 	rlPopMatrix();
+// 	EndScissorMode();
+// 	EndDrawing();
+// }
+// #endif
+
 // private
 void renderer::end_draw() const {
 	rlPopMatrix();
 	EndScissorMode();
 	EndDrawing();
 }
-#endif
 
 // private
-size<uint32_t> renderer::render_bounds() const {
-	// this should be fine...
-	return size<uint32_t>((uint32_t)GetRenderWidth(), (uint32_t)GetRenderHeight());
+size<int> renderer::render_bounds() const {
+	return size<int>(GetRenderWidth(), GetRenderHeight());
 }
 
 // private
@@ -169,14 +174,12 @@ void renderer::define_texture_coord(vec2<float> position) const {
 
 // private
 mat3 renderer::calculate_transform(size<uint32_t> default_window_size) const {
-	size<uint32_t> const lrender_bounds = render_bounds();
-	vec2<float> const scale_ratio       = vec2<float>(lrender_bounds.width / (float)default_window_size.width,
-	                                                  lrender_bounds.height / (float)default_window_size.height);
-	float const scale_factor            = std::min(scale_ratio.x, scale_ratio.y);
-	vec2<float> const scaled_size =
-	        vec2<float>(default_window_size.width * scale_factor, default_window_size.height * scale_factor);
-	vec2<float> const offset =
-	        vec2<float>(lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y);
+	size<int> const lrender_bounds   = render_bounds();
+	vec2<float> const scale_ratio    = vec2<float>(lrender_bounds.width / (float)default_window_size.width,
+	                                               lrender_bounds.height / (float)default_window_size.height);
+	float const scale_factor         = std::min(scale_ratio.x, scale_ratio.y);
+	vec2<float> const scaled_size    = vec2<float>(default_window_size.width * scale_factor, default_window_size.height * scale_factor);
+	vec2<float> const offset         = vec2<float>(lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y);
 	vec2<float> const snapped_offset = util::round(offset / 2.f);
 	mat3 result                      = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
 	result.m[0][2]                   = std::round(result.m[0][2]);

@@ -8,10 +8,7 @@ context::context(window& _window, renderer& _renderer, SoLoud::Soloud& soloud, t
                  animation_repository& animations, audio_repository& audios, scene_scheduler& _scene_scheduler)
         : core_(_window, _renderer, soloud)
         , resource_(textures, animations, audios)
-        , scene_scheduler_(_scene_scheduler)
-        , frame_count_(0)
-        , running_fps_(0)
-        , frame_elapsed_(0.f) {}
+        , scene_scheduler_(_scene_scheduler) {}
 
 // public
 context::~context() = default;
@@ -28,23 +25,15 @@ scene_scheduler& context::fetch_scene_scheduler() const {
 	return scene_scheduler_;
 }
 
-float context::delta_time() const {
-	return GetFrameTime();
-}
-
-uint32_t context::running_fps() const {
-	return running_fps_;
-}
-
-// private
-void context::update_frame_context() {
-	frame_elapsed_ += delta_time();
-	frame_count_++;
-	while (frame_elapsed_ >= 1.f) {
-		running_fps_ = frame_count_;
-		frame_count_ = 0;
-		frame_elapsed_ -= 1.f;
-	}
-}
+// // private
+// void context::update_frame_context() {
+// 	frame_elapsed_ += delta_time();
+// 	frame_count_++;
+// 	while (frame_elapsed_ >= 1.f) {
+// 		running_fps_ = frame_count_;
+// 		frame_count_ = 0;
+// 		frame_elapsed_ -= 1.f;
+// 	}
+// }
 
 } // namespace aether

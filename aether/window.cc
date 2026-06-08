@@ -78,6 +78,10 @@ void window::shutdown() {
 
 // private
 void window::update() {
+	if (!IsWindowResized()) {
+		return;
+	}
+
 	for (auto iterator = on_resize_callbacks_.begin(); iterator != on_resize_callbacks_.end();) {
 		auto callback = iterator->lock();
 

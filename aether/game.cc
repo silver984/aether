@@ -5,6 +5,7 @@
 #endif
 #include <animation_repository.hh>
 #include <audio_repository.hh>
+#include <chrono>
 #include <renderer.hh>
 #include <scene_scheduler.hh>
 #include <sol/state.hpp>
@@ -82,14 +83,18 @@ struct game::impl final {
 			return;
 		}
 
-		while (!window_.should_close()) {
-			window_.update();
+		auto previous_time = std::chrono::steady_clock::now();
 
+		while (!window_.should_close()) {
+			auto const current_time        = std::chrono::steady_clock::now();
+			float const delta_time         = std::chrono::duration<float>(current_time - previous_time).count();
+			previous_time                  = current_time;
 			bool const is_window_minimized = window_.is_minimized();
 
 			if (!is_window_minimized) {
-				ctx_.update_frame_context();
-				scene_scheduler_.update_scene(ctx_.delta_time());
+				window_.update();
+				// ctx_.update_frame_context();
+				scene_scheduler_.update_scene(delta_time);
 			}
 
 			renderer_.start_draw();
@@ -98,11 +103,13 @@ struct game::impl final {
 				scene_scheduler_.draw_scene();
 			}
 
-#ifdef AETHER_DEBUG
-			renderer_.end_draw(ctx_.running_fps());
-#else
+			// #ifdef AETHER_DEBUG
+			// 			renderer_.end_draw(ctx_.running_fps());
+			// #else
+			// 			renderer_.end_draw();
+			// #endif
+
 			renderer_.end_draw();
-#endif
 		}
 
 		shutdown();

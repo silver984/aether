@@ -37,12 +37,15 @@ class renderer final {
     private:
 	void setup(window& window);
 	void start_draw();
-#ifdef AETHER_DEBUG
-	void end_draw(uint32_t running_fps) const;
-#else
+
+	// #ifdef AETHER_DEBUG
+	// 	void end_draw(uint32_t running_fps) const;
+	// #else
+	// 	void end_draw() const;
+	// #endif
+
 	void end_draw() const;
-#endif
-	[[nodiscard]] size<uint32_t> render_bounds() const;
+	[[nodiscard]] size<int> render_bounds() const;
 	void push_matrix(mat3 const& matrix) const;
 	void define_color_vertex(rgba color) const;
 	void define_vertex(vec2<float> position) const;
