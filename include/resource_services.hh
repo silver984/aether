@@ -10,17 +10,17 @@ class audio_repository;
 class resource_services final {
 	friend class context;
 
-private:
+    private:
 	resource_services(texture_repository& textures, animation_repository& animations, audio_repository& audios);
 
-public:
+    public:
 	~resource_services();
 
 	[[nodiscard]] texture_repository& textures() const;
 	[[nodiscard]] animation_repository& animations() const;
 	[[nodiscard]] audio_repository& audios() const;
 
-private:
+    private:
 	texture_repository& textures_;
 	animation_repository& animations_;
 	audio_repository& audios_;

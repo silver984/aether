@@ -15,17 +15,17 @@ class renderer;
 class core_services final {
 	friend class context;
 
-private:
+    private:
 	core_services(window& window, renderer& renderer, SoLoud::Soloud& soloud);
 
-public:
+    public:
 	~core_services();
 
 	[[nodiscard]] window& fetch_window() const;
 	[[nodiscard]] renderer& fetch_renderer() const;
 	[[nodiscard]] SoLoud::Soloud& soloud() const;
 
-private:
+    private:
 	window& window_;
 	renderer& renderer_;
 	SoLoud::Soloud& soloud_;

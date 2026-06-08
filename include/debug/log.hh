@@ -50,9 +50,9 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 			#define tracelog(fmt_str, ...) aether::log::trace(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 			#define debuglog(fmt_str, ...) aether::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 		#else
-			#define tracelog(fmt_str, ...)                                                                             \
+			#define tracelog(fmt_str, ...)                                                                                     \
 				aether::log::trace(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-			#define debuglog(fmt_str, ...)                                                                             \
+			#define debuglog(fmt_str, ...)                                                                                     \
 				aether::log::debug(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
 		#endif
 	#endif
@@ -62,11 +62,8 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 		#define warninglog(fmt_str, ...) aether::log::warning(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 		#define errorlog(fmt_str, ...)   aether::log::error(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 	#else
-		#define infolog(fmt_str, ...)                                                                                  \
-			aether::log::info(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-		#define warninglog(fmt_str, ...)                                                                               \
-			aether::log::warning(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-		#define errorlog(fmt_str, ...)                                                                                 \
-			aether::log::error(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
+		#define infolog(fmt_str, ...)    aether::log::info(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
+		#define warninglog(fmt_str, ...) aether::log::warning(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
+		#define errorlog(fmt_str, ...)   aether::log::error(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
 	#endif
 #endif

@@ -156,8 +156,8 @@ animation_repository::xml_parse_delegate(tinyxml2::XMLDocument const& document, 
 #endif
 
 	char const* const element_name_data = element_name.data();
-	for (tinyxml2::XMLElement const* current_element = root_element->FirstChildElement(element_name_data);
-	     current_element != nullptr; current_element = current_element->NextSiblingElement(element_name_data)) {
+	for (tinyxml2::XMLElement const* current_element = root_element->FirstChildElement(element_name_data); current_element != nullptr;
+	     current_element                             = current_element->NextSiblingElement(element_name_data)) {
 		callback(*current_element, *shared_map);
 	}
 
@@ -185,121 +185,119 @@ animation_repository::xml_parse_delegate(tinyxml2::XMLDocument const& document, 
 
 // private
 std::shared_ptr<animation_map> animation_repository::xml_adobe_animate_parse(tinyxml2::XMLDocument const& document) {
-	return xml_parse_delegate(
-	    document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
-		    char const* frame_name = current_element.Attribute("name");
+	return xml_parse_delegate(document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
+		char const* frame_name = current_element.Attribute("name");
 
-		    if (!frame_name) {
+		if (!frame_name) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no name attribute");
+			log_defective_frame("no name attribute");
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    std::string const parsed_frame_name = parse_frame_name(frame_name);
+		std::string const parsed_frame_name = parse_frame_name(frame_name);
 
-		    if (parsed_frame_name.empty()) {
+		if (parsed_frame_name.empty()) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("invalid name", frame_name);
+			log_defective_frame("invalid name", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    atlas_region frame;
+		atlas_region frame;
 
-		    using enum tinyxml2::XMLError;
-		    if (current_element.QueryIntAttribute("x", &frame.source_rect.x) != XML_SUCCESS) {
+		using enum tinyxml2::XMLError;
+		if (current_element.QueryIntAttribute("x", &frame.source_rect.x) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no x attribute", frame_name);
+			log_defective_frame("no x attribute", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    if (current_element.QueryIntAttribute("y", &frame.source_rect.y) != XML_SUCCESS) {
+		if (current_element.QueryIntAttribute("y", &frame.source_rect.y) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no y attribute", frame_name);
+			log_defective_frame("no y attribute", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    if (current_element.QueryIntAttribute("width", &frame.source_rect.width) != XML_SUCCESS) {
+		if (current_element.QueryIntAttribute("width", &frame.source_rect.width) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no width attribute", frame_name);
+			log_defective_frame("no width attribute", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    if (current_element.QueryIntAttribute("height", &frame.source_rect.height) != XML_SUCCESS) {
+		if (current_element.QueryIntAttribute("height", &frame.source_rect.height) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no height attribute", frame_name);
+			log_defective_frame("no height attribute", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    // these dont need to have valid values
-		    // they simply fallback to their defaults
-		    current_element.QueryIntAttribute("frameX", &frame.offsets.x);
-		    current_element.QueryIntAttribute("frameY", &frame.offsets.y);
-		    current_element.QueryBoolAttribute("rotated", &frame.is_rotated);
+		// these dont need to have valid values
+		// they simply fallback to their defaults
+		current_element.QueryIntAttribute("frameX", &frame.offsets.x);
+		current_element.QueryIntAttribute("frameY", &frame.offsets.y);
+		current_element.QueryBoolAttribute("rotated", &frame.is_rotated);
 
-		    map[parsed_frame_name].frames.emplace_back(std::move(frame));
-	    });
+		map[parsed_frame_name].frames.emplace_back(std::move(frame));
+	});
 }
 
 std::shared_ptr<animation_map> animation_repository::xml_texture_packer_parse(tinyxml2::XMLDocument const& document) {
-	return xml_parse_delegate(
-	    document, "sprite", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
-		    char const* frame_name = current_element.Attribute("n");
+	return xml_parse_delegate(document, "sprite", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
+		char const* frame_name = current_element.Attribute("n");
 
-		    if (!frame_name) {
+		if (!frame_name) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no n attribute");
+			log_defective_frame("no n attribute");
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    std::string const parsed_frame_name = parse_frame_name(frame_name);
+		std::string const parsed_frame_name = parse_frame_name(frame_name);
 
-		    if (parsed_frame_name.empty()) {
+		if (parsed_frame_name.empty()) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("invalid name", frame_name);
+			log_defective_frame("invalid name", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    atlas_region frame;
+		atlas_region frame;
 
-		    using enum tinyxml2::XMLError;
-		    if (current_element.QueryIntAttribute("x", &frame.source_rect.x) != XML_SUCCESS) {
+		using enum tinyxml2::XMLError;
+		if (current_element.QueryIntAttribute("x", &frame.source_rect.x) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no x attribute", frame_name);
+			log_defective_frame("no x attribute", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    if (current_element.QueryIntAttribute("y", &frame.source_rect.y) != XML_SUCCESS) {
+		if (current_element.QueryIntAttribute("y", &frame.source_rect.y) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no y attribute", frame_name);
+			log_defective_frame("no y attribute", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    if (current_element.QueryIntAttribute("w", &frame.source_rect.width) != XML_SUCCESS) {
+		if (current_element.QueryIntAttribute("w", &frame.source_rect.width) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no w attribute", frame_name);
+			log_defective_frame("no w attribute", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    if (current_element.QueryIntAttribute("h", &frame.source_rect.height) != XML_SUCCESS) {
+		if (current_element.QueryIntAttribute("h", &frame.source_rect.height) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			    log_defective_frame("no h attribute", frame_name);
+			log_defective_frame("no h attribute", frame_name);
 #endif
-			    return;
-		    }
+			return;
+		}
 
-		    map[parsed_frame_name].frames.emplace_back(std::move(frame));
-	    });
+		map[parsed_frame_name].frames.emplace_back(std::move(frame));
+	});
 }
 
 // private

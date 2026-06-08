@@ -13,8 +13,8 @@
 using namespace aether;
 
 test_scene::test_scene(context const& ctx)
-    : scene(ctx)
-    , elapsed_(0.f) {}
+        : scene(ctx)
+        , elapsed_(0.f) {}
 
 test_scene::~test_scene() = default;
 
@@ -23,8 +23,8 @@ bool test_scene::init() {
 	auto const& lctx = ctx();
 
 	if (auto animation = node::create<animated_sprite>(
-	        lctx, animated_sprite::descriptor{
-	                  .image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
+	            lctx, animated_sprite::descriptor{
+	                          .image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
 		animation->play_animation("idle", {.loop = true});
 		animation->set_position(vec2<float>(0.f, 400.f));
 		animation->set_scroll_factor(vec2<float>(0.6f, 1.f));
@@ -33,8 +33,8 @@ bool test_scene::init() {
 	}
 
 	if (auto animation = node::create<animated_sprite>(
-	        lctx, animated_sprite::descriptor{
-	                  .image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
+	            lctx, animated_sprite::descriptor{
+	                          .image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
 		animation->play_animation("idle", {.loop = true});
 		animation->set_position(vec2<float>(0.f, 400.f));
 		add(animation);

@@ -15,10 +15,10 @@ namespace aether {
 
 struct sound::impl final {
 	impl(context const& ctx)
-	    : soloud_(ctx.core().soloud())
-	    , wave_handle_(0)
-	    , volume_(1.f)
-	    , pan_(0.f) {}
+	        : soloud_(ctx.core().soloud())
+	        , wave_handle_(0)
+	        , volume_(1.f)
+	        , pan_(0.f) {}
 
 	bool init(audio_repository& audios, std::string_view file) {
 		buffer_ = audios.fetch(file);
@@ -110,7 +110,7 @@ struct sound::impl final {
 };
 
 sound::sound(context const& ctx)
-    : impl_(std::make_unique<impl>(ctx)) {}
+        : impl_(std::make_unique<impl>(ctx)) {}
 
 sound::~sound() = default;
 

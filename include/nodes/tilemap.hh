@@ -9,7 +9,7 @@ using rltexture = Texture;
 namespace aether {
 
 class tilemap : public node {
-public:
+    public:
 	struct descriptor final {
 		std::string_view file;
 		size<int> tile_bounds;
@@ -25,11 +25,11 @@ public:
 	[[nodiscard]] vec2<uint32_t> tile_index() const;
 	// todo: set_texture
 
-protected:
+    protected:
 	bool init() override;
 	void draw(mat3 const& transform, rgba color) override;
 
-private:
+    private:
 	std::shared_ptr<rltexture> texture_;
 	std::string const file_arg_;
 	rect<float> texture_source_rect_;

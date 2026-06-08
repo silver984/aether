@@ -4,9 +4,9 @@ namespace aether {
 
 // private
 core_services::core_services(window& window, renderer& renderer, SoLoud::Soloud& soloud)
-    : window_(window)
-    , renderer_(renderer)
-    , soloud_(soloud) {}
+        : window_(window)
+        , renderer_(renderer)
+        , soloud_(soloud) {}
 
 core_services::~core_services() = default;
 

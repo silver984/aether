@@ -20,10 +20,10 @@ class context;
 class renderer final {
 	friend class game;
 
-private:
+    private:
 	renderer();
 
-public:
+    public:
 	~renderer();
 	renderer(renderer const&)            = delete;
 	renderer(renderer&&)                 = delete;
@@ -34,7 +34,7 @@ public:
 	[[nodiscard]] rgba background_rgba() const;
 	void draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
 
-private:
+    private:
 	void setup(window& window);
 	void start_draw();
 #ifdef AETHER_DEBUG

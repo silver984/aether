@@ -7,23 +7,23 @@
 namespace aether {
 
 node::node(context const& ctx)
-    : ctx_(ctx)
-    , scene_(nullptr)
-    , color_(255)
-    , combined_color_(color_)
-    , transform_(mat3::identity())
-    , anchor_(0.5f)
-    , scale_(1.f)
-    , scroll_factor_(1.f)
-    , rotation_(0.f)
-    , time_scale_(1.f)
-    , is_flip_x_(false)
-    , is_flip_y_(false)
-    , is_transform_dirty_(false)
-    , is_rgba_dirty_(false)
-    , is_active_(false)
-    , is_draw_scheduled_(false)
-    , is_visible_(true) {}
+        : ctx_(ctx)
+        , scene_(nullptr)
+        , color_(255)
+        , combined_color_(color_)
+        , transform_(mat3::identity())
+        , anchor_(0.5f)
+        , scale_(1.f)
+        , scroll_factor_(1.f)
+        , rotation_(0.f)
+        , time_scale_(1.f)
+        , is_flip_x_(false)
+        , is_flip_y_(false)
+        , is_transform_dirty_(false)
+        , is_rgba_dirty_(false)
+        , is_active_(false)
+        , is_draw_scheduled_(false)
+        , is_visible_(true) {}
 
 node::~node() = default;
 
@@ -520,14 +520,14 @@ mat3 node::calculate_transform(std::weak_ptr<node> parent) const {
 	// todo: use scene camera
 
 	vec2<float> const anchor_position = vec2<float>(anchor_.x * bounds_.width, anchor_.y * bounds_.height);
-	vec2<float> const skew_rad     = vec2<float>(util::degrees_to_radians(skew_.x), util::degrees_to_radians(skew_.y));
-	vec2<float> const scale_factor = vec2<float>(is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f);
-	mat3 const t                   = mat3::translation(position_ * scroll_factor_);
-	mat3 const r                   = mat3::rotation(util::degrees_to_radians(rotation_));
-	mat3 const s                   = mat3::scale(scale_ * scale_factor);
-	mat3 const k                   = mat3::skew(skew_rad);
-	mat3 const a                   = mat3::translation(-anchor_position);
-	mat3 const local               = t * r * s * k * a;
+	vec2<float> const skew_rad        = vec2<float>(util::degrees_to_radians(skew_.x), util::degrees_to_radians(skew_.y));
+	vec2<float> const scale_factor    = vec2<float>(is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f);
+	mat3 const t                      = mat3::translation(position_ * scroll_factor_);
+	mat3 const r                      = mat3::rotation(util::degrees_to_radians(rotation_));
+	mat3 const s                      = mat3::scale(scale_ * scale_factor);
+	mat3 const k                      = mat3::skew(skew_rad);
+	mat3 const a                      = mat3::translation(-anchor_position);
+	mat3 const local                  = t * r * s * k * a;
 
 	if (auto p = parent.lock()) {
 		return p->transform_ * local;

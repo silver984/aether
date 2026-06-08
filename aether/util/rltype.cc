@@ -22,10 +22,7 @@ rlmat4 to_rlmat4(mat3 const& matrix) {
 }
 
 rlrgba to_rlrgba(rgba color) {
-	return {.r = (unsigned char)color.r,
-	        .g = (unsigned char)color.g,
-	        .b = (unsigned char)color.b,
-	        .a = (unsigned char)color.a};
+	return {.r = (unsigned char)color.r, .g = (unsigned char)color.g, .b = (unsigned char)color.b, .a = (unsigned char)color.a};
 }
 
 rlrect to_rlrect(rect<float> const& rectangle) {

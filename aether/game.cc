@@ -20,8 +20,8 @@ namespace aether {
 
 struct game::impl final {
 	impl()
-	    : ctx_(window_, renderer_, soloud_, textures_, animations_, audios_, scene_scheduler_)
-	    , is_initialized_(false) {}
+	        : ctx_(window_, renderer_, soloud_, textures_, animations_, audios_, scene_scheduler_)
+	        , is_initialized_(false) {}
 
 	~impl() {
 		if (!is_initialized_) {
@@ -140,7 +140,7 @@ struct game::impl final {
 };
 
 game::game()
-    : impl_(std::make_unique<impl>()) {}
+        : impl_(std::make_unique<impl>()) {}
 
 game::~game() = default;
 

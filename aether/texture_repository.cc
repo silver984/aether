@@ -67,7 +67,7 @@ std::shared_ptr<rltexture> texture_repository::fetch(std::string_view file) {
 	}
 
 	std::shared_ptr<rltexture> shared_texture =
-	    std::shared_ptr<rltexture>(new rltexture(std::move(temporary_texture)), texture_deleter{});
+	        std::shared_ptr<rltexture>(new rltexture(std::move(temporary_texture)), texture_deleter{});
 
 #ifdef AETHER_VERBOSE_DEBUG
 	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width,

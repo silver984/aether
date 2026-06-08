@@ -16,12 +16,12 @@ class sound;
 class scene {
 	friend class scene_scheduler;
 
-public:
+    public:
 	scene(context const& ctx);
 	virtual ~scene();
 
 	template <typename derived, typename... va>
-	    requires std::derived_from<derived, scene>
+	        requires std::derived_from<derived, scene>
 	[[nodiscard]] static std::unique_ptr<derived> create(context const& ctx, va&&... args) {
 		std::unique_ptr<derived> ptr = std::make_unique<derived>(ctx, std::forward<va>(args)...);
 
@@ -41,13 +41,13 @@ public:
 	[[nodiscard]] std::shared_ptr<node> root_node() const;
 	[[nodiscard]] camera& fetch_camera();
 
-protected:
+    protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void visit();
 	[[nodiscard]] context const& ctx() const;
 
-private:
+    private:
 	bool init_scene();
 	void update_all(float dt);
 	void draw_all();

@@ -12,9 +12,9 @@ namespace aether {
 
 // private
 renderer::renderer()
-    : window_resize_callback_(std::make_shared<std::function<void(window&)>>())
-    , background_rgba_(0, 0, 0, 255)
-    , transform_(mat3::identity()) {
+        : window_resize_callback_(std::make_shared<std::function<void(window&)>>())
+        , background_rgba_(0, 0, 0, 255)
+        , transform_(mat3::identity()) {
 	(*window_resize_callback_) = [this](window& window) {
 		transform_ = calculate_transform(window.default_size());
 	};
@@ -174,8 +174,9 @@ mat3 renderer::calculate_transform(size<uint32_t> default_window_size) const {
 	                                                  lrender_bounds.height / (float)default_window_size.height);
 	float const scale_factor            = std::min(scale_ratio.x, scale_ratio.y);
 	vec2<float> const scaled_size =
-	    vec2<float>(default_window_size.width * scale_factor, default_window_size.height * scale_factor);
-	vec2<float> const offset = vec2<float>(lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y);
+	        vec2<float>(default_window_size.width * scale_factor, default_window_size.height * scale_factor);
+	vec2<float> const offset =
+	        vec2<float>(lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y);
 	vec2<float> const snapped_offset = util::round(offset / 2.f);
 	mat3 result                      = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
 	result.m[0][2]                   = std::round(result.m[0][2]);

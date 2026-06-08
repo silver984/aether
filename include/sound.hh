@@ -8,7 +8,7 @@ namespace aether {
 class context;
 
 class sound final {
-public:
+    public:
 	sound(context const& ctx);
 	~sound();
 
@@ -23,7 +23,7 @@ public:
 	void resume() const;
 	[[nodiscard]] uint32_t voice_count() const;
 
-private:
+    private:
 	struct impl;
 	std::unique_ptr<impl> impl_;
 };

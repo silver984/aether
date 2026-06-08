@@ -5,7 +5,7 @@ namespace aether {
 
 // private
 camera::camera(std::shared_ptr<node>& root_node)
-    : root_node_(root_node) {}
+        : root_node_(root_node) {}
 
 camera::~camera() = default;
 

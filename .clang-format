@@ -2,14 +2,16 @@ Standard: c++20
 
 # === Indentation & Whitespace ===
 UseTab: ForIndentation
-IndentWidth: 4
-TabWidth: 4
+IndentWidth: 8
+TabWidth: 8
 AccessModifierOffset: -4
+ContinuationIndentWidth: 8
+ConstructorInitializerIndentWidth: 8
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 
 # === Line Breaking ===
-ColumnLimit: 120
+ColumnLimit: 140
 BreakBeforeBraces: Attach
 AlwaysBreakTemplateDeclarations: Yes
 
@@ -42,5 +44,4 @@ SortIncludes: true
 
 # === Constructor Initializer List Formatting ===
 BreakConstructorInitializers: BeforeComma
-ConstructorInitializerIndentWidth: 4
 PackConstructorInitializers: Never

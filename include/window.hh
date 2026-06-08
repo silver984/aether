@@ -14,10 +14,10 @@ class game;
 class window final {
 	friend class game;
 
-private:
+    private:
 	window();
 
-public:
+    public:
 	~window();
 	window(window const&)            = delete;
 	window(window&&)                 = delete;
@@ -30,7 +30,7 @@ public:
 	[[nodiscard]] std::string_view title() const;
 	[[nodiscard]] size<uint32_t> default_size() const;
 
-private:
+    private:
 	bool init(std::string_view title, size<int> resolution, int fps);
 	void shutdown();
 	void update();

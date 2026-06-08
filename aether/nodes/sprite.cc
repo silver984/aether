@@ -11,10 +11,10 @@
 namespace aether {
 
 sprite::sprite(context const& ctx, descriptor const& desc)
-    : node(ctx)
-    , file_arg_(std::string(desc.file))
-    , wrap_type_arg_(desc.wrap_type)
-    , has_antialiasing_arg_(desc.has_antialiasing) {}
+        : node(ctx)
+        , file_arg_(std::string(desc.file))
+        , wrap_type_arg_(desc.wrap_type)
+        , has_antialiasing_arg_(desc.has_antialiasing) {}
 
 sprite::~sprite() = default;
 

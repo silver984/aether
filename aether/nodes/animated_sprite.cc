@@ -13,17 +13,17 @@
 namespace aether {
 
 animated_sprite::animated_sprite(context const& ctx, descriptor const& desc)
-    : node(ctx)
-    , image_file_arg_(std::string(desc.image_file))
-    , data_file_arg_(std::string(desc.data_file))
-    , current_subtexture_index_(0)
-    , playback_fps_((uint32_t)std::max(1, desc.fps))
-    , subtexture_transform_(mat3::identity())
-    , subtexture_elapsed_(0.f)
-    , animation_was_reset_(false)
-    , is_current_animation_looping_(false)
-    , is_current_subtexture_rotated_(false)
-    , has_antialiasing_arg_(desc.has_antialiasing) {}
+        : node(ctx)
+        , image_file_arg_(std::string(desc.image_file))
+        , data_file_arg_(std::string(desc.data_file))
+        , current_subtexture_index_(0)
+        , playback_fps_((uint32_t)std::max(1, desc.fps))
+        , subtexture_transform_(mat3::identity())
+        , subtexture_elapsed_(0.f)
+        , animation_was_reset_(false)
+        , is_current_animation_looping_(false)
+        , is_current_subtexture_rotated_(false)
+        , has_antialiasing_arg_(desc.has_antialiasing) {}
 
 animated_sprite::~animated_sprite() = default;
 

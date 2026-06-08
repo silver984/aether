@@ -14,10 +14,10 @@ class game;
 class texture_repository final {
 	friend class game;
 
-private:
+    private:
 	texture_repository();
 
-public:
+    public:
 	~texture_repository();
 	texture_repository(texture_repository const&)            = delete;
 	texture_repository(texture_repository&&)                 = delete;
@@ -27,7 +27,7 @@ public:
 	[[nodiscard]] std::shared_ptr<rltexture> fetch(std::string_view file);
 	void purge_unused();
 
-private:
+    private:
 	void clear_cache();
 	[[nodiscard]] std::shared_ptr<rltexture> try_fetch_from_cache(std::filesystem::path const& file) const;
 	[[nodiscard]] bool is_texture_valid(rltexture const& texture) const;

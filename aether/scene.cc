@@ -9,11 +9,11 @@
 namespace aether {
 
 scene::scene(context const& ctx)
-    : ctx_(ctx)
-    , camera_(root_node_)
-    , root_node_(node::create<node>(ctx))
-    , is_active_(false)
-    , is_visit_scheduled_(false) {
+        : ctx_(ctx)
+        , camera_(root_node_)
+        , root_node_(node::create<node>(ctx))
+        , is_active_(false)
+        , is_visit_scheduled_(false) {
 	assert(root_node_ != nullptr);
 	root_node_->scene_               = this;
 	size<uint32_t> const window_size = ctx.core().fetch_window().default_size();

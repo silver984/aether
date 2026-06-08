@@ -8,7 +8,7 @@ namespace aether {
 class context;
 
 class game final {
-public:
+    public:
 	struct init_descriptor final {
 		std::string_view window_title;
 		size<int> resolution;
@@ -26,7 +26,7 @@ public:
 	void run() const;
 	[[nodiscard]] context const& fetch_context() const;
 
-private:
+    private:
 	struct impl;
 	std::unique_ptr<impl> impl_;
 };

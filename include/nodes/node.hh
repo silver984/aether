@@ -22,12 +22,12 @@ class node : public std::enable_shared_from_this<node> {
 	friend class scene;
 	friend class camera;
 
-public:
+    public:
 	node(context const& ctx);
 	virtual ~node();
 
 	template <typename derived, typename... va>
-	    requires std::derived_from<derived, node>
+	        requires std::derived_from<derived, node>
 	[[nodiscard]] static std::shared_ptr<derived> create(context const& ctx, va&&... args) {
 		std::shared_ptr<derived> ptr = std::make_shared<derived>(ctx, std::forward<va>(args)...);
 
@@ -39,7 +39,7 @@ public:
 	}
 
 	template <typename derived>
-	    requires std::derived_from<derived, node>
+	        requires std::derived_from<derived, node>
 	[[nodiscard]] std::shared_ptr<derived> fetch_child_as(std::string_view name) {
 		std::shared_ptr<node> node = fetch_child(name);
 		return std::dynamic_pointer_cast<derived>(node);
@@ -95,14 +95,14 @@ public:
 	[[nodiscard]] bool is_flip_y() const;
 	[[nodiscard]] std::vector<std::shared_ptr<node>> children() const;
 
-protected:
+    protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void draw(mat3 const& transform, rgba color);
 	[[nodiscard]] context const& ctx() const;
 	[[nodiscard]] scene* fetch_scene() const;
 
-private:
+    private:
 	bool init_node();
 	void update_all(float dt);
 	void draw_all();

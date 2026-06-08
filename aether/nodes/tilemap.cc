@@ -11,10 +11,10 @@
 namespace aether {
 
 tilemap::tilemap(context const& ctx, descriptor const& desc)
-    : node(ctx)
-    , file_arg_(std::string(desc.file))
-    , tile_bounds_arg_(static_cast<size<uint32_t>>(util::max(size<int>(1), desc.tile_bounds)))
-    , has_antialiasing_(desc.has_antialiasing) {}
+        : node(ctx)
+        , file_arg_(std::string(desc.file))
+        , tile_bounds_arg_(static_cast<size<uint32_t>>(util::max(size<int>(1), desc.tile_bounds)))
+        , has_antialiasing_(desc.has_antialiasing) {}
 
 tilemap::~tilemap() = default;
 

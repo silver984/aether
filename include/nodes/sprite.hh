@@ -8,7 +8,7 @@ using rltexture = Texture;
 namespace aether {
 
 class sprite : public node {
-public:
+    public:
 	enum class texture_wrap : int { clamp, repeat, mirror_clamp, mirror_repeat };
 
 	struct descriptor final {
@@ -27,11 +27,11 @@ public:
 	void update_bounds();
 	[[nodiscard]] rect<float> texture_source_rect() const;
 
-protected:
+    protected:
 	bool init() override;
 	void draw(mat3 const& transform, rgba color) override;
 
-private:
+    private:
 	std::shared_ptr<rltexture> texture_;
 	std::string const file_arg_;
 	texture_wrap const wrap_type_arg_;

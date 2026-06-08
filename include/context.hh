@@ -23,8 +23,6 @@ public:
 	[[nodiscard]] resource_services const& resource() const;
 	[[nodiscard]] scene_scheduler& fetch_scene_scheduler() const;
 	[[nodiscard]] float delta_time() const;
-	[[nodiscard]] float total_time() const;
-	[[nodiscard]] uint32_t frame_count() const;
 	[[nodiscard]] uint32_t running_fps() const;
 
 private:
@@ -33,10 +31,9 @@ private:
 	core_services core_;
 	resource_services resource_;
 	scene_scheduler& scene_scheduler_;
-	float total_time_;
-	float frame_elapsed_;
 	uint32_t frame_count_;
 	uint32_t running_fps_;
+	float frame_elapsed_;
 };
 
 } // namespace aether
