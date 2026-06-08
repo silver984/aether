@@ -22,7 +22,7 @@ class node : public std::enable_shared_from_this<node> {
 	friend class scene;
 	friend class camera;
 
-    public:
+public:
 	node(context const& ctx);
 	virtual ~node();
 
@@ -95,14 +95,14 @@ class node : public std::enable_shared_from_this<node> {
 	[[nodiscard]] bool is_flip_y() const;
 	[[nodiscard]] std::vector<std::shared_ptr<node>> children() const;
 
-    protected:
+protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void draw(mat3 const& transform, rgba color);
 	[[nodiscard]] context const& ctx() const;
 	[[nodiscard]] scene* fetch_scene() const;
 
-    private:
+private:
 	bool init_node();
 	void update_all(float dt);
 	void draw_all();

@@ -3,14 +3,14 @@
 #include <scene.hh>
 
 class test_scene final : public aether::scene {
-    public:
+public:
 	test_scene(aether::context const& ctx);
 	~test_scene() override;
 
-    protected:
+protected:
 	bool init() override;
 	void update(float dt) override;
 
-    private:
+private:
 	float elapsed_;
 };

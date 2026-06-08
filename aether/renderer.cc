@@ -1,4 +1,5 @@
 #include <context.hh>
+#include <debug/log.hh>
 #include <fmt/format.h>
 #include <raylib.h>
 #include <raymath.h>
@@ -10,25 +11,7 @@
 
 namespace aether {
 
-// private
-renderer::renderer()
-        : window_resize_callback_(std::make_shared<std::function<void(window&)>>())
-        , background_rgba_(0, 0, 0, 255)
-        , transform_(mat3::identity()) {
-	(*window_resize_callback_) = [this](window& window) {
-		transform_ = calculate_transform(window.default_size());
-	};
-}
-
 renderer::~renderer() = default;
-
-void renderer::set_background_rgba(rgba color) {
-	background_rgba_ = color;
-}
-
-rgba renderer::background_rgba() const {
-	return background_rgba_;
-}
 
 void renderer::draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const {
 	if (texture.id < 1) {
@@ -46,7 +29,7 @@ void renderer::draw_texture(rltexture const& texture, rect<float> source_rect, m
 		source_rect.y -= source_rect.height;
 	}
 
-	size<int> const texture_bounds = {texture.width, texture.height};
+	size<float> const texture_bounds = size<float>((float)texture.width, (float)texture.height);
 
 	push_matrix(transform);
 	rlSetTexture(texture.id);
@@ -54,47 +37,43 @@ void renderer::draw_texture(rltexture const& texture, rect<float> source_rect, m
 	define_color_vertex(color);
 	rlNormal3f(0.f, 0.f, 1.f);
 
-	{ // top left
+	// top left
+	{
 		vec2<float> coord = source_rect.position();
-
 		if (flip_x) {
 			coord.x += source_rect.width;
 		}
-
 		define_texture_coord(coord / texture_bounds);
 		define_vertex(vec2<float>(0.f));
 	}
 
-	{ // bottom left
+	// bottom left
+	{
 		vec2<float> coord = source_rect.position();
 		coord.y += source_rect.height;
-
 		if (flip_x) {
 			coord.x += source_rect.width;
 		}
-
 		define_texture_coord(coord / texture_bounds);
 		define_vertex(vec2<float>(0.f, source_rect.height));
 	}
 
-	{ // bottom right
+	// bottom right
+	{
 		vec2<float> coord = source_rect.position() + source_rect.bounds();
-
 		if (flip_x) {
 			coord.x -= source_rect.width;
 		}
-
 		define_texture_coord(coord / texture_bounds);
 		define_vertex(vec2<float>(source_rect.width, source_rect.height));
 	}
 
-	{ // top right
+	// top right
+	{
 		vec2<float> coord = source_rect.position();
-
 		if (!flip_x) {
 			coord.x += source_rect.width;
 		}
-
 		define_texture_coord(coord / texture_bounds);
 		define_vertex(vec2<float>(source_rect.width, 0.f));
 	}
@@ -105,48 +84,41 @@ void renderer::draw_texture(rltexture const& texture, rect<float> source_rect, m
 }
 
 // private
-void renderer::setup(window& window) {
-	window.on_resize(window_resize_callback_);
+renderer::renderer()
+        : projection_(mat3::identity()) {}
+
+// private
+void renderer::setup() {
 	rlDisableBackfaceCulling();
 	rlDisableDepthTest();
 }
 
 // private
-void renderer::start_draw() {
-	BeginDrawing();
-	size<int> const lrender_bounds = render_bounds();
-	BeginScissorMode(0, 0, lrender_bounds.width, lrender_bounds.height);
-	ClearBackground(util::to_rlrgba(background_rgba_));
-	push_matrix(transform_);
+void renderer::update_viewport(size<int> target_window_size) {
+	render_size_ = size<int>(GetRenderWidth(), GetRenderHeight());
+
+	if (last_render_size_ == render_size_ && last_target_window_size_ == target_window_size) {
+		return;
+	}
+
+	projection_              = calculate_projection(render_size_, target_window_size);
+	last_render_size_        = render_size_;
+	last_target_window_size_ = target_window_size;
 }
 
-// #ifdef AETHER_DEBUG
-// // private
-// void renderer::end_draw(uint32_t running_fps) const {
-// 	rlPopMatrix();
-// 	DrawText(fmt::format("FPS: {}", running_fps).c_str(), 5, 5, 10, WHITE);
-// 	EndScissorMode();
-// 	EndDrawing();
-// }
-// #else
-// // private
-// void renderer::end_draw() const {
-// 	rlPopMatrix();
-// 	EndScissorMode();
-// 	EndDrawing();
-// }
-// #endif
+// private
+void renderer::start_draw() {
+	BeginDrawing();
+	BeginScissorMode(0, 0, render_size_.width, render_size_.height);
+	ClearBackground(BLACK);
+	push_matrix(projection_);
+}
 
 // private
-void renderer::end_draw() const {
+void renderer::end_draw() {
 	rlPopMatrix();
 	EndScissorMode();
 	EndDrawing();
-}
-
-// private
-size<int> renderer::render_bounds() const {
-	return size<int>(GetRenderWidth(), GetRenderHeight());
 }
 
 // private
@@ -173,13 +145,12 @@ void renderer::define_texture_coord(vec2<float> position) const {
 }
 
 // private
-mat3 renderer::calculate_transform(size<uint32_t> default_window_size) const {
-	size<int> const lrender_bounds   = render_bounds();
-	vec2<float> const scale_ratio    = vec2<float>(lrender_bounds.width / (float)default_window_size.width,
-	                                               lrender_bounds.height / (float)default_window_size.height);
+mat3 renderer::calculate_projection(size<int> render_size, size<int> target_window_size) const {
+	vec2<float> const scale_ratio =
+	        vec2<float>(render_size.width / (float)target_window_size.width, render_size.height / (float)target_window_size.height);
 	float const scale_factor         = std::min(scale_ratio.x, scale_ratio.y);
-	vec2<float> const scaled_size    = vec2<float>(default_window_size.width * scale_factor, default_window_size.height * scale_factor);
-	vec2<float> const offset         = vec2<float>(lrender_bounds.width - scaled_size.x, lrender_bounds.height - scaled_size.y);
+	vec2<float> const scaled_size    = vec2<float>(target_window_size.width * scale_factor, target_window_size.height * scale_factor);
+	vec2<float> const offset         = vec2<float>(render_size.width - scaled_size.x, render_size.height - scaled_size.y);
 	vec2<float> const snapped_offset = util::round(offset / 2.f);
 	mat3 result                      = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
 	result.m[0][2]                   = std::round(result.m[0][2]);

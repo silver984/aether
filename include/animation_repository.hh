@@ -24,10 +24,10 @@ class animation_repository final {
 
 	enum xml_format : int { unknown = -1, adobe_animate, texture_packer };
 
-    private:
+private:
 	animation_repository();
 
-    public:
+public:
 	~animation_repository();
 	animation_repository(animation_repository const&)            = delete;
 	animation_repository(animation_repository&&)                 = delete;
@@ -37,7 +37,7 @@ class animation_repository final {
 	std::shared_ptr<animation_map> fetch(std::string_view file);
 	void purge_unused();
 
-    private:
+private:
 	void clear_cache();
 	[[nodiscard]] std::shared_ptr<animation_map> try_fetch_from_cache(std::filesystem::path const& file) const;
 	[[nodiscard]] std::shared_ptr<animation_map> xml_parse(std::filesystem::path const& file);

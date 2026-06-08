@@ -9,10 +9,10 @@ class scene;
 class scene_scheduler final {
 	friend class game;
 
-    private:
+private:
 	scene_scheduler();
 
-    public:
+public:
 	~scene_scheduler();
 	scene_scheduler(scene_scheduler const&)            = delete;
 	scene_scheduler(scene_scheduler&&)                 = delete;
@@ -21,7 +21,7 @@ class scene_scheduler final {
 
 	void replace_scene(std::unique_ptr<scene> new_scene);
 
-    private:
+private:
 	void cleanup();
 	void update_scene(float dt);
 	void draw_scene();

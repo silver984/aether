@@ -12,18 +12,18 @@ class scene_scheduler;
 class context final {
 	friend class game;
 
-    private:
+private:
 	context(window& _window, renderer& _renderer, SoLoud::Soloud& soloud, texture_repository& textures,
 	        animation_repository& animations, audio_repository& audios, scene_scheduler& _scene_scheduler);
 
-    public:
+public:
 	~context();
 
 	[[nodiscard]] core_services const& core() const;
 	[[nodiscard]] resource_services const& resource() const;
 	[[nodiscard]] scene_scheduler& fetch_scene_scheduler() const;
 
-    private:
+private:
 	// void update_frame_context();
 
 	core_services core_;

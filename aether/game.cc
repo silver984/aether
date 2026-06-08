@@ -64,7 +64,7 @@ struct game::impl final {
 		(void)soloud_.init();
 #endif
 
-		renderer_.setup(window_);
+		renderer_.setup();
 
 		using enum sol::lib;
 		lua_.open_libraries(base, string, table, math, utf8);
@@ -83,7 +83,8 @@ struct game::impl final {
 			return;
 		}
 
-		auto previous_time = std::chrono::steady_clock::now();
+		auto previous_time   = std::chrono::steady_clock::now();
+		bool is_audio_paused = false;
 
 		while (!window_.should_close()) {
 			auto const current_time        = std::chrono::steady_clock::now();
@@ -92,9 +93,18 @@ struct game::impl final {
 			bool const is_window_minimized = window_.is_minimized();
 
 			if (!is_window_minimized) {
-				window_.update();
-				// ctx_.update_frame_context();
+				if (is_audio_paused) {
+					is_audio_paused = false;
+					soloud_.setPauseAll(is_audio_paused);
+				}
+
+				renderer_.update_viewport(window_.target_size());
 				scene_scheduler_.update_scene(delta_time);
+			} else {
+				if (!is_audio_paused) {
+					is_audio_paused = true;
+					soloud_.setPauseAll(is_audio_paused);
+				}
 			}
 
 			renderer_.start_draw();
@@ -102,12 +112,6 @@ struct game::impl final {
 			if (!is_window_minimized) {
 				scene_scheduler_.draw_scene();
 			}
-
-			// #ifdef AETHER_DEBUG
-			// 			renderer_.end_draw(ctx_.running_fps());
-			// #else
-			// 			renderer_.end_draw();
-			// #endif
 
 			renderer_.end_draw();
 		}

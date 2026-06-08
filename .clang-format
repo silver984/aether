@@ -4,7 +4,7 @@ Standard: c++20
 UseTab: ForIndentation
 IndentWidth: 8
 TabWidth: 8
-AccessModifierOffset: -4
+AccessModifierOffset: -8
 ContinuationIndentWidth: 8
 ConstructorInitializerIndentWidth: 8
 MaxEmptyLinesToKeep: 1

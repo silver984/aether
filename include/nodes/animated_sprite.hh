@@ -12,7 +12,7 @@ using rltexture = Texture;
 namespace aether {
 
 class animated_sprite : public node {
-    public:
+public:
 	struct descriptor final {
 		std::string_view image_file;
 		std::string_view data_file;
@@ -32,12 +32,12 @@ class animated_sprite : public node {
 	bool play_animation(std::string_view name);
 	bool play_animation(std::string_view name, animation_options options);
 
-    protected:
+protected:
 	bool init() override;
 	void update(float dt) override;
 	void draw(mat3 const& transform, rgba color) override;
 
-    private:
+private:
 	using node::set_bounds;
 	void progress_frame();
 	[[nodiscard]] size<int> calculate_bounds(std::vector<atlas_region> const& frames) const;

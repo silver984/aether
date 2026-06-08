@@ -12,10 +12,10 @@ class game;
 class audio_repository final {
 	friend class game;
 
-    private:
+private:
 	audio_repository();
 
-    public:
+public:
 	~audio_repository();
 	audio_repository(audio_repository const&)            = delete;
 	audio_repository(audio_repository&&)                 = delete;
@@ -25,7 +25,7 @@ class audio_repository final {
 	[[nodiscard]] std::shared_ptr<byte_buffer> fetch(std::string_view file);
 	void purge_unused();
 
-    private:
+private:
 	void clear_cache();
 	[[nodiscard]] std::shared_ptr<byte_buffer> try_fetch_from_cache(std::filesystem::path const& file) const;
 

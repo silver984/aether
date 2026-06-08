@@ -10,16 +10,16 @@ class node;
 class camera final {
 	friend class scene;
 
-    private:
+private:
 	camera(std::shared_ptr<node>& root_node);
 
-    public:
+public:
 	~camera();
 
 	void set_position(vec2<float> val);
 	[[nodiscard]] vec2<float> position() const;
 
-    private:
+private:
 	std::shared_ptr<node>& root_node_;
 	vec2<float> position_;
 	float zoom_;

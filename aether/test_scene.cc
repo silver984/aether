@@ -22,19 +22,17 @@ test_scene::~test_scene() = default;
 bool test_scene::init() {
 	auto const& lctx = ctx();
 
-	if (auto animation = node::create<animated_sprite>(
-	            lctx, animated_sprite::descriptor{
-	                          .image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
-		animation->play_animation("idle", {.loop = true});
-		animation->set_position(vec2<float>(0.f, 400.f));
-		animation->set_scroll_factor(vec2<float>(0.6f, 1.f));
-		animation->set_color(rgba(128, 128, 128, 255));
-		add(animation);
-	}
+	// if (auto animation = node::create<animated_sprite>(
+	//             lctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
+	// 	animation->play_animation("idle", {.loop = true});
+	// 	animation->set_position(vec2<float>(0.f, 400.f));
+	// 	animation->set_scroll_factor(vec2<float>(0.6f, 1.f));
+	// 	animation->set_color(rgba(128, 128, 128, 255));
+	// 	add(animation);
+	// }
 
 	if (auto animation = node::create<animated_sprite>(
-	            lctx, animated_sprite::descriptor{
-	                          .image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
+	            lctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
 		animation->play_animation("idle", {.loop = true});
 		animation->set_position(vec2<float>(0.f, 400.f));
 		add(animation);
@@ -45,7 +43,6 @@ bool test_scene::init() {
 		(void)sound->play();
 	}
 
-	lctx.core().fetch_renderer().set_background_rgba(rgba(128, 128, 128, 255));
 	activate();
 
 	return true;

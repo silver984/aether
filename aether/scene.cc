@@ -15,8 +15,8 @@ scene::scene(context const& ctx)
         , is_active_(false)
         , is_visit_scheduled_(false) {
 	assert(root_node_ != nullptr);
-	root_node_->scene_               = this;
-	size<uint32_t> const window_size = ctx.core().fetch_window().default_size();
+	root_node_->scene_          = this;
+	size<int> const window_size = ctx.core().fetch_window().target_size();
 	root_node_->set_bounds(static_cast<size<int>>(window_size));
 	root_node_->set_position(window_size / 2.f);
 }

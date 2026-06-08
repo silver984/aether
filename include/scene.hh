@@ -16,7 +16,7 @@ class sound;
 class scene {
 	friend class scene_scheduler;
 
-    public:
+public:
 	scene(context const& ctx);
 	virtual ~scene();
 
@@ -41,13 +41,13 @@ class scene {
 	[[nodiscard]] std::shared_ptr<node> root_node() const;
 	[[nodiscard]] camera& fetch_camera();
 
-    protected:
+protected:
 	virtual bool init();
 	virtual void update(float dt);
 	virtual void visit();
 	[[nodiscard]] context const& ctx() const;
 
-    private:
+private:
 	bool init_scene();
 	void update_all(float dt);
 	void draw_all();

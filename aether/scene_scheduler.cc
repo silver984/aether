@@ -40,9 +40,9 @@ void scene_scheduler::update_scene(float dt) {
 		current_scene_ = std::move(pending_scene_);
 #ifdef AETHER_DEBUG
 	#ifdef AETHER_VERBOSE_DEBUG
-		debuglog("scene replaced");
+		debuglog("Scene replaced");
 	#endif
-		infolog("scene replaced");
+		infolog("Scene replaced");
 #endif
 	}
 
