@@ -33,14 +33,13 @@ public:
 	bool play_animation(std::string_view name, animation_options options);
 
 protected:
-	bool init() override;
-	void update(float dt) override;
-	void draw(mat3 const& transform, rgba color) override;
+	bool init_() override;
+	void update_(float dt) override;
+	void draw_(mat3 const& transform, rgba color) override;
 
 private:
-	using node::set_bounds;
-	void progress_frame();
-	[[nodiscard]] size<int> calculate_bounds(std::vector<atlas_region> const& frames) const;
+	void progress_frame_();
+	[[nodiscard]] size<int> calculate_bounds_(std::vector<atlas_region> const& frames) const;
 
 	std::shared_ptr<animation_map> data_;
 	std::shared_ptr<rltexture> texture_;

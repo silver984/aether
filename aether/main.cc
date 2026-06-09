@@ -7,12 +7,12 @@
 using namespace aether;
 
 int main() {
-	game aether_engine;
+	game ae;
 
-	if (aether_engine.init({.window_title = "Aether Engine " AETHER_VERSION, .resolution = {1280, 720}})) {
-		context const& ctx = aether_engine.fetch_context();
+	if (ae.init({.window_title = "Aether Engine " AETHER_VERSION, .resolution = {1280, 720}})) {
+		context const& ctx = ae.ctx();
 		ctx.fetch_scene_scheduler().replace_scene(scene::create<test_scene>(ctx));
-		aether_engine.run();
+		ae.run();
 	}
 
 	return 0;

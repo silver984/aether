@@ -16,11 +16,11 @@ namespace aether {
 
 class context;
 class scene;
-class camera;
+// class camera;
 
 class node : public std::enable_shared_from_this<node> {
 	friend class scene;
-	friend class camera;
+	// friend class camera;
 
 public:
 	node(context const& ctx);
@@ -30,11 +30,9 @@ public:
 	        requires std::derived_from<derived, node>
 	[[nodiscard]] static std::shared_ptr<derived> create(context const& ctx, va&&... args) {
 		std::shared_ptr<derived> ptr = std::make_shared<derived>(ctx, std::forward<va>(args)...);
-
-		if (!ptr->init_node()) {
+		if (!ptr->init_node_()) {
 			return nullptr;
 		}
-
 		return ptr;
 	}
 
@@ -96,24 +94,24 @@ public:
 	[[nodiscard]] std::vector<std::shared_ptr<node>> children() const;
 
 protected:
-	virtual bool init();
-	virtual void update(float dt);
-	virtual void draw(mat3 const& transform, rgba color);
-	[[nodiscard]] context const& ctx() const;
-	[[nodiscard]] scene* fetch_scene() const;
+	virtual bool init_();
+	virtual void update_(float dt);
+	virtual void draw_(mat3 const& transform, rgba color);
+	[[nodiscard]] context const& ctx_() const;
+	[[nodiscard]] scene* scene_() const;
 
 private:
-	bool init_node();
-	void update_all(float dt);
-	void draw_all();
-	[[nodiscard]] bool has_ancestor(std::shared_ptr<node> node) const;
-	void mark_transform_dirty();
-	void mark_rgba_dirty();
-	[[nodiscard]] mat3 calculate_transform(std::weak_ptr<node> parent) const;
-	[[nodiscard]] rgba calculate_combined_rgba(std::weak_ptr<node> parent) const;
+	bool init_node_();
+	void update_all_(float dt);
+	void draw_all_();
+	[[nodiscard]] bool has_ancestor_(std::shared_ptr<node> node) const;
+	void mark_transform_dirty_();
+	void mark_rgba_dirty_();
+	[[nodiscard]] mat3 calculate_transform_(std::weak_ptr<node> parent) const;
+	[[nodiscard]] rgba calculate_combined_rgba_(std::weak_ptr<node> parent) const;
 
-	context const& ctx_;
-	scene* scene_;
+	context const& mctx_;
+	scene* mscene_;
 	std::vector<std::shared_ptr<node>> children_;
 	std::weak_ptr<node> parent_;
 	std::string name_;

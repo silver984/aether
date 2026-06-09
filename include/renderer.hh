@@ -28,15 +28,15 @@ public:
 
 private:
 	renderer();
-	void setup();
-	void update_viewport(size<int> target_window_size);
-	void start_draw();
-	void end_draw();
-	void push_matrix(mat3 const& matrix) const;
-	void define_color_vertex(rgba color) const;
-	void define_vertex(vec2<float> position) const;
-	void define_texture_coord(vec2<float> position) const;
-	[[nodiscard]] mat3 calculate_projection(size<int> render_size, size<int> target_window_size) const;
+	void setup2d_();
+	void update_viewport_(size<int> target_window_size);
+	void start_draw_();
+	void end_draw_();
+	void push_matrix_(mat3 const& matrix) const;
+	void define_color_vertex_(rgba color) const;
+	void define_vertex_(vec2<float> position) const;
+	void define_texture_coord_(vec2<float> position) const;
+	[[nodiscard]] mat3 calculate_projection_(size<int> render_size, size<int> target_window_size) const;
 
 	mat3 projection_;
 	size<int> render_size_;

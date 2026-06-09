@@ -19,8 +19,8 @@ test_scene::test_scene(context const& ctx)
 test_scene::~test_scene() = default;
 
 // protected
-bool test_scene::init() {
-	auto const& lctx = ctx();
+bool test_scene::init_() {
+	auto const& lctx = ctx_();
 
 	// if (auto animation = node::create<animated_sprite>(
 	//             lctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12})) {
@@ -49,8 +49,8 @@ bool test_scene::init() {
 }
 
 // protected
-void test_scene::update(float dt) {
+void test_scene::update_(float dt) {
 	elapsed_ += dt;
-	auto& lcamera = fetch_camera();
+	auto& lcamera = get_camera();
 	lcamera.set_position(vec2<float>(lcamera.position().x + (100.f * dt), 0.f));
 }

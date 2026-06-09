@@ -15,7 +15,7 @@ void camera::set_position(vec2<float> val) {
 	}
 
 	position_ = val;
-	root_node_->mark_transform_dirty();
+	// root_node_->mark_transform_dirty_();
 }
 
 vec2<float> camera::position() const {

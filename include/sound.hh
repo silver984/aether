@@ -1,31 +1,48 @@
 #pragma once
+#include <byte_buffer.hh>
 #include <cstdint>
 #include <memory>
+#include <soloud_wav.h>
 #include <string_view>
+
+namespace SoLoud {
+
+class Soloud;
+
+}
 
 namespace aether {
 
 class context;
+class scene;
 
 class sound final {
+	friend class scene;
+
 public:
 	sound(context const& ctx);
 	~sound();
-
 	[[nodiscard]] static std::shared_ptr<sound> create(context const& ctx, std::string_view file);
-	bool play() const;
-	void set_volume(float val) const;
+	bool play();
+	void set_volume(float val);
 	[[nodiscard]] float volume() const;
-	void set_pan(float val) const;
+	void set_pan(float val);
 	[[nodiscard]] float pan() const;
-	void pause() const;
-	bool is_paused() const;
-	void resume() const;
-	[[nodiscard]] uint32_t voice_count() const;
+	void pause();
+	[[nodiscard]] bool is_paused();
+	void resume();
 
 private:
-	struct impl;
-	std::unique_ptr<impl> impl_;
+	bool init_(audio_repository& audios, std::string_view file);
+	[[nodiscard]] bool is_wave_handle_valid_();
+	[[nodiscard]] int voice_count_();
+
+	SoLoud::Soloud& soloud_;
+	SoLoud::Wav wave_;
+	SoLoud::handle wave_handle_;
+	std::shared_ptr<byte_buffer> byte_buffer_;
+	float volume_;
+	float pan_;
 };
 
 } // namespace aether

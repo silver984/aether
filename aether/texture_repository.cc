@@ -24,7 +24,6 @@ struct texture_deleter {
 
 namespace aether {
 
-// private
 texture_repository::texture_repository()  = default;
 texture_repository::~texture_repository() = default;
 
@@ -38,7 +37,7 @@ std::shared_ptr<rltexture> texture_repository::fetch(std::string_view file) {
 		return nullptr;
 	}
 
-	if (std::shared_ptr<rltexture> from_cache = try_fetch_from_cache(lfile)) {
+	if (std::shared_ptr<rltexture> from_cache = try_fetch_from_cache_(lfile)) {
 		return from_cache;
 	}
 
@@ -59,7 +58,7 @@ std::shared_ptr<rltexture> texture_repository::fetch(std::string_view file) {
 
 	rltexture temporary_texture = LoadTexture(lfile.string().c_str());
 
-	if (!is_texture_valid(temporary_texture)) {
+	if (!is_texture_valid_(temporary_texture)) {
 #ifdef AETHER_DEBUG
 		errorlog("Invalid texture properties");
 #endif
@@ -70,8 +69,8 @@ std::shared_ptr<rltexture> texture_repository::fetch(std::string_view file) {
 	        std::shared_ptr<rltexture>(new rltexture(std::move(temporary_texture)), texture_deleter{});
 
 #ifdef AETHER_VERBOSE_DEBUG
-	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width,
-	         shared_texture->height, shared_texture->id, fmt::ptr(shared_texture.get()));
+	tracelog("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width, shared_texture->height,
+	         shared_texture->id, fmt::ptr(shared_texture.get()));
 #endif
 
 	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_texture));
@@ -91,13 +90,11 @@ void texture_repository::purge_unused() {
 	});
 }
 
-// private
-void texture_repository::clear_cache() {
+void texture_repository::clear_cache_() {
 	cache_.clear();
 }
 
-// private
-std::shared_ptr<rltexture> texture_repository::try_fetch_from_cache(std::filesystem::path const& file) const {
+std::shared_ptr<rltexture> texture_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}
@@ -105,8 +102,7 @@ std::shared_ptr<rltexture> texture_repository::try_fetch_from_cache(std::filesys
 	return nullptr;
 }
 
-// private
-bool texture_repository::is_texture_valid(rltexture const& texture) const {
+bool texture_repository::is_texture_valid_(rltexture const& texture) const {
 	return texture.id > 0 && texture.width > 0 && texture.height > 0;
 }
 

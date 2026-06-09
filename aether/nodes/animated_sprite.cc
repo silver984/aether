@@ -12,8 +12,8 @@
 
 namespace aether {
 
-animated_sprite::animated_sprite(context const& ctx, descriptor const& desc)
-        : node(ctx)
+animated_sprite::animated_sprite(context const& ctx_, descriptor const& desc)
+        : node(ctx_)
         , image_file_arg_(std::string(desc.image_file))
         , data_file_arg_(std::string(desc.data_file))
         , current_subtexture_index_(0)
@@ -74,8 +74,8 @@ bool animated_sprite::play_animation(std::string_view name, animation_options op
 }
 
 // protected
-bool animated_sprite::init() {
-	auto const& resource = ctx().resource();
+bool animated_sprite::init_() {
+	auto const& resource = ctx_().resource();
 	texture_             = resource.textures().fetch(image_file_arg_);
 	data_                = resource.animations().fetch(data_file_arg_);
 
@@ -110,7 +110,7 @@ bool animated_sprite::init() {
 	animation_was_reset_           = true;
 
 	toggle_antialiasing(has_antialiasing_arg_);
-	update(0.f);
+	update_(0.f);
 	activate();
 	schedule_draw();
 
@@ -118,9 +118,9 @@ bool animated_sprite::init() {
 }
 
 // protected
-void animated_sprite::update(float dt) {
+void animated_sprite::update_(float dt) {
 	if (animation_was_reset_) {
-		progress_frame();
+		progress_frame_();
 		animation_was_reset_ = false;
 	}
 
@@ -129,13 +129,13 @@ void animated_sprite::update(float dt) {
 
 	// advance a frame
 	while (subtexture_elapsed_ >= target_subtexture_time) {
-		progress_frame();
+		progress_frame_();
 		subtexture_elapsed_ -= target_subtexture_time;
 	}
 }
 
 // protected
-void animated_sprite::draw(mat3 const& transform, rgba color) {
+void animated_sprite::draw_(mat3 const& transform, rgba color) {
 	if (is_current_subtexture_rotated_) {
 		mat3 const fix        = mat3::translation(vec2<float>(0.f, bounds().height - current_subtexture_offsets_.y));
 		mat3 const r          = mat3::rotation(util::degrees_to_radians(-90.f));
@@ -146,13 +146,13 @@ void animated_sprite::draw(mat3 const& transform, rgba color) {
 		subtexture_transform_ = transform * t;
 	}
 
-	ctx().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
+	ctx_().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
 }
 
 // private
-void animated_sprite::progress_frame() {
+void animated_sprite::progress_frame_() {
 	auto const& frames = (*data_)[current_animation_name_].frames;
-	set_bounds(calculate_bounds(frames));
+	set_bounds(calculate_bounds_(frames));
 
 	if (is_current_animation_looping_) {
 		current_subtexture_index_ = (current_subtexture_index_ + 1) % frames.size();
@@ -167,7 +167,7 @@ void animated_sprite::progress_frame() {
 }
 
 // private
-size<int> animated_sprite::calculate_bounds(std::vector<atlas_region> const& frames) const {
+size<int> animated_sprite::calculate_bounds_(std::vector<atlas_region> const& frames) const {
 	size<int> ret;
 
 	for (auto const& frame : frames) {

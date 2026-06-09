@@ -8,7 +8,6 @@
 
 namespace aether {
 
-// private
 audio_repository::audio_repository()  = default;
 audio_repository::~audio_repository() = default;
 
@@ -22,7 +21,7 @@ std::shared_ptr<byte_buffer> audio_repository::fetch(std::string_view file) {
 		return nullptr;
 	}
 
-	if (std::shared_ptr<byte_buffer> from_cache = try_fetch_from_cache(lfile)) {
+	if (auto from_cache = try_fetch_from_cache_(lfile)) {
 		return from_cache;
 	}
 
@@ -45,8 +44,8 @@ std::shared_ptr<byte_buffer> audio_repository::fetch(std::string_view file) {
 		return nullptr;
 	}
 
-	std::shared_ptr<byte_buffer> shared_buffer = std::make_shared<byte_buffer>(std::move(temporary_buffer));
-	auto const [iterator, _]                   = cache_.emplace(lfile, std::move(shared_buffer));
+	auto shared_buffer       = std::make_shared<byte_buffer>(std::move(temporary_buffer));
+	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_buffer));
 	return iterator->second;
 }
 
@@ -56,13 +55,11 @@ void audio_repository::purge_unused() {
 	});
 }
 
-// private
-void audio_repository::clear_cache() {
+void audio_repository::clear_cache_() {
 	cache_.clear();
 }
 
-// private
-std::shared_ptr<byte_buffer> audio_repository::try_fetch_from_cache(std::filesystem::path const& file) const {
+std::shared_ptr<byte_buffer> audio_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}

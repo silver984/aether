@@ -8,7 +8,6 @@
 
 namespace aether {
 
-// private
 scene_scheduler::scene_scheduler()  = default;
 scene_scheduler::~scene_scheduler() = default;
 
@@ -28,14 +27,12 @@ void scene_scheduler::replace_scene(std::unique_ptr<scene> new_scene) {
 #endif
 }
 
-// private
-void scene_scheduler::cleanup() {
+void scene_scheduler::cleanup_() {
 	current_scene_.reset();
 	pending_scene_.reset();
 }
 
-// private
-void scene_scheduler::update_scene(float dt) {
+void scene_scheduler::update_scene_(float dt) {
 	if (pending_scene_) {
 		current_scene_ = std::move(pending_scene_);
 #ifdef AETHER_DEBUG
@@ -46,16 +43,14 @@ void scene_scheduler::update_scene(float dt) {
 #endif
 	}
 
-	current_scene_->update_all(dt);
+	current_scene_->update_all_(dt);
 }
 
-// private
-void scene_scheduler::draw_scene() {
-	current_scene_->draw_all();
+void scene_scheduler::draw_scene_() {
+	current_scene_->draw_all_();
 }
 
-// private
-bool scene_scheduler::has_pending_scene() const {
+bool scene_scheduler::has_pending_scene_() const {
 	return pending_scene_ != nullptr;
 }
 

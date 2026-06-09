@@ -1,9 +1,9 @@
 #include <debug/win32.hh>
 #include <windows.h>
 
-namespace aether::win32 {
+namespace aether::win32_ {
 
-bool enable_console_colors() {
+bool enable_console_colors_() {
 	HANDLE h_out = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (h_out == INVALID_HANDLE_VALUE) {
 		return false;

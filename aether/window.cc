@@ -12,7 +12,6 @@
 
 namespace aether {
 
-// private
 window::window()  = default;
 window::~window() = default;
 
@@ -24,13 +23,12 @@ size<int> window::target_size() const {
 	return target_size_;
 }
 
-// private
-bool window::init(std::string_view title, size<int> resolution, int fps) {
+bool window::init_(std::string_view title, size<int> resolution, int fps) {
 #ifdef AETHER_DEBUG
-	log::impl_::create_log_file();
+	log::impl_::create_log_file_();
 
 	#ifdef WIN32
-	if (!win32::enable_console_colors()) {
+	if (!win32_::enable_console_colors_()) {
 		warninglog("Couldn't enable console colors");
 	}
 	#endif
@@ -59,18 +57,18 @@ bool window::init(std::string_view title, size<int> resolution, int fps) {
 	return true;
 }
 
-// private
-void window::shutdown() {
+void window::shutdown_() {
 	CloseWindow();
+#ifdef AETHER_DEBUG
+	log::impl_::close_log_file_();
+#endif
 }
 
-// private
-bool window::should_close() const {
+bool window::should_close_() const {
 	return WindowShouldClose();
 }
 
-// private
-bool window::is_minimized() const {
+bool window::is_minimized_() const {
 	return IsWindowMinimized();
 }
 

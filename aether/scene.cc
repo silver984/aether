@@ -9,13 +9,13 @@
 namespace aether {
 
 scene::scene(context const& ctx)
-        : ctx_(ctx)
+        : mctx_(ctx)
         , camera_(root_node_)
         , root_node_(node::create<node>(ctx))
         , is_active_(false)
         , is_visit_scheduled_(false) {
 	assert(root_node_ != nullptr);
-	root_node_->scene_          = this;
+	root_node_->mscene_         = this;
 	size<int> const window_size = ctx.core().fetch_window().target_size();
 	root_node_->set_bounds(static_cast<size<int>>(window_size));
 	root_node_->set_position(window_size / 2.f);
@@ -56,51 +56,51 @@ std::shared_ptr<node> scene::root_node() const {
 	return root_node_;
 }
 
-camera& scene::fetch_camera() {
+camera& scene::get_camera() {
 	return camera_;
 }
 
 // protected
-bool scene::init() {
+bool scene::init_() {
 	return true;
 }
 
 // protected
-void scene::update(float dt) {}
+void scene::update_(float dt) {}
 
 // protected
-void scene::visit() {}
+void scene::visit_() {}
 
 // protected
-context const& scene::ctx() const {
-	return ctx_;
+context const& scene::ctx_() const {
+	return mctx_;
 }
 
 // private
-bool scene::init_scene() {
-	return init();
+bool scene::init_scene_() {
+	return init_();
 }
 
 // private
-void scene::update_all(float dt) {
+void scene::update_all_(float dt) {
 	// auto release sounds
 	std::erase_if(sounds_, [](auto const& sound) {
-		return sound.use_count() <= 1 && sound->voice_count() == 0;
+		return sound.use_count() <= 1 && sound->voice_count_() == 0;
 	});
 
-	root_node_->update_all(dt);
+	root_node_->update_all_(dt);
 
 	if (is_active_) {
-		update(dt);
+		update_(dt);
 	}
 }
 
 // private
-void scene::draw_all() {
-	root_node_->draw_all();
+void scene::draw_all_() {
+	root_node_->draw_all_();
 
 	if (is_visit_scheduled_) {
-		visit();
+		visit_();
 	}
 }
 

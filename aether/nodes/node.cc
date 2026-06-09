@@ -6,9 +6,9 @@
 
 namespace aether {
 
-node::node(context const& ctx)
-        : ctx_(ctx)
-        , scene_(nullptr)
+node::node(context const& ctx_)
+        : mctx_(ctx_)
+        , mscene_(nullptr)
         , color_(255)
         , combined_color_(color_)
         , transform_(mat3::identity())
@@ -39,7 +39,7 @@ bool node::add_child(std::shared_ptr<node> node) {
 		return false;
 	}
 
-	if (node->has_ancestor(self)) {
+	if (node->has_ancestor_(self)) {
 		// prevent hierarchy cycle
 		return false;
 	}
@@ -55,10 +55,10 @@ bool node::add_child(std::shared_ptr<node> node) {
 	}
 
 	node->parent_ = weak_from_this();
-	node->scene_  = scene_;
+	node->mscene_ = mscene_;
 	children_.emplace_back(node);
-	node->mark_transform_dirty();
-	node->mark_rgba_dirty();
+	node->mark_transform_dirty_();
+	node->mark_rgba_dirty_();
 
 	return true;
 }
@@ -80,7 +80,7 @@ bool node::remove_child(std::shared_ptr<node> node) {
 	}
 
 	node->parent_.reset();
-	node->scene_ = nullptr;
+	node->mscene_ = nullptr;
 	children_.erase(iterator);
 
 	return true;
@@ -173,7 +173,7 @@ void node::set_bounds(size<int> val) {
 	}
 
 	bounds_ = valui32;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 size<uint32_t> node::bounds() const {
@@ -194,7 +194,7 @@ void node::set_position(vec2<float> val) {
 	}
 
 	position_ = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 void node::set_position_x(float val) {
@@ -203,7 +203,7 @@ void node::set_position_x(float val) {
 	}
 
 	position_.x = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 void node::set_position_y(float val) {
@@ -212,7 +212,7 @@ void node::set_position_y(float val) {
 	}
 
 	position_.y = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 vec2<float> node::position() const {
@@ -225,7 +225,7 @@ void node::set_anchor(vec2<float> val) {
 	}
 
 	anchor_ = util::clamp(val, vec2<float>(0.f), vec2<float>(1.f));
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 vec2<float> node::anchor() const {
@@ -238,7 +238,7 @@ void node::set_scale(vec2<float> val) {
 	}
 
 	scale_ = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 void node::set_scale(float val) {
@@ -247,7 +247,7 @@ void node::set_scale(float val) {
 	}
 
 	scale_ = vec2<float>(val);
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 void node::set_scale_x(float val) {
@@ -256,7 +256,7 @@ void node::set_scale_x(float val) {
 	}
 
 	scale_.x = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 void node::set_scale_y(float val) {
@@ -265,7 +265,7 @@ void node::set_scale_y(float val) {
 	}
 
 	scale_.y = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 vec2<float> node::scale() const {
@@ -278,7 +278,7 @@ void node::set_skew(vec2<float> val) {
 	}
 
 	skew_ = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 vec2<float> node::skew() const {
@@ -291,7 +291,7 @@ void node::set_scroll_factor(vec2<float> val) {
 	}
 
 	scroll_factor_ = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 vec2<float> node::scroll_factor() const {
@@ -304,7 +304,7 @@ void node::set_rotation(float val) {
 	}
 
 	rotation_ = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 float node::rotation() const {
@@ -317,7 +317,7 @@ void node::set_color(rgba val) {
 	}
 
 	color_ = val;
-	mark_rgba_dirty();
+	mark_rgba_dirty_();
 }
 
 rgba node::color() const {
@@ -333,7 +333,7 @@ void node::set_alpha(float val) {
 	}
 
 	color_.a = valui8;
-	mark_rgba_dirty();
+	mark_rgba_dirty_();
 }
 
 float node::alpha() const {
@@ -363,7 +363,7 @@ void node::toggle_flip(bool val) {
 
 	is_flip_x_ = val;
 	is_flip_y_ = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 void node::toggle_flip_x(bool val) {
@@ -372,7 +372,7 @@ void node::toggle_flip_x(bool val) {
 	}
 
 	is_flip_x_ = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 bool node::is_flip_x() const {
@@ -385,7 +385,7 @@ void node::toggle_flip_y(bool val) {
 	}
 
 	is_flip_y_ = val;
-	mark_transform_dirty();
+	mark_transform_dirty_();
 }
 
 bool node::is_flip_y() const {
@@ -397,37 +397,37 @@ std::vector<std::shared_ptr<node>> node::children() const {
 }
 
 // protected
-bool node::init() {
+bool node::init_() {
 	return true;
 }
 
 // protected
-void node::update(float dt) {}
+void node::update_(float dt) {}
 
 // protected
-void node::draw(mat3 const& transform, rgba color) {}
+void node::draw_(mat3 const& transform, rgba color) {}
 
 // protected
-context const& node::ctx() const {
-	return ctx_;
+context const& node::ctx_() const {
+	return mctx_;
 }
 
 // protected
-scene* node::fetch_scene() const {
-	return scene_;
-}
-
-// private
-bool node::init_node() {
-	return init();
+scene* node::scene_() const {
+	return mscene_;
 }
 
 // private
-void node::update_all(float dt) {
+bool node::init_node_() {
+	return init_();
+}
+
+// private
+void node::update_all_(float dt) {
 	float const world_dt = dt * time_scale_;
 
 	if (is_active_) {
-		update(world_dt);
+		update_(world_dt);
 	}
 
 	for (auto const& node : children_) {
@@ -435,18 +435,18 @@ void node::update_all(float dt) {
 			continue;
 		}
 
-		node->update_all(world_dt);
+		node->update_all_(world_dt);
 	}
 }
 
 // private
-void node::draw_all() {
+void node::draw_all_() {
 	if (!is_visible_) {
 		return;
 	}
 
 	if (is_rgba_dirty_) {
-		combined_color_ = calculate_combined_rgba(parent_);
+		combined_color_ = calculate_combined_rgba_(parent_);
 		is_rgba_dirty_  = false;
 	}
 
@@ -455,12 +455,12 @@ void node::draw_all() {
 	}
 
 	if (is_transform_dirty_) {
-		transform_          = calculate_transform(parent_);
+		transform_          = calculate_transform_(parent_);
 		is_transform_dirty_ = false;
 	}
 
 	if (is_draw_scheduled_) {
-		draw(transform_, combined_color_);
+		draw_(transform_, combined_color_);
 	}
 
 	for (auto const& node : children_) {
@@ -468,12 +468,12 @@ void node::draw_all() {
 			continue;
 		}
 
-		node->draw_all();
+		node->draw_all_();
 	}
 }
 
 // private
-bool node::has_ancestor(std::shared_ptr<node> node) const {
+bool node::has_ancestor_(std::shared_ptr<node> node) const {
 	auto p = parent().lock();
 
 	while (p) {
@@ -488,7 +488,7 @@ bool node::has_ancestor(std::shared_ptr<node> node) const {
 }
 
 // private
-void node::mark_transform_dirty() {
+void node::mark_transform_dirty_() {
 	if (is_transform_dirty_) {
 		// already dirty
 		return;
@@ -497,12 +497,12 @@ void node::mark_transform_dirty() {
 	is_transform_dirty_ = true;
 
 	for (auto& child : children_) {
-		child->mark_transform_dirty();
+		child->mark_transform_dirty_();
 	}
 }
 
 // private
-void node::mark_rgba_dirty() {
+void node::mark_rgba_dirty_() {
 	if (is_rgba_dirty_) {
 		// already dirty
 		return;
@@ -511,12 +511,12 @@ void node::mark_rgba_dirty() {
 	is_rgba_dirty_ = true;
 
 	for (auto& child : children_) {
-		child->mark_rgba_dirty();
+		child->mark_rgba_dirty_();
 	}
 }
 
 // private
-mat3 node::calculate_transform(std::weak_ptr<node> parent) const {
+mat3 node::calculate_transform_(std::weak_ptr<node> parent) const {
 	// todo: use scene camera
 
 	vec2<float> const anchor_position = vec2<float>(anchor_.x * bounds_.width, anchor_.y * bounds_.height);
@@ -537,7 +537,7 @@ mat3 node::calculate_transform(std::weak_ptr<node> parent) const {
 }
 
 // private
-rgba node::calculate_combined_rgba(std::weak_ptr<node> parent) const {
+rgba node::calculate_combined_rgba_(std::weak_ptr<node> parent) const {
 	if (auto p = parent.lock()) {
 		return p->color() * color_;
 	}

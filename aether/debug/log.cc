@@ -61,33 +61,33 @@ std::string file_time_str() {
 	return fmt::format("{:%H.%M.%S}", seconds);
 }
 
-std::filesystem::path log_file_path;
+std::ofstream log_file;
 
 } // namespace
 
 namespace aether::log::impl_ {
 
-void print(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
+void print_(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
 	std::string const time_and_loc_str = fmt::format("{:<12} {} ", time_str(), function_name(loc));
 	std::string const level_str        = fmt::format("[{}] ", level);
 
-	if (!log_file_path.empty()) {
-		std::ofstream file(log_file_path, std::ios::app);
-		if (file.is_open()) {
-			file << fmt::format("{}{}{}\n", time_and_loc_str, level_str, msg);
-		}
+	if (log_file.is_open()) {
+		log_file << fmt::format("{}{}{}\n", time_and_loc_str, level_str, msg);
 	}
 
 	fmt::print(fmt::fg(fmt::color::gray), fmt::runtime(time_and_loc_str));
 	fmt::print(fmt::fg(level_color), fmt::runtime(level_str));
-	fmt::print("{}\n", msg);
+	fmt::println(fmt::runtime(msg));
 }
 
-void create_log_file() {
+void create_log_file_() {
 	std::filesystem::create_directory("logs");
-	log_file_path = std::filesystem::absolute(fmt::format("logs/aether-{}-{}.log", file_date_str(), file_time_str()));
-	std::ofstream file(log_file_path);
-	file.close();
+	std::filesystem::path fp = std::filesystem::absolute(fmt::format("logs/aether-{}-{}.log", file_date_str(), file_time_str()));
+	log_file.open(fp);
+}
+
+void close_log_file_() {
+	log_file.close();
 }
 
 } // namespace aether::log::impl_

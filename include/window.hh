@@ -14,24 +14,21 @@ class game;
 class window final {
 	friend class game;
 
-private:
-	window();
-
 public:
 	~window();
 	window(window const&)            = delete;
 	window(window&&)                 = delete;
 	window& operator=(window const&) = delete;
 	window& operator=(window&&)      = delete;
-
 	[[nodiscard]] std::string_view title() const;
 	[[nodiscard]] size<int> target_size() const;
 
 private:
-	bool init(std::string_view title, size<int> _size, int fps);
-	void shutdown();
-	[[nodiscard]] bool should_close() const;
-	[[nodiscard]] bool is_minimized() const;
+	window();
+	bool init_(std::string_view title, size<int> _size, int fps);
+	void shutdown_();
+	[[nodiscard]] bool should_close_() const;
+	[[nodiscard]] bool is_minimized_() const;
 
 	std::string title_;
 	size<int> target_size_;

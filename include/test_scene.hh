@@ -8,8 +8,8 @@ public:
 	~test_scene() override;
 
 protected:
-	bool init() override;
-	void update(float dt) override;
+	bool init_() override;
+	void update_(float dt) override;
 
 private:
 	float elapsed_;

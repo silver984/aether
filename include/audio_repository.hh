@@ -12,9 +12,6 @@ class game;
 class audio_repository final {
 	friend class game;
 
-private:
-	audio_repository();
-
 public:
 	~audio_repository();
 	audio_repository(audio_repository const&)            = delete;
@@ -26,8 +23,9 @@ public:
 	void purge_unused();
 
 private:
-	void clear_cache();
-	[[nodiscard]] std::shared_ptr<byte_buffer> try_fetch_from_cache(std::filesystem::path const& file) const;
+	audio_repository();
+	void clear_cache_();
+	[[nodiscard]] std::shared_ptr<byte_buffer> try_fetch_from_cache_(std::filesystem::path const& file) const;
 
 	std::unordered_map<std::filesystem::path, std::shared_ptr<byte_buffer>> cache_;
 };

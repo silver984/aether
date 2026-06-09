@@ -11,7 +11,6 @@
 
 namespace aether {
 
-// private
 animation_repository::animation_repository()  = default;
 animation_repository::~animation_repository() = default;
 
@@ -25,11 +24,11 @@ std::shared_ptr<animation_map> animation_repository::fetch(std::string_view file
 		return nullptr;
 	}
 
-	if (std::shared_ptr<animation_map> from_cache = try_fetch_from_cache(lfile)) {
+	if (auto from_cache = try_fetch_from_cache_(lfile)) {
 		return from_cache;
 	}
 
-	std::string const file_extension = util::file_extension(lfile);
+	auto const file_extension = util::file_extension(lfile);
 
 	// todo: json, plist, and txt
 	if (!util::string_matches_any(file_extension, {".xml"})) {
@@ -49,7 +48,7 @@ std::shared_ptr<animation_map> animation_repository::fetch(std::string_view file
 	std::shared_ptr<animation_map> shared_map;
 
 	if (file_extension == ".xml") {
-		shared_map = xml_parse(lfile);
+		shared_map = xml_parse_(lfile);
 	}
 
 	if (!shared_map) {
@@ -76,13 +75,11 @@ void animation_repository::purge_unused() {
 	});
 }
 
-// private
-void animation_repository::clear_cache() {
+void animation_repository::clear_cache_() {
 	cache_.clear();
 }
 
-// private
-std::shared_ptr<animation_map> animation_repository::try_fetch_from_cache(std::filesystem::path const& file) const {
+std::shared_ptr<animation_map> animation_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}
@@ -90,8 +87,7 @@ std::shared_ptr<animation_map> animation_repository::try_fetch_from_cache(std::f
 	return nullptr;
 }
 
-// private
-std::shared_ptr<animation_map> animation_repository::xml_parse(std::filesystem::path const& file) {
+std::shared_ptr<animation_map> animation_repository::xml_parse_(std::filesystem::path const& file) {
 	tinyxml2::XMLDocument document;
 
 	using enum tinyxml2::XMLError;
@@ -102,19 +98,19 @@ std::shared_ptr<animation_map> animation_repository::xml_parse(std::filesystem::
 		return nullptr;
 	}
 
-	switch (assess_xml_format(document)) {
+	switch (assess_xml_format_(document)) {
 		using enum xml_format;
 	case adobe_animate: {
 #ifdef AETHER_VERBOSE_DEBUG
 		tracelog("Detected Adobe Animate's XML format");
 #endif
-		return xml_adobe_animate_parse(document);
+		return xml_adobe_animate_parse_(document);
 	}
 	case texture_packer: {
 #ifdef AETHER_VERBOSE_DEBUG
 		tracelog("Detected TexturePacker's generic XML format");
 #endif
-		return xml_texture_packer_parse(document);
+		return xml_texture_packer_parse_(document);
 	}
 	case unknown:
 	default: {
@@ -131,10 +127,9 @@ std::shared_ptr<animation_map> animation_repository::xml_parse(std::filesystem::
 	return nullptr;
 }
 
-// private
 std::shared_ptr<animation_map>
-animation_repository::xml_parse_delegate(tinyxml2::XMLDocument const& document, std::string_view element_name,
-                                         std::function<void(tinyxml2::XMLElement const&, animation_map&)>&& callback) {
+animation_repository::xml_parse_delegate_(tinyxml2::XMLDocument const& document, std::string_view element_name,
+                                          std::function<void(tinyxml2::XMLElement const&, animation_map&)>&& callback) {
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
@@ -183,23 +178,22 @@ animation_repository::xml_parse_delegate(tinyxml2::XMLDocument const& document, 
 	return shared_map;
 }
 
-// private
-std::shared_ptr<animation_map> animation_repository::xml_adobe_animate_parse(tinyxml2::XMLDocument const& document) {
-	return xml_parse_delegate(document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
+std::shared_ptr<animation_map> animation_repository::xml_adobe_animate_parse_(tinyxml2::XMLDocument const& document) {
+	return xml_parse_delegate_(document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
 		char const* frame_name = current_element.Attribute("name");
 
 		if (!frame_name) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no name attribute");
+			log_defective_frame_("no name attribute");
 #endif
 			return;
 		}
 
-		std::string const parsed_frame_name = parse_frame_name(frame_name);
+		std::string const parsed_frame_name = parse_frame_name_(frame_name);
 
 		if (parsed_frame_name.empty()) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("invalid name", frame_name);
+			log_defective_frame_("invalid name", frame_name);
 #endif
 			return;
 		}
@@ -209,28 +203,28 @@ std::shared_ptr<animation_map> animation_repository::xml_adobe_animate_parse(tin
 		using enum tinyxml2::XMLError;
 		if (current_element.QueryIntAttribute("x", &frame.source_rect.x) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no x attribute", frame_name);
+			log_defective_frame_("no x attribute", frame_name);
 #endif
 			return;
 		}
 
 		if (current_element.QueryIntAttribute("y", &frame.source_rect.y) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no y attribute", frame_name);
+			log_defective_frame_("no y attribute", frame_name);
 #endif
 			return;
 		}
 
 		if (current_element.QueryIntAttribute("width", &frame.source_rect.width) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no width attribute", frame_name);
+			log_defective_frame_("no width attribute", frame_name);
 #endif
 			return;
 		}
 
 		if (current_element.QueryIntAttribute("height", &frame.source_rect.height) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no height attribute", frame_name);
+			log_defective_frame_("no height attribute", frame_name);
 #endif
 			return;
 		}
@@ -245,22 +239,22 @@ std::shared_ptr<animation_map> animation_repository::xml_adobe_animate_parse(tin
 	});
 }
 
-std::shared_ptr<animation_map> animation_repository::xml_texture_packer_parse(tinyxml2::XMLDocument const& document) {
-	return xml_parse_delegate(document, "sprite", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
+std::shared_ptr<animation_map> animation_repository::xml_texture_packer_parse_(tinyxml2::XMLDocument const& document) {
+	return xml_parse_delegate_(document, "sprite", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
 		char const* frame_name = current_element.Attribute("n");
 
 		if (!frame_name) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no n attribute");
+			log_defective_frame_("no n attribute");
 #endif
 			return;
 		}
 
-		std::string const parsed_frame_name = parse_frame_name(frame_name);
+		std::string const parsed_frame_name = parse_frame_name_(frame_name);
 
 		if (parsed_frame_name.empty()) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("invalid name", frame_name);
+			log_defective_frame_("invalid name", frame_name);
 #endif
 			return;
 		}
@@ -270,28 +264,28 @@ std::shared_ptr<animation_map> animation_repository::xml_texture_packer_parse(ti
 		using enum tinyxml2::XMLError;
 		if (current_element.QueryIntAttribute("x", &frame.source_rect.x) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no x attribute", frame_name);
+			log_defective_frame_("no x attribute", frame_name);
 #endif
 			return;
 		}
 
 		if (current_element.QueryIntAttribute("y", &frame.source_rect.y) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no y attribute", frame_name);
+			log_defective_frame_("no y attribute", frame_name);
 #endif
 			return;
 		}
 
 		if (current_element.QueryIntAttribute("w", &frame.source_rect.width) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no w attribute", frame_name);
+			log_defective_frame_("no w attribute", frame_name);
 #endif
 			return;
 		}
 
 		if (current_element.QueryIntAttribute("h", &frame.source_rect.height) != XML_SUCCESS) {
 #ifdef AETHER_VERBOSE_DEBUG
-			log_defective_frame("no h attribute", frame_name);
+			log_defective_frame_("no h attribute", frame_name);
 #endif
 			return;
 		}
@@ -300,8 +294,7 @@ std::shared_ptr<animation_map> animation_repository::xml_texture_packer_parse(ti
 	});
 }
 
-// private
-animation_repository::xml_format animation_repository::assess_xml_format(tinyxml2::XMLDocument const& document) const {
+animation_repository::xml_format animation_repository::assess_xml_format_(tinyxml2::XMLDocument const& document) const {
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
@@ -326,8 +319,7 @@ animation_repository::xml_format animation_repository::assess_xml_format(tinyxml
 	return unknown;
 }
 
-// private
-std::string animation_repository::parse_frame_name(std::string_view unparsed_name) const {
+std::string animation_repository::parse_frame_name_(std::string_view unparsed_name) const {
 	if (unparsed_name.empty()) {
 		return {};
 	}
@@ -364,8 +356,7 @@ std::string animation_repository::parse_frame_name(std::string_view unparsed_nam
 }
 
 #ifdef AETHER_VERBOSE_DEBUG
-// private
-void animation_repository::log_defective_frame(std::string_view message, std::optional<std::string_view> name) const {
+void animation_repository::log_defective_frame_(std::string_view message, std::optional<std::string_view> name) const {
 	if (name.has_value()) {
 		tracelog("Skipping frame with {} | on: \"{}\"", message, name.value());
 		return;

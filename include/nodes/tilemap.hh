@@ -26,8 +26,8 @@ public:
 	// todo: set_texture
 
 protected:
-	bool init() override;
-	void draw(mat3 const& transform, rgba color) override;
+	bool init_() override;
+	void draw_(mat3 const& transform, rgba color) override;
 
 private:
 	std::shared_ptr<rltexture> texture_;

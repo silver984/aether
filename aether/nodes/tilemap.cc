@@ -44,9 +44,8 @@ vec2<uint32_t> tilemap::tile_index() const {
 	return tile_index_;
 }
 
-// protected
-bool tilemap::init() {
-	texture_ = ctx().resource().textures().fetch(file_arg_);
+bool tilemap::init_() {
+	texture_ = ctx_().resource().textures().fetch(file_arg_);
 
 	if (!texture_) {
 #ifdef AETHER_DEBUG
@@ -71,9 +70,8 @@ bool tilemap::init() {
 	return true;
 }
 
-// protected
-void tilemap::draw(mat3 const& transform, rgba color) {
-	ctx().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
+void tilemap::draw_(mat3 const& transform, rgba color) {
+	ctx_().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
 }
 
 } // namespace aether

@@ -25,7 +25,7 @@ public:
 	[[nodiscard]] static std::unique_ptr<derived> create(context const& ctx, va&&... args) {
 		std::unique_ptr<derived> ptr = std::make_unique<derived>(ctx, std::forward<va>(args)...);
 
-		if (!ptr->init_scene()) {
+		if (!ptr->init_scene_()) {
 			return nullptr;
 		}
 
@@ -39,23 +39,23 @@ public:
 	bool add(std::shared_ptr<node> _node);
 	bool add(std::shared_ptr<sound> _sound);
 	[[nodiscard]] std::shared_ptr<node> root_node() const;
-	[[nodiscard]] camera& fetch_camera();
+	[[nodiscard]] camera& get_camera();
 
 protected:
-	virtual bool init();
-	virtual void update(float dt);
-	virtual void visit();
-	[[nodiscard]] context const& ctx() const;
+	virtual bool init_();
+	virtual void update_(float dt);
+	virtual void visit_();
+	[[nodiscard]] context const& ctx_() const;
 
 private:
-	bool init_scene();
-	void update_all(float dt);
-	void draw_all();
+	bool init_scene_();
+	void update_all_(float dt);
+	void draw_all_();
 
 	// todo: music member
 	// todo: camera member
 
-	context const& ctx_;
+	context const& mctx_;
 	camera camera_;
 	std::shared_ptr<node> root_node_;
 	std::vector<std::shared_ptr<sound>> sounds_;
