@@ -1,14 +1,12 @@
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
-#include <util/math.hh>
-#include <window.hh>
+#include <debug/log.hh>
 #ifdef WIN32
 	#include <debug/win32.hh>
 #endif
 #include <algorithm>
 #include <raylib.h>
+#include <util/math.hh>
 #include <utility>
+#include <window.hh>
 
 namespace aether {
 
@@ -29,7 +27,7 @@ bool window::init_(std::string_view title, size<int> resolution, int fps) {
 
 	#ifdef WIN32
 	if (!win32_::enable_console_colors_()) {
-		warninglog("Couldn't enable console colors");
+		AETHER_WARNLOG("Couldn't enable console colors");
 	}
 	#endif
 #endif
@@ -41,9 +39,7 @@ bool window::init_(std::string_view title, size<int> resolution, int fps) {
 	InitWindow(target_size_.width, target_size_.height, title_.c_str());
 
 	if (!IsWindowReady()) {
-#ifdef AETHER_DEBUG
-		errorlog("Not ready");
-#endif
+		AETHER_ERRORLOG("Not ready");
 		return false;
 	}
 
@@ -52,7 +48,7 @@ bool window::init_(std::string_view title, size<int> resolution, int fps) {
 	SetWindowMinSize(minimum_size.width, minimum_size.height);
 
 #ifdef AETHER_VERBOSE_DEBUG
-	debuglog("Initialized");
+	AETHER_DEBUGLOG("Initialized");
 #endif
 	return true;
 }

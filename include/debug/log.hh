@@ -48,23 +48,34 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 
 	#ifdef AETHER_VERBOSE_DEBUG
 		#ifdef _MSC_VER
-			#define tracelog(fmt_str, ...) aether::log::trace(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-			#define debuglog(fmt_str, ...) aether::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+			#define AETHER_TRACELOG(fmt_str, ...) aether::log::trace(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+			#define AETHER_DEBUGLOG(fmt_str, ...) aether::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 		#else
-			#define tracelog(fmt_str, ...)                                                                                     \
+			#define AETHER_TRACELOG(fmt_str, ...)                                                                              \
 				aether::log::trace(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-			#define debuglog(fmt_str, ...)                                                                                     \
+			#define AETHER_DEBUGLOG(fmt_str, ...)                                                                              \
 				aether::log::debug(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
 		#endif
+	#else
+		#define AETHER_TRACELOG(...) ((void)0)
+		#define AETHER_DEBUGLOG(...) ((void)0)
 	#endif
 
 	#ifdef _MSC_VER
-		#define infolog(fmt_str, ...)    aether::log::info(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-		#define warninglog(fmt_str, ...) aether::log::warning(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-		#define errorlog(fmt_str, ...)   aether::log::error(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+		#define AETHER_INFOLOG(fmt_str, ...)  aether::log::info(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+		#define AETHER_WARNLOG(fmt_str, ...)  aether::log::warning(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+		#define AETHER_ERRORLOG(fmt_str, ...) aether::log::error(std::source_location::current(), fmt_str, ##__VA_ARGS__)
 	#else
-		#define infolog(fmt_str, ...)    aether::log::info(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-		#define warninglog(fmt_str, ...) aether::log::warning(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-		#define errorlog(fmt_str, ...)   aether::log::error(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
+		#define AETHER_INFOLOG(fmt_str, ...) aether::log::info(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
+		#define AETHER_WARNLOG(fmt_str, ...)                                                                                       \
+			aether::log::warning(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
+		#define AETHER_ERRORLOG(fmt_str, ...)                                                                                      \
+			aether::log::error(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
 	#endif
+#else
+	#define AETHER_TRACELOG(...) ((void)0)
+	#define AETHER_DEBUGLOG(...) ((void)0)
+	#define AETHER_INFOLOG(...)  ((void)0)
+	#define AETHER_WARNLOG(...)  ((void)0)
+	#define AETHER_ERRORLOG(...) ((void)0)
 #endif

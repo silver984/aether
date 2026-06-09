@@ -1,7 +1,5 @@
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
 #include <context.hh>
+#include <debug/log.hh>
 #include <nodes/tilemap.hh>
 #include <raylib.h>
 #include <renderer.hh>
@@ -28,9 +26,7 @@ vec2<uint32_t> tilemap::tile_count() const {
 
 void tilemap::seek_tile(vec2<int> tile_index) {
 	if (!texture_) {
-#ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Attempted to seek tile with nullptr texture");
-#endif
+		AETHER_DEBUGLOG("Attempted to seek tile with nullptr texture");
 		return;
 	}
 
@@ -48,16 +44,12 @@ bool tilemap::init_() {
 	texture_ = ctx_().resource().textures().fetch(file_arg_);
 
 	if (!texture_) {
-#ifdef AETHER_DEBUG
-		errorlog("Failed");
-#endif
+		AETHER_ERRORLOG("Failed");
 		return false;
 	}
 
 	if (tile_bounds_arg_.width > texture_->width || tile_bounds_arg_.height > texture_->height) {
-#ifdef AETHER_DEBUG
-		errorlog("Invalid parameters");
-#endif
+		AETHER_ERRORLOG("Invalid parameters");
 		return false;
 	}
 

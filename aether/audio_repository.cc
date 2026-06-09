@@ -1,7 +1,5 @@
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
 #include <audio_repository.hh>
+#include <debug/log.hh>
 #include <util/filesystem.hh>
 #include <util/string.hh>
 #include <utility>
@@ -15,9 +13,7 @@ std::shared_ptr<byte_buffer> audio_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
-#ifdef AETHER_DEBUG
-		errorlog("File doesn't exist | file: \"{}\"", file);
-#endif
+		AETHER_ERRORLOG("File doesn't exist | file: \"{}\"", file);
 		return nullptr;
 	}
 
@@ -27,9 +23,7 @@ std::shared_ptr<byte_buffer> audio_repository::fetch(std::string_view file) {
 
 	if (std::string const file_extension = util::file_extension(lfile);
 	    !util::string_matches_any(file_extension, {".wav", ".mp3", ".ogg", ".flac"})) {
-#ifdef AETHER_DEBUG
-		errorlog("Unsupported file format | file: \"{}\"", file);
-#endif
+		AETHER_ERRORLOG("Unsupported file format | file: \"{}\"", file);
 		return nullptr;
 	}
 
@@ -38,9 +32,7 @@ std::shared_ptr<byte_buffer> audio_repository::fetch(std::string_view file) {
 	byte_buffer temporary_buffer = util::read_file_to_byte_buffer(lfile);
 
 	if (temporary_buffer.empty()) {
-#ifdef AETHER_DEBUG
-		errorlog("Failed | empty buffer");
-#endif
+		AETHER_ERRORLOG("Failed | empty buffer");
 		return nullptr;
 	}
 

@@ -1,7 +1,5 @@
+#include <debug/log.hh>
 #include <game.hh>
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
 #include <soloud_error.h>
 #include <util/timer.hh>
 
@@ -34,20 +32,16 @@ bool game::init(init_descriptor const& desc) {
 	}
 
 	if (!window_.init_(desc.window_title, desc.resolution, desc.fps)) {
-#ifdef AETHER_DEBUG
-		errorlog("Failed");
-#endif
+		AETHER_ERRORLOG("Failed");
 		return false;
 	}
 
 #ifdef AETHER_DEBUG
 	using enum SoLoud::SOLOUD_ERRORS;
 	if (SoLoud::result result = soloud_.init(); result != SO_NO_ERROR) {
-		warninglog("Audio engine failed to initialize | result: {}", result);
+		AETHER_WARNLOG("Audio engine failed to initialize | result: {}", result);
 	} else {
-	#ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Audio engine initialized");
-	#endif
+		AETHER_DEBUGLOG("Audio engine initialized");
 	}
 #else
 	(void)soloud_.init();
@@ -58,17 +52,13 @@ bool game::init(init_descriptor const& desc) {
 	using enum sol::lib;
 	lua_.open_libraries(base, string, table, math, utf8);
 
-#ifdef AETHER_DEBUG
-	infolog("Initialized");
-#endif
+	AETHER_INFOLOG("Initialized");
 	return is_initialized_ = true;
 }
 
 void game::run() {
 	if (!is_initialized_) {
-#ifdef AETHER_DEBUG
-		errorlog("Can't run loop while uninitialized");
-#endif
+		AETHER_ERRORLOG("Can't run loop while uninitialized");
 		return;
 	}
 
@@ -113,10 +103,8 @@ context const& game::ctx() const {
 }
 
 void game::shutdown_() {
-#ifdef AETHER_DEBUG
-	infolog("Shutting down");
+	AETHER_INFOLOG("Shutting down");
 	auto const start_time = util::start();
-#endif
 
 	scene_scheduler_.cleanup_();
 	textures_.clear_cache_();
@@ -124,10 +112,8 @@ void game::shutdown_() {
 	audios_.clear_cache_();
 	soloud_.deinit();
 
-#ifdef AETHER_DEBUG
 	auto const end_time = util::end(start_time);
-	infolog("Done | took {}ms", end_time);
-#endif
+	AETHER_INFOLOG("Done | took {}ms", end_time);
 
 	window_.shutdown_();
 	is_initialized_ = false;

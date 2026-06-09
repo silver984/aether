@@ -1,8 +1,6 @@
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
 #include <cmath>
 #include <context.hh>
+#include <debug/log.hh>
 #include <nodes/sprite.hh>
 #include <raylib.h>
 #include <renderer.hh>
@@ -26,9 +24,7 @@ bool sprite::set_texture(std::string_view file) {
 	if (auto fetched_texture = ctx_().resource().textures().fetch(file)) {
 		texture_ = fetched_texture;
 	} else {
-#ifdef AETHER_DEBUG
-		errorlog("Failed");
-#endif
+		AETHER_ERRORLOG("Failed");
 		return false;
 	}
 
@@ -64,9 +60,7 @@ rect<float> sprite::texture_source_rect() const {
 // protected
 bool sprite::init_() {
 	if (!set_texture(file_arg_)) {
-#ifdef AETHER_DEBUG
-		errorlog("Failed");
-#endif
+		AETHER_ERRORLOG("Failed");
 		return false;
 	}
 

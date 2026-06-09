@@ -1,8 +1,6 @@
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
 #include <animation_repository.hh>
 #include <context.hh>
+#include <debug/log.hh>
 #include <nodes/animated_sprite.hh>
 #include <raylib.h>
 #include <renderer.hh>
@@ -33,16 +31,12 @@ void animated_sprite::toggle_antialiasing(bool val) const {
 
 bool animated_sprite::play_animation(std::string_view name) {
 	if (!data_) {
-#ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Attempted to play animation with nullptr data");
-#endif
+		AETHER_DEBUGLOG("Attempted to play animation with nullptr data");
 		return false;
 	}
 
 	if (!data_->contains(name)) {
-#ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Attempted to play animation not found from data | name: \"{}\"", name);
-#endif
+		AETHER_DEBUGLOG("Attempted to play animation not found from data | name: \"{}\"", name);
 		return false;
 	}
 
@@ -80,23 +74,17 @@ bool animated_sprite::init_() {
 	data_                = resource.animations().fetch(data_file_arg_);
 
 	if (!texture_) {
-#ifdef AETHER_DEBUG
-		errorlog("Failed | nullptr texture");
-#endif
+		AETHER_ERRORLOG("Failed | nullptr texture");
 		return false;
 	}
 
 	if (!data_) {
-#ifdef AETHER_DEBUG
-		errorlog("Failed | nullptr data");
-#endif
+		AETHER_ERRORLOG("Failed | nullptr data");
 		return false;
 	}
 
 	if (data_->empty()) {
-#ifdef AETHER_DEBUG
-		errorlog("Failed | no valid frames");
-#endif
+		AETHER_ERRORLOG("Failed | no valid frames");
 		return false;
 	}
 

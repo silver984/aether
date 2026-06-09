@@ -1,7 +1,5 @@
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
 #include <context.hh>
+#include <debug/log.hh>
 #include <scene.hh>
 #include <scene_scheduler.hh>
 #include <utility>
@@ -13,18 +11,13 @@ scene_scheduler::~scene_scheduler() = default;
 
 void scene_scheduler::replace_scene(std::unique_ptr<scene> new_scene) {
 	if (!new_scene) {
-#ifdef AETHER_DEBUG
-		errorlog("Can't switch to a nullptr scene");
-#endif
+		AETHER_ERRORLOG("Can't switch to a nullptr scene");
 		return;
 	}
 
 	pending_scene_ = std::move(new_scene);
-
-#ifdef AETHER_VERBOSE_DEBUG
-	debuglog("Replacing scene");
-	tracelog("Pending scene: {}", fmt::ptr(pending_scene_.get()));
-#endif
+	AETHER_DEBUGLOG("Replacing scene");
+	AETHER_TRACELOG("Pending scene: {}", fmt::ptr(pending_scene_.get()));
 }
 
 void scene_scheduler::cleanup_() {
@@ -35,12 +28,8 @@ void scene_scheduler::cleanup_() {
 void scene_scheduler::update_scene_(float dt) {
 	if (pending_scene_) {
 		current_scene_ = std::move(pending_scene_);
-#ifdef AETHER_DEBUG
-	#ifdef AETHER_VERBOSE_DEBUG
-		debuglog("Scene replaced");
-	#endif
-		infolog("Scene replaced");
-#endif
+		AETHER_DEBUGLOG("Scene replaced");
+		AETHER_INFOLOG("Scene replaced");
 	}
 
 	current_scene_->update_all_(dt);
