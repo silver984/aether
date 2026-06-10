@@ -1,6 +1,5 @@
 Standard: c++20
 
-# === Indentation & Whitespace ===
 UseTab: ForIndentation
 IndentWidth: 8
 TabWidth: 8
@@ -10,17 +9,14 @@ ConstructorInitializerIndentWidth: 8
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 
-# === Line Breaking ===
 ColumnLimit: 140
 BreakBeforeBraces: Attach
 AlwaysBreakTemplateDeclarations: Yes
 
-# === Pointer & Qualifier Alignment ===
 DerivePointerAlignment: false
 PointerAlignment: Left
 QualifierAlignment: Right
 
-# === Short Statements ===
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
@@ -29,7 +25,6 @@ AllowShortCaseLabelsOnASingleLine: true
 AllowShortLambdasOnASingleLine: Empty
 AllowShortEnumsOnASingleLine: true
 
-# === Consecutive Alignments ===
 AlignConsecutiveAssignments: Consecutive
 AlignAfterOpenBracket: Align
 AlignConsecutiveMacros: true
@@ -37,11 +32,9 @@ AlignTrailingComments:
   Kind: Always
   OverEmptyLines: 1
 
-# === Preprocessor Directives ===
 IndentPPDirectives: BeforeHash
 AlignEscapedNewlines: Right
 SortIncludes: true
 
-# === Constructor Initializer List Formatting ===
 BreakConstructorInitializers: BeforeComma
 PackConstructorInitializers: Never

@@ -1,9 +1,7 @@
 #include <algorithm>
-#include <context.hh>
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
 #include <audio_repository.hh>
+#include <context.hh>
+#include <debug/log.hh>
 #include <soloud_error.h>
 #include <sound.hh>
 
@@ -17,8 +15,8 @@ sound::sound(context const& ctx)
 
 sound::~sound() = default;
 
-std::shared_ptr<sound> sound::create(context const& ctx, std::string_view file) {
-	auto ptr = std::make_shared<sound>(ctx);
+ref<sound> sound::create(context const& ctx, std::string_view file) {
+	ref<sound> ptr(new sound(ctx));
 	if (!ptr->init_(ctx.resource().audios(), file)) {
 		return nullptr;
 	}

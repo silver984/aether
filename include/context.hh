@@ -18,14 +18,11 @@ private:
 
 public:
 	~context();
-
 	[[nodiscard]] core_services const& core() const;
 	[[nodiscard]] resource_services const& resource() const;
 	[[nodiscard]] scene_scheduler& fetch_scene_scheduler() const;
 
 private:
-	// void update_frame_context();
-
 	core_services core_;
 	resource_services resource_;
 	scene_scheduler& scene_scheduler_;

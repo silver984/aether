@@ -39,16 +39,16 @@ void scene::unschedule_visit() {
 	is_visit_scheduled_ = false;
 }
 
-bool scene::add(std::shared_ptr<node> _node) {
-	return root_node_->add_child(_node);
+bool scene::add(std::shared_ptr<node> n) {
+	return root_node_->add_child(n);
 }
 
-bool scene::add(std::shared_ptr<sound> _sound) {
-	if (!_sound) {
+bool scene::add(ref<sound> s) {
+	if (!s) {
 		return false;
 	}
 
-	sounds_.emplace_back(_sound);
+	sounds_.emplace_back(s);
 	return true;
 }
 
@@ -77,11 +77,6 @@ bool scene::init_scene_() {
 }
 
 void scene::update_all_(float dt) {
-	// auto release sounds
-	std::erase_if(sounds_, [](auto const& sound) {
-		return sound.use_count() <= 1 && sound->voice_count_() == 0;
-	});
-
 	root_node_->update_all_(dt);
 
 	if (is_active_) {

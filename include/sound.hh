@@ -1,7 +1,7 @@
 #pragma once
 #include <byte_buffer.hh>
 #include <cstdint>
-#include <memory>
+#include <ref.hh>
 #include <soloud_wav.h>
 #include <string_view>
 
@@ -22,7 +22,7 @@ class sound final {
 public:
 	sound(context const& ctx);
 	~sound();
-	[[nodiscard]] static std::shared_ptr<sound> create(context const& ctx, std::string_view file);
+	[[nodiscard]] static ref<sound> create(context const& ctx, std::string_view file);
 	bool play();
 	void set_volume(float val);
 	[[nodiscard]] float volume() const;

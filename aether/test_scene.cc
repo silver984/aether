@@ -1,8 +1,6 @@
 #include <cmath>
 #include <context.hh>
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
+#include <debug/log.hh>
 #include <nodes/animated_sprite.hh>
 #include <nodes/tilemap.hh>
 #include <renderer.hh>

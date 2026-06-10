@@ -2,6 +2,7 @@
 #include <camera.hh>
 #include <concepts>
 #include <memory>
+#include <ref.hh>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -36,8 +37,8 @@ public:
 	void deactivate();
 	void schedule_visit();
 	void unschedule_visit();
-	bool add(std::shared_ptr<node> _node);
-	bool add(std::shared_ptr<sound> _sound);
+	bool add(std::shared_ptr<node> n);
+	bool add(ref<sound> s);
 	[[nodiscard]] std::shared_ptr<node> root_node() const;
 	[[nodiscard]] camera& get_camera();
 
@@ -53,12 +54,11 @@ private:
 	void draw_all_();
 
 	// todo: music member
-	// todo: camera member
 
 	context const& mctx_;
-	camera camera_;
+	camera camera_; // todo
 	std::shared_ptr<node> root_node_;
-	std::vector<std::shared_ptr<sound>> sounds_;
+	std::vector<ref<sound>> sounds_;
 	bool is_active_;
 	bool is_visit_scheduled_;
 };

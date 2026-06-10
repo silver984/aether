@@ -18,7 +18,6 @@ public:
 	audio_repository(audio_repository&&)                 = delete;
 	audio_repository& operator=(audio_repository const&) = delete;
 	audio_repository& operator=(audio_repository&&)      = delete;
-
 	[[nodiscard]] std::shared_ptr<byte_buffer> fetch(std::string_view file);
 	void purge_unused();
 

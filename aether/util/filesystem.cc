@@ -1,8 +1,6 @@
 #include <algorithm>
 #include <cstdint>
-#ifdef AETHER_DEBUG
-	#include <debug/log.hh>
-#endif
+#include <debug/log.hh>
 #include <fstream>
 #include <util/filesystem.hh>
 
