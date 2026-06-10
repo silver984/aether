@@ -396,33 +396,26 @@ std::vector<std::shared_ptr<node>> node::children() const {
 	return children_;
 }
 
-// protected
 bool node::init_() {
 	return true;
 }
 
-// protected
 void node::update_(float dt) {}
 
-// protected
 void node::draw_(mat3 const& transform, rgba color) {}
 
-// protected
 context const& node::ctx_() const {
 	return mctx_;
 }
 
-// protected
 scene* node::scene_() const {
 	return mscene_;
 }
 
-// private
 bool node::init_node_() {
 	return init_();
 }
 
-// private
 void node::update_all_(float dt) {
 	float const world_dt = dt * time_scale_;
 
@@ -439,7 +432,6 @@ void node::update_all_(float dt) {
 	}
 }
 
-// private
 void node::draw_all_() {
 	if (!is_visible_) {
 		return;
@@ -472,7 +464,6 @@ void node::draw_all_() {
 	}
 }
 
-// private
 bool node::has_ancestor_(std::shared_ptr<node> node) const {
 	auto p = parent().lock();
 
@@ -487,7 +478,6 @@ bool node::has_ancestor_(std::shared_ptr<node> node) const {
 	return false;
 }
 
-// private
 void node::mark_transform_dirty_() {
 	if (is_transform_dirty_) {
 		// already dirty
@@ -501,7 +491,6 @@ void node::mark_transform_dirty_() {
 	}
 }
 
-// private
 void node::mark_rgba_dirty_() {
 	if (is_rgba_dirty_) {
 		// already dirty
@@ -515,7 +504,6 @@ void node::mark_rgba_dirty_() {
 	}
 }
 
-// private
 mat3 node::calculate_transform_(std::weak_ptr<node> parent) const {
 	// todo: use scene camera
 
@@ -536,7 +524,6 @@ mat3 node::calculate_transform_(std::weak_ptr<node> parent) const {
 	return local;
 }
 
-// private
 rgba node::calculate_combined_rgba_(std::weak_ptr<node> parent) const {
 	if (auto p = parent.lock()) {
 		return p->color() * color_;

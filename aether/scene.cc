@@ -60,28 +60,22 @@ camera& scene::get_camera() {
 	return camera_;
 }
 
-// protected
 bool scene::init_() {
 	return true;
 }
 
-// protected
 void scene::update_(float dt) {}
 
-// protected
 void scene::visit_() {}
 
-// protected
 context const& scene::ctx_() const {
 	return mctx_;
 }
 
-// private
 bool scene::init_scene_() {
 	return init_();
 }
 
-// private
 void scene::update_all_(float dt) {
 	// auto release sounds
 	std::erase_if(sounds_, [](auto const& sound) {
@@ -95,7 +89,6 @@ void scene::update_all_(float dt) {
 	}
 }
 
-// private
 void scene::draw_all_() {
 	root_node_->draw_all_();
 

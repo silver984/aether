@@ -2,9 +2,7 @@
 
 namespace aether {
 
-// private
-resource_services::resource_services(texture_repository& textures, animation_repository& animations,
-                                     audio_repository& audios)
+resource_services::resource_services(texture_repository& textures, animation_repository& animations, audio_repository& audios)
         : textures_(textures)
         , animations_(animations)
         , audios_(audios) {}

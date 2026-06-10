@@ -18,7 +18,6 @@ test_scene::test_scene(context const& ctx)
 
 test_scene::~test_scene() = default;
 
-// protected
 bool test_scene::init_() {
 	auto const& lctx = ctx_();
 
@@ -48,7 +47,6 @@ bool test_scene::init_() {
 	return true;
 }
 
-// protected
 void test_scene::update_(float dt) {
 	elapsed_ += dt;
 	auto& lcamera = get_camera();

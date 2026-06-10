@@ -3,7 +3,6 @@
 
 namespace aether {
 
-// private
 context::context(window& _window, renderer& _renderer, SoLoud::Soloud& soloud, texture_repository& textures,
                  animation_repository& animations, audio_repository& audios, scene_scheduler& _scene_scheduler)
         : core_(_window, _renderer, soloud)

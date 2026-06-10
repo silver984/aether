@@ -137,7 +137,6 @@ void animated_sprite::draw_(mat3 const& transform, rgba color) {
 	ctx_().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
 }
 
-// private
 void animated_sprite::progress_frame_() {
 	auto const& frames = (*data_)[current_animation_name_].frames;
 	set_bounds(calculate_bounds_(frames));
@@ -154,7 +153,6 @@ void animated_sprite::progress_frame_() {
 	current_subtexture_offsets_    = static_cast<vec2<float>>(current_frame.offsets);
 }
 
-// private
 size<int> animated_sprite::calculate_bounds_(std::vector<atlas_region> const& frames) const {
 	size<int> ret;
 

@@ -13,6 +13,7 @@ namespace aether {
 
 renderer::renderer()
         : projection_(mat3::identity()) {}
+
 renderer::~renderer() = default;
 
 void renderer::draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const {

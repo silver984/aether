@@ -57,7 +57,6 @@ rect<float> sprite::texture_source_rect() const {
 	return texture_source_rect_;
 }
 
-// protected
 bool sprite::init_() {
 	if (!set_texture(file_arg_)) {
 		AETHER_ERRORLOG("Failed");
@@ -71,7 +70,6 @@ bool sprite::init_() {
 	return true;
 }
 
-// protected
 void sprite::draw_(mat3 const& transform, rgba color) {
 	ctx_().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
 }
