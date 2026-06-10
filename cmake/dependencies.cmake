@@ -14,7 +14,7 @@ function(aether_fetch_dependencies TARGET)
     FetchContent_Declare(lua GIT_REPOSITORY https://github.com/lua/lua.git GIT_TAG v5.4.8 GIT_SHALLOW TRUE)
     FetchContent_MakeAvailable(lua)
     file(GLOB LUA_SRC ${lua_SOURCE_DIR}/*.c)
-    list(REMOVE_ITEM LUA_SRC ${lua_SOURCE_DIR}/lua.c)
+    list(REMOVE_ITEM LUA_SRC ${lua_SOURCE_DIR}/lua.c ${lua_SOURCE_DIR}/onelua.c)
     add_library(lua STATIC ${LUA_SRC})
     target_include_directories(lua PUBLIC ${lua_SOURCE_DIR})
 

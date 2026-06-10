@@ -9,7 +9,9 @@ file(GLOB_RECURSE SOLOUD_FILTER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/soloud/src/filte
 add_library(SoLoud STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/soloud/src/backend/miniaudio/soloud_miniaudio.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/soloud/src/c_api/soloud_c.cpp
-    ${SOLOUD_AUDIO_SRC} ${SOLOUD_CORE_SRC} ${SOLOUD_FILTER_SRC}
+    ${SOLOUD_AUDIO_SRC}
+    ${SOLOUD_CORE_SRC}
+    ${SOLOUD_FILTER_SRC}
 )
 
 target_include_directories(SoLoud PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/soloud/include)
