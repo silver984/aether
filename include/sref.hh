@@ -1,19 +1,16 @@
 #pragma once
 #include <concepts>
 #include <cstddef>
-#include <memory/block.hh>
 
 namespace aether {
 
 template <typename T>
-class wref;
-
-template <typename T>
-class self_ref;
-
-template <typename T>
 class sref final {
-	friend class wref<T>;
+	template <typename>
+	friend class sref;
+
+	template <typename>
+	friend class wref;
 
 public:
 	constexpr sref() noexcept
@@ -22,18 +19,13 @@ public:
 	constexpr sref(std::nullptr_t) noexcept
 	        : block_(nullptr) {}
 
-	sref(T* ptr)
-	        : block_(new block<T>()) {
-		block_->ptr          = ptr;
-		block_->strong_count = 1;
-		block_->weak_count   = 0;
+	template <std::derived_from<T> U>
+	sref(U* ptr)
+	        : block_(new block{.ptr = ptr, .strong_count = 1, .weak_count = 0, .deleter = [](void* p) {
+		                           delete static_cast<U*>(p);
+	                           }}) {}
 
-		if constexpr (std::derived_from<T, self_ref<T>>) {
-			ptr->weak_this_ = *this;
-		}
-	}
-
-	sref(sref const& other)
+	sref(sref const& other) noexcept
 	        : block_(other.block_) {
 		if (block_) {
 			++block_->strong_count;
@@ -45,7 +37,25 @@ public:
 		other.block_ = nullptr;
 	}
 
+	template <std::derived_from<T> U>
+	sref(sref<U> const& other) noexcept
+	        : block_(other.block_) {
+		if (block_) {
+			++block_->strong_count;
+		}
+	}
+
+	template <std::derived_from<T> U>
+	constexpr sref(sref<U>&& other) noexcept
+	        : block_(other.block_) {
+		other.block_ = nullptr;
+	}
+
 	~sref() {
+		release_();
+	}
+
+	void nullify() {
 		release_();
 	}
 
@@ -62,11 +72,11 @@ public:
 	}
 
 	constexpr T* operator->() const {
-		return block_ ? block_->ptr : nullptr;
+		return block_ ? static_cast<T*>(block_->ptr) : nullptr;
 	}
 
 	constexpr T& operator*() const {
-		return *block_->ptr;
+		return *static_cast<T*>(block_->ptr);
 	}
 
 	sref& operator=(sref const& other) {
@@ -116,22 +126,31 @@ public:
 	}
 
 private:
+	struct block final {
+		void* ptr;
+		size_t strong_count;
+		size_t weak_count;
+		void (*deleter)(void*);
+	};
+
 	void release_() {
-		if (!block_ || block_->strong_count == 0) {
+		if (!block_) {
 			return;
 		}
 
-		if (--block_->strong_count == 0) {
-			delete block_->ptr;
-			block_->ptr = nullptr;
+		auto* old_block = block_;
+		block_          = nullptr;
 
-			if (block_->weak_count == 0) {
-				delete block_;
+		if (--old_block->strong_count == 0) {
+			old_block->deleter(old_block->ptr);
+			old_block->ptr = nullptr;
+			if (old_block->weak_count == 0) {
+				delete old_block;
 			}
 		}
 	}
 
-	block<T>* block_;
+	block* block_;
 };
 
 } // namespace aether

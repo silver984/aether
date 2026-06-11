@@ -9,6 +9,7 @@ namespace aether {
 node::node(context const& ctx_)
         : mctx_(ctx_)
         , mscene_(nullptr)
+        , parent_(nullptr)
         , color_(255)
         , combined_color_(color_)
         , transform_(mat3::identity())
@@ -27,19 +28,17 @@ node::node(context const& ctx_)
 
 node::~node() = default;
 
-bool node::add_child(std::shared_ptr<node> node) {
+bool node::add_child(sref<node> node) {
 	if (!node) {
 		return false;
 	}
 
-	auto self = shared_from_this();
-
-	if (node == self) {
+	if (node.get() == this) {
 		// prevent self-parenting
 		return false;
 	}
 
-	if (node->has_ancestor_(self)) {
+	if (node->has_ancestor_of_(this)) {
 		// prevent hierarchy cycle
 		return false;
 	}
@@ -49,12 +48,12 @@ bool node::add_child(std::shared_ptr<node> node) {
 		return false;
 	}
 
-	if (auto old_parent = node->parent_.lock()) {
+	if (auto old_parent = node->parent_) {
 		// remove from old parent
 		old_parent->remove_child(node);
 	}
 
-	node->parent_ = weak_from_this();
+	node->parent_ = this;
 	node->mscene_ = mscene_;
 	children_.emplace_back(node);
 	node->mark_transform_dirty_();
@@ -63,12 +62,12 @@ bool node::add_child(std::shared_ptr<node> node) {
 	return true;
 }
 
-bool node::remove_child(std::shared_ptr<node> node) {
+bool node::remove_child(sref<node> node) {
 	if (!node) {
 		return false;
 	}
 
-	if (node == shared_from_this()) {
+	if (node.get() == this) {
 		// prevent self-remove
 		return false;
 	}
@@ -79,7 +78,7 @@ bool node::remove_child(std::shared_ptr<node> node) {
 		return false;
 	}
 
-	node->parent_.reset();
+	node->parent_ = nullptr;
 	node->mscene_ = nullptr;
 	children_.erase(iterator);
 
@@ -93,25 +92,17 @@ void node::destroy_all() {
 	while (!children_.empty()) {
 		auto child = children_.back();
 		children_.pop_back();
-		child->parent_.reset();
+		child->parent_ = nullptr;
 		child->destroy_all();
 	}
 }
 
 bool node::detach_from_parent() {
-	if (auto parent = parent_.lock()) {
-		return parent->remove_child(shared_from_this());
+	if (parent_) {
+		return parent_->remove_child(this);
 	}
 
 	return false;
-}
-
-std::shared_ptr<node> node::fetch_child(std::string_view name) {
-	auto const iterator = std::find_if(children_.begin(), children_.end(), [&](auto const& child) {
-		return child && child->name() == name;
-	});
-
-	return (iterator != children_.end()) ? *iterator : nullptr;
 }
 
 void node::activate() {
@@ -148,7 +139,7 @@ size_t node::recursed_child_count() const {
 	return c;
 }
 
-std::weak_ptr<node> node::parent() const {
+node* node::parent() const {
 	return parent_;
 }
 
@@ -392,7 +383,7 @@ bool node::is_flip_y() const {
 	return is_flip_y_;
 }
 
-std::vector<std::shared_ptr<node>> node::children() const {
+std::vector<sref<node>> node::children() const {
 	return children_;
 }
 
@@ -438,7 +429,7 @@ void node::draw_all_() {
 	}
 
 	if (is_rgba_dirty_) {
-		combined_color_ = calculate_combined_rgba_(parent_);
+		combined_color_ = calculate_combined_rgba_();
 		is_rgba_dirty_  = false;
 	}
 
@@ -447,7 +438,7 @@ void node::draw_all_() {
 	}
 
 	if (is_transform_dirty_) {
-		transform_          = calculate_transform_(parent_);
+		transform_          = calculate_transform_();
 		is_transform_dirty_ = false;
 	}
 
@@ -464,15 +455,15 @@ void node::draw_all_() {
 	}
 }
 
-bool node::has_ancestor_(std::shared_ptr<node> node) const {
-	auto p = parent().lock();
+bool node::has_ancestor_of_(node* n) const {
+	auto p = parent();
 
 	while (p) {
-		if (p == node) {
+		if (p == n) {
 			return true;
 		}
 
-		p = p->parent().lock();
+		p = p->parent();
 	}
 
 	return false;
@@ -504,7 +495,7 @@ void node::mark_rgba_dirty_() {
 	}
 }
 
-mat3 node::calculate_transform_(std::weak_ptr<node> parent) const {
+mat3 node::calculate_transform_() const {
 	// todo: use scene camera
 
 	vec2<float> const anchor_position = vec2<float>(anchor_.x * bounds_.width, anchor_.y * bounds_.height);
@@ -517,16 +508,16 @@ mat3 node::calculate_transform_(std::weak_ptr<node> parent) const {
 	mat3 const a                      = mat3::translation(-anchor_position);
 	mat3 const local                  = t * r * s * k * a;
 
-	if (auto p = parent.lock()) {
-		return p->transform_ * local;
+	if (parent_) {
+		return parent_->transform_ * local;
 	}
 
 	return local;
 }
 
-rgba node::calculate_combined_rgba_(std::weak_ptr<node> parent) const {
-	if (auto p = parent.lock()) {
-		return p->color() * color_;
+rgba node::calculate_combined_rgba_() const {
+	if (parent_) {
+		return parent_->color_ * color_;
 	}
 
 	return color_;

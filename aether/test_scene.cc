@@ -40,13 +40,11 @@ bool test_scene::init_() {
 		(void)sound->play();
 	}
 
-	activate();
+	// activate();
 
 	return true;
 }
 
 void test_scene::update_(float dt) {
 	elapsed_ += dt;
-	auto& lcamera = get_camera();
-	lcamera.set_position(vec2<float>(lcamera.position().x + (100.f * dt), 0.f));
 }

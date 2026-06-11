@@ -1,8 +1,8 @@
 #pragma once
 #include <byte_buffer.hh>
 #include <cstdint>
-#include <memory/sref.hh>
 #include <soloud_wav.h>
+#include <sref.hh>
 #include <string_view>
 
 namespace SoLoud {

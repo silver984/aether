@@ -6,7 +6,7 @@
 #include <math/rgba.hh>
 #include <math/size.hh>
 #include <math/vec2.hh>
-#include <memory>
+#include <sref.hh>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -18,7 +18,7 @@ class context;
 class scene;
 // class camera;
 
-class node : public std::enable_shared_from_this<node> {
+class node {
 	friend class scene;
 	// friend class camera;
 
@@ -26,26 +26,19 @@ public:
 	node(context const& ctx);
 	virtual ~node();
 
-	template <typename derived, typename... va>
-	        requires std::derived_from<derived, node>
-	[[nodiscard]] static std::shared_ptr<derived> create(context const& ctx, va&&... args) {
-		std::shared_ptr<derived> ptr = std::make_shared<derived>(ctx, std::forward<va>(args)...);
+	template <std::derived_from<node> T, typename... va>
+	[[nodiscard]] static sref<T> create(context const& ctx, va&&... args) {
+		sref<T> ptr = new T(ctx, std::forward<va>(args)...);
 		if (!ptr->init_node_()) {
 			return nullptr;
 		}
 		return ptr;
 	}
 
-	template <typename derived>
-	        requires std::derived_from<derived, node>
-	[[nodiscard]] std::shared_ptr<derived> fetch_child_as(std::string_view name) {
-		std::shared_ptr<node> node = fetch_child(name);
-		return std::dynamic_pointer_cast<derived>(node);
-	}
+	// todo: fetch child
 
-	bool add_child(std::shared_ptr<node> node);
-	bool remove_child(std::shared_ptr<node> node);
-	[[nodiscard]] std::shared_ptr<node> fetch_child(std::string_view name);
+	bool add_child(sref<node> n);
+	bool remove_child(sref<node> n);
 	void destroy_all();
 	bool detach_from_parent();
 	void activate();
@@ -54,7 +47,7 @@ public:
 	void unschedule_draw();
 	[[nodiscard]] size_t child_count() const;
 	[[nodiscard]] size_t recursed_child_count() const;
-	[[nodiscard]] std::weak_ptr<node> parent() const;
+	[[nodiscard]] node* parent() const;
 	void set_name(std::string_view name); // todo: better naming system
 	[[nodiscard]] std::string_view name() const;
 	void set_bounds(size<int> val);       // todo: set_width, set_height
@@ -91,7 +84,7 @@ public:
 	[[nodiscard]] bool is_flip_x() const;
 	void toggle_flip_y(bool val);
 	[[nodiscard]] bool is_flip_y() const;
-	[[nodiscard]] std::vector<std::shared_ptr<node>> children() const;
+	[[nodiscard]] std::vector<sref<node>> children() const;
 
 protected:
 	virtual bool init_();
@@ -104,16 +97,16 @@ private:
 	bool init_node_();
 	void update_all_(float dt);
 	void draw_all_();
-	[[nodiscard]] bool has_ancestor_(std::shared_ptr<node> node) const;
+	[[nodiscard]] bool has_ancestor_of_(node* n) const;
 	void mark_transform_dirty_();
 	void mark_rgba_dirty_();
-	[[nodiscard]] mat3 calculate_transform_(std::weak_ptr<node> parent) const;
-	[[nodiscard]] rgba calculate_combined_rgba_(std::weak_ptr<node> parent) const;
+	[[nodiscard]] mat3 calculate_transform_() const;
+	[[nodiscard]] rgba calculate_combined_rgba_() const;
 
 	context const& mctx_;
 	scene* mscene_;
-	std::vector<std::shared_ptr<node>> children_;
-	std::weak_ptr<node> parent_;
+	node* parent_;
+	std::vector<sref<node>> children_;
 	std::string name_;
 	mat3 transform_;
 	size<uint32_t> bounds_;

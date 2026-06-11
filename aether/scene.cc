@@ -10,7 +10,7 @@ namespace aether {
 
 scene::scene(context const& ctx)
         : mctx_(ctx)
-        , camera_(root_node_)
+        // , camera_(root_node_)
         , root_node_(node::create<node>(ctx))
         , is_active_(false)
         , is_visit_scheduled_(false) {
@@ -39,7 +39,7 @@ void scene::unschedule_visit() {
 	is_visit_scheduled_ = false;
 }
 
-bool scene::add(std::shared_ptr<node> n) {
+bool scene::add(sref<node> n) {
 	return root_node_->add_child(n);
 }
 
@@ -52,13 +52,13 @@ bool scene::add(sref<sound> s) {
 	return true;
 }
 
-std::shared_ptr<node> scene::root_node() const {
+sref<node> scene::root_node() const {
 	return root_node_;
 }
 
-camera& scene::get_camera() {
-	return camera_;
-}
+// camera& scene::get_camera() {
+// 	return camera_;
+// }
 
 bool scene::init_() {
 	return true;
