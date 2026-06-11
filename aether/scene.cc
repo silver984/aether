@@ -43,7 +43,7 @@ bool scene::add(std::shared_ptr<node> n) {
 	return root_node_->add_child(n);
 }
 
-bool scene::add(ref<sound> s) {
+bool scene::add(sref<sound> s) {
 	if (!s) {
 		return false;
 	}

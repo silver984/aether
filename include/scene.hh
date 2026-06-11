@@ -1,8 +1,8 @@
 #pragma once
 #include <camera.hh>
 #include <concepts>
+#include <memory/sref.hh>
 #include <memory>
-#include <ref.hh>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -38,7 +38,7 @@ public:
 	void schedule_visit();
 	void unschedule_visit();
 	bool add(std::shared_ptr<node> n);
-	bool add(ref<sound> s);
+	bool add(sref<sound> s);
 	[[nodiscard]] std::shared_ptr<node> root_node() const;
 	[[nodiscard]] camera& get_camera();
 
@@ -58,7 +58,7 @@ private:
 	context const& mctx_;
 	camera camera_; // todo
 	std::shared_ptr<node> root_node_;
-	std::vector<ref<sound>> sounds_;
+	std::vector<sref<sound>> sounds_;
 	bool is_active_;
 	bool is_visit_scheduled_;
 };
