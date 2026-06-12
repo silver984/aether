@@ -2,18 +2,17 @@
 #include <math/rect.hh>
 #include <nodes/node.hh>
 
-struct Texture;
-using rltexture = Texture;
-
 namespace aether {
+
+class texture2d;
 
 class sprite : public node {
 public:
-	enum class texture_wrap : int { clamp, repeat, mirror_clamp, mirror_repeat };
+	enum class texture_wrap : int { CLAMP, REPEAT, MIRROR_CLAMP, MIRROR_REPEAT };
 
 	struct descriptor final {
 		std::string_view file;
-		texture_wrap wrap_type = texture_wrap::clamp;
+		texture_wrap wrap_type = texture_wrap::CLAMP;
 		bool has_antialiasing  = true;
 	};
 
@@ -32,7 +31,7 @@ protected:
 	void draw_(mat3 const& transform, rgba color) override;
 
 private:
-	std::shared_ptr<rltexture> texture_;
+	sref<texture2d> texture_;
 	std::string const file_arg_;
 	texture_wrap const wrap_type_arg_;
 	rect<float> texture_source_rect_;

@@ -1,31 +1,17 @@
 #include <debug/log.hh>
-#include <raylib.h>
+#include <texture2d.hh>
 #include <texture_repository.hh>
 #include <util/filesystem.hh>
 #include <util/string.hh>
 #include <util/timer.hh>
 #include <utility>
 
-namespace {
-
-struct texture_deleter {
-	void operator()(rltexture* ptr) const {
-		if (ptr && ptr->id > 0) {
-			UnloadTexture(*ptr);
-		}
-
-		delete ptr;
-	}
-};
-
-} // namespace
-
 namespace aether {
 
 texture_repository::texture_repository()  = default;
 texture_repository::~texture_repository() = default;
 
-std::shared_ptr<rltexture> texture_repository::fetch(std::string_view file) {
+sref<texture2d> texture_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
@@ -33,7 +19,7 @@ std::shared_ptr<rltexture> texture_repository::fetch(std::string_view file) {
 		return nullptr;
 	}
 
-	if (std::shared_ptr<rltexture> from_cache = try_fetch_from_cache_(lfile)) {
+	if (auto from_cache = try_fetch_from_cache_(lfile)) {
 		return from_cache;
 	}
 
@@ -46,18 +32,16 @@ std::shared_ptr<rltexture> texture_repository::fetch(std::string_view file) {
 	purge_unused();
 
 	AETHER_DEBUGLOG("Loading \"{}\"", file);
-	auto const start_time       = util::start();
-	rltexture temporary_texture = LoadTexture(lfile.string().c_str());
+	auto const start_time          = util::start();
+	sref<texture2d> shared_texture = new texture2d(lfile.string());
 
-	if (!is_texture_valid_(temporary_texture)) {
+	if (!is_texture_valid_(shared_texture)) {
 		AETHER_ERRORLOG("Invalid texture properties");
-		UnloadTexture(temporary_texture);
 	}
 
-	std::shared_ptr<rltexture> shared_texture =
-	        std::shared_ptr<rltexture>(new rltexture(std::move(temporary_texture)), texture_deleter{});
-	AETHER_TRACELOG("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", shared_texture->width, shared_texture->height,
-	                shared_texture->id, fmt::ptr(shared_texture.get()));
+	auto texture_bounds = shared_texture->bounds();
+	AETHER_TRACELOG("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", texture_bounds.width, texture_bounds.height,
+	                shared_texture->id(), fmt::ptr(shared_texture.get()));
 
 	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_texture));
 	auto const end_time      = util::end(start_time);
@@ -69,7 +53,7 @@ std::shared_ptr<rltexture> texture_repository::fetch(std::string_view file) {
 
 void texture_repository::purge_unused() {
 	std::erase_if(cache_, [](auto const& pair) {
-		return pair.second.use_count() <= 1;
+		return pair.second.strong_count() <= 1;
 	});
 }
 
@@ -77,7 +61,7 @@ void texture_repository::clear_cache_() {
 	cache_.clear();
 }
 
-std::shared_ptr<rltexture> texture_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
+sref<texture2d> texture_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}
@@ -85,8 +69,9 @@ std::shared_ptr<rltexture> texture_repository::try_fetch_from_cache_(std::filesy
 	return nullptr;
 }
 
-bool texture_repository::is_texture_valid_(rltexture const& texture) const {
-	return texture.id > 0 && texture.width > 0 && texture.height > 0;
+bool texture_repository::is_texture_valid_(sref<texture2d> texture) const {
+	auto texture_bounds = texture->bounds();
+	return texture->id() > 0 && texture_bounds.width > 0 && texture_bounds.height > 0;
 }
 
 } // namespace aether

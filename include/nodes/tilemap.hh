@@ -3,10 +3,9 @@
 #include <math/rect.hh>
 #include <nodes/node.hh>
 
-struct Texture;
-using rltexture = Texture;
-
 namespace aether {
+
+class texture2d;
 
 class tilemap : public node {
 public:
@@ -30,7 +29,7 @@ protected:
 	void draw_(mat3 const& transform, rgba color) override;
 
 private:
-	std::shared_ptr<rltexture> texture_;
+	sref<texture2d> texture_;
 	std::string const file_arg_;
 	rect<float> texture_source_rect_;
 	vec2<uint32_t> tile_index_;

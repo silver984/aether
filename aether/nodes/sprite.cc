@@ -2,8 +2,8 @@
 #include <context.hh>
 #include <debug/log.hh>
 #include <nodes/sprite.hh>
-#include <raylib.h>
 #include <renderer.hh>
+#include <texture2d.hh>
 #include <texture_repository.hh>
 
 namespace aether {
@@ -17,7 +17,7 @@ sprite::sprite(context const& ctx, descriptor const& desc)
 sprite::~sprite() = default;
 
 void sprite::toggle_antialiasing(bool val) const {
-	SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
+	SetTextureFilter(texture_->get(), val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 }
 
 bool sprite::set_texture(std::string_view file) {
@@ -28,7 +28,7 @@ bool sprite::set_texture(std::string_view file) {
 		return false;
 	}
 
-	size<int> const new_bounds = size<int>(texture_->width, texture_->height);
+	size<int> const new_bounds = texture_->bounds();
 	texture_source_rect_       = rect<float>(0.f, 0.f, (float)new_bounds.width, (float)new_bounds.height);
 	set_bounds(new_bounds);
 
@@ -38,10 +38,10 @@ bool sprite::set_texture(std::string_view file) {
 void sprite::set_texture_wrap(texture_wrap type) {
 	switch (type) {
 		using enum texture_wrap;
-	case clamp: SetTextureWrap(*texture_, TEXTURE_WRAP_CLAMP); break;
-	case repeat: SetTextureWrap(*texture_, TEXTURE_WRAP_REPEAT); break;
-	case mirror_clamp: SetTextureWrap(*texture_, TEXTURE_WRAP_MIRROR_CLAMP); break;
-	case mirror_repeat: SetTextureWrap(*texture_, TEXTURE_WRAP_MIRROR_REPEAT); break;
+	case CLAMP: SetTextureWrap(texture_->get(), TEXTURE_WRAP_CLAMP); break;
+	case REPEAT: SetTextureWrap(texture_->get(), TEXTURE_WRAP_REPEAT); break;
+	case MIRROR_CLAMP: SetTextureWrap(texture_->get(), TEXTURE_WRAP_MIRROR_CLAMP); break;
+	case MIRROR_REPEAT: SetTextureWrap(texture_->get(), TEXTURE_WRAP_MIRROR_REPEAT); break;
 	}
 }
 
@@ -71,7 +71,7 @@ bool sprite::init_() {
 }
 
 void sprite::draw_(mat3 const& transform, rgba color) {
-	ctx_().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
+	ctx_().core().fetch_renderer().draw_texture(texture_->get(), texture_source_rect_, transform, color);
 }
 
 } // namespace aether

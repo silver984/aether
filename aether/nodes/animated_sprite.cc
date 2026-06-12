@@ -2,9 +2,8 @@
 #include <context.hh>
 #include <debug/log.hh>
 #include <nodes/animated_sprite.hh>
-#include <raylib.h>
 #include <renderer.hh>
-#include <scene.hh>
+#include <texture2d.hh>
 #include <texture_repository.hh>
 #include <util/math.hh>
 
@@ -26,7 +25,7 @@ animated_sprite::animated_sprite(context const& ctx_, descriptor const& desc)
 animated_sprite::~animated_sprite() = default;
 
 void animated_sprite::toggle_antialiasing(bool val) const {
-	SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
+	SetTextureFilter(texture_->get(), val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 }
 
 bool animated_sprite::play_animation(std::string_view name) {
@@ -135,7 +134,7 @@ void animated_sprite::draw_(mat3 const& transform, rgba color) {
 		subtexture_transform_ = transform * t;
 	}
 
-	ctx_().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, subtexture_transform_, color);
+	ctx_().core().fetch_renderer().draw_texture(texture_->get(), texture_source_rect_, subtexture_transform_, color);
 }
 
 void animated_sprite::progress_frame_() {

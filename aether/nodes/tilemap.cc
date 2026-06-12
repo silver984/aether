@@ -1,8 +1,8 @@
 #include <context.hh>
 #include <debug/log.hh>
 #include <nodes/tilemap.hh>
-#include <raylib.h>
 #include <renderer.hh>
+#include <texture2d.hh>
 #include <texture_repository.hh>
 #include <util/math.hh>
 
@@ -17,11 +17,12 @@ tilemap::tilemap(context const& ctx, descriptor const& desc)
 tilemap::~tilemap() = default;
 
 void tilemap::toggle_antialiasing(bool val) const {
-	SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
+	SetTextureFilter(texture_->get(), val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 }
 
 vec2<uint32_t> tilemap::tile_count() const {
-	return vec2<uint32_t>(texture_->width / tile_bounds_arg_.width, texture_->height / tile_bounds_arg_.height);
+	auto texture_bounds = texture_->bounds();
+	return vec2<uint32_t>(texture_bounds.width / tile_bounds_arg_.width, texture_bounds.height / tile_bounds_arg_.height);
 }
 
 void tilemap::seek_tile(vec2<int> tile_index) {
@@ -48,7 +49,8 @@ bool tilemap::init_() {
 		return false;
 	}
 
-	if (tile_bounds_arg_.width > texture_->width || tile_bounds_arg_.height > texture_->height) {
+	auto texture_bounds = texture_->bounds();
+	if (tile_bounds_arg_.width > texture_bounds.width || tile_bounds_arg_.height > texture_bounds.height) {
 		AETHER_ERRORLOG("Invalid parameters");
 		return false;
 	}
@@ -63,7 +65,7 @@ bool tilemap::init_() {
 }
 
 void tilemap::draw_(mat3 const& transform, rgba color) {
-	ctx_().core().fetch_renderer().draw_texture(*texture_, texture_source_rect_, transform, color);
+	ctx_().core().fetch_renderer().draw_texture(texture_->get(), texture_source_rect_, transform, color);
 }
 
 } // namespace aether

@@ -20,10 +20,6 @@ class renderer final {
 
 public:
 	~renderer();
-	renderer(renderer const&)            = delete;
-	renderer(renderer&&)                 = delete;
-	renderer& operator=(renderer const&) = delete;
-	renderer& operator=(renderer&&)      = delete;
 	void draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
 
 private:

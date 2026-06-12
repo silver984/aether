@@ -5,12 +5,10 @@
 #include <math/rect.hh>
 #include <nodes/node.hh>
 #include <optional>
-#include <sref.hh>
-
-struct Texture;
-using rltexture = Texture;
 
 namespace aether {
+
+class texture2d;
 
 class animated_sprite : public node {
 public:
@@ -43,7 +41,7 @@ private:
 	[[nodiscard]] size<int> calculate_bounds_(std::vector<atlas_region> const& frames) const;
 
 	sref<animation_map> data_;
-	std::shared_ptr<rltexture> texture_;
+	sref<texture2d> texture_;
 	std::string current_animation_name_;
 	std::string const image_file_arg_;
 	std::string const data_file_arg_;

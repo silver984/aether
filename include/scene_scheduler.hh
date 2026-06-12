@@ -11,10 +11,6 @@ class scene_scheduler final {
 
 public:
 	~scene_scheduler();
-	scene_scheduler(scene_scheduler const&)            = delete;
-	scene_scheduler(scene_scheduler&&)                 = delete;
-	scene_scheduler& operator=(scene_scheduler const&) = delete;
-	scene_scheduler& operator=(scene_scheduler&&)      = delete;
 	void replace_scene(std::unique_ptr<scene> new_scene);
 
 private:
