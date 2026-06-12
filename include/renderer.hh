@@ -27,7 +27,11 @@ private:
 	void setup2d_();
 	void update_viewport_(size<int> target_window_size);
 	void start_draw_();
+#ifdef AETHER_DEBUG
+	void end_draw_(uint32_t debug_fps);
+#else
 	void end_draw_();
+#endif
 	void push_matrix_(mat3 const& matrix) const;
 	void define_color_vertex_(rgba color) const;
 	void define_vertex_(vec2<float> position) const;

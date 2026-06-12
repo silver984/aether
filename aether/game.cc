@@ -1,4 +1,7 @@
 #include <debug/log.hh>
+#ifdef WIN32
+	#include <debug/win32.hh>
+#endif
 #include <game.hh>
 #include <soloud_error.h>
 #include <util/timer.hh>
@@ -14,6 +17,9 @@ game::~game() {
 		return;
 	}
 
+	AETHER_INFOLOG("Shutting down");
+	auto const start_time = util::start();
+
 	if (scene_scheduler_.has_pending_scene_()) {
 		scene_scheduler_.cleanup_();
 		textures_.clear_cache_();
@@ -24,6 +30,12 @@ game::~game() {
 	soloud_.deinit();
 	window_.shutdown_();
 	is_initialized_ = false;
+
+	auto const end_time = util::end(start_time);
+	AETHER_INFOLOG("Done | took {}ms", end_time);
+#ifdef AETHER_DEBUG
+	log::impl_::close_log_file_();
+#endif
 }
 
 bool game::init(init_descriptor const& desc) {
@@ -31,9 +43,21 @@ bool game::init(init_descriptor const& desc) {
 		return true;
 	}
 
+#ifdef AETHER_DEBUG
+	log::impl_::create_log_file_();
+
+	#ifdef WIN32
+	if (!win32_::enable_console_colors_()) {
+		AETHER_WARNLOG("Couldn't enable console colors");
+	}
+	#endif
+#endif
+
 	if (!window_.init_(desc.window_title, desc.resolution, desc.fps)) {
-		AETHER_ERRORLOG("Failed");
+		AETHER_ERRORLOG("Window failed to initialized");
 		return false;
+	} else {
+		AETHER_DEBUGLOG("Window initialized");
 	}
 
 #ifdef AETHER_DEBUG
@@ -65,9 +89,15 @@ void game::run() {
 	bool is_audio_paused = false;
 	auto previous_time   = std::chrono::steady_clock::now();
 
+#ifdef AETHER_DEBUG
+	uint32_t frame_count   = 0;
+	uint32_t evaluated_fps = 0;
+	float elapsed          = 0.f;
+#endif
+
 	while (!window_.should_close_()) {
 		auto const current_time        = std::chrono::steady_clock::now();
-		float const delta_time         = std::chrono::duration<float>(current_time - previous_time).count();
+		float const dt                 = std::chrono::duration<float>(current_time - previous_time).count();
 		previous_time                  = current_time;
 		bool const is_window_minimized = window_.is_minimized_();
 
@@ -78,7 +108,7 @@ void game::run() {
 			}
 
 			renderer_.update_viewport_(window_.target_size());
-			scene_scheduler_.update_scene_(delta_time);
+			scene_scheduler_.update_scene_(dt);
 		} else {
 			if (!is_audio_paused) {
 				is_audio_paused = true;
@@ -92,7 +122,21 @@ void game::run() {
 			scene_scheduler_.draw_scene_();
 		}
 
+#ifdef AETHER_DEBUG
+		renderer_.end_draw_(evaluated_fps);
+#else
 		renderer_.end_draw_();
+#endif
+
+#ifdef AETHER_DEBUG
+		++frame_count;
+		elapsed += dt;
+		while (elapsed >= 1.f) {
+			evaluated_fps = frame_count;
+			frame_count   = 0;
+			elapsed -= 1.f;
+		}
+#endif
 	}
 
 	shutdown_();
@@ -111,12 +155,14 @@ void game::shutdown_() {
 	animations_.clear_cache_();
 	audios_.clear_cache_();
 	soloud_.deinit();
+	window_.shutdown_();
+	is_initialized_ = false;
 
 	auto const end_time = util::end(start_time);
 	AETHER_INFOLOG("Done | took {}ms", end_time);
-
-	window_.shutdown_();
-	is_initialized_ = false;
+#ifdef AETHER_DEBUG
+	log::impl_::close_log_file_();
+#endif
 }
 
 } // namespace aether

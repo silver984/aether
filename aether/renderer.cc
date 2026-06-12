@@ -110,11 +110,20 @@ void renderer::start_draw_() {
 	push_matrix_(projection_);
 }
 
+#ifdef AETHER_DEBUG
+void renderer::end_draw_(uint32_t debug_fps) {
+	rlPopMatrix();
+	DrawText(fmt::format("FPS: {}", debug_fps).c_str(), 5, 5, 10, WHITE);
+	EndScissorMode();
+	EndDrawing();
+}
+#else
 void renderer::end_draw_() {
 	rlPopMatrix();
 	EndScissorMode();
 	EndDrawing();
 }
+#endif
 
 void renderer::push_matrix_(mat3 const& matrix) const {
 	rlPushMatrix();

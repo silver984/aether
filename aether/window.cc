@@ -1,7 +1,3 @@
-#include <debug/log.hh>
-#ifdef WIN32
-	#include <debug/win32.hh>
-#endif
 #include <algorithm>
 #include <raylib.h>
 #include <util/math.hh>
@@ -22,16 +18,6 @@ size<int> window::target_size() const {
 }
 
 bool window::init_(std::string_view title, size<int> resolution, int fps) {
-#ifdef AETHER_DEBUG
-	log::impl_::create_log_file_();
-
-	#ifdef WIN32
-	if (!win32_::enable_console_colors_()) {
-		AETHER_WARNLOG("Couldn't enable console colors");
-	}
-	#endif
-#endif
-
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
 	size<int> const minimum_size = size<int>(640, 360);
 	title_                       = std::string(title);
@@ -39,7 +25,6 @@ bool window::init_(std::string_view title, size<int> resolution, int fps) {
 	InitWindow(target_size_.width, target_size_.height, title_.c_str());
 
 	if (!IsWindowReady()) {
-		AETHER_ERRORLOG("Not ready");
 		return false;
 	}
 
@@ -47,17 +32,11 @@ bool window::init_(std::string_view title, size<int> resolution, int fps) {
 	SetExitKey(KEY_NULL);
 	SetWindowMinSize(minimum_size.width, minimum_size.height);
 
-#ifdef AETHER_VERBOSE_DEBUG
-	AETHER_DEBUGLOG("Initialized");
-#endif
 	return true;
 }
 
 void window::shutdown_() {
 	CloseWindow();
-#ifdef AETHER_DEBUG
-	log::impl_::close_log_file_();
-#endif
 }
 
 bool window::should_close_() const {
