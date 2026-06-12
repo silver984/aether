@@ -4,8 +4,8 @@
 #endif
 #include <game.hh>
 #include <soloud_error.h>
+#include <thread>
 #include <util/timer.hh>
-
 namespace aether {
 
 game::game()
@@ -96,9 +96,9 @@ void game::run() {
 #endif
 
 	while (!window_.should_close_()) {
-		auto const current_time        = std::chrono::steady_clock::now();
-		float const dt                 = std::chrono::duration<float>(current_time - previous_time).count();
-		previous_time                  = current_time;
+		auto const start_time          = std::chrono::steady_clock::now();
+		float const dt                 = std::chrono::duration<float>(start_time - previous_time).count();
+		previous_time                  = start_time;
 		bool const is_window_minimized = window_.is_minimized_();
 
 		if (!is_window_minimized) {
@@ -138,6 +138,13 @@ void game::run() {
 			elapsed -= 1.f;
 		}
 #endif
+
+		auto const end_time = std::chrono::steady_clock::now();
+		float target_time   = 1.f / window_.target_fps();
+
+		while (std::chrono::duration<float>(end_time - start_time).count() < target_time) {
+			std::this_thread::yield();
+		}
 	}
 
 	shutdown_();

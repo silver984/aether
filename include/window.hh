@@ -18,6 +18,7 @@ public:
 	~window();
 	[[nodiscard]] std::string_view title() const;
 	[[nodiscard]] size<int> target_size() const;
+	[[nodiscard]] int target_fps() const;
 
 private:
 	window();
@@ -29,6 +30,7 @@ private:
 
 	std::string title_;
 	size<int> target_size_;
+	int target_fps_;
 };
 
 } // namespace aether

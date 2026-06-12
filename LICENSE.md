@@ -4,11 +4,11 @@ Aether Engine is distributed under multiple licenses.
 
 ## Source Code
 
-Aether Engine's source code is licensed under the **MIT License.** Read the license [here.](LICENSE-MIT.txt)
+Aether Engine's source code is licensed under the **MIT License.** Read the license [here.](licenses/Aether%20Engine/LICENSE-MIT.txt)
 
 ## Content
 
-All original non-source-code assets included in Aether Engine are licensed under **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).** Read the license [here.](LICENSE-CC-BY-NC-4.0.txt)
+All original non-source-code assets included in Aether Engine are licensed under **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).** Read the license [here.](licenses/Aether%20Engine/LICENSE-CC-BY-NC-4.0.txt)
 
 This includes, but is not limited to:
 
