@@ -39,6 +39,12 @@ void window::shutdown_() {
 	CloseWindow();
 }
 
+void window::update_() {
+	if (IsKeyPressed(KEY_F11)) {
+		ToggleBorderlessWindowed();
+	}
+}
+
 bool window::should_close_() const {
 	return WindowShouldClose();
 }

@@ -107,6 +107,7 @@ void game::run() {
 				soloud_.setPauseAll(is_audio_paused);
 			}
 
+			window_.update_();
 			renderer_.update_viewport_(window_.target_size());
 			scene_scheduler_.update_scene_(dt);
 		} else {

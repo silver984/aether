@@ -16,10 +16,6 @@ class window final {
 
 public:
 	~window();
-	window(window const&)            = delete;
-	window(window&&)                 = delete;
-	window& operator=(window const&) = delete;
-	window& operator=(window&&)      = delete;
 	[[nodiscard]] std::string_view title() const;
 	[[nodiscard]] size<int> target_size() const;
 
@@ -27,6 +23,7 @@ private:
 	window();
 	bool init_(std::string_view title, size<int> _size, int fps);
 	void shutdown_();
+	void update_();
 	[[nodiscard]] bool should_close_() const;
 	[[nodiscard]] bool is_minimized_() const;
 
