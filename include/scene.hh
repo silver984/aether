@@ -39,7 +39,7 @@ public:
 	void unschedule_visit();
 	bool add(sref<node> n);
 	bool add(sref<sound> s);
-	[[nodiscard]] sref<node> root_node() const;
+	[[nodiscard]] sref<node> root() const;
 	// [[nodiscard]] camera& get_camera();
 
 protected:
@@ -57,7 +57,7 @@ private:
 
 	context const& mctx_;
 	// camera camera_; // todo
-	sref<node> root_node_;
+	sref<node> root_;
 	std::vector<sref<sound>> sounds_;
 	bool is_active_;
 	bool is_visit_scheduled_;

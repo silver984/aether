@@ -16,7 +16,7 @@ public:
 	[[nodiscard]] vec2<float> position() const;
 
 private:
-	camera(std::shared_ptr<node>& root_node);
+	camera(std::shared_ptr<node>& root);
 
 	std::shared_ptr<node>& root_node_;
 	vec2<float> position_;

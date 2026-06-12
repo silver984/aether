@@ -2,15 +2,23 @@
 #include <concepts>
 #include <cstddef>
 
+namespace aether::sref_impl_ {
+
+struct block final {
+	void* ptr;
+	size_t strong_count;
+	size_t weak_count;
+	void (*deleter)(void*);
+};
+
+} // namespace aether::sref_impl_
+
 namespace aether {
 
 template <typename T>
 class sref final {
 	template <typename>
 	friend class sref;
-
-	template <typename>
-	friend class wref;
 
 public:
 	constexpr sref() noexcept
@@ -21,9 +29,9 @@ public:
 
 	template <std::derived_from<T> U>
 	sref(U* ptr)
-	        : block_(new block{.ptr = ptr, .strong_count = 1, .weak_count = 0, .deleter = [](void* p) {
-		                           delete static_cast<U*>(p);
-	                           }}) {}
+	        : block_(new sref_impl_::block{.ptr = ptr, .strong_count = 1, .weak_count = 0, .deleter = [](void* p) {
+		                                       delete static_cast<U*>(p);
+	                                       }}) {}
 
 	sref(sref const& other) noexcept
 	        : block_(other.block_) {
@@ -126,13 +134,6 @@ public:
 	}
 
 private:
-	struct block final {
-		void* ptr;
-		size_t strong_count;
-		size_t weak_count;
-		void (*deleter)(void*);
-	};
-
 	void release_() {
 		if (!block_) {
 			return;
@@ -150,7 +151,7 @@ private:
 		}
 	}
 
-	block* block_;
+	sref_impl_::block* block_;
 };
 
 } // namespace aether

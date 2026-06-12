@@ -39,6 +39,7 @@ public:
 
 	bool add_child(sref<node> n);
 	bool remove_child(sref<node> n);
+	bool remove_child(node* n);
 	void destroy_all();
 	bool detach_from_parent();
 	void activate();
@@ -85,26 +86,26 @@ public:
 	void toggle_flip_y(bool val);
 	[[nodiscard]] bool is_flip_y() const;
 	[[nodiscard]] std::vector<sref<node>> children() const;
+	[[nodiscard]] scene* get_scene() const;
 
 protected:
 	virtual bool init_();
 	virtual void update_(float dt);
 	virtual void draw_(mat3 const& transform, rgba color);
 	[[nodiscard]] context const& ctx_() const;
-	[[nodiscard]] scene* scene_() const;
 
 private:
 	bool init_node_();
 	void update_all_(float dt);
 	void draw_all_();
-	[[nodiscard]] bool has_ancestor_of_(node* n) const;
+	[[nodiscard]] bool has_ancestor_(node* n) const;
 	void mark_transform_dirty_();
 	void mark_rgba_dirty_();
 	[[nodiscard]] mat3 calculate_transform_() const;
 	[[nodiscard]] rgba calculate_combined_rgba_() const;
 
 	context const& mctx_;
-	scene* mscene_;
+	scene* scene_;
 	node* parent_;
 	std::vector<sref<node>> children_;
 	std::string name_;

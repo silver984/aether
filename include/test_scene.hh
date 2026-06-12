@@ -1,6 +1,6 @@
 #pragma once
-#include <memory>
 #include <scene.hh>
+#include <sound.hh>
 
 class test_scene final : public aether::scene {
 public:
@@ -12,5 +12,6 @@ protected:
 	void update_(float dt) override;
 
 private:
+	aether::sref<aether::sound> sound_;
 	float elapsed_;
 };

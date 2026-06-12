@@ -8,7 +8,7 @@ namespace aether {
 
 node::node(context const& ctx_)
         : mctx_(ctx_)
-        , mscene_(nullptr)
+        , scene_(nullptr)
         , parent_(nullptr)
         , color_(255)
         , combined_color_(color_)
@@ -28,58 +28,62 @@ node::node(context const& ctx_)
 
 node::~node() = default;
 
-bool node::add_child(sref<node> node) {
-	if (!node) {
+bool node::add_child(sref<node> n) {
+	if (!n) {
 		return false;
 	}
 
-	if (node.get() == this) {
-		// prevent self-parenting
+	bool is_self      = n.get() == this;
+	bool has_ancestor = n->has_ancestor_(this);
+	bool is_duplicate = std::find(children_.begin(), children_.end(), n) != children_.end();
+
+	if (is_self || has_ancestor || is_duplicate) {
 		return false;
 	}
 
-	if (node->has_ancestor_of_(this)) {
-		// prevent hierarchy cycle
-		return false;
+	if (auto old_parent = n->parent_) {
+		old_parent->remove_child(n);
 	}
 
-	if (std::find(children_.begin(), children_.end(), node) != children_.end()) {
-		// prevent duplicates
-		return false;
-	}
-
-	if (auto old_parent = node->parent_) {
-		// remove from old parent
-		old_parent->remove_child(node);
-	}
-
-	node->parent_ = this;
-	node->mscene_ = mscene_;
-	children_.emplace_back(node);
-	node->mark_transform_dirty_();
-	node->mark_rgba_dirty_();
+	auto placed     = children_.emplace_back(n);
+	placed->parent_ = this;
+	placed->mark_transform_dirty_();
+	placed->mark_rgba_dirty_();
 
 	return true;
 }
 
-bool node::remove_child(sref<node> node) {
-	if (!node) {
+bool node::remove_child(sref<node> n) {
+	if (!n || n.get() == this) {
 		return false;
 	}
 
-	if (node.get() == this) {
-		// prevent self-remove
-		return false;
-	}
-
-	auto const iterator = std::find(children_.begin(), children_.end(), node);
+	auto const iterator = std::find(children_.begin(), children_.end(), n);
 
 	if (iterator == children_.end()) {
 		return false;
 	}
 
-	node->parent_ = nullptr;
-	node->mscene_ = nullptr;
+	(*iterator)->parent_ = nullptr;
+	children_.erase(iterator);
+
+	return true;
+}
+
+bool node::remove_child(node* n) {
+	if (!n || n == this) {
+		return false;
+	}
+
+	auto const iterator = std::find_if(children_.begin(), children_.end(), [n](auto const& child) {
+		return child.get() == n;
+	});
+
+	if (iterator == children_.end()) {
+		return false;
+	}
+
+	(*iterator)->parent_ = nullptr;
 	children_.erase(iterator);
 
 	return true;
@@ -395,12 +399,16 @@ void node::update_(float dt) {}
 
 void node::draw_(mat3 const& transform, rgba color) {}
 
-context const& node::ctx_() const {
-	return mctx_;
+scene* node::get_scene() const {
+	if (scene_) {
+		return scene_;
+	}
+
+	return parent_ ? parent_->get_scene() : nullptr;
 }
 
-scene* node::scene_() const {
-	return mscene_;
+context const& node::ctx_() const {
+	return mctx_;
 }
 
 bool node::init_node_() {
@@ -455,15 +463,15 @@ void node::draw_all_() {
 	}
 }
 
-bool node::has_ancestor_of_(node* n) const {
-	auto p = parent();
+bool node::has_ancestor_(node* n) const {
+	auto p = parent_;
 
 	while (p) {
 		if (p == n) {
 			return true;
 		}
 
-		p = p->parent();
+		p = p->parent_;
 	}
 
 	return false;
