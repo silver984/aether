@@ -106,20 +106,15 @@ void renderer::update_viewport_(size<int> target_window_size) {
 void renderer::start_draw_() {
 	BeginDrawing();
 	BeginScissorMode(0, 0, render_size_.width, render_size_.height);
-	ClearBackground(BLACK);
+	ClearBackground(WHITE);
 	push_matrix_(projection_);
 }
 
 #ifdef AETHER_DEBUG
-void renderer::end_draw_(bool show_debug, uint32_t debug_fps) {
+void renderer::end_draw_(uint32_t debug_fps) {
 	rlPopMatrix();
-
-	if (show_debug) {
-		DrawRectangle(4, 4, 64, 24, Color{64, 64, 64, 75});
-
-		DrawText(fmt::format("FPS: {}", debug_fps).c_str(), 8, 8, 10, WHITE);
-	}
-	
+	DrawRectangle(4, 4, 64, 24, Color{.r = 0, .g = 0, .b = 0, .a = 64});
+	DrawText(fmt::format("FPS: {}", debug_fps).c_str(), 8, 8, 10, WHITE);
 	EndScissorMode();
 	EndDrawing();
 }

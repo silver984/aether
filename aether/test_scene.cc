@@ -1,8 +1,6 @@
 #include <context.hh>
-#include <nodes/animated_sprite.hh>
-#include <test_scene.hh>
-
 #include <debug/log.hh>
+#include <test_scene.hh>
 
 using namespace aether;
 
@@ -23,21 +21,11 @@ bool test_scene::init_() {
 	whitty->set_position(vec2<float>(400.f));
 	add(whitty);
 
-	{
-		auto bf = node::create<animated_sprite>(
-		        ctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12});
-		bf->play_animation("idle", {.loop = true});
-		bf->set_position(vec2<float>(800.f));
-		whitty->add_child(bf);
-	}
-
-	{
-		bf_spin_ = node::create<animated_sprite>(
-		        ctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12});
-		bf_spin_->play_animation("idle", {.loop = true});
-		bf_spin_->set_position(vec2<float>(600.f));
-		whitty->add_child(bf_spin_);
-	}
+	bf_spin_ = node::create<animated_sprite>(
+	        ctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12});
+	bf_spin_->play_animation("idle", {.loop = true});
+	bf_spin_->set_position(vec2<float>(600.f));
+	whitty->add_child(bf_spin_);
 
 	sound_ = sound::create(ctx, "resources/sound.ogg");
 	sound_->play();
@@ -48,8 +36,7 @@ bool test_scene::init_() {
 }
 
 void test_scene::update_(float dt) {
-	float movement_speed = dt * 50;
-
+	float const movement_speed = dt * 50.f;
 	bf_spin_->set_rotation(bf_spin_->rotation() + movement_speed);
 	bf_spin_->set_position_x(bf_spin_->position().x + movement_speed);
 }

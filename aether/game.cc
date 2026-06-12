@@ -86,14 +86,14 @@ void game::run() {
 		return;
 	}
 
-	bool is_audio_paused = false;
-	auto previous_time   = std::chrono::steady_clock::now();
-
 #ifdef AETHER_DEBUG
 	uint32_t frame_count   = 0;
 	uint32_t evaluated_fps = 0;
-	float elapsed          = 0.f;
+	float accumulator      = 0.f;
 #endif
+
+	bool is_audio_paused = false;
+	auto previous_time   = std::chrono::steady_clock::now();
 
 	while (!window_.should_close_()) {
 		auto const start_time          = std::chrono::steady_clock::now();
@@ -124,24 +124,26 @@ void game::run() {
 		}
 
 #ifdef AETHER_DEBUG
-		renderer_.end_draw_(true, evaluated_fps); // Make toggleable later!
+		renderer_.end_draw_(evaluated_fps);
 #else
 		renderer_.end_draw_();
 #endif
 
 #ifdef AETHER_DEBUG
 		++frame_count;
-		elapsed += dt;
-		while (elapsed >= 1.f) {
+		accumulator += dt;
+		while (accumulator >= 1.f) {
 			evaluated_fps = frame_count;
 			frame_count   = 0;
-			elapsed -= 1.f;
+			accumulator -= 1.f;
 		}
 #endif
-		float target_time   = 1.f / window_.target_fps();
 
-		while (std::chrono::duration<float>(std::chrono::steady_clock::now() - start_time).count() < target_time) {
-			std::this_thread::yield();
+		float const target_time = 1.f / window_.target_fps();
+		float const elapsed     = std::chrono::duration<float>(std::chrono::steady_clock::now() - start_time).count();
+		if (elapsed < target_time) {
+			auto const remaining_time = std::chrono::duration<float, std::milli>(target_time - elapsed);
+			std::this_thread::sleep_for(remaining_time);
 		}
 	}
 
@@ -158,7 +160,6 @@ void game::shutdown_() {
 
 	scene_scheduler_.cleanup_();
 	textures_.clear_cache_();
-	
 	animations_.clear_cache_();
 	audios_.clear_cache_();
 	soloud_.deinit();
