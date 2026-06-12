@@ -1,5 +1,5 @@
 #pragma once
-#include <byte_buffer.hh>
+#include <data/u8vec.hh>
 #include <filesystem>
 #include <optional>
 #include <string>
@@ -8,6 +8,6 @@
 namespace aether::util {
 
 [[nodiscard]] std::string file_extension(std::filesystem::path const& file);
-[[nodiscard]] byte_buffer read_file_to_byte_buffer(std::filesystem::path const& file);
+[[nodiscard]] u8vec read_file_to_buffer(std::filesystem::path const& file);
 
 } // namespace aether::util

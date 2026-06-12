@@ -4,6 +4,6 @@
 
 namespace aether {
 
-using byte_buffer = std::vector<uint8_t>;
+using u8vec = std::vector<uint8_t>;
 
 }

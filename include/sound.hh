@@ -1,6 +1,5 @@
 #pragma once
-#include <byte_buffer.hh>
-#include <cstdint>
+#include <data/u8vec.hh>
 #include <soloud_wav.h>
 #include <sref.hh>
 #include <string_view>
@@ -14,11 +13,8 @@ class Soloud;
 namespace aether {
 
 class context;
-class scene;
 
 class sound final {
-	friend class scene;
-
 public:
 	sound(context const& ctx);
 	~sound();
@@ -40,7 +36,7 @@ private:
 	SoLoud::Soloud& soloud_;
 	SoLoud::Wav wave_;
 	SoLoud::handle wave_handle_;
-	std::shared_ptr<byte_buffer> byte_buffer_;
+	sref<u8vec> buffer_;
 	float volume_;
 	float pan_;
 };

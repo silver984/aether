@@ -1,5 +1,5 @@
 #pragma once
-#include <animation_map.hh>
+#include <data/animation_map.hh>
 #include <filesystem>
 #include <functional>
 #include <optional>

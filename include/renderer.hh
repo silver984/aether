@@ -7,7 +7,7 @@
 #include <math/vec2.hh>
 
 struct Texture;
-using rltexture = Texture;
+using rltexture2d = Texture;
 
 namespace aether {
 
@@ -20,7 +20,7 @@ class renderer final {
 
 public:
 	~renderer();
-	void draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
+	void draw_texture(rltexture2d const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
 
 private:
 	renderer();

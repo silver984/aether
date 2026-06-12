@@ -1,4 +1,4 @@
-#include <texture2d.hh>
+#include <data/texture2d.hh>
 
 namespace aether {
 
@@ -9,7 +9,7 @@ texture2d::~texture2d() {
 	UnloadTexture(rltx_);
 }
 
-rltexture const& texture2d::get() const {
+rltexture2d const& texture2d::get() const {
 	return rltx_;
 }
 

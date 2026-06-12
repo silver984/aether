@@ -81,14 +81,14 @@ void sound::resume() {
 }
 
 bool sound::init_(audio_repository& audios, std::string_view file) {
-	byte_buffer_ = audios.fetch(file);
+	buffer_ = audios.fetch(file);
 
-	if (!byte_buffer_) {
+	if (!buffer_) {
 		return false;
 	}
 
 	using enum SoLoud::SOLOUD_ERRORS;
-	if (wave_.loadMem(byte_buffer_->data(), byte_buffer_->size(), false, false) != SO_NO_ERROR) {
+	if (wave_.loadMem(buffer_->data(), buffer_->size(), false, false) != SO_NO_ERROR) {
 		return false;
 	}
 

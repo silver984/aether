@@ -16,7 +16,7 @@ renderer::renderer()
 
 renderer::~renderer() = default;
 
-void renderer::draw_texture(rltexture const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const {
+void renderer::draw_texture(rltexture2d const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const {
 	if (texture.id < 1) {
 		return;
 	}

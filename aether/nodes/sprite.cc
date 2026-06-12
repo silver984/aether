@@ -1,9 +1,9 @@
 #include <cmath>
 #include <context.hh>
+#include <data/texture2d.hh>
 #include <debug/log.hh>
 #include <nodes/sprite.hh>
 #include <renderer.hh>
-#include <texture2d.hh>
 #include <texture_repository.hh>
 
 namespace aether {

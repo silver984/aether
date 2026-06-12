@@ -9,7 +9,7 @@ namespace aether {
 audio_repository::audio_repository()  = default;
 audio_repository::~audio_repository() = default;
 
-std::shared_ptr<byte_buffer> audio_repository::fetch(std::string_view file) {
+sref<u8vec> audio_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
@@ -29,21 +29,21 @@ std::shared_ptr<byte_buffer> audio_repository::fetch(std::string_view file) {
 
 	purge_unused();
 
-	byte_buffer temporary_buffer = util::read_file_to_byte_buffer(lfile);
+	u8vec temporary_buffer = util::read_file_to_buffer(lfile);
 
 	if (temporary_buffer.empty()) {
 		AETHER_ERRORLOG("Failed | empty buffer");
 		return nullptr;
 	}
 
-	auto shared_buffer       = std::make_shared<byte_buffer>(std::move(temporary_buffer));
-	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_buffer));
+	sref<u8vec> shared_buffer = new u8vec(std::move(temporary_buffer));
+	auto const [iterator, _]  = cache_.emplace(lfile, std::move(shared_buffer));
 	return iterator->second;
 }
 
 void audio_repository::purge_unused() {
 	std::erase_if(cache_, [](auto const& pair) {
-		return pair.second.use_count() <= 1;
+		return pair.second.strong_count() <= 1;
 	});
 }
 
@@ -51,7 +51,7 @@ void audio_repository::clear_cache_() {
 	cache_.clear();
 }
 
-std::shared_ptr<byte_buffer> audio_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
+sref<u8vec> audio_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}

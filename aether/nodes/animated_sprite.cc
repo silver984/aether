@@ -1,9 +1,9 @@
 #include <animation_repository.hh>
 #include <context.hh>
+#include <data/texture2d.hh>
 #include <debug/log.hh>
 #include <nodes/animated_sprite.hh>
 #include <renderer.hh>
-#include <texture2d.hh>
 #include <texture_repository.hh>
 #include <util/math.hh>
 

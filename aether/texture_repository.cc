@@ -1,5 +1,5 @@
+#include <data/texture2d.hh>
 #include <debug/log.hh>
-#include <texture2d.hh>
 #include <texture_repository.hh>
 #include <util/filesystem.hh>
 #include <util/string.hh>

@@ -1,7 +1,7 @@
 #pragma once
-#include <byte_buffer.hh>
+#include <data/u8vec.hh>
 #include <filesystem>
-#include <memory>
+#include <sref.hh>
 #include <string_view>
 #include <unordered_map>
 
@@ -14,15 +14,15 @@ class audio_repository final {
 
 public:
 	~audio_repository();
-	[[nodiscard]] std::shared_ptr<byte_buffer> fetch(std::string_view file);
+	[[nodiscard]] sref<u8vec> fetch(std::string_view file);
 	void purge_unused();
 
 private:
 	audio_repository();
 	void clear_cache_();
-	[[nodiscard]] std::shared_ptr<byte_buffer> try_fetch_from_cache_(std::filesystem::path const& file) const;
+	[[nodiscard]] sref<u8vec> try_fetch_from_cache_(std::filesystem::path const& file) const;
 
-	std::unordered_map<std::filesystem::path, std::shared_ptr<byte_buffer>> cache_;
+	std::unordered_map<std::filesystem::path, sref<u8vec>> cache_;
 };
 
 } // namespace aether
