@@ -129,6 +129,11 @@ void game::run() {
 		renderer_.end_draw_();
 #endif
 
+		if (is_window_minimized) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			continue;
+		}
+
 #ifdef AETHER_DEBUG
 		++frame_count;
 		accumulator += dt;
@@ -140,7 +145,8 @@ void game::run() {
 #endif
 
 		float const target_time = 1.f / window_.target_fps();
-		float const elapsed     = std::chrono::duration<float>(std::chrono::steady_clock::now() - start_time).count();
+		auto const end_time     = std::chrono::steady_clock::now();
+		float const elapsed     = std::chrono::duration<float>(end_time - start_time).count();
 		if (elapsed < target_time) {
 			auto const remaining_time = std::chrono::duration<float, std::milli>(target_time - elapsed);
 			std::this_thread::sleep_for(remaining_time);
