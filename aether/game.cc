@@ -138,11 +138,9 @@ void game::run() {
 			elapsed -= 1.f;
 		}
 #endif
-
-		auto const end_time = std::chrono::steady_clock::now();
 		float target_time   = 1.f / window_.target_fps();
 
-		while (std::chrono::duration<float>(end_time - start_time).count() < target_time) {
+		while (std::chrono::duration<float>(std::chrono::steady_clock::now() - start_time).count() < target_time) {
 			std::this_thread::yield();
 		}
 	}
