@@ -111,9 +111,15 @@ void renderer::start_draw_() {
 }
 
 #ifdef AETHER_DEBUG
-void renderer::end_draw_(uint32_t debug_fps) {
+void renderer::end_draw_(bool show_debug, uint32_t debug_fps) {
 	rlPopMatrix();
-	DrawText(fmt::format("FPS: {}", debug_fps).c_str(), 5, 5, 10, WHITE);
+
+	if (show_debug) {
+		DrawRectangle(4, 4, 64, 24, Color{64, 64, 64, 75});
+
+		DrawText(fmt::format("FPS: {}", debug_fps).c_str(), 8, 8, 10, WHITE);
+	}
+	
 	EndScissorMode();
 	EndDrawing();
 }

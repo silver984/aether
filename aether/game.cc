@@ -124,7 +124,7 @@ void game::run() {
 		}
 
 #ifdef AETHER_DEBUG
-		renderer_.end_draw_(evaluated_fps);
+		renderer_.end_draw_(true, evaluated_fps); // Make toggleable later!
 #else
 		renderer_.end_draw_();
 #endif
@@ -158,6 +158,7 @@ void game::shutdown_() {
 
 	scene_scheduler_.cleanup_();
 	textures_.clear_cache_();
+	
 	animations_.clear_cache_();
 	audios_.clear_cache_();
 	soloud_.deinit();

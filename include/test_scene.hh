@@ -1,6 +1,7 @@
 #pragma once
 #include <scene.hh>
 #include <sound.hh>
+#include <nodes/animated_sprite.hh>
 
 class test_scene final : public aether::scene {
 public:
@@ -14,4 +15,6 @@ protected:
 private:
 	aether::sref<aether::sound> sound_;
 	float elapsed_;
+	
+	aether::sref<aether::animated_sprite> bf_spin_;
 };

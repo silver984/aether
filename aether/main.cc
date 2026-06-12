@@ -9,7 +9,7 @@ using namespace aether;
 int main() {
 	game ae;
 
-	if (ae.init({.window_title = "Aether Engine " AETHER_VERSION, .resolution = size<int>(1280, 720), .fps = 60})) {
+	if (ae.init({.window_title = "Aether Engine " AETHER_VERSION, .resolution = size<int>(1280, 720), .fps = 240})) {
 		context const& ctx = ae.ctx();
 		ctx.fetch_scene_scheduler().replace_scene(scene::create<test_scene>(ctx));
 		ae.run();

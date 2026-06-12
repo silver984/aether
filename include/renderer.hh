@@ -5,6 +5,7 @@
 #include <math/rgba.hh>
 #include <math/size.hh>
 #include <math/vec2.hh>
+#include <raylib.h>
 
 struct Texture;
 using rltexture2d = Texture;
@@ -28,7 +29,7 @@ private:
 	void update_viewport_(size<int> target_window_size);
 	void start_draw_();
 #ifdef AETHER_DEBUG
-	void end_draw_(uint32_t debug_fps);
+	void end_draw_(bool show_debug, uint32_t debug_fps);
 #else
 	void end_draw_();
 #endif

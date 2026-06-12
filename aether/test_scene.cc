@@ -32,19 +32,24 @@ bool test_scene::init_() {
 	}
 
 	{
-		auto bf = node::create<animated_sprite>(
+		bf_spin_ = node::create<animated_sprite>(
 		        ctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12});
-		bf->play_animation("idle", {.loop = true});
-		bf->set_position(vec2<float>(600.f));
-		whitty->add_child(bf);
+		bf_spin_->play_animation("idle", {.loop = true});
+		bf_spin_->set_position(vec2<float>(600.f));
+		whitty->add_child(bf_spin_);
 	}
 
 	sound_ = sound::create(ctx, "resources/sound.ogg");
 	sound_->play();
 	add(sound_);
 
-	// activate();
+	activate();
 	return true;
 }
 
-void test_scene::update_(float dt) {}
+void test_scene::update_(float dt) {
+	float movement_speed = dt * 50;
+
+	bf_spin_->set_rotation(bf_spin_->rotation() + movement_speed);
+	bf_spin_->set_position_x(bf_spin_->position().x + movement_speed);
+}
