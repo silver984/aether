@@ -71,12 +71,13 @@ bool animated_sprite::play_animation(std::string_view name, animation_options op
 bool animated_sprite::init_() {
 	auto const& resource = ctx_().resource();
 	texture_             = resource.textures().fetch(image_file_arg_);
-	data_                = resource.animations().fetch(data_file_arg_);
 
 	if (!texture_) {
 		AETHER_ERRORLOG("Failed | nullptr texture");
 		return false;
 	}
+
+	data_ = resource.animations().fetch(data_file_arg_);
 
 	if (!data_) {
 		AETHER_ERRORLOG("Failed | nullptr data");

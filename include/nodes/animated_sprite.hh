@@ -5,6 +5,7 @@
 #include <math/rect.hh>
 #include <nodes/node.hh>
 #include <optional>
+#include <sref.hh>
 
 struct Texture;
 using rltexture = Texture;
@@ -41,7 +42,7 @@ private:
 	void progress_frame_();
 	[[nodiscard]] size<int> calculate_bounds_(std::vector<atlas_region> const& frames) const;
 
-	std::shared_ptr<animation_map> data_;
+	sref<animation_map> data_;
 	std::shared_ptr<rltexture> texture_;
 	std::string current_animation_name_;
 	std::string const image_file_arg_;

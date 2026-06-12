@@ -23,11 +23,21 @@ bool test_scene::init_() {
 	whitty->set_position(vec2<float>(400.f));
 	add(whitty);
 
-	auto bf = node::create<animated_sprite>(
-	        ctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12});
-	bf->play_animation("idle", {.loop = true});
-	bf->set_position(vec2<float>(800.f));
-	whitty->add_child(bf);
+	{
+		auto bf = node::create<animated_sprite>(
+		        ctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12});
+		bf->play_animation("idle", {.loop = true});
+		bf->set_position(vec2<float>(800.f));
+		whitty->add_child(bf);
+	}
+
+	{
+		auto bf = node::create<animated_sprite>(
+		        ctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12});
+		bf->play_animation("idle", {.loop = true});
+		bf->set_position(vec2<float>(600.f));
+		whitty->add_child(bf);
+	}
 
 	sound_ = sound::create(ctx, "resources/sound.ogg");
 	sound_->play();

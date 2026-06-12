@@ -7,7 +7,6 @@ namespace aether::sref_impl_ {
 struct block final {
 	void* ptr;
 	size_t strong_count;
-	size_t weak_count;
 	void (*deleter)(void*);
 };
 
@@ -29,7 +28,7 @@ public:
 
 	template <std::derived_from<T> U>
 	sref(U* ptr)
-	        : block_(new sref_impl_::block{.ptr = ptr, .strong_count = 1, .weak_count = 0, .deleter = [](void* p) {
+	        : block_(new sref_impl_::block{.ptr = ptr, .strong_count = 1, .deleter = [](void* p) {
 		                                       delete static_cast<U*>(p);
 	                                       }}) {}
 
@@ -73,10 +72,6 @@ public:
 
 	[[nodiscard]] constexpr size_t strong_count() const {
 		return block_ ? block_->strong_count : 0;
-	}
-
-	[[nodiscard]] constexpr size_t weak_count() const {
-		return block_ ? block_->weak_count : 0;
 	}
 
 	constexpr T* operator->() const {
@@ -145,9 +140,7 @@ private:
 		if (--old_block->strong_count == 0) {
 			old_block->deleter(old_block->ptr);
 			old_block->ptr = nullptr;
-			if (old_block->weak_count == 0) {
-				delete old_block;
-			}
+			delete old_block;
 		}
 	}
 
