@@ -92,12 +92,15 @@ void game::run() {
 	float accumulator      = 0.f;
 #endif
 
-	bool is_audio_paused = false;
-	auto previous_time   = std::chrono::steady_clock::now();
+	using namespace std::chrono;
+	bool is_audio_paused         = false;
+	auto previous_time           = steady_clock::now();
+	auto next_frame_time         = previous_time;
+	auto const target_frame_time = duration_cast<steady_clock::duration>(duration<float>(1.f / window_.target_fps()));
 
 	while (!window_.should_close_()) {
-		auto const start_time          = std::chrono::steady_clock::now();
-		float const dt                 = std::chrono::duration<float>(start_time - previous_time).count();
+		auto const start_time          = steady_clock::now();
+		float const dt                 = duration<float>(start_time - previous_time).count();
 		previous_time                  = start_time;
 		bool const is_window_minimized = window_.is_minimized_();
 
@@ -130,9 +133,13 @@ void game::run() {
 #endif
 
 		if (is_window_minimized) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			next_frame_time = steady_clock::now();
+			std::this_thread::sleep_for(milliseconds(100));
 			continue;
 		}
+
+		next_frame_time += target_frame_time;
+		std::this_thread::sleep_until(next_frame_time);
 
 #ifdef AETHER_DEBUG
 		++frame_count;
@@ -143,14 +150,6 @@ void game::run() {
 			accumulator -= 1.f;
 		}
 #endif
-
-		float const target_time = 1.f / window_.target_fps();
-		auto const end_time     = std::chrono::steady_clock::now();
-		float const elapsed     = std::chrono::duration<float>(end_time - start_time).count();
-		if (elapsed < target_time) {
-			auto const remaining_time = std::chrono::duration<float, std::milli>(target_time - elapsed);
-			std::this_thread::sleep_for(remaining_time);
-		}
 	}
 
 	shutdown_();

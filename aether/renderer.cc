@@ -12,7 +12,11 @@
 namespace aether {
 
 renderer::renderer()
-        : projection_(mat3::identity()) {}
+        : projection_(mat3::identity()) {
+#ifdef AETHER_DEBUG
+	last_debug_fps_ = 0;
+#endif
+}
 
 renderer::~renderer() = default;
 
@@ -113,10 +117,30 @@ void renderer::start_draw_() {
 #ifdef AETHER_DEBUG
 void renderer::end_draw_(uint32_t debug_fps) {
 	rlPopMatrix();
-	DrawRectangle(4, 4, 64, 24, Color{.r = 0, .g = 0, .b = 0, .a = 64});
-	DrawText(fmt::format("FPS: {}", debug_fps).c_str(), 8, 8, 10, WHITE);
+	update_debug_(debug_fps);
+	draw_debug_();
 	EndScissorMode();
 	EndDrawing();
+}
+
+void renderer::update_debug_(uint32_t debug_fps) {
+	if (last_debug_fps_ == debug_fps) {
+		return;
+	}
+
+	debug_text_         = fmt::format("FPS: {}", debug_fps);
+	Vector2 const m     = MeasureTextEx(GetFontDefault(), debug_text_.c_str(), 10.f, 1.f);
+	debug_text_measure_ = vec2<int>((int)std::round(m.x), (int)std::round(m.y));
+	last_debug_fps_     = debug_fps;
+}
+
+void renderer::draw_debug_() {
+	if (debug_text_.empty()) {
+		return;
+	}
+
+	DrawRectangle(4, 4, debug_text_measure_.x + 9, debug_text_measure_.y + 7, Color{0, 0, 0, 64});
+	DrawText(debug_text_.c_str(), 8, 8, 10, WHITE);
 }
 #else
 void renderer::end_draw_() {
