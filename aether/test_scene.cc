@@ -14,7 +14,7 @@ test_scene::~test_scene() = default;
 
 bool test_scene::init_() {
 	auto const& ctx  = ctx_();
-	auto window_size = ctx.core().fetch_window().target_size();
+	auto window_size = ctx.get_window().target_size();
 
 	og_bf_ = node::create<animated_sprite>(
 	        ctx,

@@ -9,7 +9,13 @@
 namespace aether {
 
 game::game()
-        : ctx_(window_, renderer_, soloud_, textures_, animations_, audios_, scene_scheduler_)
+        : ctx_(context::descriptor{.rwindow          = window_,
+                                   .rrenderer        = renderer_,
+                                   .rtextures        = textures_,
+                                   .ranimations      = animations_,
+                                   .raudios          = audios_,
+                                   .rscene_scheduler = scene_scheduler_,
+                                   .rsoloud          = soloud_})
         , is_initialized_(false) {}
 
 game::~game() {

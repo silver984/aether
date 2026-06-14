@@ -21,7 +21,7 @@ void sprite::toggle_antialiasing(bool val) const {
 }
 
 bool sprite::set_texture(std::string_view file) {
-	if (auto fetched_texture = ctx_().resource().textures().fetch(file)) {
+	if (auto fetched_texture = ctx_().textures().fetch(file)) {
 		texture_ = fetched_texture;
 	} else {
 		AETHER_ERRORLOG("Failed");
@@ -71,7 +71,7 @@ bool sprite::init_() {
 }
 
 void sprite::draw_(mat3 const& transform, rgba color) {
-	ctx_().core().fetch_renderer().draw_texture(texture_->get(), texture_source_rect_, transform, color);
+	ctx_().get_renderer().draw_texture(texture_->get(), texture_source_rect_, transform, color);
 }
 
 } // namespace aether

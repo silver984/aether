@@ -1,31 +1,54 @@
 #pragma once
-#include <core_services.hh>
-#include <cstdint>
-#include <memory>
-#include <resource_services.hh>
+
+namespace SoLoud {
+
+class Soloud;
+
+}
 
 namespace aether {
 
 class game;
+class window;
+class renderer;
+class texture_repository;
+class animation_repository;
+class audio_repository;
 class scene_scheduler;
 
 class context final {
 	friend class game;
 
-private:
-	context(window& _window, renderer& _renderer, SoLoud::Soloud& soloud, texture_repository& textures,
-	        animation_repository& animations, audio_repository& audios, scene_scheduler& _scene_scheduler);
-
 public:
+	struct descriptor final {
+		window& rwindow;
+		renderer& rrenderer;
+		texture_repository& rtextures;
+		animation_repository& ranimations;
+		audio_repository& raudios;
+		scene_scheduler& rscene_scheduler;
+		SoLoud::Soloud& rsoloud;
+	};
+
 	~context();
-	[[nodiscard]] core_services const& core() const;
-	[[nodiscard]] resource_services const& resource() const;
-	[[nodiscard]] scene_scheduler& fetch_scene_scheduler() const;
+	[[nodiscard]] window& get_window() const;
+	[[nodiscard]] renderer& get_renderer() const;
+	[[nodiscard]] texture_repository& textures() const;
+	[[nodiscard]] animation_repository& animations() const;
+	[[nodiscard]] audio_repository& audios() const;
+	[[nodiscard]] scene_scheduler& get_scene_scheduler() const;
+	[[nodiscard]] SoLoud::Soloud& soloud() const;
 
 private:
-	core_services core_;
-	resource_services resource_;
+	context(descriptor const& desc);
+
+	window& window_;
+	renderer& renderer_;
+	texture_repository& textures_;
+	animation_repository& animations_;
+	audio_repository& audios_;
 	scene_scheduler& scene_scheduler_;
+	SoLoud::Soloud& soloud_;
 };
 
 } // namespace aether

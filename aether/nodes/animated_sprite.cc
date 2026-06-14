@@ -69,15 +69,15 @@ bool animated_sprite::play_animation(std::string_view name, animation_options op
 
 // protected
 bool animated_sprite::init_() {
-	auto const& resource = ctx_().resource();
-	texture_             = resource.textures().fetch(image_file_arg_);
+	auto const& ctx = ctx_();
+	texture_        = ctx.textures().fetch(image_file_arg_);
 
 	if (!texture_) {
 		AETHER_ERRORLOG("Failed | nullptr texture");
 		return false;
 	}
 
-	data_ = resource.animations().fetch(data_file_arg_);
+	data_ = ctx.animations().fetch(data_file_arg_);
 
 	if (!data_) {
 		AETHER_ERRORLOG("Failed | nullptr data");
@@ -135,7 +135,7 @@ void animated_sprite::draw_(mat3 const& transform, rgba color) {
 		subtexture_transform_ = transform * t;
 	}
 
-	ctx_().core().fetch_renderer().draw_texture(texture_->get(), texture_source_rect_, subtexture_transform_, color);
+	ctx_().get_renderer().draw_texture(texture_->get(), texture_source_rect_, subtexture_transform_, color);
 }
 
 void animated_sprite::progress_frame_() {

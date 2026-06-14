@@ -1,38 +1,44 @@
 #include <context.hh>
-#include <raylib.h>
 
 namespace aether {
 
-context::context(window& _window, renderer& _renderer, SoLoud::Soloud& soloud, texture_repository& textures,
-                 animation_repository& animations, audio_repository& audios, scene_scheduler& _scene_scheduler)
-        : core_(_window, _renderer, soloud)
-        , resource_(textures, animations, audios)
-        , scene_scheduler_(_scene_scheduler) {}
+context::context(descriptor const& desc)
+        : window_(desc.rwindow)
+        , renderer_(desc.rrenderer)
+        , textures_(desc.rtextures)
+        , animations_(desc.ranimations)
+        , audios_(desc.raudios)
+        , scene_scheduler_(desc.rscene_scheduler)
+        , soloud_(desc.rsoloud) {}
 
-// public
 context::~context() = default;
 
-core_services const& context::core() const {
-	return core_;
+window& context::get_window() const {
+	return window_;
 }
 
-resource_services const& context::resource() const {
-	return resource_;
+renderer& context::get_renderer() const {
+	return renderer_;
 }
 
-scene_scheduler& context::fetch_scene_scheduler() const {
+texture_repository& context::textures() const {
+	return textures_;
+}
+
+animation_repository& context::animations() const {
+	return animations_;
+}
+
+audio_repository& context::audios() const {
+	return audios_;
+}
+
+scene_scheduler& context::get_scene_scheduler() const {
 	return scene_scheduler_;
 }
 
-// // private
-// void context::update_frame_context() {
-// 	frame_elapsed_ += delta_time();
-// 	frame_count_++;
-// 	while (frame_elapsed_ >= 1.f) {
-// 		running_fps_ = frame_count_;
-// 		frame_count_ = 0;
-// 		frame_elapsed_ -= 1.f;
-// 	}
-// }
+SoLoud::Soloud& context::soloud() const {
+	return soloud_;
+}
 
 } // namespace aether

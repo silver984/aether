@@ -4,7 +4,6 @@
 #include <chrono>
 #include <context.hh>
 #include <math/size.hh>
-#include <memory>
 #include <renderer.hh>
 #include <scene_scheduler.hh>
 #include <sol/state.hpp>
@@ -14,8 +13,6 @@
 #include <window.hh>
 
 namespace aether {
-
-class context;
 
 class game final {
 public:
