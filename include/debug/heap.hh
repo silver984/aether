@@ -1,6 +1,6 @@
 #pragma once
 #ifdef AETHER_DEBUG
-	#include <cstdint>
+	#include <cstddef>
 
 namespace aether::heap {
 
