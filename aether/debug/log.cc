@@ -59,7 +59,7 @@ std::string file_date_str() {
 std::string file_time_str() {
 	auto const now     = std::chrono::system_clock::now();
 	auto const seconds = std::chrono::floor<std::chrono::seconds>(now);
-	return fmt::format("{:%H.%M.%S}", seconds);
+	return fmt::format("{:%H-%M-%S}", seconds);
 }
 
 std::ofstream log_file;
@@ -85,7 +85,8 @@ void print_(std::string_view msg, std::string_view level, fmt::color level_color
 
 void create_log_file_() {
 	std::filesystem::create_directory("logs");
-	std::filesystem::path fp = std::filesystem::absolute(fmt::format("logs/aether-{}-{}.log", file_date_str(), file_time_str()));
+	std::string const file_name = fmt::format("logs/aether_{}_{}.log", file_date_str(), file_time_str());
+	std::filesystem::path fp    = std::filesystem::absolute(file_name);
 	log_file.open(fp);
 }
 

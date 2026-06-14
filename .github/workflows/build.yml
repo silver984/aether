@@ -13,6 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Windows
           - os: Windows
             runner: windows-latest
             cmake_preset: debug
@@ -31,6 +32,7 @@ jobs:
             cmake_preset: release-with-debug
             artifact_name: windows
 
+          # Windows MinGW
           - os: Windows
             runner: windows-latest
             cmake_preset: debug-mingw
@@ -51,6 +53,7 @@ jobs:
             cmake_preset: release-with-debug-mingw
             use_mingw: true
 
+          # Linux
           - os: Linux
             runner: ubuntu-latest
             cmake_preset: debug
@@ -69,6 +72,7 @@ jobs:
             cmake_preset: release-with-debug
             artifact_name: linux-ubuntu
 
+          # macOS
           - os: macOS
             runner: macos-latest
             cmake_preset: debug
@@ -142,9 +146,7 @@ jobs:
             libxi-dev \
             libgl1-mesa-dev
 
-      # ------------------------------------------------------------
       # General builds (MSVC on Windows, default compilers on Linux/macOS)
-      # ------------------------------------------------------------
       - name: Configure CMake (General)
         if: runner.os != 'Windows' || !matrix.use_mingw
         run: cmake --preset ${{ matrix.cmake_preset }}
@@ -153,9 +155,7 @@ jobs:
         if: runner.os != 'Windows' || !matrix.use_mingw
         run: cmake --build --preset ${{ matrix.cmake_preset }}
 
-      # ------------------------------------------------------------
       # MinGW builds on Windows (use MSYS2 shell)
-      # ------------------------------------------------------------
       - name: Configure CMake (MinGW)
         if: runner.os == 'Windows' && matrix.use_mingw
         shell: msys2 {0}
@@ -166,9 +166,7 @@ jobs:
         shell: msys2 {0}
         run: cmake --build --preset ${{ matrix.cmake_preset }}
 
-      # ------------------------------------------------------------
       # Upload artifact (only for release builds, excluding MinGW)
-      # ------------------------------------------------------------
       - name: Upload artifact
         if: contains(matrix.cmake_preset, 'release') && !matrix.use_mingw
         uses: actions/upload-artifact@v4
