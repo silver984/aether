@@ -85,8 +85,7 @@ void print_(std::string_view msg, std::string_view level, fmt::color level_color
 
 void create_log_file_() {
 	std::filesystem::create_directory("logs");
-	std::string const file_name = fmt::format("logs/aether_{}_{}.log", file_date_str(), file_time_str());
-	std::filesystem::path fp    = std::filesystem::absolute(file_name);
+	std::filesystem::path const fp = fmt::format("logs/aether_{}_{}.log", file_date_str(), file_time_str());
 	log_file.open(fp);
 }
 
