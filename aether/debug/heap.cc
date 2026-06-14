@@ -1,5 +1,5 @@
 #ifdef AETHER_DEBUG
-	#include <cmath>
+	#include <algorithm>
 	#include <cstdlib>
 	#include <debug/heap.hh>
 
