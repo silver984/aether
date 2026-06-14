@@ -2,6 +2,7 @@
 #include <debug/log.hh>
 #include <debug/win32.hh>
 #include <game.hh>
+#include <lua/queue.hh>
 #include <soloud_error.h>
 #include <thread>
 #include <util/timer.hh>
@@ -81,6 +82,7 @@ bool game::init(init_descriptor const& desc) {
 
 	using enum sol::lib;
 	lua_.open_libraries(base, string, table, math, utf8);
+	lua::impl_::run_bindings_(lua_);
 
 	AETHER_INFOLOG("Initialized");
 	return is_initialized_ = true;
