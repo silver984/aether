@@ -5,6 +5,7 @@
 #include <soloud_error.h>
 #include <thread>
 #include <util/timer.hh>
+
 namespace aether {
 
 game::game()
@@ -126,7 +127,8 @@ void game::run() {
 		}
 
 #ifdef AETHER_DEBUG
-		renderer_.end_draw_(evaluated_fps, heap::usage() / (1024.0 * 1024.0));
+		double divider = 1024.0 * 1024.0;
+		renderer_.end_draw_(evaluated_fps, heap::usage() / divider, heap::total_usage() / divider);
 #else
 		renderer_.end_draw_();
 #endif

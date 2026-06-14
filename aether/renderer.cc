@@ -115,24 +115,25 @@ void renderer::start_draw_() {
 }
 
 #ifdef AETHER_DEBUG
-void renderer::end_draw_(uint32_t debug_fps, double heap_usage) {
+void renderer::end_draw_(uint32_t debug_fps, double heap_usage, double total_heap_usage) {
 	rlPopMatrix();
-	update_debug_(debug_fps, heap_usage);
+	update_debug_(debug_fps, heap_usage, total_heap_usage);
 	draw_debug_();
 	EndScissorMode();
 	EndDrawing();
 }
 
-void renderer::update_debug_(uint32_t debug_fps, double heap_usage) {
-	if (last_debug_fps_ == debug_fps && last_heap_usage_ == heap_usage) {
+void renderer::update_debug_(uint32_t debug_fps, double heap_usage, double total_heap_usage) {
+	if (last_debug_fps_ == debug_fps && last_heap_usage_ == heap_usage && last_total_heap_usage_ == total_heap_usage) {
 		return;
 	}
 
-	debug_text_         = fmt::format("FPS: {}\nHEAP: {:.2f}MB", debug_fps, heap_usage);
-	Vector2 const m     = MeasureTextEx(GetFontDefault(), debug_text_.c_str(), 10.f, 1.f);
-	debug_text_measure_ = vec2<int>((int)std::round(m.x), (int)std::round(m.y));
-	last_debug_fps_     = debug_fps;
-	last_heap_usage_    = heap_usage;
+	debug_text_            = fmt::format("FPS: {}\nHEAP: {:.2f}MB / {:.2f}MB", debug_fps, heap_usage, total_heap_usage);
+	Vector2 const m        = MeasureTextEx(GetFontDefault(), debug_text_.c_str(), 10.f, 1.f);
+	debug_text_measure_    = vec2<int>((int)std::round(m.x), (int)std::round(m.y));
+	last_debug_fps_        = debug_fps;
+	last_heap_usage_       = heap_usage;
+	last_total_heap_usage_ = total_heap_usage;
 }
 
 void renderer::draw_debug_() {
