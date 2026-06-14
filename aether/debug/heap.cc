@@ -1,4 +1,4 @@
-#ifdef AETHER_DEBUG
+#if (defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB))
 	#include <algorithm>
 	#include <cstdlib>
 	#include <debug/heap.hh>

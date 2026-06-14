@@ -27,7 +27,7 @@ private:
 	void setup2d_();
 	void update_viewport_(size<int> target_window_size);
 	void start_draw_();
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	void end_draw_(uint32_t debug_fps, double heap_usage, double total_heap_usage);
 	void update_debug_(uint32_t debug_fps, double heap_usage, double total_heap_usage);
 	void draw_debug_();
@@ -40,14 +40,14 @@ private:
 	void define_texture_coord_(vec2<float> position) const;
 	[[nodiscard]] mat3 calculate_projection_(size<int> render_size, size<int> target_window_size) const;
 
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	std::string debug_text_;
 #endif
 	mat3 projection_;
 	size<int> render_size_;
 	size<int> last_render_size_;
 	size<int> last_target_window_size_;
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	vec2<int> debug_text_measure_;
 	uint32_t last_debug_fps_;
 	double last_heap_usage_;

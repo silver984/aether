@@ -1,10 +1,11 @@
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	#include <algorithm>
 	#include <chrono>
 	#include <debug/log.hh>
 	#include <filesystem>
 	#include <fmt/chrono.h>
 	#include <fstream>
+	#include <string>
 
 namespace {
 
@@ -68,16 +69,18 @@ std::ofstream log_file;
 namespace aether::log::impl_ {
 
 void print_(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
-	std::string const time_and_loc_str = fmt::format("{:<12} {} ", time_str(), function_name(loc));
-	std::string const level_str        = fmt::format("[{}] ", level);
+	std::string const time_and_location_str = fmt::format("{:<12} {} ", time_str(), function_name(loc));
+	std::string const level_str             = fmt::format("[{}] ", level);
 
 	if (log_file.is_open()) {
-		log_file << fmt::format("{}{}{}\n", time_and_loc_str, level_str, msg);
+		log_file << fmt::format("{}{}{}\n", time_and_location_str, level_str, msg);
 	}
 
-	fmt::print(fmt::fg(fmt::color::gray), fmt::runtime(time_and_loc_str));
+	#ifndef AETHER_RELWITHDEB
+	fmt::print(fmt::fg(fmt::color::gray), fmt::runtime(time_and_location_str));
 	fmt::print(fmt::fg(level_color), fmt::runtime(level_str));
 	fmt::println(fmt::runtime(msg));
+	#endif
 }
 
 void create_log_file_() {

@@ -39,7 +39,7 @@ game::~game() {
 
 	auto const end_time = util::end(start_time);
 	AETHER_INFOLOG("Done | took {}ms", end_time);
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	log::impl_::close_log_file_();
 #endif
 }
@@ -49,10 +49,10 @@ bool game::init(init_descriptor const& desc) {
 		return true;
 	}
 
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	log::impl_::create_log_file_();
 
-	#ifdef WIN32
+	#if !defined(AETHER_RELWITHDEB) && defined(WIN32)
 	if (!win32_::enable_console_colors_()) {
 		AETHER_WARNLOG("Couldn't enable console colors");
 	}
@@ -66,7 +66,7 @@ bool game::init(init_descriptor const& desc) {
 		AETHER_DEBUGLOG("Window initialized");
 	}
 
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	using enum SoLoud::SOLOUD_ERRORS;
 	if (SoLoud::result result = soloud_.init(); result != SO_NO_ERROR) {
 		AETHER_WARNLOG("Audio engine failed to initialize | result: {}", result);
@@ -92,7 +92,7 @@ void game::run() {
 		return;
 	}
 
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	uint32_t frame_count   = 0;
 	uint32_t evaluated_fps = 0;
 	float accumulator      = 0.f;
@@ -132,7 +132,7 @@ void game::run() {
 			scene_scheduler_.draw_scene_();
 		}
 
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 		double divider = 1024.0 * 1024.0;
 		renderer_.end_draw_(evaluated_fps, heap::usage() / divider, heap::total_usage() / divider);
 #else
@@ -148,7 +148,7 @@ void game::run() {
 		next_frame_time += target_frame_time;
 		std::this_thread::sleep_until(next_frame_time);
 
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 		++frame_count;
 		accumulator += dt;
 		while (accumulator >= 1.f) {
@@ -180,7 +180,7 @@ void game::shutdown_() {
 
 	auto const end_time = util::end(start_time);
 	AETHER_INFOLOG("Done | took {}ms", end_time);
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	log::impl_::close_log_file_();
 #endif
 }

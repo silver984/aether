@@ -46,6 +46,17 @@
     {
       "name": "release-mingw",
       "inherits": ["mingw", "release"]
+    },
+    {
+      "name": "release-with-debug",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "release-with-debug-mingw",
+      "inherits": ["mingw", "release-with-debug"]
     }
   ],
 
@@ -73,6 +84,14 @@
     {
       "name": "release-mingw",
       "configurePreset": "release-mingw"
+    },
+    {
+      "name": "release-with-debug",
+      "configurePreset": "release-with-debug"
+    },
+    {
+      "name": "release-with-debug-mingw",
+      "configurePreset": "release-with-debug-mingw"
     }
   ]
 }

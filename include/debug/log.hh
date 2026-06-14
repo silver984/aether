@@ -1,9 +1,8 @@
 #pragma once
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	#include <fmt/color.h>
 	#include <fmt/format.h>
 	#include <source_location>
-	#include <string>
 	#include <string_view>
 	#include <utility>
 

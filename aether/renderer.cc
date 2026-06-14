@@ -114,7 +114,7 @@ void renderer::start_draw_() {
 	push_matrix_(projection_);
 }
 
-#ifdef AETHER_DEBUG
+#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 void renderer::end_draw_(uint32_t debug_fps, double heap_usage, double total_heap_usage) {
 	rlPopMatrix();
 	update_debug_(debug_fps, heap_usage, total_heap_usage);

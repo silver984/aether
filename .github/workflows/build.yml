@@ -28,6 +28,11 @@ jobs:
 
           - os: Windows
             runner: windows-latest
+            cmake_preset: release-with-debug
+            artifact_name: windows
+
+          - os: Windows
+            runner: windows-latest
             cmake_preset: debug-mingw
             use_mingw: true
 
@@ -39,6 +44,11 @@ jobs:
           - os: Windows
             runner: windows-latest
             cmake_preset: release-mingw
+            use_mingw: true
+
+          - os: Windows
+            runner: windows-latest
+            cmake_preset: release-with-debug-mingw
             use_mingw: true
 
           - os: Linux
@@ -54,6 +64,11 @@ jobs:
             cmake_preset: release
             artifact_name: linux-ubuntu
 
+          - os: Linux
+            runner: ubuntu-latest
+            cmake_preset: release-with-debug
+            artifact_name: linux-ubuntu
+
           - os: macOS
             runner: macos-latest
             cmake_preset: debug
@@ -65,6 +80,11 @@ jobs:
           - os: macOS
             runner: macos-latest
             cmake_preset: release
+            artifact_name: macos
+
+          - os: macOS
+            runner: macos-latest
+            cmake_preset: release-with-debug
             artifact_name: macos
 
     steps:
@@ -153,5 +173,5 @@ jobs:
         if: contains(matrix.cmake_preset, 'release') && !matrix.use_mingw
         uses: actions/upload-artifact@v4
         with:
-          name: aether${{ steps.git.outputs.short_sha }}-${{ steps.version.outputs.version }}-${{ matrix.artifact_name }}
+          name: aether${{ steps.git.outputs.short_sha }}-${{ steps.version.outputs.version }}-${{ matrix.cmake_preset }}-${{ matrix.artifact_name }}
           path: build/${{ matrix.cmake_preset }}/bin

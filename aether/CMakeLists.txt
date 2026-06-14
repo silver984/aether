@@ -6,9 +6,9 @@ list(REMOVE_ITEM AETHER_GENERAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/camera.cc)
 target_sources(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/math/mat3.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/data/texture2d.cc
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/debug/log.cc>
-    $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/debug/heap.cc>
-    $<$<AND:$<CONFIG:Debug>,$<PLATFORM_ID:Windows>>:${CMAKE_CURRENT_SOURCE_DIR}/debug/win32.cc>
+    $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/log.cc>
+    $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/heap.cc>
+    $<$<AND:$<CONFIG:Debug,RelWithDebInfo>,$<PLATFORM_ID:Windows>>:${CMAKE_CURRENT_SOURCE_DIR}/debug/win32.cc>
     ${AETHER_GENERAL_SRC}
     ${AETHER_NODES_SRC}
     ${AETHER_UTIL_SRC}

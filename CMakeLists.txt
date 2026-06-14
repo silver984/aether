@@ -31,7 +31,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:AETHER_DEBUG>
-    $<$<AND:$<CONFIG:Debug>,$<BOOL:${AETHER_VERBOSE_DEBUG}>>:AETHER_VERBOSE_DEBUG>
+    $<$<CONFIG:RelWithDebInfo>:AETHER_RELWITHDEB>
+    $<$<BOOL:${AETHER_VERBOSE_DEBUG}>:AETHER_VERBOSE_DEBUG>
 )
 
 include(cmake/dependencies.cmake)
