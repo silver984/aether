@@ -28,8 +28,8 @@ private:
 	void update_viewport_(size<int> target_window_size);
 	void start_draw_();
 #ifdef AETHER_DEBUG
-	void end_draw_(uint32_t debug_fps);
-	void update_debug_(uint32_t debug_fps);
+	void end_draw_(uint32_t debug_fps, double heap_usage);
+	void update_debug_(uint32_t debug_fps, double heap_usage);
 	void draw_debug_();
 #else
 	void end_draw_();
@@ -50,6 +50,7 @@ private:
 #ifdef AETHER_DEBUG
 	vec2<int> debug_text_measure_;
 	uint32_t last_debug_fps_;
+	double last_heap_usage_;
 #endif
 };
 

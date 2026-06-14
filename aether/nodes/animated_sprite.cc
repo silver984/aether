@@ -46,8 +46,9 @@ bool animated_sprite::play_animation(std::string_view name) {
 	}
 
 	// reset state
-	current_subtexture_index_ = 0;
-	subtexture_elapsed_       = 0.f;
+	current_subtexture_index_     = 0;
+	subtexture_elapsed_           = 0.f;
+	is_current_animation_looping_ = false;
 
 	return true;
 }

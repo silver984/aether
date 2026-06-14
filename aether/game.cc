@@ -1,7 +1,6 @@
+#include <debug/heap.hh>
 #include <debug/log.hh>
-#ifdef WIN32
-	#include <debug/win32.hh>
-#endif
+#include <debug/win32.hh>
 #include <game.hh>
 #include <soloud_error.h>
 #include <thread>
@@ -127,7 +126,7 @@ void game::run() {
 		}
 
 #ifdef AETHER_DEBUG
-		renderer_.end_draw_(evaluated_fps);
+		renderer_.end_draw_(evaluated_fps, heap::usage() / (1024.0 * 1024.0));
 #else
 		renderer_.end_draw_();
 #endif

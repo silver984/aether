@@ -1,6 +1,6 @@
-#include <debug/win32.hh>
-#include <windows.h>
-
+#if defined(AETHER_DEBUG) && defined(WIN32)
+	#include <debug/win32.hh>
+	#include <windows.h>
 namespace aether::win32_ {
 
 bool enable_console_colors_() {
@@ -13,3 +13,4 @@ bool enable_console_colors_() {
 }
 
 } // namespace aether::win32_
+#endif
