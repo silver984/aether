@@ -73,10 +73,7 @@ bool game::init(init_descriptor const& desc) {
 
 	renderer_.setup2d_();
 
-	using enum sol::lib;
-	lua_.open_libraries(base, string, table, math, utf8);
-	lua_manager_.run_and_clear_all_bindings_(lua_);
-	lua_manager_.try_create_scripts_directory_();
+	lua_manager_.init_();
 	lua_manager_.run_scripts_();
 
 	AETHER_INFOLOG("Initialized");
@@ -138,9 +135,8 @@ void game::run() {
 			continue;
 		}
 
-		auto const target_frame_time =
-		        duration_cast<std::chrono::steady_clock::duration>(std::chrono::duration<float>(1.f / window_.target_fps()));
-		next_frame_time += target_frame_time;
+		next_frame_time += std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+		        std::chrono::duration<float>(1.f / window_.target_fps()));
 		std::this_thread::sleep_until(next_frame_time);
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)

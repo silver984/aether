@@ -4,7 +4,7 @@
 namespace aether {
 
 struct lvec2 : public lua_binding<lvec2> {
-	static void bind(sol::state_view& lua) {
+	static void bind(sol::state_view lua) {
 		using vec2f = aether::vec2<float>;
 		lua.new_usertype<vec2f>(
 			"vec2f",

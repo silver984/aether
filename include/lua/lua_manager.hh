@@ -1,7 +1,7 @@
 #pragma once
 #include <filesystem>
 #include <functional>
-#include <sol/state_view.hpp>
+#include <sol/state.hpp>
 #include <vector>
 
 namespace aether {
@@ -18,12 +18,15 @@ public:
 
 private:
 	lua_manager();
-	static std::vector<std::function<void(sol::state_view&)>>& queued_bindings_();
-	static void queue_binding_(std::function<void(sol::state_view&)>&& cb);
-	void run_and_clear_all_bindings_(sol::state_view lua);
+	void init_();
+	static std::vector<std::function<void(sol::state_view)>>& queued_bindings_();
+	static void queue_binding_(std::function<void(sol::state_view)>&& cb);
+	void run_and_clear_all_bindings_();
 	void try_create_scripts_directory_();
 	void run_scripts_();
 	[[nodiscard]] std::vector<std::filesystem::path> gather_available_scripts_();
+
+	sol::state lua_;
 };
 
 } // namespace aether

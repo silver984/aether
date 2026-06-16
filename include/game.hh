@@ -7,7 +7,6 @@
 #include <math/size.hh>
 #include <renderer.hh>
 #include <scene_scheduler.hh>
-#include <sol/state.hpp>
 #include <soloud.h>
 #include <string_view>
 #include <texture_repository.hh>
@@ -39,7 +38,6 @@ private:
 	window window_;
 	renderer renderer_;
 	SoLoud::Soloud soloud_;
-	sol::state lua_;
 	lua_manager lua_manager_;
 	scene_scheduler scene_scheduler_;
 	texture_repository textures_;
