@@ -1,5 +1,4 @@
 #include <debug/log.hh>
-#include <filesystem>
 #include <lua/lua_manager.hh>
 #include <util/timer.hh>
 #include <utility>
@@ -22,38 +21,52 @@ void lua_manager::run_and_clear_all_bindings_(sol::state_view lua) {
 	auto& bindings = queued_bindings_();
 
 	AETHER_DEBUGLOG("Running all bindings | count: {}", bindings.size());
-	auto const start_time = util::start();
+	util::timer t;
+	t.start();
 
 	for (auto const& cb : bindings) {
 		cb(lua);
 	}
 
-	auto const end_time = util::end(start_time);
-	AETHER_DEBUGLOG("Done | took {}ms", end_time);
+	t.stop();
+	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
 
 	bindings.clear();
 }
 
 void lua_manager::try_create_scripts_directory_() {
-	try {
-		std::filesystem::create_directory("scripts");
-	} catch (std::filesystem::filesystem_error const& e) {
-		AETHER_ERRORLOG("Caught filesystem error | what: {} | error code: {}", e.what(), e.code().message());
+	if (std::filesystem::create_directory("scripts")) {
+		AETHER_DEBUGLOG("Created missing lua scripts directory");
 	}
 }
 
 void lua_manager::run_scripts_() {
-	std::vector<std::filesystem::path> found_scripts;
+	std::vector<std::filesystem::path> available_scripts = gather_available_scripts_();
+	if (available_scripts.empty()) {
+		AETHER_DEBUGLOG("No lua scripts to run");
+		return;
+	}
+}
+
+std::vector<std::filesystem::path> lua_manager::gather_available_scripts_() {
+	std::vector<std::filesystem::path> out;
+
+	AETHER_DEBUGLOG("Gathering available lua scripts");
+	util::timer t;
+	t.start();
 
 	for (auto const& entry : std::filesystem::directory_iterator("scripts")) {
 		if (entry.path().extension() == ".lua") {
-			found_scripts.emplace_back(entry.path());
+			auto const path = entry.path();
+			AETHER_TRACELOG("Found lua script: \"{}\"", path.filename().generic_string());
+			out.emplace_back(path);
 		}
 	}
 
-	if (found_scripts.empty()) {
-		return;
-	}
+	t.stop();
+	AETHER_DEBUGLOG("Done | count: {} | took {}ms", out.size(), t.duration());
+
+	return out;
 }
 
 } // namespace aether

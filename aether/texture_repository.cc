@@ -32,7 +32,8 @@ sref<texture2d> texture_repository::fetch(std::string_view file) {
 	purge_unused();
 
 	AETHER_DEBUGLOG("Loading \"{}\"", file);
-	auto const start_time          = util::start();
+	util::timer t;
+	t.start();
 	sref<texture2d> shared_texture = new texture2d(lfile.string());
 
 	if (!is_texture_valid_(shared_texture)) {
@@ -44,9 +45,9 @@ sref<texture2d> texture_repository::fetch(std::string_view file) {
 	                shared_texture->id(), fmt::ptr(shared_texture.get()));
 
 	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_texture));
-	auto const end_time      = util::end(start_time);
+	t.stop();
 	AETHER_TRACELOG("Successfully inserted to cache | cache size: {}", cache_.size());
-	AETHER_DEBUGLOG("Done | took {}ms", end_time);
+	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
 
 	return iterator->second;
 }

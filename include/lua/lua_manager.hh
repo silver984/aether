@@ -1,6 +1,8 @@
 #pragma once
+#include <filesystem>
 #include <functional>
 #include <sol/state_view.hpp>
+#include <vector>
 
 namespace aether {
 
@@ -21,6 +23,7 @@ private:
 	void run_and_clear_all_bindings_(sol::state_view lua);
 	void try_create_scripts_directory_();
 	void run_scripts_();
+	[[nodiscard]] std::vector<std::filesystem::path> gather_available_scripts_();
 };
 
 } // namespace aether

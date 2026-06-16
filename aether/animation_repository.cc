@@ -39,7 +39,8 @@ sref<animation_map> animation_repository::fetch(std::string_view file) {
 	purge_unused();
 
 	AETHER_DEBUGLOG("Loading \"{}\"", lfile.filename().string());
-	auto const start_time = util::start();
+	util::timer t;
+	t.start();
 
 	sref<animation_map> shared_map = nullptr;
 
@@ -53,9 +54,9 @@ sref<animation_map> animation_repository::fetch(std::string_view file) {
 	}
 
 	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_map));
-	auto const end_time      = util::end(start_time);
+	t.stop();
 	AETHER_TRACELOG("Successfully inserted to cache | cache size: {}", cache_.size());
-	AETHER_DEBUGLOG("Done | took {}ms", end_time);
+	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
 
 	return iterator->second;
 }
@@ -118,7 +119,8 @@ sref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocum
 	}
 
 	AETHER_DEBUGLOG("Parsing");
-	auto const start_time = util::start();
+	util::timer t;
+	t.start();
 
 	sref<animation_map> shared_map = new animation_map();
 	AETHER_TRACELOG("Allocated shared animation map | address: {}", fmt::ptr(shared_map.get()));
@@ -134,7 +136,7 @@ sref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocum
 		return nullptr;
 	}
 
-	auto const end_time = util::end(start_time);
+	t.stop();
 
 #ifdef AETHER_VERBOSE_DEBUG
 	size_t frame_count = 0;
@@ -143,7 +145,7 @@ sref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocum
 	}
 	AETHER_TRACELOG("Map populated | count: {} | frames: {}", shared_map->size(), frame_count);
 #endif
-	AETHER_DEBUGLOG("Done | took {}ms", end_time);
+	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
 
 	return shared_map;
 }

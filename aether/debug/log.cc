@@ -73,7 +73,6 @@ void print_(std::string_view msg, std::string_view level, fmt::color level_color
 	std::string const level_str             = fmt::format("[{}] ", level);
 
 	if (log_file.is_open()) {
-		// log_file << fmt::format("{}{}{}\n", time_and_location_str, level_str, msg);
 		log_file << time_and_location_str << level_str << msg << "\n";
 	}
 
@@ -85,13 +84,7 @@ void print_(std::string_view msg, std::string_view level, fmt::color level_color
 }
 
 void try_create_log_file_() {
-	try {
-		std::filesystem::create_directory("logs");
-	} catch (std::filesystem::filesystem_error const& e) {
-		AETHER_ERRORLOG("Caught filesystem error | what: {} | error code: {}", e.what(), e.code().message());
-		return;
-	}
-
+	std::filesystem::create_directory("logs");
 	std::filesystem::path const fp = fmt::format("logs/aether_{}_{}.log", file_date_str(), file_time_str());
 	log_file.open(fp);
 }

@@ -24,7 +24,8 @@ game::~game() {
 	}
 
 	AETHER_INFOLOG("Shutting down");
-	auto const start_time = util::start();
+	util::timer t;
+	t.start();
 
 	if (scene_scheduler_.has_pending_scene_()) {
 		scene_scheduler_.cleanup_();
@@ -37,8 +38,8 @@ game::~game() {
 	window_.shutdown_();
 	is_initialized_ = false;
 
-	auto const end_time = util::end(start_time);
-	AETHER_INFOLOG("Done | took {}ms", end_time);
+	t.stop();
+	AETHER_INFOLOG("Done | took {}ms", t.duration());
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	log::impl_::try_close_log_file_();
 #endif
@@ -60,17 +61,14 @@ bool game::init(init_descriptor const& desc) {
 #endif
 
 	if (!window_.init_(desc.window_title, desc.resolution, desc.fps)) {
-		AETHER_ERRORLOG("Window failed to initialized");
 		return false;
-	} else {
-		AETHER_DEBUGLOG("Window initialized");
 	}
 
 	using enum SoLoud::SOLOUD_ERRORS;
 	if (SoLoud::result result = soloud_.init(); result != SO_NO_ERROR) {
-		AETHER_WARNLOG("Audio engine failed to initialize | result: {}", result);
+		AETHER_WARNLOG("SoLoud failed to initialize | result: {}", result);
 	} else {
-		AETHER_DEBUGLOG("Audio engine initialized");
+		AETHER_INFOLOG("SoLoud initialized");
 	}
 
 	renderer_.setup2d_();
@@ -79,6 +77,7 @@ bool game::init(init_descriptor const& desc) {
 	lua_.open_libraries(base, string, table, math, utf8);
 	lua_manager_.run_and_clear_all_bindings_(lua_);
 	lua_manager_.try_create_scripts_directory_();
+	lua_manager_.run_scripts_();
 
 	AETHER_INFOLOG("Initialized");
 	return is_initialized_ = true;
@@ -96,14 +95,13 @@ void game::run() {
 	float accumulator      = 0.f;
 #endif
 
-	using namespace std::chrono;
 	bool is_audio_paused = false;
-	auto previous_time   = steady_clock::now();
+	auto previous_time   = std::chrono::steady_clock::now();
 	auto next_frame_time = previous_time;
 
 	while (!window_.should_close_()) {
-		auto const start_time          = steady_clock::now();
-		float const dt                 = duration<float>(start_time - previous_time).count();
+		auto const start_time          = std::chrono::steady_clock::now();
+		float const dt                 = std::chrono::duration<float>(start_time - previous_time).count();
 		previous_time                  = start_time;
 		bool const is_window_minimized = window_.is_minimized_();
 
@@ -128,19 +126,20 @@ void game::run() {
 		}
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-		double divider = 1024.0 * 1024.0;
+		double divider = 1024. * 1024.;
 		renderer_.end_draw_(evaluated_fps, heap::usage() / divider, heap::total_usage() / divider);
 #else
 		renderer_.end_draw_();
 #endif
 
 		if (is_window_minimized) {
-			next_frame_time = steady_clock::now();
-			std::this_thread::sleep_for(milliseconds(100));
+			next_frame_time = std::chrono::steady_clock::now();
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			continue;
 		}
 
-		auto const target_frame_time = duration_cast<steady_clock::duration>(duration<float>(1.f / window_.target_fps()));
+		auto const target_frame_time =
+		        duration_cast<std::chrono::steady_clock::duration>(std::chrono::duration<float>(1.f / window_.target_fps()));
 		next_frame_time += target_frame_time;
 		std::this_thread::sleep_until(next_frame_time);
 
@@ -164,7 +163,8 @@ context const& game::ctx() const {
 
 void game::shutdown_() {
 	AETHER_INFOLOG("Shutting down");
-	auto const start_time = util::start();
+	util::timer t;
+	t.start();
 
 	scene_scheduler_.cleanup_();
 	textures_.clear_cache_();
@@ -174,8 +174,8 @@ void game::shutdown_() {
 	window_.shutdown_();
 	is_initialized_ = false;
 
-	auto const end_time = util::end(start_time);
-	AETHER_INFOLOG("Done | took {}ms", end_time);
+	t.stop();
+	AETHER_INFOLOG("Done | took {}ms", t.duration());
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	log::impl_::try_close_log_file_();
 #endif

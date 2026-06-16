@@ -3,7 +3,17 @@
 
 namespace aether::util {
 
-std::chrono::steady_clock::time_point start();
-long long end(std::chrono::steady_clock::time_point start);
+class timer final {
+public:
+	timer();
+	~timer();
+	void start();
+	void stop();
+	long long duration() const;
+
+private:
+	std::chrono::steady_clock::time_point start_timepoint_;
+	long long duration_;
+};
 
 } // namespace aether::util
