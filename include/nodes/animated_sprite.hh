@@ -1,6 +1,5 @@
 #pragma once
 #include <cstddef>
-#include <cstdint>
 #include <data/animation_map.hh>
 #include <math/rect.hh>
 #include <nodes/node.hh>
@@ -46,7 +45,7 @@ private:
 	std::string const image_file_arg_;
 	std::string const data_file_arg_;
 	size_t current_subtexture_index_;
-	uint32_t playback_fps_;
+	int playback_fps_;
 	rect<float> texture_source_rect_;
 	vec2<float> current_subtexture_offsets_;
 	mat3 subtexture_transform_;

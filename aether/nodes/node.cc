@@ -160,26 +160,25 @@ std::string_view node::name() const {
 }
 
 void node::set_bounds(size<int> val) {
-	val                          = util::max(size<int>(0), val);
-	size<uint32_t> const valui32 = static_cast<size<uint32_t>>(val);
+	val = util::max(size<int>(0), val);
 
-	if (bounds_ == valui32) {
+	if (bounds_ == val) {
 		return;
 	}
 
-	bounds_ = valui32;
+	bounds_ = val;
 	mark_transform_dirty_();
 }
 
-size<uint32_t> node::bounds() const {
+size<int> node::bounds() const {
 	return bounds_;
 }
 
-uint32_t node::width() const {
+int node::width() const {
 	return bounds_.width;
 }
 
-uint32_t node::height() const {
+int node::height() const {
 	return bounds_.height;
 }
 

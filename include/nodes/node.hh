@@ -1,7 +1,6 @@
 #pragma once
 #include <concepts>
 #include <cstddef>
-#include <cstdint>
 #include <math/mat3.hh>
 #include <math/rgba.hh>
 #include <math/size.hh>
@@ -52,9 +51,9 @@ public:
 	void set_name(std::string_view name); // todo: better naming system
 	[[nodiscard]] std::string_view name() const;
 	void set_bounds(size<int> val);       // todo: set_width, set_height
-	[[nodiscard]] size<uint32_t> bounds() const;
-	[[nodiscard]] uint32_t width() const;
-	[[nodiscard]] uint32_t height() const;
+	[[nodiscard]] size<int> bounds() const;
+	[[nodiscard]] int width() const;
+	[[nodiscard]] int height() const;
 	void set_position(vec2<float> val);
 	void set_position_x(float val);
 	void set_position_y(float val);
@@ -110,7 +109,7 @@ private:
 	std::vector<sref<node>> children_;
 	std::string name_;
 	mat3 transform_;
-	size<uint32_t> bounds_;
+	size<int> bounds_;
 	vec2<float> position_;
 	vec2<float> anchor_;
 	vec2<float> scale_;

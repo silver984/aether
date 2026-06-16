@@ -14,7 +14,7 @@ animated_sprite::animated_sprite(context const& ctx_, descriptor const& desc)
         , image_file_arg_(std::string(desc.image_file))
         , data_file_arg_(std::string(desc.data_file))
         , current_subtexture_index_(0)
-        , playback_fps_((uint32_t)std::max(1, desc.fps))
+        , playback_fps_(std::max(1, desc.fps))
         , subtexture_transform_(mat3::identity())
         , subtexture_elapsed_(0.f)
         , animation_was_reset_(false)
@@ -67,7 +67,6 @@ bool animated_sprite::play_animation(std::string_view name, animation_options op
 	return true;
 }
 
-// protected
 bool animated_sprite::init_() {
 	auto const& ctx = ctx_();
 	texture_        = ctx.textures().fetch(image_file_arg_);
@@ -106,7 +105,6 @@ bool animated_sprite::init_() {
 	return true;
 }
 
-// protected
 void animated_sprite::update_(float dt) {
 	if (animation_was_reset_) {
 		progress_frame_();
@@ -123,7 +121,6 @@ void animated_sprite::update_(float dt) {
 	}
 }
 
-// protected
 void animated_sprite::draw_(mat3 const& transform, rgba color) {
 	if (is_current_subtexture_rotated_) {
 		mat3 const fix        = mat3::translation(vec2<float>(0.f, bounds().height - current_subtexture_offsets_.y));
@@ -158,15 +155,15 @@ size<int> animated_sprite::calculate_bounds_(std::vector<atlas_region> const& fr
 	size<int> ret;
 
 	for (auto const& frame : frames) {
-		size<int> const lbounds = frame.source_rect.bounds();
-		vec2<int> const offsets = util::abs(frame.offsets);
+		size<int> const source_bounds = frame.source_rect.bounds();
+		vec2<int> const offsets       = util::abs(frame.offsets);
 
 		if (frame.is_rotated) {
-			ret = util::max(ret, util::reverse(lbounds) + offsets);
+			ret = util::max(ret, util::reverse(source_bounds) + offsets);
 			continue;
 		}
 
-		ret = util::max(ret, lbounds + offsets);
+		ret = util::max(ret, source_bounds + offsets);
 	}
 
 	return ret;

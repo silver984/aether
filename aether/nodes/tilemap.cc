@@ -11,7 +11,7 @@ namespace aether {
 tilemap::tilemap(context const& ctx, descriptor const& desc)
         : node(ctx)
         , file_arg_(std::string(desc.file))
-        , tile_bounds_arg_(static_cast<size<uint32_t>>(util::max(size<int>(1), desc.tile_bounds)))
+        , tile_bounds_arg_(util::max(size<int>(1), desc.tile_bounds))
         , has_antialiasing_(desc.has_antialiasing) {}
 
 tilemap::~tilemap() = default;
@@ -20,9 +20,9 @@ void tilemap::toggle_antialiasing(bool val) const {
 	SetTextureFilter(texture_->get(), val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 }
 
-vec2<uint32_t> tilemap::tile_count() const {
-	auto texture_bounds = texture_->bounds();
-	return vec2<uint32_t>(texture_bounds.width / tile_bounds_arg_.width, texture_bounds.height / tile_bounds_arg_.height);
+vec2<int> tilemap::tile_count() const {
+	auto const texture_bounds = texture_->bounds();
+	return vec2<int>(texture_bounds.width / tile_bounds_arg_.width, texture_bounds.height / tile_bounds_arg_.height);
 }
 
 void tilemap::seek_tile(vec2<int> tile_index) {
@@ -31,13 +31,12 @@ void tilemap::seek_tile(vec2<int> tile_index) {
 		return;
 	}
 
-	vec2<int> const tile_counti = static_cast<vec2<int>>(tile_count());
-	tile_index_                 = static_cast<vec2<uint32_t>>(util::clamp(tile_index, vec2<int>(0), tile_counti - 1));
-	texture_source_rect_.x      = tile_bounds_arg_.width * (float)tile_index_.x;
-	texture_source_rect_.y      = tile_bounds_arg_.height * (float)tile_index_.y;
+	tile_index_            = util::clamp(tile_index, vec2<int>(0), tile_count() - 1);
+	texture_source_rect_.x = tile_bounds_arg_.width * (float)tile_index_.x;
+	texture_source_rect_.y = tile_bounds_arg_.height * (float)tile_index_.y;
 }
 
-vec2<uint32_t> tilemap::tile_index() const {
+vec2<int> tilemap::tile_index() const {
 	return tile_index_;
 }
 
@@ -49,7 +48,7 @@ bool tilemap::init_() {
 		return false;
 	}
 
-	auto texture_bounds = texture_->bounds();
+	auto const texture_bounds = texture_->bounds();
 	if (tile_bounds_arg_.width > texture_bounds.width || tile_bounds_arg_.height > texture_bounds.height) {
 		AETHER_ERRORLOG("Invalid parameters");
 		return false;
@@ -57,8 +56,8 @@ bool tilemap::init_() {
 
 	texture_source_rect_.width  = (float)tile_bounds_arg_.width;
 	texture_source_rect_.height = (float)tile_bounds_arg_.height;
-	set_bounds(size<int>((int)tile_bounds_arg_.width, (int)tile_bounds_arg_.height));
-	toggle_antialiasing(true);
+	set_bounds(size<int>(tile_bounds_arg_.width, tile_bounds_arg_.height));
+	toggle_antialiasing(has_antialiasing_);
 	schedule_draw();
 
 	return true;

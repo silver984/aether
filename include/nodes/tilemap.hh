@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 #include <math/rect.hh>
 #include <nodes/node.hh>
 
@@ -19,9 +18,9 @@ public:
 	~tilemap() override;
 
 	void toggle_antialiasing(bool val) const;
-	[[nodiscard]] vec2<uint32_t> tile_count() const;
+	[[nodiscard]] vec2<int> tile_count() const;
 	void seek_tile(vec2<int> tile_index);
-	[[nodiscard]] vec2<uint32_t> tile_index() const;
+	[[nodiscard]] vec2<int> tile_index() const;
 	// todo: set_texture
 
 protected:
@@ -32,8 +31,8 @@ private:
 	sref<texture2d> texture_;
 	std::string const file_arg_;
 	rect<float> texture_source_rect_;
-	vec2<uint32_t> tile_index_;
-	size<uint32_t> const tile_bounds_arg_;
+	vec2<int> tile_index_;
+	size<int> const tile_bounds_arg_;
 	bool const has_antialiasing_;
 };
 
