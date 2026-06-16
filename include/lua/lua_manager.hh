@@ -16,7 +16,7 @@ public:
 
 private:
 	lua_manager();
-	static std::vector<std::function<void(sol::state_view&)>>& queued_bindings();
+	static std::vector<std::function<void(sol::state_view&)>>& queued_bindings_();
 	static void queue_binding_(std::function<void(sol::state_view&)>&& cb);
 	void run_and_clear_all_bindings_(sol::state_view lua);
 	void try_create_scripts_directory_();

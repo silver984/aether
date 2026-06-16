@@ -9,17 +9,17 @@ namespace aether {
 lua_manager::lua_manager()  = default;
 lua_manager::~lua_manager() = default;
 
-std::vector<std::function<void(sol::state_view&)>>& lua_manager::queued_bindings() {
+std::vector<std::function<void(sol::state_view&)>>& lua_manager::queued_bindings_() {
 	static std::vector<std::function<void(sol::state_view&)>> instance;
 	return instance;
 }
 
 void lua_manager::queue_binding_(std::function<void(sol::state_view&)>&& cb) {
-	queued_bindings().emplace_back(std::move(cb));
+	queued_bindings_().emplace_back(std::move(cb));
 }
 
 void lua_manager::run_and_clear_all_bindings_(sol::state_view lua) {
-	auto& bindings = queued_bindings();
+	auto& bindings = queued_bindings_();
 
 	AETHER_DEBUGLOG("Running all bindings | count: {}", bindings.size());
 	auto const start_time = util::start();
@@ -35,7 +35,11 @@ void lua_manager::run_and_clear_all_bindings_(sol::state_view lua) {
 }
 
 void lua_manager::try_create_scripts_directory_() {
-	(void)std::filesystem::create_directory("scripts");
+	try {
+		std::filesystem::create_directory("scripts");
+	} catch (std::filesystem::filesystem_error const& e) {
+		AETHER_ERRORLOG("Caught filesystem error | what: {} | error code: {}", e.what(), e.code().message());
+	}
 }
 
 void lua_manager::run_scripts_() {
@@ -45,6 +49,10 @@ void lua_manager::run_scripts_() {
 		if (entry.path().extension() == ".lua") {
 			found_scripts.emplace_back(entry.path());
 		}
+	}
+
+	if (found_scripts.empty()) {
+		return;
 	}
 }
 

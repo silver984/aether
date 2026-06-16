@@ -1,11 +1,7 @@
 #pragma once
-#include <cstdint>
-#include <functional>
 #include <math/size.hh>
-#include <memory>
 #include <string>
 #include <string_view>
-#include <vector>
 
 namespace aether {
 
@@ -22,7 +18,7 @@ public:
 
 private:
 	window();
-	bool init_(std::string_view title, size<int> _size, int fps);
+	bool init_(std::string_view title, size<int> bounds, int fps);
 	void shutdown_();
 	void update_();
 	[[nodiscard]] bool should_close_() const;

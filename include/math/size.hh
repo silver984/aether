@@ -13,11 +13,11 @@ struct size final : operators<size, T, 2> {
 	using value_type = T;
 	constexpr size() = default;
 	constexpr size(T v)
-	    : width(v)
-	    , height(v) {}
+	        : width(v)
+	        , height(v) {}
 	constexpr size(T width_val, T height_val)
-	    : width(width_val)
-	    , height(height_val) {}
+	        : width(width_val)
+	        , height(height_val) {}
 
 	[[nodiscard]] constexpr operator vec2<T>() const {
 		return vec2<T>(width, height);

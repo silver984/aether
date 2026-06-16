@@ -9,8 +9,8 @@
 namespace aether::log::impl_ {
 
 void print_(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc);
-void create_log_file_();
-void close_log_file_();
+void try_create_log_file_();
+void try_close_log_file_();
 
 } // namespace aether::log::impl_
 

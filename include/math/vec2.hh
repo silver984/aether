@@ -13,11 +13,11 @@ struct vec2 final : operators<vec2, T, 2> {
 	using value_type = T;
 	constexpr vec2() = default;
 	constexpr vec2(T val)
-	    : x(val)
-	    , y(val) {}
+	        : x(val)
+	        , y(val) {}
 	constexpr vec2(T x_val, T y_val)
-	    : x(x_val)
-	    , y(y_val) {}
+	        : x(x_val)
+	        , y(y_val) {}
 
 	[[nodiscard]] constexpr operator size<T>() const {
 		return size<T>(x, y);

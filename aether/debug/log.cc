@@ -73,7 +73,8 @@ void print_(std::string_view msg, std::string_view level, fmt::color level_color
 	std::string const level_str             = fmt::format("[{}] ", level);
 
 	if (log_file.is_open()) {
-		log_file << fmt::format("{}{}{}\n", time_and_location_str, level_str, msg);
+		// log_file << fmt::format("{}{}{}\n", time_and_location_str, level_str, msg);
+		log_file << time_and_location_str << level_str << msg << "\n";
 	}
 
 	#ifndef AETHER_RELWITHDEB
@@ -83,14 +84,22 @@ void print_(std::string_view msg, std::string_view level, fmt::color level_color
 	#endif
 }
 
-void create_log_file_() {
-	std::filesystem::create_directory("logs");
+void try_create_log_file_() {
+	try {
+		std::filesystem::create_directory("logs");
+	} catch (std::filesystem::filesystem_error const& e) {
+		AETHER_ERRORLOG("Caught filesystem error | what: {} | error code: {}", e.what(), e.code().message());
+		return;
+	}
+
 	std::filesystem::path const fp = fmt::format("logs/aether_{}_{}.log", file_date_str(), file_time_str());
 	log_file.open(fp);
 }
 
-void close_log_file_() {
-	log_file.close();
+void try_close_log_file_() {
+	if (log_file.is_open()) {
+		log_file.close();
+	}
 }
 
 } // namespace aether::log::impl_

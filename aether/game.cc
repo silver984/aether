@@ -40,7 +40,7 @@ game::~game() {
 	auto const end_time = util::end(start_time);
 	AETHER_INFOLOG("Done | took {}ms", end_time);
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	log::impl_::close_log_file_();
+	log::impl_::try_close_log_file_();
 #endif
 }
 
@@ -50,7 +50,7 @@ bool game::init(init_descriptor const& desc) {
 	}
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	log::impl_::create_log_file_();
+	log::impl_::try_create_log_file_();
 
 	#if !defined(AETHER_RELWITHDEB) && defined(WIN32)
 	if (!win32_::enable_console_colors_()) {
@@ -66,16 +66,12 @@ bool game::init(init_descriptor const& desc) {
 		AETHER_DEBUGLOG("Window initialized");
 	}
 
-#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	using enum SoLoud::SOLOUD_ERRORS;
 	if (SoLoud::result result = soloud_.init(); result != SO_NO_ERROR) {
 		AETHER_WARNLOG("Audio engine failed to initialize | result: {}", result);
 	} else {
 		AETHER_DEBUGLOG("Audio engine initialized");
 	}
-#else
-	(void)soloud_.init();
-#endif
 
 	renderer_.setup2d_();
 
@@ -101,10 +97,9 @@ void game::run() {
 #endif
 
 	using namespace std::chrono;
-	bool is_audio_paused         = false;
-	auto previous_time           = steady_clock::now();
-	auto next_frame_time         = previous_time;
-	auto const target_frame_time = duration_cast<steady_clock::duration>(duration<float>(1.f / window_.target_fps()));
+	bool is_audio_paused = false;
+	auto previous_time   = steady_clock::now();
+	auto next_frame_time = previous_time;
 
 	while (!window_.should_close_()) {
 		auto const start_time          = steady_clock::now();
@@ -114,8 +109,7 @@ void game::run() {
 
 		if (!is_window_minimized) {
 			if (is_audio_paused) {
-				is_audio_paused = false;
-				soloud_.setPauseAll(is_audio_paused);
+				soloud_.setPauseAll(is_audio_paused = false);
 			}
 
 			window_.update_();
@@ -123,8 +117,7 @@ void game::run() {
 			scene_scheduler_.update_scene_(dt);
 		} else {
 			if (!is_audio_paused) {
-				is_audio_paused = true;
-				soloud_.setPauseAll(is_audio_paused);
+				soloud_.setPauseAll(is_audio_paused = true);
 			}
 		}
 
@@ -147,6 +140,7 @@ void game::run() {
 			continue;
 		}
 
+		auto const target_frame_time = duration_cast<steady_clock::duration>(duration<float>(1.f / window_.target_fps()));
 		next_frame_time += target_frame_time;
 		std::this_thread::sleep_until(next_frame_time);
 
@@ -183,7 +177,7 @@ void game::shutdown_() {
 	auto const end_time = util::end(start_time);
 	AETHER_INFOLOG("Done | took {}ms", end_time);
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	log::impl_::close_log_file_();
+	log::impl_::try_close_log_file_();
 #endif
 }
 

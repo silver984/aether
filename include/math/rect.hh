@@ -16,22 +16,22 @@ struct rect final : operators<rect, T, 4> {
 	using value_type = T;
 	constexpr rect() = default;
 	constexpr rect(T val)
-	    : x(val)
-	    , y(val)
-	    , width(val)
-	    , height(val) {}
+	        : x(val)
+	        , y(val)
+	        , width(val)
+	        , height(val) {}
 	constexpr rect(T x_val, T y_val, T width_val, T height_val)
-	    : x(x_val)
-	    , y(y_val)
-	    , width(width_val)
-	    , height(height_val) {}
+	        : x(x_val)
+	        , y(y_val)
+	        , width(width_val)
+	        , height(height_val) {}
 
 	[[nodiscard]] constexpr vec2<T> position() const {
-		return {x, y};
+		return vec2<T>(x, y);
 	}
 
 	[[nodiscard]] constexpr size<T> bounds() const {
-		return {width, height};
+		return vec2<T>(width, height);
 	};
 
 	constexpr T& operator[](size_t i) {
