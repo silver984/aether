@@ -8,7 +8,12 @@ class texture2d;
 
 class sprite : public node {
 public:
-	enum class texture_wrap : int { CLAMP, REPEAT, MIRROR_CLAMP, MIRROR_REPEAT };
+	enum class texture_wrap : int {
+		CLAMP,
+		REPEAT,
+		MIRROR_CLAMP,
+		MIRROR_REPEAT
+	};
 
 	struct descriptor final {
 		std::string_view file;

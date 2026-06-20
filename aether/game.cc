@@ -72,7 +72,6 @@ bool game::init(init_descriptor const& desc) {
 	}
 
 	renderer_.setup2d_();
-
 	lua_manager_.init_();
 	lua_manager_.run_scripts_();
 

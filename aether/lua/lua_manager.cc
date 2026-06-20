@@ -1,4 +1,5 @@
 #include <debug/log.hh>
+#include <lua/lua_binding.hh>
 #include <lua/lua_manager.hh>
 #include <sol/environment.hpp>
 #include <util/timer.hh>
@@ -14,32 +15,34 @@ void lua_manager::init_() {
 	lua_.open_libraries(base, string, table, math, utf8);
 	run_and_clear_all_bindings_();
 	try_create_scripts_directory_();
+	AETHER_INFOLOG("Initialized");
 }
 
-std::vector<std::function<void(sol::state_view)>>& lua_manager::queued_bindings_() {
-	static std::vector<std::function<void(sol::state_view)>> instance;
+std::vector<lua_binding*>*& lua_manager::registered_bindings_() {
+	static auto* instance = new std::vector<lua_binding*>();
 	return instance;
 }
 
-void lua_manager::queue_binding_(std::function<void(sol::state_view)>&& cb) {
-	queued_bindings_().emplace_back(std::move(cb));
+void lua_manager::register_binding_(lua_binding* ptr) {
+	registered_bindings_()->emplace_back(ptr);
 }
 
 void lua_manager::run_and_clear_all_bindings_() {
-	auto& bindings = queued_bindings_();
+	auto& registered_bindings = registered_bindings_();
 
-	AETHER_DEBUGLOG("Running all bindings | count: {}", bindings.size());
+	AETHER_DEBUGLOG("Running all bindings | count: {}", registered_bindings->size());
 	util::timer t;
 	t.start();
 
-	for (auto const& cb : bindings) {
-		cb(lua_);
+	for (auto iterator = registered_bindings->begin(); iterator != registered_bindings->end();) {
+		(*iterator)->bind(lua_);
+		delete *iterator;
+		iterator = registered_bindings->erase(iterator);
 	}
 
+	delete registered_bindings;
 	t.stop();
 	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
-
-	bindings.clear();
 }
 
 void lua_manager::try_create_scripts_directory_() {
@@ -61,9 +64,8 @@ void lua_manager::run_scripts_() {
 	}
 
 	for (auto iterator = available_scripts.begin(); iterator != available_scripts.end();) {
-		sol::environment environment                 = sol::environment(lua_, sol::create, lua_.globals());
 		sol::protected_function_result script_result = lua_.safe_script_file(
-		        iterator->string(), environment,
+		        iterator->string(), sol::environment(lua_, sol::create, lua_.globals()),
 		        [](lua_State*, sol::protected_function_result result) {
 			        sol::error e = result;
 			        AETHER_ERRORLOG("Script invalid | what: {}", e.what());
@@ -72,7 +74,7 @@ void lua_manager::run_scripts_() {
 		        sol::load_mode::any);
 
 		if (!script_result.valid()) {
-			AETHER_ERRORLOG("Excluding invalid script | file: \"{}\"", iterator->filename().generic_string());
+			AETHER_ERRORLOG("Excluding invalid script | file: \"{}\"", iterator->filename().string());
 			iterator = available_scripts.erase(iterator);
 			continue;
 		}

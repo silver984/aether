@@ -29,8 +29,6 @@ private:
 	void start_draw_();
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	void end_draw_(uint32_t debug_fps, double heap_usage, double total_heap_usage);
-	void update_debug_(uint32_t debug_fps, double heap_usage, double total_heap_usage);
-	void draw_debug_();
 #else
 	void end_draw_();
 #endif

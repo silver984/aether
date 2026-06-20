@@ -10,11 +10,11 @@
 namespace {
 
 std::string_view function_name(std::source_location const& loc) {
-	std::string_view func = loc.function_name();
+	std::string_view function_name = loc.function_name();
 
 	// remove parameter list
-	if (auto paren = func.find('('); paren != std::string_view::npos) {
-		func = func.substr(0, paren);
+	if (auto paren = function_name.find('('); paren != std::string_view::npos) {
+		function_name = function_name.substr(0, paren);
 	}
 
 	#ifdef _MSC_VER
@@ -22,25 +22,25 @@ std::string_view function_name(std::source_location const& loc) {
 	constexpr std::string_view cc_tokens[] = {"__cdecl", "__stdcall", "__fastcall", "__vectorcall"};
 
 	for (auto cc : cc_tokens) {
-		if (auto pos = func.find(cc); pos != std::string_view::npos) {
+		if (auto pos = function_name.find(cc); pos != std::string_view::npos) {
 			auto after = pos + cc.size();
 
-			while (after < func.size() && func[after] == ' ') {
+			while (after < function_name.size() && function_name[after] == ' ') {
 				++after;
 			}
 
-			func.remove_prefix(after);
+			function_name.remove_prefix(after);
 			break;
 		}
 	}
 	#else
 	// GCC / Clang / MinGW:
-	if (auto space = func.rfind(' '); space != std::string_view::npos) {
-		func.remove_prefix(space + 1);
+	if (auto const space = function_name.rfind(' '); space != std::string_view::npos) {
+		function_name.remove_prefix(space + 1);
 	}
 	#endif
 
-	return func;
+	return function_name;
 }
 
 std::string time_str() {

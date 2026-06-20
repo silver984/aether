@@ -22,7 +22,11 @@ class game;
 class animation_repository final {
 	friend class game;
 
-	enum xml_format : int { UNKNOWN = -1, ADOBE_ANIMATE, TEXTURE_PACKER };
+	enum xml_format : int {
+		UNKNOWN = -1,
+		ADOBE_ANIMATE,
+		TEXTURE_PACKER
+	};
 
 public:
 	~animation_repository();

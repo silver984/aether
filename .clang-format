@@ -17,13 +17,13 @@ DerivePointerAlignment: false
 PointerAlignment: Left
 QualifierAlignment: Right
 
-AllowShortFunctionsOnASingleLine: Empty
-AllowShortIfStatementsOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
-AllowShortBlocksOnASingleLine: Never
-AllowShortCaseLabelsOnASingleLine: true
-AllowShortLambdasOnASingleLine: Empty
-AllowShortEnumsOnASingleLine: true
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortLambdasOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
 
 AlignConsecutiveAssignments: Consecutive
 AlignAfterOpenBracket: Align
