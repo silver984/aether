@@ -43,15 +43,19 @@ void testscene::update_(float dt) {
 	auto& registered_callbacks = hook_map_iterator->second.callbacks;
 	for (auto iterator = registered_callbacks.begin(); iterator != registered_callbacks.end();) {
 		sol::protected_function_result function_result = (*iterator)(this, dt);
-		if (!function_result.valid()) {
-			sol::error e = function_result;
-			AETHER_ERRORLOG("Invalid hook callback | what: {}", e.what());
-			iterator = registered_callbacks.erase(iterator);
-			if (iterator == registered_callbacks.end()) {
-				lua_hooks.erase(hook_map_iterator);
-			}
+
+		if (function_result.valid()) {
+			++iterator;
 			continue;
 		}
-		++iterator;
+
+		sol::error e = function_result;
+		AETHER_ERRORLOG("Invalid hook callback | what: {}", e.what());
+		iterator = registered_callbacks.erase(iterator);
+
+		if (registered_callbacks.empty()) {
+			lua_hooks.erase(hook_map_iterator);
+			break;
+		}
 	}
 }
