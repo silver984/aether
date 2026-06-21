@@ -4,6 +4,7 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace aether::util {
 
@@ -26,5 +27,6 @@ struct string_hash final {
 
 template <typename T>
 using string_map = std::unordered_map<std::string, T, string_hash, std::equal_to<>>;
+using string_set = std::unordered_set<std::string, string_hash, std::equal_to<>>;
 
 } // namespace aether::util

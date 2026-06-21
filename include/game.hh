@@ -3,7 +3,7 @@
 #include <audio_repository.hh>
 #include <chrono>
 #include <context.hh>
-#include <lua/lua_manager.hh>
+#include <lua/manager.hh>
 #include <math/size.hh>
 #include <renderer.hh>
 #include <scene_scheduler.hh>
@@ -38,7 +38,7 @@ private:
 	window window_;
 	renderer renderer_;
 	SoLoud::Soloud soloud_;
-	lua_manager lua_manager_;
+	lua::manager lua_manager_;
 	scene_scheduler scene_scheduler_;
 	texture_repository textures_;
 	animation_repository animations_;

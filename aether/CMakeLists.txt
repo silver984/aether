@@ -7,7 +7,7 @@ list(REMOVE_ITEM AETHER_GENERAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/camera.cc)
 target_sources(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/math/mat3.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/data/texture2d.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/lua/lua_manager.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/lua/manager.cc
     $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/log.cc>
     $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/heap.cc>
     $<$<AND:$<CONFIG:Debug,RelWithDebInfo>,$<PLATFORM_ID:Windows>>:${CMAKE_CURRENT_SOURCE_DIR}/debug/win32.cc>

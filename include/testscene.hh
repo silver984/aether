@@ -3,14 +3,14 @@
 #include <scene.hh>
 // #include <sound.hh>
 
-class test_scene final : public aether::scene {
+class testscene final : public aether::scene {
 public:
-	test_scene(aether::context const& ctx);
-	~test_scene() override;
+	testscene(aether::context const& ctx);
+	~testscene() override;
 
 protected:
 	bool init_() override;
-	// void update_(float dt) override;
+	void update_(float dt) override;
 
 	// private:
 	// 	aether::sref<aether::animated_sprite> bf_spin_;

@@ -4,21 +4,30 @@
 namespace aether {
 
 struct rgba final {
-	constexpr rgba() = default;
-	constexpr rgba(uint8_t val)
-	        : r(val)
-	        , g(val)
-	        , b(val)
-	        , a(val) {}
-	constexpr rgba(uint8_t r_val, uint8_t g_val, uint8_t b_val, uint8_t a_val)
-	        : r(r_val)
-	        , g(g_val)
-	        , b(b_val)
-	        , a(a_val) {}
+	constexpr rgba()
+	        : r(0)
+	        , g(0)
+	        , b(0)
+	        , a(0) {
+	}
 
-	constexpr rgba operator*(rgba rhs) {
+	constexpr rgba(uint8_t v)
+	        : r(v)
+	        , g(v)
+	        , b(v)
+	        , a(v) {
+	}
+
+	constexpr rgba(uint8_t rv, uint8_t gv, uint8_t bv, uint8_t av)
+	        : r(rv)
+	        , g(gv)
+	        , b(bv)
+	        , a(av) {
+	}
+
+	[[nodiscard]] constexpr rgba operator*(rgba rhs) {
 		auto mul = [](uint8_t a, uint8_t b) -> uint8_t {
-			return static_cast<uint8_t>((static_cast<uint16_t>(a) * b) / 255);
+			return (uint8_t)(((uint16_t)a * b) / 255);
 		};
 		return rgba(mul(r, rhs.r), mul(g, rhs.g), mul(b, rhs.b), mul(a, rhs.a));
 	}
@@ -31,10 +40,10 @@ struct rgba final {
 		return !(*this == rhs);
 	}
 
-	uint8_t r = 0;
-	uint8_t g = 0;
-	uint8_t b = 0;
-	uint8_t a = 0;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t a;
 };
 
 } // namespace aether

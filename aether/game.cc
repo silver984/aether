@@ -16,7 +16,8 @@ game::game()
                                    .raudios          = audios_,
                                    .rscene_scheduler = scene_scheduler_,
                                    .rsoloud          = soloud_})
-        , is_initialized_(false) {}
+        , is_initialized_(false) {
+}
 
 game::~game() {
 	if (!is_initialized_) {
@@ -34,6 +35,7 @@ game::~game() {
 		audios_.clear_cache_();
 	}
 
+	lua_manager_.shutdown_();
 	soloud_.deinit();
 	window_.shutdown_();
 	is_initialized_ = false;
@@ -165,6 +167,7 @@ void game::shutdown_() {
 	textures_.clear_cache_();
 	animations_.clear_cache_();
 	audios_.clear_cache_();
+	lua_manager_.shutdown_();
 	soloud_.deinit();
 	window_.shutdown_();
 	is_initialized_ = false;

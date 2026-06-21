@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <math/numeric.hh>
 #include <math/operators.hh>
+#include <stdexcept>
 
 namespace aether {
 
@@ -11,28 +12,50 @@ struct size;
 template <numeric T>
 struct vec2 final : operators<vec2, T, 2> {
 	using value_type = T;
-	constexpr vec2() = default;
-	constexpr vec2(T val)
-	        : x(val)
-	        , y(val) {}
-	constexpr vec2(T x_val, T y_val)
-	        : x(x_val)
-	        , y(y_val) {}
+
+	constexpr vec2()
+	        : x(T{0})
+	        , y(T{0}) {
+	}
+
+	constexpr vec2(T v)
+	        : x(v)
+	        , y(v) {
+	}
+
+	constexpr vec2(T xv, T yv)
+	        : x(xv)
+	        , y(yv) {
+	}
 
 	[[nodiscard]] constexpr operator size<T>() const {
 		return size<T>(x, y);
 	}
 
 	constexpr T& operator[](size_t i) {
-		return i == 0 ? x : y;
+		switch (i) {
+		case 0:
+			return x;
+		case 1:
+			return y;
+		default:
+			throw std::out_of_range("index out of range");
+		}
 	}
 
 	constexpr T const& operator[](size_t i) const {
-		return i == 0 ? x : y;
+		switch (i) {
+		case 0:
+			return x;
+		case 1:
+			return y;
+		default:
+			throw std::out_of_range("index out of range");
+		}
 	}
 
-	T x = T{0};
-	T y = T{0};
+	T x;
+	T y;
 };
 
 } // namespace aether
