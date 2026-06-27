@@ -33,29 +33,87 @@ bool testscene::init_() {
 	return true;
 }
 
+template <typename obj, typename fn, typename... va>
+auto hookchain(obj* ptr, std::string_view function_name, fn impl, va&&... args) {
+	auto& lua_hooks     = lua::manager::hook_map();
+	auto const iterator = lua_hooks.find(function_name);
+
+	if (iterator == lua_hooks.end()) {
+		return std::invoke(impl, ptr, std::forward<va>(args)...);
+	}
+
+	using ret = std::invoke_result_t<fn, obj*, va...>;
+	std::vector<size_t> invalid_indices;
+
+	auto ccallbacks = iterator->second.callbacks;
+	auto chain      = [&](size_t i, auto&& self, obj* lptr, va&&... chain_args) -> ret {
+		if (i >= ccallbacks.size()) {
+			return std::invoke(impl, lptr, std::forward<va>(chain_args)...);
+		}
+
+		auto& callback = ccallbacks[i];
+
+		// lua intentionally receives a copy of args instead
+		// no point in forwarding as lua always copies them
+
+		auto prcd = [i, &self, lptr](va... prcd_args) -> ret {
+			return self(i + 1, self, lptr, prcd_args...);
+		};
+
+		sol::protected_function_result result = callback(lptr, prcd, chain_args...);
+
+		if (!result.valid()) {
+			sol::error e = result;
+			AETHER_ERRORLOG("Invalid hook callback | what: {}", e.what());
+			invalid_indices.emplace_back(i);
+			return std::invoke(impl, lptr, std::forward<va>(chain_args)...);
+		}
+
+		if constexpr (!std::is_void_v<ret>) {
+			if (result.return_count() <= 0) {
+				return std::invoke(impl, lptr, std::forward<va>(chain_args)...);
+			}
+			return result.get<ret>();
+		}
+	};
+
+	auto cleanup = [&]() -> void {
+		auto& rcallbacks = iterator->second.callbacks;
+		for (size_t i : invalid_indices) {
+			rcallbacks.erase(rcallbacks.begin() + i);
+		}
+		if (rcallbacks.empty()) {
+			lua_hooks.erase(iterator);
+		}
+	};
+
+	if constexpr (!std::is_void_v<ret>) {
+		ret out = chain(0, chain, ptr, std::forward<va>(args)...);
+		cleanup();
+		return out;
+	}
+
+	chain(0, chain, ptr, std::forward<va>(args)...);
+	cleanup();
+}
+
+float testscene::test_() {
+	return hookchain(this, "testscene:test_", &testscene::test_impl_);
+}
+
+float testscene::test_impl_() {
+	return 1.f;
+}
+
 void testscene::update_(float dt) {
-	auto& lua_hooks              = lua::manager::hook_map();
-	auto const hook_map_iterator = lua_hooks.find("testscene:update_");
-	if (hook_map_iterator == lua_hooks.end()) {
-		return;
+	hookchain(this, "testscene:update_", &testscene::update_impl_, dt);
+	return;
+}
+
+void testscene::update_impl_(float dt) {
+	for (auto& child : root()->children()) {
+		child->set_rotation(child->rotation() + (90.f * dt));
 	}
 
-	auto& registered_callbacks = hook_map_iterator->second.callbacks;
-	for (auto iterator = registered_callbacks.begin(); iterator != registered_callbacks.end();) {
-		sol::protected_function_result function_result = (*iterator)(this, dt);
-
-		if (function_result.valid()) {
-			++iterator;
-			continue;
-		}
-
-		sol::error e = function_result;
-		AETHER_ERRORLOG("Invalid hook callback | what: {}", e.what());
-		iterator = registered_callbacks.erase(iterator);
-
-		if (registered_callbacks.empty()) {
-			lua_hooks.erase(hook_map_iterator);
-			break;
-		}
-	}
+	AETHER_INFOLOG("{}", test_());
 }

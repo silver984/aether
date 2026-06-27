@@ -26,7 +26,7 @@ void manager::try_register_hook(std::string_view function_name, sol::function& c
 }
 
 util::string_set const& manager::hookable_functions_() {
-	static util::string_set const instance({"testscene:update_"});
+	static util::string_set const instance({"testscene:update_", "testscene:test_"});
 	return instance;
 }
 
@@ -77,15 +77,15 @@ void manager::try_create_scripts_directory_() {
 
 void manager::run_scripts_() {
 	AETHER_INFOLOG("Running lua scripts");
-	util::timer t;
-	t.start();
-
 	std::vector<std::filesystem::path> available_scripts = gather_available_scripts_();
 
 	if (available_scripts.empty()) {
 		AETHER_INFOLOG("Nothing to run");
 		return;
 	}
+
+	util::timer t;
+	t.start();
 
 	for (auto iterator = available_scripts.begin(); iterator != available_scripts.end();) {
 		sol::protected_function_result script_result = state_.safe_script_file(
