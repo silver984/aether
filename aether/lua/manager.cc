@@ -26,7 +26,7 @@ void manager::try_register_hook(std::string_view function_name, sol::function& c
 }
 
 util::string_set const& manager::hookable_functions_() {
-	static util::string_set const instance({"testscene:update_", "testscene:test_"});
+	static util::string_set const instance({"testscene:update_"});
 	return instance;
 }
 

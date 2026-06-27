@@ -125,11 +125,10 @@ void game::run() {
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 		double divider = 1024. * 1024.;
-		renderer_.end_draw_(evaluated_fps, heap::usage() / divider, heap::total_usage() / divider);
+		renderer_.end_draw_(evaluated_fps, heap::usage() / divider, lua_manager_.state_.memory_used() / divider);
 #else
 		renderer_.end_draw_();
 #endif
-
 		if (is_window_minimized) {
 			next_frame_time = std::chrono::steady_clock::now();
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));

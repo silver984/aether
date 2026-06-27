@@ -1,7 +1,6 @@
 #pragma once
 #include <filesystem>
-#include <sol/function.hpp>
-#include <sol/state.hpp>
+#include <sol/sol.hpp>
 #include <util/string_map.hh>
 #include <vector>
 

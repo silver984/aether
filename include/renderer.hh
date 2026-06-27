@@ -28,7 +28,7 @@ private:
 	void update_viewport_(size<int> target_window_size);
 	void start_draw_();
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	void end_draw_(uint32_t debug_fps, double heap_usage, double total_heap_usage);
+	void end_draw_(uint32_t fps, double heap_usage, double lua_memory_usage);
 #else
 	void end_draw_();
 #endif
@@ -47,9 +47,9 @@ private:
 	size<int> last_target_window_size_;
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	vec2<int> debug_text_measure_;
-	uint32_t last_debug_fps_;
+	uint32_t last_fps_;
 	double last_heap_usage_;
-	double last_total_heap_usage_;
+	double last_lua_memory_usage_;
 #endif
 };
 

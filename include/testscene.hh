@@ -10,8 +10,6 @@ public:
 
 protected:
 	bool init_() override;
-	[[nodiscard]] float test_();
-	[[nodiscard]] float test_impl_();
 	void update_(float dt) override;
 	void update_impl_(float dt);
 

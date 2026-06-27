@@ -22,7 +22,6 @@ configure_file(
     @ONLY
 )
 
-# includes
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/external
@@ -33,6 +32,11 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:AETHER_DEBUG>
     $<$<CONFIG:RelWithDebInfo>:AETHER_RELWITHDEB>
     $<$<BOOL:${AETHER_VERBOSE_DEBUG}>:AETHER_VERBOSE_DEBUG>
+)
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE
+    <sol/sol.hpp>
+    <soloud.h>
 )
 
 include(cmake/dependencies.cmake)

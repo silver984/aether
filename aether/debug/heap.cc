@@ -5,9 +5,7 @@
 
 namespace {
 
-size_t current      = 0;
-size_t last_current = 0;
-size_t total        = 0;
+size_t current = 0;
 
 } // namespace
 
@@ -39,15 +37,6 @@ namespace aether::heap {
 
 size_t usage() {
 	return current;
-}
-
-size_t total_usage() {
-	if (last_current != current) {
-		total        = std::max(total, current);
-		last_current = current;
-	}
-
-	return total;
 }
 
 } // namespace aether::heap

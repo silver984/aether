@@ -14,7 +14,9 @@ namespace aether {
 renderer::renderer()
         : projection_(mat3::identity()) {
 #ifdef AETHER_DEBUG
-	last_debug_fps_ = 0;
+	last_fps_              = 0;
+	last_heap_usage_       = 0.;
+	last_lua_memory_usage_ = 0.;
 #endif
 }
 
@@ -36,7 +38,8 @@ void renderer::draw_texture(rltexture2d const& texture, rect<float> source_rect,
 		source_rect.y -= source_rect.height;
 	}
 
-	size<float> const texture_bounds = size<float>((float)texture.width, (float)texture.height);
+	size<float> const texture_bounds  = size<float>((float)texture.width, (float)texture.height);
+	vec2<float> const source_position = source_rect.position();
 
 	push_matrix_(transform);
 	rlSetTexture(texture.id);
@@ -46,7 +49,7 @@ void renderer::draw_texture(rltexture2d const& texture, rect<float> source_rect,
 
 	// top left
 	{
-		vec2<float> coord = source_rect.position();
+		vec2<float> coord = source_position;
 		if (flip_x) {
 			coord.x += source_rect.width;
 		}
@@ -56,7 +59,7 @@ void renderer::draw_texture(rltexture2d const& texture, rect<float> source_rect,
 
 	// bottom left
 	{
-		vec2<float> coord = source_rect.position();
+		vec2<float> coord = source_position;
 		coord.y += source_rect.height;
 		if (flip_x) {
 			coord.x += source_rect.width;
@@ -67,7 +70,7 @@ void renderer::draw_texture(rltexture2d const& texture, rect<float> source_rect,
 
 	// bottom right
 	{
-		vec2<float> coord = source_rect.position() + source_rect.bounds();
+		vec2<float> coord = source_position + source_rect.bounds();
 		if (flip_x) {
 			coord.x -= source_rect.width;
 		}
@@ -77,7 +80,7 @@ void renderer::draw_texture(rltexture2d const& texture, rect<float> source_rect,
 
 	// top right
 	{
-		vec2<float> coord = source_rect.position();
+		vec2<float> coord = source_position;
 		if (!flip_x) {
 			coord.x += source_rect.width;
 		}
@@ -115,16 +118,16 @@ void renderer::start_draw_() {
 }
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-void renderer::end_draw_(uint32_t debug_fps, double heap_usage, double total_heap_usage) {
+void renderer::end_draw_(uint32_t fps, double heap_usage, double lua_memory_usage) {
 	rlPopMatrix();
 
-	if (last_debug_fps_ != debug_fps || last_heap_usage_ != heap_usage || last_total_heap_usage_ != total_heap_usage) {
-		last_debug_fps_        = debug_fps;
-		last_heap_usage_       = heap_usage;
-		last_total_heap_usage_ = total_heap_usage;
-		debug_text_            = fmt::format("FPS: {}\nHEAP: {:.2f}MB / {:.2f}MB", debug_fps, heap_usage, total_heap_usage);
-		Vector2 const m        = MeasureTextEx(GetFontDefault(), debug_text_.c_str(), 10.f, 1.f);
-		debug_text_measure_    = vec2<int>((int)std::round(m.x), (int)std::round(m.y));
+	if (last_fps_ != fps || last_heap_usage_ != heap_usage || last_lua_memory_usage_ != lua_memory_usage) {
+		last_fps_                 = fps;
+		last_heap_usage_          = heap_usage;
+		last_lua_memory_usage_    = lua_memory_usage;
+		debug_text_               = fmt::format("FPS: {}\nHEAP: {:.2f}MB\nLUA GC: {:.2f}MB", fps, heap_usage, lua_memory_usage);
+		Vector2 const measurement = MeasureTextEx(GetFontDefault(), debug_text_.c_str(), 10.f, 1.f);
+		debug_text_measure_       = vec2<int>((int)std::round(measurement.x), (int)std::round(measurement.y));
 	}
 
 	if (!debug_text_.empty()) {
