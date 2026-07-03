@@ -12,10 +12,10 @@ namespace {
 template <aether::indexed_numeric T, typename U>
 void binary(sol::usertype<T>& ut, sol::meta_function meta, U&& op) {
 	ut[meta] = sol::overload(
-	        [=](T const& left, T const& right) -> T {
+	        [=](T left, T right) -> T {
 		        return op(left, right);
 	        },
-	        [=](T const& left, float right) -> T {
+	        [=](T left, float right) -> T {
 		        return op(left, right);
 	        },
 	        [=](float left, T right) -> T {
@@ -34,13 +34,13 @@ void operators(sol::usertype<T>& ut) {
 
 	// todo: to_string
 
-	ut[unary_minus] = [](T const& obj) -> T {
+	ut[unary_minus] = [](T obj) -> T {
 		return -obj;
 	};
-	ut[equal_to] = [](T const& left, T const& right) -> bool {
+	ut[equal_to] = [](T left, T right) -> bool {
 		return left == right;
 	};
-	ut[index] = [](T const& obj, int index) -> float {
+	ut[index] = [](T obj, int index) -> float {
 		return obj[(size_t)index - 1];
 	};
 	ut[new_index] = [](T* self, int index, float value) -> void {
@@ -51,7 +51,7 @@ void operators(sol::usertype<T>& ut) {
 	};
 }
 
-struct math : aether::lua::binding {
+struct math_binding : aether::lua::binding {
 	void bind(sol::state_view lua) override {
 		{
 			using vec2             = aether::vec2<float>;
@@ -107,6 +107,6 @@ struct math : aether::lua::binding {
 	}
 };
 
-math const* _ = new math();
+math_binding const* _ = new math_binding();
 
 } // namespace

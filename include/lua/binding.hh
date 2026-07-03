@@ -1,6 +1,6 @@
 #pragma once
 #include <lua/manager.hh>
-#include <sol/state_view.hpp>
+#include <sol/state.hpp>
 
 namespace aether::lua {
 

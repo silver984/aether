@@ -9,6 +9,7 @@
 
 namespace aether::lua {
 
+// returns the same type as `impl`, assuming that its a function pointer
 template <typename obj, typename fn, typename... va>
 auto hookchain(obj* ptr, std::string_view function_name, fn impl, va... args) {
 	auto& hook_map      = manager::hook_map();
@@ -22,7 +23,7 @@ auto hookchain(obj* ptr, std::string_view function_name, fn impl, va... args) {
 	std::vector<size_t> invalid_indices;
 
 	auto ccallbacks = iterator->second.callbacks;
-	auto chain      = [&impl, &ccallbacks, &invalid_indices](size_t i, auto&& self, obj* lptr, va... chain_args) -> ret {
+	auto chain = [&impl, &ccallbacks, &invalid_indices, &function_name](size_t i, auto&& self, obj* lptr, va... chain_args) -> ret {
 		if (i >= ccallbacks.size()) {
 			return std::invoke(impl, lptr, chain_args...);
 		}
@@ -36,23 +37,27 @@ auto hookchain(obj* ptr, std::string_view function_name, fn impl, va... args) {
 
 		if (!result.valid()) {
 			sol::error e = result;
-			AETHER_ERRORLOG("Invalid hook callback | what: {}", e.what());
+			AETHER_ERRORLOG("Invalid hook for \"{}\" | index: {} | what: {}", function_name, i, e.what());
 			invalid_indices.emplace_back(i);
 			return std::invoke(impl, lptr, chain_args...);
 		}
 
 		if constexpr (!std::is_void_v<ret>) {
-			if (result.return_count() <= 0) {
+			try {
+				return result.get<ret>();
+			} catch (sol::error const& e) {
+				AETHER_ERRORLOG("Missing hook return value for \"{}\" | index: {} | what: {}", function_name, i, e.what());
+				invalid_indices.emplace_back(i);
 				return std::invoke(impl, lptr, chain_args...);
 			}
-			return result.get<ret>();
 		}
 	};
 
-	auto cleanup = [&iterator, &invalid_indices, &hook_map]() -> void {
+	auto cleanup = [&iterator, &invalid_indices, &hook_map, &function_name]() -> void {
 		auto& rcallbacks = iterator->second.callbacks;
 		for (size_t i : invalid_indices) {
 			rcallbacks.erase(rcallbacks.begin() + i);
+			AETHER_DEBUGLOG("Removed hook for \"{}\" at index {}", function_name, i);
 		}
 		if (rcallbacks.empty()) {
 			hook_map.erase(iterator);

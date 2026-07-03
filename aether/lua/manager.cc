@@ -15,18 +15,26 @@ util::string_map<hook>& manager::hook_map() {
 	return instance;
 }
 
-void manager::try_register_hook(std::string_view function_name, sol::function& callback) {
+void manager::try_register_hook(std::string_view function_name, sol::function&& callback) {
 	auto& hookable_functions = hookable_functions_();
 	if (hookable_functions.find(function_name) == hookable_functions.end()) {
 		AETHER_ERRORLOG("\"{}\" is not a hookable function", function_name);
 		return;
 	}
-	hook_map()[std::string(function_name)].callbacks.emplace_back(std::move(callback));
-	AETHER_TRACELOG("Registered function hook for \"{}\"", function_name);
+
+	auto& lhook_map = hook_map();
+	if (lhook_map.size() >= lhook_map.max_size()) {
+		AETHER_ERRORLOG("Can't register any more function hooks!");
+		return;
+	}
+
+	std::string const function_name_str = std::string(function_name);
+	lhook_map[function_name_str].callbacks.emplace_back(std::move(callback));
+	AETHER_TRACELOG("Registered function hook for \"{}\" | hooked: {}", function_name, lhook_map[function_name_str].callbacks.size());
 }
 
 util::string_set const& manager::hookable_functions_() {
-	static util::string_set const instance({"testscene:update_"});
+	static util::string_set const instance({"testscene:init_", "testscene:update_"});
 	return instance;
 }
 
@@ -61,10 +69,13 @@ void manager::run_and_clear_all_bindings_() {
 	for (auto iterator = registered_bindings->begin(); iterator != registered_bindings->end();) {
 		(*iterator)->bind(state_);
 		delete *iterator;
-		iterator = registered_bindings->erase(iterator);
+		*iterator = nullptr;
+		iterator  = registered_bindings->erase(iterator);
 	}
 
 	delete registered_bindings;
+	registered_bindings = nullptr;
+
 	t.stop();
 	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
 }

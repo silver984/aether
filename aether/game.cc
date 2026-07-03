@@ -124,7 +124,7 @@ void game::run() {
 		}
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-		double divider = 1024. * 1024.;
+		float divider = 1024.f * 1024.f;
 		renderer_.end_draw_(evaluated_fps, heap::usage() / divider, lua_manager_.state_.memory_used() / divider);
 #else
 		renderer_.end_draw_();

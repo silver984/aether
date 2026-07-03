@@ -15,6 +15,10 @@ testscene::testscene(context const& ctx)
 testscene::~testscene() = default;
 
 bool testscene::init_() {
+	return lua::hookchain(this, "testscene:init_", &testscene::init_impl_);
+}
+
+bool testscene::init_impl_() {
 	auto const& ctx  = ctx_();
 	auto window_size = ctx.get_window().target_size();
 	auto animated    = node::create<animated_sprite>(

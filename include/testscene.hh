@@ -10,6 +10,7 @@ public:
 
 protected:
 	bool init_() override;
+	bool init_impl_();
 	void update_(float dt) override;
 	void update_impl_(float dt);
 

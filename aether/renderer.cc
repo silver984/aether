@@ -15,8 +15,8 @@ renderer::renderer()
         : projection_(mat3::identity()) {
 #ifdef AETHER_DEBUG
 	last_fps_              = 0;
-	last_heap_usage_       = 0.;
-	last_lua_memory_usage_ = 0.;
+	last_heap_usage_       = 0.f;
+	last_lua_memory_usage_ = 0.f;
 #endif
 }
 
@@ -118,7 +118,7 @@ void renderer::start_draw_() {
 }
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-void renderer::end_draw_(uint32_t fps, double heap_usage, double lua_memory_usage) {
+void renderer::end_draw_(uint32_t fps, float heap_usage, float lua_memory_usage) {
 	rlPopMatrix();
 
 	if (last_fps_ != fps || last_heap_usage_ != heap_usage || last_lua_memory_usage_ != lua_memory_usage) {
