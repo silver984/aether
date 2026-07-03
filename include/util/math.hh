@@ -22,7 +22,7 @@ template <numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] constexpr T lerp(T const& a, T const& b, typename T::value_type const& t) {
+[[nodiscard]] constexpr T lerp(T a, T b, typename T::value_type const& t) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = a[i] + (b[i] - a[i]) * t;
@@ -31,7 +31,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T damp(T const& a, T const& b, typename T::value_type const& l, typename T::value_type const& dt) {
+[[nodiscard]] T damp(T a, T b, typename T::value_type const& l, typename T::value_type const& dt) {
 	return lerp(a, b, typename T::value_type{1} - std::exp(-l * dt));
 }
 
@@ -51,7 +51,7 @@ template <numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] constexpr T clamp(T const& val, T const& min_val, T const& max_val) {
+[[nodiscard]] constexpr T clamp(T val, T min_val, T max_val) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::clamp(val[i], min_val[i], max_val[i]);
@@ -60,7 +60,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T round(T const& val) {
+[[nodiscard]] T round(T val) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::round(val[i]);
@@ -69,7 +69,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] constexpr T ceil(T const& val) {
+[[nodiscard]] constexpr T ceil(T val) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::ceil(val[i]);
@@ -78,7 +78,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T floor(T const& val) {
+[[nodiscard]] T floor(T val) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::floor(val[i]);
@@ -87,7 +87,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] constexpr T abs(T const& val) {
+[[nodiscard]] constexpr T abs(T val) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::abs(val[i]);
@@ -96,7 +96,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T sin(T const& val) {
+[[nodiscard]] T sin(T val) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::sin(val[i]);
@@ -105,7 +105,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T cos(T const& val) {
+[[nodiscard]] T cos(T val) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::cos(val[i]);
@@ -114,7 +114,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] T tan(T const& val) {
+[[nodiscard]] T tan(T val) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::tan(val[i]);
@@ -123,7 +123,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] constexpr T min(T const& left, T const& right) {
+[[nodiscard]] constexpr T min(T left, T right) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::min(left[i], right[i]);
@@ -132,7 +132,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] constexpr T max(T const& left, T const& right) {
+[[nodiscard]] constexpr T max(T left, T right) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = std::max(left[i], right[i]);
@@ -141,7 +141,7 @@ template <indexed_numeric T>
 }
 
 template <indexed_numeric T>
-[[nodiscard]] constexpr T reverse(T const& val) {
+[[nodiscard]] constexpr T reverse(T val) {
 	T out;
 	for (size_t i = 0; i < T::capacity(); ++i) {
 		out[i] = val[T::capacity() - i - 1];
