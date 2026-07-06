@@ -30,7 +30,6 @@ void scene_scheduler::update_scene_(float dt) {
 		current_scene_ = std::move(pending_scene_);
 		AETHER_INFOLOG("Scene replaced");
 	}
-
 	current_scene_->update_all_(dt);
 }
 

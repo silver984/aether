@@ -28,7 +28,7 @@ protected:
 	void draw_(mat3 const& transform, rgba color) override;
 
 private:
-	sref<texture2d> texture_;
+	ref<texture2d> texture_;
 	std::string const file_arg_;
 	rect<float> texture_source_rect_;
 	vec2<int> tile_index_;

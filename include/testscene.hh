@@ -15,9 +15,9 @@ protected:
 	void update_impl_(float dt);
 
 	// private:
-	// 	aether::sref<aether::animated_sprite> bf_spin_;
-	// 	aether::sref<aether::animated_sprite> og_bf_;
-	// 	aether::sref<aether::sound> death_sound_;
+	// 	aether::ref<aether::animated_sprite> bf_spin_;
+	// 	aether::ref<aether::animated_sprite> og_bf_;
+	// 	aether::ref<aether::sound> death_sound_;
 	// 	float elapsed_;
 	// 	int accumulator_;
 };

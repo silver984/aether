@@ -39,11 +39,11 @@ void scene::unschedule_visit() {
 	is_visit_scheduled_ = false;
 }
 
-bool scene::add(sref<node> n) {
+bool scene::add(ref<node> n) {
 	return root_->add_child(n);
 }
 
-bool scene::add(sref<sound> s) {
+bool scene::add(ref<sound> s) {
 	if (!s) {
 		return false;
 	}
@@ -52,7 +52,7 @@ bool scene::add(sref<sound> s) {
 	return true;
 }
 
-sref<node> scene::root() const {
+ref<node> scene::root() const {
 	return root_;
 }
 
@@ -64,9 +64,11 @@ bool scene::init_() {
 	return true;
 }
 
-void scene::update_(float dt) {}
+void scene::update_(float dt) {
+}
 
-void scene::visit_() {}
+void scene::visit_() {
+}
 
 context const& scene::ctx_() const {
 	return mctx_;
@@ -78,7 +80,6 @@ bool scene::init_scene_() {
 
 void scene::update_all_(float dt) {
 	root_->update_all_(dt);
-
 	if (is_active_) {
 		update_(dt);
 	}
@@ -86,7 +87,6 @@ void scene::update_all_(float dt) {
 
 void scene::draw_all_() {
 	root_->draw_all_();
-
 	if (is_visit_scheduled_) {
 		visit_();
 	}

@@ -11,7 +11,7 @@ namespace aether {
 texture_repository::texture_repository()  = default;
 texture_repository::~texture_repository() = default;
 
-sref<texture2d> texture_repository::fetch(std::string_view file) {
+ref<texture2d> texture_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
@@ -34,7 +34,7 @@ sref<texture2d> texture_repository::fetch(std::string_view file) {
 	AETHER_DEBUGLOG("Loading \"{}\"", file);
 	util::timer t;
 	t.start();
-	sref<texture2d> shared_texture = new texture2d(lfile.string());
+	ref<texture2d> shared_texture = new texture2d(lfile.string());
 
 	if (!is_texture_valid_(shared_texture)) {
 		AETHER_ERRORLOG("Invalid texture properties");
@@ -62,7 +62,7 @@ void texture_repository::clear_cache_() {
 	cache_.clear();
 }
 
-sref<texture2d> texture_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
+ref<texture2d> texture_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}
@@ -70,7 +70,7 @@ sref<texture2d> texture_repository::try_fetch_from_cache_(std::filesystem::path 
 	return nullptr;
 }
 
-bool texture_repository::is_texture_valid_(sref<texture2d> texture) const {
+bool texture_repository::is_texture_valid_(ref<texture2d> texture) const {
 	auto texture_bounds = texture->bounds();
 	return texture->id() > 0 && texture_bounds.width > 0 && texture_bounds.height > 0;
 }

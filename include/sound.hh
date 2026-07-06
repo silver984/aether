@@ -1,8 +1,8 @@
 #pragma once
-#include <data/u8vec.hh>
 #include <soloud_wav.h>
-#include <sref.hh>
 #include <string_view>
+#include <util/ref.hh>
+#include <util/u8vec.hh>
 
 namespace SoLoud {
 
@@ -18,7 +18,7 @@ class sound final {
 public:
 	sound(context const& ctx);
 	~sound();
-	[[nodiscard]] static sref<sound> create(context const& ctx, std::string_view file);
+	[[nodiscard]] static ref<sound> create(context const& ctx, std::string_view file);
 	bool play();
 	void set_volume(float val);
 	[[nodiscard]] float volume() const;
@@ -36,7 +36,7 @@ private:
 	SoLoud::Soloud& soloud_;
 	SoLoud::Wav wave_;
 	SoLoud::handle wave_handle_;
-	sref<u8vec> buffer_;
+	ref<u8vec> buffer_;
 	float volume_;
 	float pan_;
 };

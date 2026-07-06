@@ -2,7 +2,7 @@
 #include <concepts>
 #include <cstddef>
 
-namespace aether::sref_impl_ {
+namespace aether::ref_impl_ {
 
 struct block final {
 	void* ptr;
@@ -10,42 +10,45 @@ struct block final {
 	void (*deleter)(void*);
 };
 
-} // namespace aether::sref_impl_
+} // namespace aether::ref_impl_
 
 namespace aether {
 
 template <typename T>
-class sref final {
+class ref final {
 	template <typename>
-	friend class sref;
+	friend class ref;
 
 public:
-	constexpr sref() noexcept
-	        : block_(nullptr) {}
+	constexpr ref() noexcept
+	        : block_(nullptr) {
+	}
 
-	constexpr sref(std::nullptr_t) noexcept
-	        : block_(nullptr) {}
+	constexpr ref(std::nullptr_t) noexcept
+	        : block_(nullptr) {
+	}
 
 	template <std::derived_from<T> U>
-	sref(U* ptr)
-	        : block_(new sref_impl_::block{.ptr = ptr, .strong_count = 1, .deleter = [](void* p) {
-		                                       delete static_cast<U*>(p);
-	                                       }}) {}
+	ref(U* ptr)
+	        : block_(new ref_impl_::block{.ptr = ptr, .strong_count = 1, .deleter = [](void* p) {
+		                                      delete static_cast<U*>(p);
+	                                      }}) {
+	}
 
-	sref(sref const& other) noexcept
+	ref(ref const& other) noexcept
 	        : block_(other.block_) {
 		if (block_) {
 			++block_->strong_count;
 		}
 	}
 
-	constexpr sref(sref&& other) noexcept
+	constexpr ref(ref&& other) noexcept
 	        : block_(other.block_) {
 		other.block_ = nullptr;
 	}
 
 	template <std::derived_from<T> U>
-	sref(sref<U> const& other) noexcept
+	ref(ref<U> const& other) noexcept
 	        : block_(other.block_) {
 		if (block_) {
 			++block_->strong_count;
@@ -53,12 +56,12 @@ public:
 	}
 
 	template <std::derived_from<T> U>
-	constexpr sref(sref<U>&& other) noexcept
+	constexpr ref(ref<U>&& other) noexcept
 	        : block_(other.block_) {
 		other.block_ = nullptr;
 	}
 
-	~sref() {
+	~ref() {
 		release_();
 	}
 
@@ -82,7 +85,7 @@ public:
 		return *static_cast<T*>(block_->ptr);
 	}
 
-	sref& operator=(sref const& other) {
+	ref& operator=(ref const& other) {
 		if (this == &other) {
 			return *this;
 		}
@@ -97,7 +100,7 @@ public:
 		return *this;
 	}
 
-	sref& operator=(sref&& other) {
+	ref& operator=(ref&& other) {
 		if (this == &other) {
 			return *this;
 		}
@@ -112,11 +115,11 @@ public:
 		return operator!=(nullptr);
 	}
 
-	constexpr bool operator==(sref const& other) const {
+	constexpr bool operator==(ref const& other) const {
 		return block_ == other.block_;
 	}
 
-	constexpr bool operator!=(sref const& other) const {
+	constexpr bool operator!=(ref const& other) const {
 		return !(*this == other);
 	}
 
@@ -144,7 +147,7 @@ private:
 		}
 	}
 
-	sref_impl_::block* block_;
+	ref_impl_::block* block_;
 };
 
 } // namespace aether

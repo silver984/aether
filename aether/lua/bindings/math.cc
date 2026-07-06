@@ -107,6 +107,6 @@ struct math_binding : aether::lua::binding {
 	}
 };
 
-math_binding const* _ = new math_binding();
+math_binding* _ = new math_binding();
 
 } // namespace

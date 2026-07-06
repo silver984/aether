@@ -16,7 +16,7 @@ namespace aether {
 animation_repository::animation_repository()  = default;
 animation_repository::~animation_repository() = default;
 
-sref<animation_map> animation_repository::fetch(std::string_view file) {
+ref<animation_map> animation_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
@@ -42,7 +42,7 @@ sref<animation_map> animation_repository::fetch(std::string_view file) {
 	util::timer t;
 	t.start();
 
-	sref<animation_map> shared_map = nullptr;
+	ref<animation_map> shared_map = nullptr;
 
 	if (file_extension == ".xml") {
 		shared_map = xml_parse_(lfile);
@@ -71,15 +71,14 @@ void animation_repository::clear_cache_() {
 	cache_.clear();
 }
 
-sref<animation_map> animation_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
+ref<animation_map> animation_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
 	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
 		return iterator->second;
 	}
-
 	return nullptr;
 }
 
-sref<animation_map> animation_repository::xml_parse_(std::filesystem::path const& file) {
+ref<animation_map> animation_repository::xml_parse_(std::filesystem::path const& file) {
 	tinyxml2::XMLDocument document;
 
 	using enum tinyxml2::XMLError;
@@ -109,8 +108,8 @@ sref<animation_map> animation_repository::xml_parse_(std::filesystem::path const
 	return nullptr;
 }
 
-sref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocument const& document, std::string_view element_name,
-                                                              std::function<void(tinyxml2::XMLElement const&, animation_map&)>&& callback) {
+ref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocument const& document, std::string_view element_name,
+                                                             std::function<void(tinyxml2::XMLElement const&, animation_map&)>&& callback) {
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
@@ -122,7 +121,7 @@ sref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocum
 	util::timer t;
 	t.start();
 
-	sref<animation_map> shared_map = new animation_map();
+	ref<animation_map> shared_map = new animation_map();
 	AETHER_TRACELOG("Allocated shared animation map | address: {}", fmt::ptr(shared_map.get()));
 
 	char const* const element_name_data = element_name.data();
@@ -150,7 +149,7 @@ sref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocum
 	return shared_map;
 }
 
-sref<animation_map> animation_repository::xml_adobe_animate_parse_(tinyxml2::XMLDocument const& document) {
+ref<animation_map> animation_repository::xml_adobe_animate_parse_(tinyxml2::XMLDocument const& document) {
 	return xml_parse_delegate_(document, "SubTexture", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
 		char const* frame_name = current_element.Attribute("name");
 
@@ -199,7 +198,7 @@ sref<animation_map> animation_repository::xml_adobe_animate_parse_(tinyxml2::XML
 	});
 }
 
-sref<animation_map> animation_repository::xml_texture_packer_parse_(tinyxml2::XMLDocument const& document) {
+ref<animation_map> animation_repository::xml_texture_packer_parse_(tinyxml2::XMLDocument const& document) {
 	return xml_parse_delegate_(document, "sprite", [this](tinyxml2::XMLElement const& current_element, animation_map& map) -> void {
 		char const* frame_name = current_element.Attribute("n");
 
@@ -309,7 +308,6 @@ void animation_repository::log_defective_frame_(std::string_view message, std::o
 		AETHER_TRACELOG("Skipping frame with {} | on: \"{}\"", message, name.value());
 		return;
 	}
-
 	AETHER_TRACELOG("Skipping frame with {}", message);
 }
 #endif

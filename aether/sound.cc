@@ -11,12 +11,13 @@ sound::sound(context const& ctx)
         : soloud_(ctx.soloud())
         , wave_handle_(0)
         , volume_(1.f)
-        , pan_(0.f) {}
+        , pan_(0.f) {
+}
 
 sound::~sound() = default;
 
-sref<sound> sound::create(context const& ctx, std::string_view file) {
-	sref<sound> ptr = new sound(ctx);
+ref<sound> sound::create(context const& ctx, std::string_view file) {
+	ref<sound> ptr = new sound(ctx);
 	if (!ptr->init_(ctx.audios(), file)) {
 		return nullptr;
 	}

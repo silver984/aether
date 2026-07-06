@@ -24,11 +24,12 @@ node::node(context const& ctx_)
         , is_rgba_dirty_(false)
         , is_active_(false)
         , is_draw_scheduled_(false)
-        , is_visible_(true) {}
+        , is_visible_(true) {
+}
 
 node::~node() = default;
 
-bool node::add_child(sref<node> n) {
+bool node::add_child(ref<node> n) {
 	if (!n) {
 		return false;
 	}
@@ -53,7 +54,7 @@ bool node::add_child(sref<node> n) {
 	return true;
 }
 
-bool node::remove_child(sref<node> n) {
+bool node::remove_child(ref<node> n) {
 	if (!n || n.get() == this) {
 		return false;
 	}
@@ -386,7 +387,7 @@ bool node::is_flip_y() const {
 	return is_flip_y_;
 }
 
-std::vector<sref<node>> node::children() const {
+std::vector<ref<node>> node::children() const {
 	return children_;
 }
 
@@ -394,9 +395,11 @@ bool node::init_() {
 	return true;
 }
 
-void node::update_(float dt) {}
+void node::update_(float dt) {
+}
 
-void node::draw_(mat3 const& transform, rgba color) {}
+void node::draw_(mat3 const& transform, rgba color) {
+}
 
 scene* node::get_scene() const {
 	if (scene_) {

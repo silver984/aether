@@ -5,9 +5,9 @@
 #include <math/rgba.hh>
 #include <math/size.hh>
 #include <math/vec2.hh>
-#include <sref.hh>
 #include <string>
 #include <string_view>
+#include <util/ref.hh>
 #include <utility>
 #include <vector>
 
@@ -26,8 +26,8 @@ public:
 	virtual ~node();
 
 	template <std::derived_from<node> T, typename... va>
-	[[nodiscard]] static sref<T> create(context const& ctx, va&&... args) {
-		sref<T> ptr = new T(ctx, std::forward<va>(args)...);
+	[[nodiscard]] static ref<T> create(context const& ctx, va&&... args) {
+		ref<T> ptr = new T(ctx, std::forward<va>(args)...);
 		if (!ptr->init_node_()) {
 			return nullptr;
 		}
@@ -36,8 +36,8 @@ public:
 
 	// todo: fetch child
 
-	bool add_child(sref<node> n);
-	bool remove_child(sref<node> n);
+	bool add_child(ref<node> n);
+	bool remove_child(ref<node> n);
 	bool remove_child(node* n);
 	void destroy_all();
 	bool detach_from_parent();
@@ -84,7 +84,7 @@ public:
 	[[nodiscard]] bool is_flip_x() const;
 	void toggle_flip_y(bool val);
 	[[nodiscard]] bool is_flip_y() const;
-	[[nodiscard]] std::vector<sref<node>> children() const;
+	[[nodiscard]] std::vector<ref<node>> children() const;
 	[[nodiscard]] scene* get_scene() const;
 
 protected:
@@ -106,7 +106,7 @@ private:
 	context const& mctx_;
 	scene* scene_;
 	node* parent_;
-	std::vector<sref<node>> children_;
+	std::vector<ref<node>> children_;
 	std::string name_;
 	mat3 transform_;
 	size<int> bounds_;

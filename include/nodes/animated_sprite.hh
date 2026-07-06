@@ -39,8 +39,8 @@ private:
 	void progress_frame_();
 	[[nodiscard]] size<int> calculate_bounds_(std::vector<atlas_region> const& frames) const;
 
-	sref<animation_map> data_;
-	sref<texture2d> texture_;
+	ref<animation_map> data_;
+	ref<texture2d> texture_;
 	std::string current_animation_name_;
 	std::string const image_file_arg_;
 	std::string const data_file_arg_;

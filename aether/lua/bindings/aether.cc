@@ -15,6 +15,6 @@ struct aether_binding : aether::lua::binding {
 	}
 };
 
-aether_binding const* _ = new aether_binding();
+aether_binding* _ = new aether_binding();
 
 } // namespace
