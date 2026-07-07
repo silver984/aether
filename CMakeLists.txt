@@ -36,7 +36,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
     <sol/sol.hpp>
-    <soloud.h>
 )
 
 include(cmake/dependencies.cmake)

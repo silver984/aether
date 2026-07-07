@@ -14,7 +14,6 @@ void scene_scheduler::replace_scene(std::unique_ptr<scene> new_scene) {
 		AETHER_ERRORLOG("Can't switch to a nullptr scene");
 		return;
 	}
-
 	pending_scene_ = std::move(new_scene);
 	AETHER_DEBUGLOG("Replacing scene");
 	AETHER_TRACELOG("Pending scene: {}", fmt::ptr(pending_scene_.get()));
