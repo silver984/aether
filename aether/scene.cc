@@ -47,7 +47,6 @@ bool scene::add(ref<sound> s) {
 	if (!s) {
 		return false;
 	}
-
 	sounds_.emplace_back(s);
 	return true;
 }

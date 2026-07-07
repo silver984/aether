@@ -1,7 +1,7 @@
 #pragma once
 #include <filesystem>
 #include <sol/sol.hpp>
-#include <util/string_map.hh>
+#include <util/string.hh>
 #include <vector>
 
 namespace aether {
@@ -24,12 +24,12 @@ class manager final {
 
 public:
 	~manager();
-	[[nodiscard]] static util::string_map<hook>& hook_map();
+	[[nodiscard]] static util::stringmap<hook>& hook_map();
 	static void try_register_hook(std::string_view function_name, sol::function&& callback);
 
 private:
 	manager();
-	[[nodiscard]] static util::string_set const& hookable_functions_();
+	[[nodiscard]] static util::stringset const& hookable_functions_();
 	[[nodiscard]] static std::vector<binding*>*& registered_bindings_();
 	static void register_binding_(binding* ptr);
 	void init_();

@@ -11,8 +11,8 @@ namespace aether {
 
 animated_sprite::animated_sprite(context const& ctx_, descriptor const& desc)
         : node(ctx_)
-        , image_file_arg_(std::string(desc.image_file))
-        , data_file_arg_(std::string(desc.data_file))
+        , imagefile_arg_(std::string(desc.imagefile))
+        , datafile_arg_(std::string(desc.datafile))
         , current_subtexture_index_(0)
         , playback_fps_(std::max(1, desc.fps))
         , subtexture_transform_(mat3::identity())
@@ -20,7 +20,8 @@ animated_sprite::animated_sprite(context const& ctx_, descriptor const& desc)
         , animation_was_reset_(false)
         , is_current_animation_looping_(false)
         , is_current_subtexture_rotated_(false)
-        , has_antialiasing_arg_(desc.has_antialiasing) {}
+        , has_antialiasing_arg_(desc.has_antialiasing) {
+}
 
 animated_sprite::~animated_sprite() = default;
 
@@ -57,26 +58,23 @@ bool animated_sprite::play_animation(std::string_view name, animation_options op
 	if (!play_animation(name)) {
 		return false;
 	}
-
 	is_current_animation_looping_ = options.loop;
-
 	if (options.fps.has_value()) {
 		playback_fps_ = std::max(1, options.fps.value());
 	}
-
 	return true;
 }
 
 bool animated_sprite::init_() {
 	auto const& ctx = ctx_();
-	texture_        = ctx.textures().fetch(image_file_arg_);
+	texture_        = ctx.textures().fetch(imagefile_arg_);
 
 	if (!texture_) {
 		AETHER_ERRORLOG("Failed | nullptr texture");
 		return false;
 	}
 
-	data_ = ctx.animations().fetch(data_file_arg_);
+	data_ = ctx.animations().fetch(datafile_arg_);
 
 	if (!data_) {
 		AETHER_ERRORLOG("Failed | nullptr data");
@@ -131,7 +129,6 @@ void animated_sprite::draw_(mat3 const& transform, rgba color) {
 		mat3 const t          = mat3::translation(-current_subtexture_offsets_);
 		subtexture_transform_ = transform * t;
 	}
-
 	ctx_().get_renderer().draw_texture(texture_->get(), texture_source_rect_, subtexture_transform_, color);
 }
 

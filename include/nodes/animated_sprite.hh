@@ -12,8 +12,8 @@ class texture2d;
 class animated_sprite : public node {
 public:
 	struct descriptor final {
-		std::string_view image_file;
-		std::string_view data_file;
+		std::string_view imagefile;
+		std::string_view datafile;
 		int fps;
 		bool has_antialiasing = true;
 	};
@@ -42,8 +42,8 @@ private:
 	ref<animation_map> data_;
 	ref<texture2d> texture_;
 	std::string current_animation_name_;
-	std::string const image_file_arg_;
-	std::string const data_file_arg_;
+	std::string const imagefile_arg_;
+	std::string const datafile_arg_;
 	size_t current_subtexture_index_;
 	int playback_fps_;
 	rect<float> texture_source_rect_;

@@ -100,11 +100,9 @@ void renderer::setup2d_() {
 
 void renderer::update_viewport_(size<int> target_window_size) {
 	render_size_ = size<int>(GetRenderWidth(), GetRenderHeight());
-
 	if (last_render_size_ == render_size_ && last_target_window_size_ == target_window_size) {
 		return;
 	}
-
 	projection_              = calculate_projection_(render_size_, target_window_size);
 	last_render_size_        = render_size_;
 	last_target_window_size_ = target_window_size;

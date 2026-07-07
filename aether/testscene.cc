@@ -22,7 +22,7 @@ bool testscene::init_impl_() {
 	auto const& ctx  = ctx_();
 	auto window_size = ctx.get_window().target_size();
 	auto animated    = node::create<animated_sprite>(
-	        ctx, animated_sprite::descriptor{.image_file = "resources/bf.png", .data_file = "resources/bf.xml", .fps = 12});
+	        ctx, animated_sprite::descriptor{.imagefile = "resources/bf.png", .datafile = "resources/bf.xml", .fps = 12});
 
 	if (!animated) {
 		return false;

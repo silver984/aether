@@ -33,9 +33,7 @@ void sound::set_volume(float val) {
 	if (volume_ == val) {
 		return;
 	}
-
 	volume_ = std::clamp(val, 0.f, 1.f);
-
 	if (is_wave_handle_valid_()) {
 		soloud_.setVolume(wave_handle_, volume_);
 	}
@@ -49,9 +47,7 @@ void sound::set_pan(float val) {
 	if (pan_ == val) {
 		return;
 	}
-
 	pan_ = std::clamp(val, -1.f, 1.f);
-
 	if (is_wave_handle_valid_()) {
 		soloud_.setPan(wave_handle_, pan_);
 	}
@@ -71,7 +67,6 @@ bool sound::is_paused() {
 	if (!is_wave_handle_valid_()) {
 		return false;
 	}
-
 	return soloud_.getPause(wave_handle_);
 }
 
@@ -100,13 +95,10 @@ bool sound::is_wave_handle_valid_() {
 	if (wave_handle_ == 0) {
 		return false;
 	}
-
 	bool const out = soloud_.isValidVoiceHandle(wave_handle_);
-
 	if (!out) {
 		wave_handle_ = 0;
 	}
-
 	return out;
 }
 
