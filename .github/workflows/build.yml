@@ -106,7 +106,7 @@ jobs:
               major = re.search(r'set\(AETHER_VERSION_MAJOR\s+(\d+)', content).group(1)
               minor = re.search(r'set\(AETHER_VERSION_MINOR\s+(\d+)', content).group(1)
               patch = re.search(r'set\(AETHER_VERSION_PATCH\s+(\d+)', content).group(1)
-              print(f'{major}-{minor}-{patch}')
+              print(f'{major}.{minor}.{patch}')
           ")
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
@@ -171,5 +171,5 @@ jobs:
         if: contains(matrix.cmake_preset, 'release') && !matrix.use_mingw
         uses: actions/upload-artifact@v4
         with:
-          name: aether_${{ steps.version.outputs.version }}_${{ matrix.cmake_preset }}_${{ matrix.artifact_name }}_${{ steps.git.outputs.short_sha }}
+          name: aether_${{ steps.version.outputs.version }}_${{ matrix.artifact_name }}_${{ matrix.cmake_preset }}_${{ steps.git.outputs.short_sha }}
           path: build/${{ matrix.cmake_preset }}/bin
