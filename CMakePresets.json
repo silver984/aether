@@ -15,83 +15,83 @@
       }
     },
     {
-      "name": "debug",
+      "name": "base_debug",
       "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "debug-mingw",
-      "inherits": ["mingw", "debug"]
-    },
-    {
-      "name": "debug-verbose",
-      "inherits": "debug",
+      "name": "base_debug-verbose",
+      "inherits": "base_debug",
       "cacheVariables": {
         "AETHER_VERBOSE_DEBUG": "ON"
       }
     },
     {
-      "name": "debug-verbose-mingw",
-      "inherits": ["mingw", "debug-verbose"]
-    },
-    {
-      "name": "release",
+      "name": "base_release",
       "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
     },
     {
-      "name": "release-mingw",
-      "inherits": ["mingw", "release"]
-    },
-    {
-      "name": "release-with-debug",
+      "name": "base_release-with-debug",
       "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
     },
     {
-      "name": "release-with-debug-mingw",
-      "inherits": ["mingw", "release-with-debug"]
+      "name": "mingw_debug",
+      "inherits": ["mingw", "base_debug"]
+    },
+    {
+      "name": "mingw_debug-verbose",
+      "inherits": ["mingw", "base_debug-verbose"]
+    },
+    {
+      "name": "mingw_release",
+      "inherits": ["mingw", "base_release"]
+    },
+    {
+      "name": "mingw_release-with-debug",
+      "inherits": ["mingw", "base_release-with-debug"]
     }
   ],
 
   "buildPresets": [
     {
-      "name": "debug",
-      "configurePreset": "debug"
+      "name": "base_debug",
+      "configurePreset": "base_debug"
     },
     {
-      "name": "debug-mingw",
-      "configurePreset": "debug-mingw"
+      "name": "base_debug-verbose",
+      "configurePreset": "base_debug-verbose"
     },
     {
-      "name": "debug-verbose",
-      "configurePreset": "debug-verbose"
+      "name": "base_release",
+      "configurePreset": "base_release"
     },
     {
-      "name": "debug-verbose-mingw",
-      "configurePreset": "debug-verbose-mingw"
+      "name": "base_release-with-debug",
+      "configurePreset": "base_release-with-debug"
     },
     {
-      "name": "release",
-      "configurePreset": "release"
+      "name": "mingw_debug",
+      "configurePreset": "mingw_debug"
     },
     {
-      "name": "release-mingw",
-      "configurePreset": "release-mingw"
+      "name": "mingw_debug-verbose",
+      "configurePreset": "mingw_debug-verbose"
     },
     {
-      "name": "release-with-debug",
-      "configurePreset": "release-with-debug"
+      "name": "mingw_release",
+      "configurePreset": "mingw_release"
     },
     {
-      "name": "release-with-debug-mingw",
-      "configurePreset": "release-with-debug-mingw"
+      "name": "mingw_release-with-debug",
+      "configurePreset": "mingw_release-with-debug"
     }
   ]
 }

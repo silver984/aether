@@ -16,79 +16,79 @@ jobs:
           # Windows
           - os: Windows
             runner: windows-latest
-            cmake_preset: debug
+            cmake_preset: base_debug
 
           - os: Windows
             runner: windows-latest
-            cmake_preset: debug-verbose
+            cmake_preset: base_debug-verbose
 
           - os: Windows
             runner: windows-latest
-            cmake_preset: release
+            cmake_preset: base_release
             artifact_name: windows
 
           - os: Windows
             runner: windows-latest
-            cmake_preset: release-with-debug
+            cmake_preset: base_release-with-debug
             artifact_name: windows
 
           # Windows MinGW
           - os: Windows
             runner: windows-latest
-            cmake_preset: debug-mingw
+            cmake_preset: mingw_debug
             use_mingw: true
 
           - os: Windows
             runner: windows-latest
-            cmake_preset: debug-verbose-mingw
+            cmake_preset: mingw_debug-verbose
             use_mingw: true
 
           - os: Windows
             runner: windows-latest
-            cmake_preset: release-mingw
+            cmake_preset: mingw_release
             use_mingw: true
 
           - os: Windows
             runner: windows-latest
-            cmake_preset: release-with-debug-mingw
+            cmake_preset: mingw_release-with-debug
             use_mingw: true
 
           # Linux
           - os: Linux
             runner: ubuntu-latest
-            cmake_preset: debug
+            cmake_preset: base_debug
 
           - os: Linux
             runner: ubuntu-latest
-            cmake_preset: debug-verbose
+            cmake_preset: base_debug-verbose
 
           - os: Linux
             runner: ubuntu-latest
-            cmake_preset: release
+            cmake_preset: base_release
             artifact_name: linux-ubuntu
 
           - os: Linux
             runner: ubuntu-latest
-            cmake_preset: release-with-debug
+            cmake_preset: base_release-with-debug
             artifact_name: linux-ubuntu
 
           # macOS
           - os: macOS
             runner: macos-latest
-            cmake_preset: debug
+            cmake_preset: base_debug
 
           - os: macOS
             runner: macos-latest
-            cmake_preset: debug-verbose
+            cmake_preset: base_debug-verbose
 
           - os: macOS
             runner: macos-latest
-            cmake_preset: release
+            cmake_preset: base_release
             artifact_name: macos
 
           - os: macOS
             runner: macos-latest
-            cmake_preset: release-with-debug
+            cmake_preset: base_release-with-debug
             artifact_name: macos
 
     steps:
