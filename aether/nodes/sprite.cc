@@ -10,9 +10,8 @@ namespace aether {
 
 sprite::sprite(context const& ctx, descriptor const& desc)
         : node(ctx)
-        , file_arg_(std::string(desc.file))
-        , wrap_type_arg_(desc.wrap_type)
-        , has_antialiasing_arg_(desc.has_antialiasing) {}
+        , desc_(desc) {
+}
 
 sprite::~sprite() = default;
 
@@ -38,10 +37,18 @@ bool sprite::set_texture(std::string_view file) {
 void sprite::set_texture_wrap(texture_wrap type) {
 	switch (type) {
 		using enum texture_wrap;
-	case CLAMP: SetTextureWrap(texture_->get(), TEXTURE_WRAP_CLAMP); break;
-	case REPEAT: SetTextureWrap(texture_->get(), TEXTURE_WRAP_REPEAT); break;
-	case MIRROR_CLAMP: SetTextureWrap(texture_->get(), TEXTURE_WRAP_MIRROR_CLAMP); break;
-	case MIRROR_REPEAT: SetTextureWrap(texture_->get(), TEXTURE_WRAP_MIRROR_REPEAT); break;
+	case clamp:
+		SetTextureWrap(texture_->get(), TEXTURE_WRAP_CLAMP);
+		break;
+	case repeat:
+		SetTextureWrap(texture_->get(), TEXTURE_WRAP_REPEAT);
+		break;
+	case mirror_clamp:
+		SetTextureWrap(texture_->get(), TEXTURE_WRAP_MIRROR_CLAMP);
+		break;
+	case mirror_repeat:
+		SetTextureWrap(texture_->get(), TEXTURE_WRAP_MIRROR_REPEAT);
+		break;
 	}
 }
 
@@ -58,19 +65,24 @@ rect<float> sprite::texture_source_rect() const {
 }
 
 bool sprite::init_() {
-	if (!set_texture(file_arg_)) {
+	if (!node::init_()) {
+		return false;
+	}
+
+	if (!set_texture(desc_.file)) {
 		AETHER_ERRORLOG("Failed");
 		return false;
 	}
 
-	set_texture_wrap(wrap_type_arg_);
-	toggle_antialiasing(has_antialiasing_arg_);
+	set_texture_wrap(desc_.wrap_type);
+	toggle_antialiasing(desc_.has_antialiasing);
 	schedule_draw();
 
 	return true;
 }
 
 void sprite::draw_(mat3 const& transform, rgba color) {
+	node::draw_(transform, color);
 	ctx_().get_renderer().draw_texture(texture_->get(), texture_source_rect_, transform, color);
 }
 

@@ -59,14 +59,14 @@ bool node::remove_child(ref<node> n) {
 		return false;
 	}
 
-	auto const iterator = std::find(children_.begin(), children_.end(), n);
+	auto const it = std::find(children_.begin(), children_.end(), n);
 
-	if (iterator == children_.end()) {
+	if (it == children_.end()) {
 		return false;
 	}
 
-	(*iterator)->parent_ = nullptr;
-	children_.erase(iterator);
+	(*it)->parent_ = nullptr;
+	children_.erase(it);
 
 	return true;
 }
@@ -76,16 +76,16 @@ bool node::remove_child(node* n) {
 		return false;
 	}
 
-	auto const iterator = std::find_if(children_.begin(), children_.end(), [n](auto const& child) {
+	auto const it = std::find_if(children_.begin(), children_.end(), [n](auto const& child) {
 		return child.get() == n;
 	});
 
-	if (iterator == children_.end()) {
+	if (it == children_.end()) {
 		return false;
 	}
 
-	(*iterator)->parent_ = nullptr;
-	children_.erase(iterator);
+	(*it)->parent_ = nullptr;
+	children_.erase(it);
 
 	return true;
 }
@@ -413,7 +413,7 @@ context const& node::ctx_() const {
 	return mctx_;
 }
 
-bool node::init_node_() {
+bool node::init_interface_() {
 	return init_();
 }
 

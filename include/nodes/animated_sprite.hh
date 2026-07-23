@@ -28,7 +28,7 @@ public:
 
 	void toggle_antialiasing(bool val) const;
 	bool play_animation(std::string_view name);
-	bool play_animation(std::string_view name, animation_options options);
+	bool play_animation(std::string_view name, animation_options const& options);
 
 protected:
 	bool init_() override;
@@ -39,11 +39,10 @@ private:
 	void progress_frame_();
 	[[nodiscard]] size<int> calculate_bounds_(std::vector<atlas_region> const& frames) const;
 
+	descriptor const desc_;
 	ref<animation_map> data_;
 	ref<texture2d> texture_;
 	std::string current_animation_name_;
-	std::string const imagefile_arg_;
-	std::string const datafile_arg_;
 	size_t current_subtexture_index_;
 	int playback_fps_;
 	rect<float> texture_source_rect_;
@@ -53,7 +52,6 @@ private:
 	bool animation_was_reset_;
 	bool is_current_animation_looping_;
 	bool is_current_subtexture_rotated_;
-	bool const has_antialiasing_arg_;
 };
 
 } // namespace aether

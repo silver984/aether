@@ -15,6 +15,9 @@ testscene::testscene(context const& ctx)
 testscene::~testscene() = default;
 
 bool testscene::init_() {
+	if (!scene::init_()) {
+		return false;
+	}
 	return lua::hookchain(this, "testscene:init_", &testscene::init_impl_);
 }
 

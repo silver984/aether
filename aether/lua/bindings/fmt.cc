@@ -38,6 +38,6 @@ struct fmt_binding : aether::lua::binding {
 	}
 };
 
-fmt_binding* _ = new fmt_binding();
+fmt_binding* x = new fmt_binding();
 
 } // namespace

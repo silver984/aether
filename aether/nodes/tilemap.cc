@@ -10,9 +10,8 @@ namespace aether {
 
 tilemap::tilemap(context const& ctx, descriptor const& desc)
         : node(ctx)
-        , file_arg_(std::string(desc.file))
-        , tile_bounds_arg_(util::max(size<int>(1), desc.tile_bounds))
-        , has_antialiasing_(desc.has_antialiasing) {}
+        , desc_(desc) {
+}
 
 tilemap::~tilemap() = default;
 
@@ -22,7 +21,7 @@ void tilemap::toggle_antialiasing(bool val) const {
 
 vec2<int> tilemap::tile_count() const {
 	auto const texture_bounds = texture_->bounds();
-	return vec2<int>(texture_bounds.width / tile_bounds_arg_.width, texture_bounds.height / tile_bounds_arg_.height);
+	return vec2<int>(texture_bounds.width / desc_.tile_bounds.width, texture_bounds.height / desc_.tile_bounds.height);
 }
 
 void tilemap::seek_tile(vec2<int> tile_index) {
@@ -32,8 +31,8 @@ void tilemap::seek_tile(vec2<int> tile_index) {
 	}
 
 	tile_index_            = util::clamp(tile_index, vec2<int>(0), tile_count() - 1);
-	texture_source_rect_.x = tile_bounds_arg_.width * (float)tile_index_.x;
-	texture_source_rect_.y = tile_bounds_arg_.height * (float)tile_index_.y;
+	texture_source_rect_.x = desc_.tile_bounds.width * (float)tile_index_.x;
+	texture_source_rect_.y = desc_.tile_bounds.height * (float)tile_index_.y;
 }
 
 vec2<int> tilemap::tile_index() const {
@@ -41,7 +40,11 @@ vec2<int> tilemap::tile_index() const {
 }
 
 bool tilemap::init_() {
-	texture_ = ctx_().textures().fetch(file_arg_);
+	if (!node::init_()) {
+		return false;
+	}
+
+	texture_ = ctx_().textures().fetch(desc_.file);
 
 	if (!texture_) {
 		AETHER_ERRORLOG("Failed");
@@ -49,21 +52,22 @@ bool tilemap::init_() {
 	}
 
 	auto const texture_bounds = texture_->bounds();
-	if (tile_bounds_arg_.width > texture_bounds.width || tile_bounds_arg_.height > texture_bounds.height) {
+	if (desc_.tile_bounds.width > texture_bounds.width || desc_.tile_bounds.height > texture_bounds.height) {
 		AETHER_ERRORLOG("Invalid parameters");
 		return false;
 	}
 
-	texture_source_rect_.width  = (float)tile_bounds_arg_.width;
-	texture_source_rect_.height = (float)tile_bounds_arg_.height;
-	set_bounds(size<int>(tile_bounds_arg_.width, tile_bounds_arg_.height));
-	toggle_antialiasing(has_antialiasing_);
+	texture_source_rect_.width  = (float)desc_.tile_bounds.width;
+	texture_source_rect_.height = (float)desc_.tile_bounds.height;
+	set_bounds(size<int>(desc_.tile_bounds.width, desc_.tile_bounds.height));
+	toggle_antialiasing(desc_.has_antialiasing);
 	schedule_draw();
 
 	return true;
 }
 
 void tilemap::draw_(mat3 const& transform, rgba color) {
+	node::draw_(transform, color);
 	ctx_().get_renderer().draw_texture(texture_->get(), texture_source_rect_, transform, color);
 }
 

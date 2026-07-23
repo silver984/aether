@@ -44,12 +44,12 @@ ref<texture2d> texture_repository::fetch(std::string_view file) {
 	AETHER_TRACELOG("Allocated shared texture | bounds: {}x{} | id: {} | address: {}", texture_bounds.width, texture_bounds.height,
 	                shared_texture->id(), fmt::ptr(shared_texture.get()));
 
-	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_texture));
+	auto const [it, _] = cache_.emplace(lfile, std::move(shared_texture));
 	t.stop();
 	AETHER_TRACELOG("Successfully inserted to cache | cache size: {}", cache_.size());
 	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
 
-	return iterator->second;
+	return it->second;
 }
 
 void texture_repository::purge_unused() {
@@ -63,8 +63,8 @@ void texture_repository::clear_cache_() {
 }
 
 ref<texture2d> texture_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
-	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
-		return iterator->second;
+	if (auto const it = cache_.find(file); it != cache_.end()) {
+		return it->second;
 	}
 
 	return nullptr;

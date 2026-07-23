@@ -37,8 +37,8 @@ ref<u8vec> audio_repository::fetch(std::string_view file) {
 	}
 
 	ref<u8vec> shared_buffer = new u8vec(std::move(temporary_buffer));
-	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_buffer));
-	return iterator->second;
+	auto const [it, _]       = cache_.emplace(lfile, std::move(shared_buffer));
+	return it->second;
 }
 
 void audio_repository::purge_unused() {
@@ -52,8 +52,8 @@ void audio_repository::clear_cache_() {
 }
 
 ref<u8vec> audio_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
-	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
-		return iterator->second;
+	if (auto const it = cache_.find(file); it != cache_.end()) {
+		return it->second;
 	}
 
 	return nullptr;

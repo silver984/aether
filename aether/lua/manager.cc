@@ -66,11 +66,11 @@ void manager::run_and_clear_all_bindings_() {
 	util::timer t;
 	t.start();
 
-	for (auto iterator = registered_bindings->begin(); iterator != registered_bindings->end();) {
-		(*iterator)->bind(state_);
-		delete *iterator;
-		*iterator = nullptr;
-		iterator  = registered_bindings->erase(iterator);
+	for (auto it = registered_bindings->begin(); it != registered_bindings->end();) {
+		(*it)->bind(state_);
+		delete *it;
+		*it = nullptr;
+		it  = registered_bindings->erase(it);
 	}
 
 	delete registered_bindings;
@@ -98,21 +98,21 @@ void manager::run_scripts_() {
 	util::timer t;
 	t.start();
 
-	for (auto iterator = available_scripts.begin(); iterator != available_scripts.end();) {
+	for (auto it = available_scripts.begin(); it != available_scripts.end();) {
 		sol::protected_function_result script_result = state_.safe_script_file(
-		        iterator->string(), sol::environment(state_, sol::create, state_.globals()),
-		        [](lua_State*, sol::protected_function_result result) {
+		        it->string(), sol::environment(state_, sol::create, state_.globals()),
+		        [](lua_State*, sol::protected_function_result result) -> sol::protected_function_result {
 			        sol::error e = result;
 			        AETHER_ERRORLOG("Script invalid | what: {}", e.what());
 			        return result;
 		        },
 		        sol::load_mode::any);
 		if (!script_result.valid()) {
-			AETHER_ERRORLOG("Excluding invalid script | file: \"{}\"", iterator->filename().string());
-			iterator = available_scripts.erase(iterator);
+			AETHER_ERRORLOG("Excluding invalid script | file: \"{}\"", it->filename().string());
+			it = available_scripts.erase(it);
 			continue;
 		}
-		++iterator;
+		++it;
 	}
 
 	t.stop();

@@ -28,12 +28,10 @@ protected:
 	void draw_(mat3 const& transform, rgba color) override;
 
 private:
+	descriptor const desc_;
 	ref<texture2d> texture_;
-	std::string const file_arg_;
 	rect<float> texture_source_rect_;
 	vec2<int> tile_index_;
-	size<int> const tile_bounds_arg_;
-	bool const has_antialiasing_;
 };
 
 } // namespace aether

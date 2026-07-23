@@ -53,12 +53,12 @@ ref<animation_map> animation_repository::fetch(std::string_view file) {
 		return nullptr;
 	}
 
-	auto const [iterator, _] = cache_.emplace(lfile, std::move(shared_map));
+	auto const [it, _] = cache_.emplace(lfile, std::move(shared_map));
 	t.stop();
 	AETHER_TRACELOG("Successfully inserted to cache | cache size: {}", cache_.size());
 	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
 
-	return iterator->second;
+	return it->second;
 }
 
 void animation_repository::purge_unused() {
@@ -72,8 +72,8 @@ void animation_repository::clear_cache_() {
 }
 
 ref<animation_map> animation_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
-	if (auto const iterator = cache_.find(file); iterator != cache_.end()) {
-		return iterator->second;
+	if (auto const it = cache_.find(file); it != cache_.end()) {
+		return it->second;
 	}
 	return nullptr;
 }

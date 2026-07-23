@@ -1,12 +1,12 @@
 #pragma once
 #include <concepts>
-#include <cstddef>
+#include <cstdint>
 
 namespace aether::ref_impl_ {
 
 struct block final {
 	void* ptr;
-	size_t strong_count;
+	uint32_t strong_count;
 	void (*deleter)(void*);
 };
 
@@ -42,17 +42,17 @@ public:
 		}
 	}
 
-	constexpr ref(ref&& other) noexcept
-	        : block_(other.block_) {
-		other.block_ = nullptr;
-	}
-
 	template <std::derived_from<T> U>
 	ref(ref<U> const& other) noexcept
 	        : block_(other.block_) {
 		if (block_) {
 			++block_->strong_count;
 		}
+	}
+
+	constexpr ref(ref&& other) noexcept
+	        : block_(other.block_) {
+		other.block_ = nullptr;
 	}
 
 	template <std::derived_from<T> U>
@@ -82,53 +82,59 @@ public:
 	}
 
 	constexpr T& operator*() const {
-		return *static_cast<T*>(block_->ptr);
+		return *operator->();
 	}
 
 	ref& operator=(ref const& other) {
 		if (this == &other) {
 			return *this;
 		}
+		return copy_(other.block_);
+	}
 
-		release_();
-		block_ = other.block_;
-
-		if (block_) {
-			++block_->strong_count;
+	template <std::derived_from<T> U>
+	ref& operator=(ref<U> const& other) {
+		if (this == &other) {
+			return *this;
 		}
-
-		return *this;
+		return copy_(other.block_);
 	}
 
 	ref& operator=(ref&& other) {
 		if (this == &other) {
 			return *this;
 		}
+		return move_(other.block_);
+	}
 
-		release_();
-		block_       = other.block_;
-		other.block_ = nullptr;
-		return *this;
+	template <std::derived_from<T> U>
+	ref& operator=(ref<U>&& other) {
+		if (this == &other) {
+			return *this;
+		}
+		return move_(other.block_);
 	}
 
 	constexpr explicit operator bool() const {
 		return operator!=(nullptr);
 	}
 
-	constexpr bool operator==(ref const& other) const {
-		return block_ == other.block_;
+	template <std::derived_from<T> U>
+	constexpr bool operator==(ref<U> const& other) const {
+		return get() == other.get();
 	}
 
+	template <std::derived_from<T> U>
 	constexpr bool operator!=(ref const& other) const {
-		return !(*this == other);
+		return get() != other.get();
 	}
 
 	constexpr bool operator==(std::nullptr_t) const {
-		return block_ == nullptr;
+		return get() == nullptr;
 	}
 
 	constexpr bool operator!=(std::nullptr_t) const {
-		return block_ != nullptr;
+		return get() != nullptr;
 	}
 
 private:
@@ -136,15 +142,29 @@ private:
 		if (!block_) {
 			return;
 		}
-
-		auto* old_block = block_;
-		block_          = nullptr;
-
+		ref_impl_::block* old_block = block_;
+		block_                      = nullptr;
 		if (--old_block->strong_count == 0) {
 			old_block->deleter(old_block->ptr);
 			old_block->ptr = nullptr;
 			delete old_block;
 		}
+	}
+
+	ref& copy_(ref_impl_::block* block) {
+		release_();
+		block_ = block;
+		if (block_) {
+			++block_->strong_count;
+		}
+		return *this;
+	}
+
+	ref& move_(ref_impl_::block*& block) {
+		release_();
+		block_ = block;
+		block  = nullptr;
+		return *this;
 	}
 
 	ref_impl_::block* block_;

@@ -73,7 +73,7 @@ context const& scene::ctx_() const {
 	return mctx_;
 }
 
-bool scene::init_scene_() {
+bool scene::init_interface_() {
 	return init_();
 }
 

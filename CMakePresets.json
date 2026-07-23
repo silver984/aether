@@ -4,7 +4,10 @@
     {
       "name": "base",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}"
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF"
+      }
     },
     {
       "name": "mingw",
@@ -44,22 +47,33 @@
     },
     {
       "name": "mingw_debug",
-      "inherits": ["mingw", "base_debug"]
+      "inherits": [
+        "mingw",
+        "base_debug"
+      ]
     },
     {
       "name": "mingw_debug-verbose",
-      "inherits": ["mingw", "base_debug-verbose"]
+      "inherits": [
+        "mingw",
+        "base_debug-verbose"
+      ]
     },
     {
       "name": "mingw_release",
-      "inherits": ["mingw", "base_release"]
+      "inherits": [
+        "mingw",
+        "base_release"
+      ]
     },
     {
       "name": "mingw_release-with-debug",
-      "inherits": ["mingw", "base_release-with-debug"]
+      "inherits": [
+        "mingw",
+        "base_release-with-debug"
+      ]
     }
   ],
-
   "buildPresets": [
     {
       "name": "base_debug",

@@ -11,16 +11,14 @@ namespace aether {
 
 animated_sprite::animated_sprite(context const& ctx_, descriptor const& desc)
         : node(ctx_)
-        , imagefile_arg_(std::string(desc.imagefile))
-        , datafile_arg_(std::string(desc.datafile))
+        , desc_(desc)
         , current_subtexture_index_(0)
         , playback_fps_(std::max(1, desc.fps))
         , subtexture_transform_(mat3::identity())
         , subtexture_elapsed_(0.f)
         , animation_was_reset_(false)
         , is_current_animation_looping_(false)
-        , is_current_subtexture_rotated_(false)
-        , has_antialiasing_arg_(desc.has_antialiasing) {
+        , is_current_subtexture_rotated_(false) {
 }
 
 animated_sprite::~animated_sprite() = default;
@@ -54,7 +52,7 @@ bool animated_sprite::play_animation(std::string_view name) {
 	return true;
 }
 
-bool animated_sprite::play_animation(std::string_view name, animation_options options) {
+bool animated_sprite::play_animation(std::string_view name, animation_options const& options) {
 	if (!play_animation(name)) {
 		return false;
 	}
@@ -66,15 +64,19 @@ bool animated_sprite::play_animation(std::string_view name, animation_options op
 }
 
 bool animated_sprite::init_() {
+	if (!node::init_()) {
+		return false;
+	}
+
 	auto const& ctx = ctx_();
-	texture_        = ctx.textures().fetch(imagefile_arg_);
+	texture_        = ctx.textures().fetch(desc_.imagefile);
 
 	if (!texture_) {
 		AETHER_ERRORLOG("Failed | nullptr texture");
 		return false;
 	}
 
-	data_ = ctx.animations().fetch(datafile_arg_);
+	data_ = ctx.animations().fetch(desc_.datafile);
 
 	if (!data_) {
 		AETHER_ERRORLOG("Failed | nullptr data");
@@ -95,7 +97,7 @@ bool animated_sprite::init_() {
 	current_subtexture_offsets_    = static_cast<vec2<float>>(first_frame.offsets);
 	animation_was_reset_           = true;
 
-	toggle_antialiasing(has_antialiasing_arg_);
+	toggle_antialiasing(desc_.has_antialiasing);
 	update_(0.f);
 	activate();
 	schedule_draw();
@@ -120,6 +122,8 @@ void animated_sprite::update_(float dt) {
 }
 
 void animated_sprite::draw_(mat3 const& transform, rgba color) {
+	node::draw_(transform, color);
+
 	if (is_current_subtexture_rotated_) {
 		mat3 const fix        = mat3::translation(vec2<float>(0.f, bounds().height - current_subtexture_offsets_.y));
 		mat3 const r          = mat3::rotation(util::degrees_to_radians(-90.f));
@@ -129,6 +133,7 @@ void animated_sprite::draw_(mat3 const& transform, rgba color) {
 		mat3 const t          = mat3::translation(-current_subtexture_offsets_);
 		subtexture_transform_ = transform * t;
 	}
+
 	ctx_().get_renderer().draw_texture(texture_->get(), texture_source_rect_, subtexture_transform_, color);
 }
 
