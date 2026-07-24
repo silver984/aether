@@ -1,7 +1,6 @@
 #pragma once
 #include <animation_repository.hh>
 #include <audio_repository.hh>
-#include <chrono>
 #include <context.hh>
 #include <lua/manager.hh>
 #include <math/size.hh>

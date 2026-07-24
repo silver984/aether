@@ -1,3 +1,4 @@
+#include <chrono>
 #include <debug/heap.hh>
 #include <debug/log.hh>
 #include <game.hh>
@@ -8,13 +9,13 @@
 namespace aether {
 
 game::game()
-        : ctx_(context::descriptor{.rwindow          = window_,
-                                   .rrenderer        = renderer_,
-                                   .rtextures        = textures_,
-                                   .ranimations      = animations_,
-                                   .raudios          = audios_,
-                                   .rscene_scheduler = scene_scheduler_,
-                                   .rsoloud          = soloud_})
+        : ctx_(context::descriptor{.window          = window_,
+                                   .renderer        = renderer_,
+                                   .textures        = textures_,
+                                   .animations      = animations_,
+                                   .audios          = audios_,
+                                   .scene_scheduler = scene_scheduler_,
+                                   .soloud          = soloud_})
         , is_initialized_(false) {
 }
 

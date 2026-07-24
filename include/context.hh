@@ -21,13 +21,13 @@ class context final {
 
 public:
 	struct descriptor final {
-		window& rwindow;
-		renderer& rrenderer;
-		texture_cache& rtextures;
-		animation_repository& ranimations;
-		audio_repository& raudios;
-		scene_scheduler& rscene_scheduler;
-		SoLoud::Soloud& rsoloud;
+		window& window;
+		renderer& renderer;
+		texture_cache& textures;
+		animation_repository& animations;
+		audio_repository& audios;
+		scene_scheduler& scene_scheduler;
+		SoLoud::Soloud& soloud;
 	};
 
 	~context();
@@ -42,13 +42,7 @@ public:
 private:
 	context(descriptor const& desc);
 
-	window& window_;
-	renderer& renderer_;
-	texture_cache& textures_;
-	animation_repository& animations_;
-	audio_repository& audios_;
-	scene_scheduler& scene_scheduler_;
-	SoLoud::Soloud& soloud_;
+	descriptor const desc_;
 };
 
 } // namespace aether

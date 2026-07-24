@@ -3,43 +3,36 @@
 namespace aether {
 
 context::context(descriptor const& desc)
-        : window_(desc.rwindow)
-        , renderer_(desc.rrenderer)
-        , textures_(desc.rtextures)
-        , animations_(desc.ranimations)
-        , audios_(desc.raudios)
-        , scene_scheduler_(desc.rscene_scheduler)
-        , soloud_(desc.rsoloud) {
+        : desc_(desc) {
 }
-
 context::~context() = default;
 
 window& context::get_window() const {
-	return window_;
+	return desc_.window;
 }
 
 renderer& context::get_renderer() const {
-	return renderer_;
+	return desc_.renderer;
 }
 
 texture_cache& context::textures() const {
-	return textures_;
+	return desc_.textures;
 }
 
 animation_repository& context::animations() const {
-	return animations_;
+	return desc_.animations;
 }
 
 audio_repository& context::audios() const {
-	return audios_;
+	return desc_.audios;
 }
 
 scene_scheduler& context::get_scene_scheduler() const {
-	return scene_scheduler_;
+	return desc_.scene_scheduler;
 }
 
 SoLoud::Soloud& context::soloud() const {
-	return soloud_;
+	return desc_.soloud;
 }
 
 } // namespace aether
