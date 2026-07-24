@@ -83,19 +83,22 @@ void game::run() {
 	}
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	uint32_t frame_count   = 0;
-	uint32_t evaluated_fps = 0;
-	float accumulator      = 0.f;
+	uint32_t framecount = 0;
+	uint32_t evalfps    = 0;
+	float accumulator   = 0.f;
 #endif
 
+	using namespace std::chrono;
+	using clock = steady_clock;
+
 	bool is_audio_paused = false;
-	auto previous_time   = std::chrono::steady_clock::now();
-	auto next_frame_time = previous_time;
+	auto last_frametime  = clock::now();
+	auto next_frametime  = last_frametime;
 
 	while (!window_.should_close_()) {
-		auto const start_time          = std::chrono::steady_clock::now();
-		float const dt                 = std::chrono::duration<float>(start_time - previous_time).count();
-		previous_time                  = start_time;
+		auto const now                 = clock::now();
+		float const dt                 = duration<float>(now - last_frametime).count();
+		last_frametime                 = now;
 		bool const is_window_minimized = window_.is_minimized_();
 
 		if (!is_window_minimized) {
@@ -119,26 +122,25 @@ void game::run() {
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 		float divider = 1024.f * 1024.f;
-		renderer_.end_draw_(evaluated_fps, heap::usage() / divider, lua_manager_.state_.memory_used() / divider);
+		renderer_.end_draw_(evalfps, heap::usage() / divider, lua_manager_.state_.memory_used() / divider);
 #else
 		renderer_.end_draw_();
 #endif
 		if (is_window_minimized) {
-			next_frame_time = std::chrono::steady_clock::now();
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			next_frametime = clock::now();
+			std::this_thread::sleep_for(milliseconds(100));
 			continue;
 		}
 
-		next_frame_time += std::chrono::duration_cast<std::chrono::steady_clock::duration>(
-		        std::chrono::duration<float>(1.f / window_.target_fps()));
-		std::this_thread::sleep_until(next_frame_time);
+		next_frametime += duration_cast<clock::duration>(duration<float>(1.f / window_.target_fps()));
+		std::this_thread::sleep_until(next_frametime);
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-		++frame_count;
+		++framecount;
 		accumulator += dt;
 		while (accumulator >= 1.f) {
-			evaluated_fps = frame_count;
-			frame_count   = 0;
+			evalfps    = framecount;
+			framecount = 0;
 			accumulator -= 1.f;
 		}
 #endif
