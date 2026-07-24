@@ -6,11 +6,48 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF"
+        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
     {
-      "name": "mingw",
+      "name": "debug",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "debug-verbose",
+      "inherits": "debug",
+      "cacheVariables": {
+        "AETHER_VERBOSE_DEBUG": "ON"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "release-with-debug",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "msvc",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl"
+      }
+    },
+    {
+      "name": "gnu",
       "inherits": "base",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
@@ -18,94 +55,94 @@
       }
     },
     {
-      "name": "base_debug",
-      "inherits": "base",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "base_debug-verbose",
-      "inherits": "base_debug",
-      "cacheVariables": {
-        "AETHER_VERBOSE_DEBUG": "ON"
-      }
-    },
-    {
-      "name": "base_release",
-      "inherits": "base",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      }
-    },
-    {
-      "name": "base_release-with-debug",
-      "inherits": "base",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-      }
-    },
-    {
-      "name": "mingw_debug",
+      "name": "msvc_debug",
       "inherits": [
-        "mingw",
-        "base_debug"
+        "msvc",
+        "debug"
       ]
     },
     {
-      "name": "mingw_debug-verbose",
+      "name": "msvc_debug-verbose",
       "inherits": [
-        "mingw",
-        "base_debug-verbose"
+        "msvc",
+        "debug-verbose"
       ]
     },
     {
-      "name": "mingw_release",
+      "name": "msvc_release",
       "inherits": [
-        "mingw",
-        "base_release"
+        "msvc",
+        "release"
       ]
     },
     {
-      "name": "mingw_release-with-debug",
+      "name": "msvc_release-with-debug",
       "inherits": [
-        "mingw",
-        "base_release-with-debug"
+        "msvc",
+        "release-with-debug"
+      ]
+    },
+    {
+      "name": "gnu_debug",
+      "inherits": [
+        "gnu",
+        "debug"
+      ]
+    },
+    {
+      "name": "gnu_debug-verbose",
+      "inherits": [
+        "gnu",
+        "debug-verbose"
+      ]
+    },
+    {
+      "name": "gnu_release",
+      "inherits": [
+        "gnu",
+        "release"
+      ]
+    },
+    {
+      "name": "gnu_release-with-debug",
+      "inherits": [
+        "gnu",
+        "release-with-debug"
       ]
     }
   ],
   "buildPresets": [
     {
-      "name": "base_debug",
-      "configurePreset": "base_debug"
+      "name": "msvc_debug",
+      "configurePreset": "msvc_debug"
     },
     {
-      "name": "base_debug-verbose",
-      "configurePreset": "base_debug-verbose"
+      "name": "msvc_debug-verbose",
+      "configurePreset": "msvc_debug-verbose"
     },
     {
-      "name": "base_release",
-      "configurePreset": "base_release"
+      "name": "msvc_release",
+      "configurePreset": "msvc_release"
     },
     {
-      "name": "base_release-with-debug",
-      "configurePreset": "base_release-with-debug"
+      "name": "msvc_release-with-debug",
+      "configurePreset": "msvc_release-with-debug"
     },
     {
-      "name": "mingw_debug",
-      "configurePreset": "mingw_debug"
+      "name": "gnu_debug",
+      "configurePreset": "gnu_debug"
     },
     {
-      "name": "mingw_debug-verbose",
-      "configurePreset": "mingw_debug-verbose"
+      "name": "gnu_debug-verbose",
+      "configurePreset": "gnu_debug-verbose"
     },
     {
-      "name": "mingw_release",
-      "configurePreset": "mingw_release"
+      "name": "gnu_release",
+      "configurePreset": "gnu_release"
     },
     {
-      "name": "mingw_release-with-debug",
-      "configurePreset": "mingw_release-with-debug"
+      "name": "gnu_release-with-debug",
+      "configurePreset": "gnu_release-with-debug"
     }
   ]
 }

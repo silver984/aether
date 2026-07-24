@@ -14,7 +14,6 @@ scene::scene(context const& ctx)
         , root_(node::create<node>(ctx))
         , is_active_(false)
         , is_visit_scheduled_(false) {
-	assert(root_ != nullptr);
 	root_->scene_          = this;
 	auto const window_size = ctx.get_window().target_size();
 	root_->set_bounds(window_size);

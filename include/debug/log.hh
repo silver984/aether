@@ -1,59 +1,58 @@
 #pragma once
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	#include <fmt/color.h>
 	#include <fmt/format.h>
 	#include <source_location>
 	#include <string_view>
 	#include <utility>
 
-namespace aether::log::impl_ {
+namespace aether::log_impl_ {
 
-void print_(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc);
-void try_create_log_file_();
-void try_close_log_file_();
+void print_(std::string_view str, std::string_view lvl, std::source_location const& loc);
+bool create_logfile_();
+void close_logfile_();
 
-} // namespace aether::log::impl_
+} // namespace aether::log_impl_
 
 namespace aether::log {
 
 	#ifdef AETHER_VERBOSE_DEBUG
 template <typename... va>
-void trace(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl_::print_(fmt::format(fmt_str, std::forward<va>(args)...), "TRC", fmt::color::dark_turquoise, loc);
+void trace(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "TRACE", loc);
 }
 
 template <typename... va>
-void debug(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl_::print_(fmt::format(fmt_str, std::forward<va>(args)...), "DBG", fmt::color::medium_violet_red, loc);
+void debug(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "DEBUG", loc);
 }
 	#endif
 
 template <typename... va>
-void info(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl_::print_(fmt::format(fmt_str, std::forward<va>(args)...), "INF", fmt::color::green_yellow, loc);
+void info(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "INFO", loc);
 }
 
 template <typename... va>
-void warning(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl_::print_(fmt::format(fmt_str, std::forward<va>(args)...), "WRN", fmt::color::gold, loc);
+void warn(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "WARN", loc);
 }
 
 template <typename... va>
-void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, va&&... args) {
-	impl_::print_(fmt::format(fmt_str, std::forward<va>(args)...), "ERR", fmt::color::crimson, loc);
+void error(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "ERROR", loc);
 }
 
 } // namespace aether::log
 
 	#ifdef AETHER_VERBOSE_DEBUG
 		#ifdef _MSC_VER
-			#define AETHER_TRACELOG(fmt_str, ...) aether::log::trace(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-			#define AETHER_DEBUGLOG(fmt_str, ...) aether::log::debug(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+			#define AETHER_TRACELOG(__STR__, ...) aether::log::trace(std::source_location::current(), __STR__, ##__VA_ARGS__)
+			#define AETHER_DEBUGLOG(__STR__, ...) aether::log::debug(std::source_location::current(), __STR__, ##__VA_ARGS__)
 		#else
-			#define AETHER_TRACELOG(fmt_str, ...)                                                                              \
-				aether::log::trace(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-			#define AETHER_DEBUGLOG(fmt_str, ...)                                                                              \
-				aether::log::debug(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
+			#define AETHER_TRACELOG(__STR__, ...)                                                                              \
+				aether::log::trace(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+			#define AETHER_DEBUGLOG(__STR__, ...)                                                                              \
+				aether::log::debug(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
 		#endif
 	#else
 		#define AETHER_TRACELOG(...) ((void)0)
@@ -61,15 +60,14 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmt_str, v
 	#endif
 
 	#ifdef _MSC_VER
-		#define AETHER_INFOLOG(fmt_str, ...)  aether::log::info(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-		#define AETHER_WARNLOG(fmt_str, ...)  aether::log::warning(std::source_location::current(), fmt_str, ##__VA_ARGS__)
-		#define AETHER_ERRORLOG(fmt_str, ...) aether::log::error(std::source_location::current(), fmt_str, ##__VA_ARGS__)
+		#define AETHER_INFOLOG(__STR__, ...)  aether::log::info(std::source_location::current(), __STR__, ##__VA_ARGS__)
+		#define AETHER_WARNLOG(__STR__, ...)  aether::log::warn(std::source_location::current(), __STR__, ##__VA_ARGS__)
+		#define AETHER_ERRORLOG(__STR__, ...) aether::log::error(std::source_location::current(), __STR__, ##__VA_ARGS__)
 	#else
-		#define AETHER_INFOLOG(fmt_str, ...) aether::log::info(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-		#define AETHER_WARNLOG(fmt_str, ...)                                                                                       \
-			aether::log::warning(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
-		#define AETHER_ERRORLOG(fmt_str, ...)                                                                                      \
-			aether::log::error(std::source_location::current(), fmt_str __VA_OPT__(, ) __VA_ARGS__)
+		#define AETHER_INFOLOG(__STR__, ...) aether::log::info(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+		#define AETHER_WARNLOG(__STR__, ...) aether::log::warn(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+		#define AETHER_ERRORLOG(__STR__, ...)                                                                                      \
+			aether::log::error(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
 	#endif
 #else
 	#define AETHER_TRACELOG(...) ((void)0)

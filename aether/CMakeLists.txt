@@ -10,7 +10,6 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/lua/manager.cc
     $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/log.cc>
     $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/heap.cc>
-    $<$<AND:$<CONFIG:Debug,RelWithDebInfo>,$<PLATFORM_ID:Windows>>:${CMAKE_CURRENT_SOURCE_DIR}/debug/win32.cc>
     ${AETHER_GENERAL_SRC}
     ${AETHER_NODES_SRC}
     ${AETHER_LUA_BINDINGS_SRC}

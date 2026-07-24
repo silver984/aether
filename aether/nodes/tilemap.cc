@@ -3,7 +3,7 @@
 #include <debug/log.hh>
 #include <nodes/tilemap.hh>
 #include <renderer.hh>
-#include <texture_repository.hh>
+#include <texture_cache.hh>
 #include <util/math.hh>
 
 namespace aether {

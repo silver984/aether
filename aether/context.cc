@@ -9,7 +9,8 @@ context::context(descriptor const& desc)
         , animations_(desc.ranimations)
         , audios_(desc.raudios)
         , scene_scheduler_(desc.rscene_scheduler)
-        , soloud_(desc.rsoloud) {}
+        , soloud_(desc.rsoloud) {
+}
 
 context::~context() = default;
 
@@ -21,7 +22,7 @@ renderer& context::get_renderer() const {
 	return renderer_;
 }
 
-texture_repository& context::textures() const {
+texture_cache& context::textures() const {
 	return textures_;
 }
 

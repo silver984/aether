@@ -2,8 +2,9 @@
 
 namespace aether {
 
-texture2d::texture2d(std::string_view file)
-        : rltx_(LoadTexture(file.data())) {}
+texture2d::texture2d(std::string_view file) noexcept
+        : rltx_(LoadTexture(file.data())) {
+}
 
 texture2d::~texture2d() {
 	UnloadTexture(rltx_);

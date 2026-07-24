@@ -1,5 +1,4 @@
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	#include <algorithm>
 	#include <chrono>
 	#include <debug/log.hh>
 	#include <filesystem>
@@ -7,93 +6,59 @@
 	#include <fstream>
 	#include <string>
 
+using timepoint = std::chrono::time_point<std::chrono::system_clock>;
+namespace fs    = std::filesystem;
+
 namespace {
 
-std::string_view function_name(std::source_location const& loc) {
-	std::string_view function_name = loc.function_name();
-
-	// remove parameter list
-	if (auto paren = function_name.find('('); paren != std::string_view::npos) {
-		function_name = function_name.substr(0, paren);
-	}
-
-	#ifdef _MSC_VER
-	// remove calling conventions
-	constexpr std::string_view cc_tokens[] = {"__cdecl", "__stdcall", "__fastcall", "__vectorcall"};
-
-	for (auto cc : cc_tokens) {
-		if (auto pos = function_name.find(cc); pos != std::string_view::npos) {
-			auto after = pos + cc.size();
-
-			while (after < function_name.size() && function_name[after] == ' ') {
-				++after;
-			}
-
-			function_name.remove_prefix(after);
-			break;
-		}
-	}
-	#else
-	// GCC / Clang / MinGW:
-	if (auto const space = function_name.rfind(' '); space != std::string_view::npos) {
-		function_name.remove_prefix(space + 1);
-	}
-	#endif
-
-	return function_name;
+std::string where(std::source_location const& loc) {
+	fs::path filepath = loc.file_name();
+	return fmt::format("{}:{}", filepath.filename().string(), loc.line());
 }
 
-std::string time_str() {
-	auto const now     = std::chrono::system_clock::now();
+std::string time(timepoint const& now) {
 	auto const seconds = std::chrono::floor<std::chrono::seconds>(now);
-	auto const ms      = std::chrono::duration_cast<std::chrono::milliseconds>(now - seconds).count();
-	return fmt::format("{:%H:%M:%S}.{:03}", seconds, ms);
+	return fmt::format("{:%H:%M:%S}", seconds);
 }
 
-std::string file_date_str() {
-	auto const now  = std::chrono::system_clock::now();
-	auto const days = std::chrono::floor<std::chrono::days>(now);
-	return fmt::format("{:%Y-%m-%d}", days);
-}
-
-std::string file_time_str() {
-	auto const now     = std::chrono::system_clock::now();
+std::string timehyph(timepoint const& now) {
 	auto const seconds = std::chrono::floor<std::chrono::seconds>(now);
 	return fmt::format("{:%H-%M-%S}", seconds);
 }
 
-std::ofstream log_file;
+std::string date(timepoint const& now) {
+	auto const days = std::chrono::floor<std::chrono::days>(now);
+	return fmt::format("{:%Y-%m-%d}", days);
+}
+
+std::ofstream logfile;
 
 } // namespace
 
-namespace aether::log::impl_ {
+namespace aether::log_impl_ {
 
-void print_(std::string_view msg, std::string_view level, fmt::color level_color, std::source_location const& loc) {
-	std::string const time_and_location_str = fmt::format("{:<12} {} ", time_str(), function_name(loc));
-	std::string const level_str             = fmt::format("[{}] ", level);
-
-	if (log_file.is_open()) {
-		log_file << time_and_location_str << level_str << msg << "\n";
+void print_(std::string_view msg, std::string_view lvl, std::source_location const& loc) {
+	timepoint const now      = std::chrono::system_clock::now();
+	std::string const logmsg = fmt::format("{:<8} | {:<5} | {:<14} | {}", time(now), lvl, where(loc), msg);
+	if (logfile.is_open()) {
+		logfile << logmsg << "\n";
 	}
-
-	#ifndef AETHER_RELWITHDEB
-	fmt::print(fmt::fg(fmt::color::gray), fmt::runtime(time_and_location_str));
-	fmt::print(fmt::fg(level_color), fmt::runtime(level_str));
-	fmt::println(fmt::runtime(msg));
-	#endif
+	fmt::println(fmt::runtime(logmsg));
 }
 
-void try_create_log_file_() {
-	std::filesystem::create_directory("logs");
-	std::filesystem::path const fp = fmt::format("logs/aether_{}_{}.log", file_date_str(), file_time_str());
-	log_file.open(fp);
+bool create_logfile_() {
+	(void)fs::create_directory("logs");
+	timepoint const now     = std::chrono::system_clock::now();
+	fs::path const filepath = fmt::format("logs/aether_{}_{}.log", date(now), timehyph(now));
+	logfile.open(filepath);
+	return logfile.is_open();
 }
 
-void try_close_log_file_() {
-	if (log_file.is_open()) {
-		log_file.close();
+void close_logfile_() {
+	if (logfile.is_open()) {
+		logfile.close();
 	}
 }
 
-} // namespace aether::log::impl_
+} // namespace aether::log_impl_
 #endif

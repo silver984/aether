@@ -9,7 +9,7 @@
 #include <scene_scheduler.hh>
 #include <soloud.h>
 #include <string_view>
-#include <texture_repository.hh>
+#include <texture_cache.hh>
 #include <window.hh>
 
 namespace aether {
@@ -40,7 +40,7 @@ private:
 	SoLoud::Soloud soloud_;
 	lua::manager lua_manager_;
 	scene_scheduler scene_scheduler_;
-	texture_repository textures_;
+	texture_cache textures_;
 	animation_repository animations_;
 	audio_repository audios_;
 	context ctx_;

@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include <data/animation_map.hh>
 #include <filesystem>
 #include <functional>
@@ -6,7 +7,7 @@
 #include <string_view>
 #include <unordered_map>
 #include <util/ref.hh>
-#include <utility>
+
 
 namespace tinyxml2 {
 
@@ -22,10 +23,10 @@ class game;
 class animation_repository final {
 	friend class game;
 
-	enum xml_format : int {
-		UNKNOWN = -1,
-		ADOBE_ANIMATE,
-		TEXTURE_PACKER
+	enum xml_format : int8_t {
+		unknown       = -1,
+		adobe_animate = 1,
+		texture_packer
 	};
 
 public:

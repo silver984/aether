@@ -11,7 +11,7 @@ namespace aether {
 class game;
 class window;
 class renderer;
-class texture_repository;
+class texture_cache;
 class animation_repository;
 class audio_repository;
 class scene_scheduler;
@@ -23,7 +23,7 @@ public:
 	struct descriptor final {
 		window& rwindow;
 		renderer& rrenderer;
-		texture_repository& rtextures;
+		texture_cache& rtextures;
 		animation_repository& ranimations;
 		audio_repository& raudios;
 		scene_scheduler& rscene_scheduler;
@@ -33,7 +33,7 @@ public:
 	~context();
 	[[nodiscard]] window& get_window() const;
 	[[nodiscard]] renderer& get_renderer() const;
-	[[nodiscard]] texture_repository& textures() const;
+	[[nodiscard]] texture_cache& textures() const;
 	[[nodiscard]] animation_repository& animations() const;
 	[[nodiscard]] audio_repository& audios() const;
 	[[nodiscard]] scene_scheduler& get_scene_scheduler() const;
@@ -44,7 +44,7 @@ private:
 
 	window& window_;
 	renderer& renderer_;
-	texture_repository& textures_;
+	texture_cache& textures_;
 	animation_repository& animations_;
 	audio_repository& audios_;
 	scene_scheduler& scene_scheduler_;

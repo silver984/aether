@@ -4,7 +4,7 @@
 #include <debug/log.hh>
 #include <nodes/sprite.hh>
 #include <renderer.hh>
-#include <texture_repository.hh>
+#include <texture_cache.hh>
 
 namespace aether {
 

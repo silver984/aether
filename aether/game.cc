@@ -1,6 +1,5 @@
 #include <debug/heap.hh>
 #include <debug/log.hh>
-#include <debug/win32.hh>
 #include <game.hh>
 #include <soloud_error.h>
 #include <thread>
@@ -30,7 +29,7 @@ game::~game() {
 
 	if (scene_scheduler_.has_pending_scene_()) {
 		scene_scheduler_.cleanup_();
-		textures_.clear_cache_();
+		textures_.clear_();
 		animations_.clear_cache_();
 		audios_.clear_cache_();
 	}
@@ -43,7 +42,7 @@ game::~game() {
 	t.stop();
 	AETHER_INFOLOG("Done | took {}ms", t.duration());
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	log::impl_::try_close_log_file_();
+	log_impl_::close_logfile_();
 #endif
 }
 
@@ -53,13 +52,9 @@ bool game::init(init_descriptor const& desc) {
 	}
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	log::impl_::try_create_log_file_();
-
-	#if !defined(AETHER_RELWITHDEB) && defined(WIN32)
-	if (!win32_::enable_console_colors_()) {
-		AETHER_WARNLOG("Couldn't enable console colors");
+	if (!log_impl_::create_logfile_()) {
+		AETHER_WARNLOG("Couldn't create logfile");
 	}
-	#endif
 #endif
 
 	if (!window_.init_(desc.window_title, desc.resolution, desc.fps)) {
@@ -162,7 +157,7 @@ void game::shutdown_() {
 	t.start();
 
 	scene_scheduler_.cleanup_();
-	textures_.clear_cache_();
+	textures_.clear_();
 	animations_.clear_cache_();
 	audios_.clear_cache_();
 	lua_manager_.shutdown_();
@@ -173,7 +168,7 @@ void game::shutdown_() {
 	t.stop();
 	AETHER_INFOLOG("Done | took {}ms", t.duration());
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	log::impl_::try_close_log_file_();
+	log_impl_::close_logfile_();
 #endif
 }
 

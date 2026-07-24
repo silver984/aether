@@ -89,15 +89,15 @@ ref<animation_map> animation_repository::xml_parse_(std::filesystem::path const&
 
 	switch (assess_xml_format_(document)) {
 		using enum xml_format;
-	case ADOBE_ANIMATE: {
+	case adobe_animate: {
 		AETHER_TRACELOG("Detected Adobe Animate's XML format");
 		return xml_adobe_animate_parse_(document);
 	}
-	case TEXTURE_PACKER: {
+	case texture_packer: {
 		AETHER_TRACELOG("Detected TexturePacker's generic XML format");
 		return xml_texture_packer_parse_(document);
 	}
-	case UNKNOWN:
+	case unknown:
 	default: {
 		AETHER_ERRORLOG("Unknown XML format");
 		return nullptr;
@@ -245,25 +245,25 @@ animation_repository::xml_format animation_repository::assess_xml_format_(tinyxm
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
-		return UNKNOWN;
+		return unknown;
 	}
 
 	tinyxml2::XMLElement const* first_child = root_element->FirstChildElement();
 
 	if (!first_child) {
-		return UNKNOWN;
+		return unknown;
 	}
 
 	char const* name_c_str      = first_child->Name();
 	std::string_view child_name = name_c_str;
 
 	if (child_name == "SubTexture") {
-		return ADOBE_ANIMATE;
+		return adobe_animate;
 	} else if (child_name == "sprite") {
-		return TEXTURE_PACKER;
+		return texture_packer;
 	}
 
-	return UNKNOWN;
+	return unknown;
 }
 
 std::string animation_repository::parse_frame_name_(std::string_view unparsed_name) const {
