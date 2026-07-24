@@ -32,7 +32,7 @@ ref<animation_map> animation_repository::fetch(std::string_view file) {
 
 	// todo: json, plist, and txt
 	if (!util::string_matches_any(file_extension, {".xml"})) {
-		AETHER_ERRORLOG("Unsupported file format | file: \"{}\"", lfile.filename().string());
+		AETHER_ERRORLOG("Unsupported file format ? file: \"{}\"", lfile.filename().string());
 		return nullptr;
 	}
 
@@ -55,8 +55,8 @@ ref<animation_map> animation_repository::fetch(std::string_view file) {
 
 	auto const [it, _] = cache_.emplace(lfile, std::move(shared_map));
 	t.stop();
-	AETHER_TRACELOG("Successfully inserted to cache | cache size: {}", cache_.size());
-	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
+	AETHER_TRACELOG("Successfully inserted to cache ? cache size: {}", cache_.size());
+	AETHER_DEBUGLOG("Done ({}ms)", t.duration());
 
 	return it->second;
 }
@@ -122,7 +122,7 @@ ref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocume
 	t.start();
 
 	ref<animation_map> shared_map = new animation_map();
-	AETHER_TRACELOG("Allocated shared animation map | address: {}", fmt::ptr(shared_map.get()));
+	AETHER_TRACELOG("Allocated shared animation map ? address: {}", fmt::ptr(shared_map.get()));
 
 	char const* const element_name_data = element_name.data();
 	for (tinyxml2::XMLElement const* current_element = root_element->FirstChildElement(element_name_data); current_element != nullptr;
@@ -131,7 +131,7 @@ ref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocume
 	}
 
 	if (shared_map->empty()) {
-		AETHER_ERRORLOG("Failed | map has no data");
+		AETHER_ERRORLOG("Failed ? map has no data");
 		return nullptr;
 	}
 
@@ -142,9 +142,9 @@ ref<animation_map> animation_repository::xml_parse_delegate_(tinyxml2::XMLDocume
 	for (auto& [_, data] : *shared_map) {
 		frame_count += data.frames.size();
 	}
-	AETHER_TRACELOG("Map populated | count: {} | frames: {}", shared_map->size(), frame_count);
+	AETHER_TRACELOG("Map populated ? count: {}, frames: {}", shared_map->size(), frame_count);
 #endif
-	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
+	AETHER_DEBUGLOG("Done ({}ms)", t.duration());
 
 	return shared_map;
 }
@@ -305,7 +305,7 @@ std::string animation_repository::parse_frame_name_(std::string_view unparsed_na
 #ifdef AETHER_VERBOSE_DEBUG
 void animation_repository::log_defective_frame_(std::string_view message, std::optional<std::string_view> name) const {
 	if (name.has_value()) {
-		AETHER_TRACELOG("Skipping frame with {} | on: \"{}\"", message, name.value());
+		AETHER_TRACELOG("Skipping frame with {} ? on: \"{}\"", message, name.value());
 		return;
 	}
 	AETHER_TRACELOG("Skipping frame with {}", message);

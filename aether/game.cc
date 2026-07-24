@@ -41,7 +41,7 @@ game::~game() {
 	is_initialized_ = false;
 
 	t.stop();
-	AETHER_INFOLOG("Done | took {}ms", t.duration());
+	AETHER_INFOLOG("Done ({}ms)", t.duration());
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	log_impl_::close_logfile_();
 #endif
@@ -64,7 +64,7 @@ bool game::init(init_descriptor const& desc) {
 
 	using enum SoLoud::SOLOUD_ERRORS;
 	if (SoLoud::result result = soloud_.init(); result != SO_NO_ERROR) {
-		AETHER_WARNLOG("SoLoud failed to initialize | result: {}", result);
+		AETHER_WARNLOG("SoLoud failed to initialize ? result: {}", result);
 	} else {
 		AETHER_INFOLOG("SoLoud initialized");
 	}
@@ -169,7 +169,7 @@ void game::shutdown_() {
 	is_initialized_ = false;
 
 	t.stop();
-	AETHER_INFOLOG("Done | took {}ms", t.duration());
+	AETHER_INFOLOG("Done ({}ms)", t.duration());
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	log_impl_::close_logfile_();
 #endif

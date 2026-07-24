@@ -30,7 +30,7 @@ void manager::try_register_hook(std::string_view function_name, sol::function&& 
 
 	std::string const function_name_str = std::string(function_name);
 	lhook_map[function_name_str].callbacks.emplace_back(std::move(callback));
-	AETHER_TRACELOG("Registered function hook for \"{}\" | hooked: {}", function_name, lhook_map[function_name_str].callbacks.size());
+	AETHER_TRACELOG("Registered function hook for \"{}\" ? hooked: {}", function_name, lhook_map[function_name_str].callbacks.size());
 }
 
 util::stringset const& manager::hookable_functions_() {
@@ -62,7 +62,7 @@ void manager::shutdown_() {
 void manager::run_and_clear_all_bindings_() {
 	auto& registered_bindings = registered_bindings_();
 
-	AETHER_DEBUGLOG("Running all bindings | count: {}", registered_bindings->size());
+	AETHER_DEBUGLOG("Running all bindings ? count: {}", registered_bindings->size());
 	util::timer t;
 	t.start();
 
@@ -77,7 +77,7 @@ void manager::run_and_clear_all_bindings_() {
 	registered_bindings = nullptr;
 
 	t.stop();
-	AETHER_DEBUGLOG("Done | took {}ms", t.duration());
+	AETHER_DEBUGLOG("Done ({}ms)", t.duration());
 }
 
 void manager::try_create_scripts_directory_() {
@@ -103,12 +103,12 @@ void manager::run_scripts_() {
 		        it->string(), sol::environment(state_, sol::create, state_.globals()),
 		        [](lua_State*, sol::protected_function_result result) -> sol::protected_function_result {
 			        sol::error e = result;
-			        AETHER_ERRORLOG("Script invalid | what: {}", e.what());
+			        AETHER_ERRORLOG("Script invalid ? what: {}", e.what());
 			        return result;
 		        },
 		        sol::load_mode::any);
 		if (!script_result.valid()) {
-			AETHER_ERRORLOG("Excluding invalid script | file: \"{}\"", it->filename().string());
+			AETHER_ERRORLOG("Excluding invalid script ? file: \"{}\"", it->filename().string());
 			it = available_scripts.erase(it);
 			continue;
 		}
@@ -116,7 +116,7 @@ void manager::run_scripts_() {
 	}
 
 	t.stop();
-	AETHER_INFOLOG("Done | took {}ms", t.duration());
+	AETHER_INFOLOG("Done ({}ms)", t.duration());
 }
 
 std::vector<std::filesystem::path> manager::gather_available_scripts_() {
@@ -135,7 +135,7 @@ std::vector<std::filesystem::path> manager::gather_available_scripts_() {
 	}
 
 	t.stop();
-	AETHER_DEBUGLOG("Done | count: {} | took {}ms", out.size(), t.duration());
+	AETHER_DEBUGLOG("Done ({}ms) ? count: {} ", t.duration(), out.size());
 
 	return out;
 }
