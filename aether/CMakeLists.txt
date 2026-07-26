@@ -1,17 +1,34 @@
-file(GLOB AETHER_GENERAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
-file(GLOB AETHER_NODES_SRC ${CMAKE_CURRENT_SOURCE_DIR}/nodes/*.cc)
-file(GLOB AETHER_LUA_BINDINGS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/lua/bindings/*.cc)
-file(GLOB AETHER_UTIL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/util/*.cc)
-list(REMOVE_ITEM AETHER_GENERAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/camera.cc)
+file(GLOB AETHER_LUA_BINDINGS_SRC lua/bindings/*.cc)
+file(GLOB AETHER_NODES_SRC nodes/*.cc)
+file(GLOB AETHER_UTIL_SRC util/*.cc)
+file(GLOB AETHER_GENERAL_SRC *.cc)
 
-target_sources(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/math/mat3.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/data/texture2d.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/lua/manager.cc
-    $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/log.cc>
-    $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/heap.cc>
-    ${AETHER_GENERAL_SRC}
-    ${AETHER_NODES_SRC}
-    ${AETHER_LUA_BINDINGS_SRC}
-    ${AETHER_UTIL_SRC}
+list(
+    REMOVE_ITEM
+    AETHER_NODES_SRC
+        animated_sprite.cc
+        tilemap.cc
+)
+
+list(
+    REMOVE_ITEM
+    AETHER_GENERAL_SRC
+        animation_repository.cc
+        audio_repository.cc
+        camera.cc
+        sound.cc
+        texture_cache.cc
+)
+
+target_sources(
+    ${PROJECT_NAME}
+    PRIVATE
+        $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/log.cc>
+        $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/heap.cc>
+        lua/manager.cc
+        math/mat3.cc
+        ${AETHER_LUA_BINDINGS_SRC}
+        ${AETHER_NODES_SRC}
+        ${AETHER_UTIL_SRC}
+        ${AETHER_GENERAL_SRC}
 )

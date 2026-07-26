@@ -84,7 +84,7 @@ bool sound::init_(audio_repository& audios, std::string_view file) {
 	}
 
 	using enum SoLoud::SOLOUD_ERRORS;
-	if (wave_.loadMem(buffer_->data(), buffer_->size(), false, false) != SO_NO_ERROR) {
+	if (wave_.loadMem(reinterpret_cast<unsigned char*>(buffer_->data()), buffer_->size(), false, false) != SO_NO_ERROR) {
 		return false;
 	}
 

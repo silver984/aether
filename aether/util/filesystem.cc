@@ -19,7 +19,7 @@ std::string file_extension(std::filesystem::path const& file) {
 	return extension;
 }
 
-u8vec read_file_to_buffer(std::filesystem::path const& file) {
+blob read_file_to_buffer(std::filesystem::path const& file) {
 	std::ifstream lfile(file, std::ios::binary | std::ios::ate);
 
 	if (!lfile.is_open()) {
@@ -28,7 +28,7 @@ u8vec read_file_to_buffer(std::filesystem::path const& file) {
 
 	std::streamsize size = lfile.tellg();
 	lfile.seekg(0, std::ios::beg);
-	u8vec out(size);
+	blob out(size);
 
 	if (!lfile.read(reinterpret_cast<char*>(out.data()), size)) {
 		return {};

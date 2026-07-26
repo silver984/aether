@@ -5,10 +5,10 @@
 #include <lua/manager.hh>
 #include <math/size.hh>
 #include <renderer.hh>
+#include <resources.hh>
 #include <scene_scheduler.hh>
 #include <soloud.h>
 #include <string_view>
-#include <texture_cache.hh>
 #include <window.hh>
 
 namespace aether {
@@ -39,7 +39,7 @@ private:
 	SoLoud::Soloud soloud_;
 	lua::manager lua_manager_;
 	scene_scheduler scene_scheduler_;
-	texture_cache textures_;
+	resources<Texture> textures_;
 	animation_repository animations_;
 	audio_repository audios_;
 	context ctx_;

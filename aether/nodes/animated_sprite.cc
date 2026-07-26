@@ -4,7 +4,7 @@
 #include <debug/log.hh>
 #include <nodes/animated_sprite.hh>
 #include <renderer.hh>
-#include <texture_cache.hh>
+#include <resources.hh>
 #include <util/math.hh>
 
 namespace aether {
@@ -24,7 +24,7 @@ animated_sprite::animated_sprite(context const& ctx_, descriptor const& desc)
 animated_sprite::~animated_sprite() = default;
 
 void animated_sprite::toggle_antialiasing(bool val) const {
-	SetTextureFilter(texture_->get(), val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
+	SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
 }
 
 bool animated_sprite::play_animation(std::string_view name) {
@@ -69,7 +69,7 @@ bool animated_sprite::init_() {
 	}
 
 	auto const& ctx = ctx_();
-	texture_        = ctx.textures().fetch(desc_.imagefile);
+	texture_        = ctx.textures().load(desc_.imagefile);
 
 	if (!texture_) {
 		AETHER_ERRORLOG("Failed ? nullptr texture");

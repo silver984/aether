@@ -25,9 +25,9 @@ public:
 	node(context const& ctx);
 	virtual ~node();
 
-	template <std::derived_from<node> T, typename... va>
-	[[nodiscard]] static ref<T> create(context const& ctx, va&&... args) {
-		ref<T> ptr = new T(ctx, std::forward<va>(args)...);
+	template <std::derived_from<node> Type, typename... Args>
+	[[nodiscard]] static ref<Type> create(context const& ctx, Args&&... args) {
+		ref<Type> ptr = new Type(ctx, std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}

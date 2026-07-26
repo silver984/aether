@@ -3,9 +3,7 @@
 
 namespace aether {
 
-texture_cache::texture_cache() noexcept
-        : cache({".png", ".jpg", ".jpeg", ".bmp", ".gif", ".dds"}) {
-}
+texture_cache::texture_cache() noexcept  = default;
 texture_cache::~texture_cache() noexcept = default;
 
 ref<texture2d> texture_cache::load_(fs::path const& file) {

@@ -5,9 +5,9 @@
 #include <nodes/node.hh>
 #include <optional>
 
-namespace aether {
+struct Texture;
 
-class texture2d;
+namespace aether {
 
 class animated_sprite : public node {
 public:
@@ -41,7 +41,7 @@ private:
 
 	descriptor const desc_;
 	ref<animation_map> data_;
-	ref<texture2d> texture_;
+	ref<Texture> texture_;
 	std::string current_animation_name_;
 	size_t current_subtexture_index_;
 	int playback_fps_;

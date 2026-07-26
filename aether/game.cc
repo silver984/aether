@@ -30,7 +30,7 @@ game::~game() {
 
 	if (scene_scheduler_.has_pending_scene_()) {
 		scene_scheduler_.cleanup_();
-		textures_.clear_();
+		textures_.purge_all_();
 		animations_.clear_cache_();
 		audios_.clear_cache_();
 	}
@@ -160,7 +160,7 @@ void game::shutdown_() {
 	t.start();
 
 	scene_scheduler_.cleanup_();
-	textures_.clear_();
+	textures_.purge_all_();
 	animations_.clear_cache_();
 	audios_.clear_cache_();
 	lua_manager_.shutdown_();

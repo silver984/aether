@@ -9,7 +9,7 @@ namespace aether {
 audio_repository::audio_repository()  = default;
 audio_repository::~audio_repository() = default;
 
-ref<u8vec> audio_repository::fetch(std::string_view file) {
+ref<blob> audio_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
@@ -29,15 +29,15 @@ ref<u8vec> audio_repository::fetch(std::string_view file) {
 
 	purge_unused();
 
-	u8vec temporary_buffer = util::read_file_to_buffer(lfile);
+	blob temporary_buffer = util::read_file_to_buffer(lfile);
 
 	if (temporary_buffer.empty()) {
 		AETHER_ERRORLOG("Failed ? empty buffer");
 		return nullptr;
 	}
 
-	ref<u8vec> shared_buffer = new u8vec(std::move(temporary_buffer));
-	auto const [it, _]       = cache_.emplace(lfile, std::move(shared_buffer));
+	ref<blob> shared_buffer = new blob(std::move(temporary_buffer));
+	auto const [it, _]      = cache_.emplace(lfile, std::move(shared_buffer));
 	return it->second;
 }
 
@@ -51,7 +51,7 @@ void audio_repository::clear_cache_() {
 	cache_.clear();
 }
 
-ref<u8vec> audio_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
+ref<blob> audio_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
 	if (auto const it = cache_.find(file); it != cache_.end()) {
 		return it->second;
 	}

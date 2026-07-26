@@ -12,15 +12,13 @@ namespace aether {
 
 namespace fs = std::filesystem;
 
-template <typename T>
+template <typename Type>
 class cache {
 public:
-	cache(util::stringset&& valid_formats) noexcept
-	        : valid_formats_(valid_formats) {
-	}
+	cache() noexcept          = default;
 	virtual ~cache() noexcept = default;
 
-	[[nodiscard]] ref<T> fetch(std::string_view file) {
+	[[nodiscard]] ref<Type> fetch(std::string_view file) {
 		fs::path canonical_file = fs::weakly_canonical(file);
 
 		if (!fs::exists(canonical_file)) {
@@ -28,13 +26,8 @@ public:
 			return nullptr;
 		}
 
-		if (ref<T> from_bank = bank_fetch_(canonical_file)) {
-			AETHER_TRACELOG("{}", (from_bank == nullptr));
+		if (ref<Type> from_bank = bank_fetch_(canonical_file)) {
 			return from_bank;
-		}
-
-		if (!is_file_format_valid_(canonical_file)) {
-			return nullptr;
 		}
 
 		purge_unused();
@@ -43,7 +36,7 @@ public:
 		util::timer t;
 		t.start();
 
-		ref<T> resource = load_(canonical_file);
+		ref<Type> resource = load_(canonical_file);
 
 		if (!resource) {
 			AETHER_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
@@ -64,27 +57,21 @@ public:
 	}
 
 protected:
-	[[nodiscard]] virtual ref<T> load_(fs::path const& file) = 0;
+	[[nodiscard]] virtual ref<Type> load_(fs::path const& file) = 0;
 
 	void clear_() noexcept {
 		bank_.clear();
 	}
 
 private:
-	[[nodiscard]] ref<T> bank_fetch_(fs::path const& file) const {
+	[[nodiscard]] ref<Type> bank_fetch_(fs::path const& file) const {
 		if (auto const it = bank_.find(file); it != bank_.end()) {
 			return it->second;
 		}
 		return nullptr;
 	}
 
-	[[nodiscard]] bool is_file_format_valid_(fs::path const& file) const {
-		std::string const ext = util::file_extension(file);
-		return std::find(valid_formats_.begin(), valid_formats_.end(), ext) != valid_formats_.end();
-	}
-
-	std::unordered_map<fs::path, ref<T>> bank_;
-	util::stringset const valid_formats_;
+	std::unordered_map<fs::path, ref<Type>> bank_;
 };
 
 } // namespace aether

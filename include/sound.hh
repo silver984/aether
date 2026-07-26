@@ -1,8 +1,9 @@
 #pragma once
 #include <soloud_wav.h>
 #include <string_view>
+#include <util/blob.hh>
 #include <util/ref.hh>
-#include <util/u8vec.hh>
+
 
 namespace SoLoud {
 
@@ -47,7 +48,7 @@ private:
 
 	SoLoud::handle wave_handle_;
 
-	ref<u8vec> buffer_;
+	ref<blob> buffer_;
 
 	float volume_;
 	float pan_;

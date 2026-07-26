@@ -15,7 +15,7 @@ renderer& context::get_renderer() const {
 	return desc_.renderer;
 }
 
-texture_cache& context::textures() const {
+resources<Texture>& context::textures() const {
 	return desc_.textures;
 }
 
