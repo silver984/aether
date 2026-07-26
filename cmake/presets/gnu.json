@@ -1,0 +1,67 @@
+{
+  "version": 9,
+  "include": [
+    "base.json"
+  ],
+  "configurePresets": [
+    {
+      "name": "gnu",
+      "hidden": true,
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "gnu-release",
+      "displayName": "GNU Release",
+      "inherits": [
+        "gnu",
+        "release"
+      ]
+    },
+    {
+      "name": "gnu-relwithdeb",
+      "displayName": "GNU RelWithDeb",
+      "inherits": [
+        "gnu",
+        "relwithdeb"
+      ]
+    },
+    {
+      "name": "gnu-debug",
+      "displayName": "GNU Debug",
+      "inherits": [
+        "gnu",
+        "debug"
+      ]
+    },
+    {
+      "name": "gnu-debverbose",
+      "displayName": "GNU Debug Verbose",
+      "inherits": [
+        "gnu",
+        "debverbose"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "gnu-release",
+      "configurePreset": "gnu-release"
+    },
+    {
+      "name": "gnu-relwithdeb",
+      "configurePreset": "gnu-relwithdeb"
+    },
+    {
+      "name": "gnu-debug",
+      "configurePreset": "gnu-debug"
+    },
+    {
+      "name": "gnu-debverbose",
+      "configurePreset": "gnu-debverbose"
+    }
+  ]
+}

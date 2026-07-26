@@ -1,0 +1,67 @@
+{
+  "version": 9,
+  "include": [
+    "base.json"
+  ],
+  "configurePresets": [
+    {
+      "name": "msvc",
+      "hidden": true,
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl"
+      }
+    },
+    {
+      "name": "msvc-release",
+      "displayName": "MSVC Release",
+      "inherits": [
+        "msvc",
+        "release"
+      ]
+    },
+    {
+      "name": "msvc-relwithdeb",
+      "displayName": "MSVC RelWithDeb",
+      "inherits": [
+        "msvc",
+        "relwithdeb"
+      ]
+    },
+    {
+      "name": "msvc-debug",
+      "displayName": "MSVC Debug",
+      "inherits": [
+        "msvc",
+        "debug"
+      ]
+    },
+    {
+      "name": "msvc-debverbose",
+      "displayName": "MSVC Debug Verbose",
+      "inherits": [
+        "msvc",
+        "debverbose"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "msvc-release",
+      "configurePreset": "msvc-release"
+    },
+    {
+      "name": "msvc-relwithdeb",
+      "configurePreset": "msvc-relwithdeb"
+    },
+    {
+      "name": "msvc-debug",
+      "configurePreset": "msvc-debug"
+    },
+    {
+      "name": "msvc-debverbose",
+      "configurePreset": "msvc-debverbose"
+    }
+  ]
+}

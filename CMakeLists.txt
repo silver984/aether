@@ -1,10 +1,10 @@
 # AetherEngine
-cmake_minimum_required(VERSION 3.31.6)
+cmake_minimum_required(VERSION 4.3.1)
 
 include(cmake/version.cmake)
 project(Aether VERSION ${AETHER_VERSION} LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -22,19 +22,25 @@ configure_file(
     @ONLY
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE
+target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/external
     ${CMAKE_CURRENT_BINARY_DIR}/generated
 )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE
+target_compile_definitions(
+    ${PROJECT_NAME}
+    PRIVATE
     $<$<CONFIG:Debug>:AETHER_DEBUG>
     $<$<CONFIG:RelWithDebInfo>:AETHER_RELWITHDEB>
     $<$<BOOL:${AETHER_VERBOSE_DEBUG}>:AETHER_VERBOSE_DEBUG>
 )
 
-target_precompile_headers(${PROJECT_NAME} PRIVATE
+target_precompile_headers(
+    ${PROJECT_NAME}
+    PRIVATE
     <sol/sol.hpp>
 )
 
@@ -42,24 +48,70 @@ include(cmake/dependencies.cmake)
 aether_fetch_dependencies(${PROJECT_NAME})
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    if (MINGW OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        target_link_options(${PROJECT_NAME} PRIVATE
+    if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "GNU")
+        target_link_options(
+            ${PROJECT_NAME}
+            PRIVATE
             $<$<CONFIG:Debug>:-mconsole>
             $<$<NOT:$<CONFIG:Debug>>:-mwindows>
         )
-    else() # MSVC
-        target_link_options(${PROJECT_NAME} PRIVATE
+    else()
+        target_link_options(
+            ${PROJECT_NAME}
+            PRIVATE
             $<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>
-            $<$<NOT:$<CONFIG:Debug>>:/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup>
+            $<$<NOT:$<CONFIG:Debug>>:/SUBSYSTEM:WINDOWS>
+            $<$<NOT:$<CONFIG:Debug>>:/ENTRY:mainCRTStartup>
         )
     endif()
 endif()
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md $<TARGET_FILE_DIR:${PROJECT_NAME}>/LICENSE.md
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/THIRD-PARTY-NOTICES.md $<TARGET_FILE_DIR:${PROJECT_NAME}>/THIRD-PARTY-NOTICES.md
-    COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources
-    COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/licenses $<TARGET_FILE_DIR:${PROJECT_NAME}>/licenses
+set(AETHER_OUTPUT_DIR $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E tar cf ${AETHER_OUTPUT_DIR}/aether.res --format=zip .
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
+    COMMENT "Compressing resources"
+    VERBATIM
+)
+
+# using -E remove_directory doesnt throw an error if the directory doesnt exist yet
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${AETHER_OUTPUT_DIR}/licenses
+    COMMENT "Removing old licenses folder"
+    VERBATIM
+)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/licenses
+        ${AETHER_OUTPUT_DIR}/licenses
+    COMMENT "Copying licenses folder"
+    VERBATIM
+)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md
+        ${AETHER_OUTPUT_DIR}/LICENSE.md
+    COMMENT "Copying license markdown"
+    VERBATIM
+)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/THIRD-PARTY-NOTICES.md
+        ${AETHER_OUTPUT_DIR}/THIRD-PARTY-NOTICES.md
+    COMMENT "Copying third-party-notices markdown"
+    VERBATIM
 )

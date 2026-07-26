@@ -15,35 +15,44 @@ namespace fs = std::filesystem;
 template <typename T>
 class cache {
 public:
-	cache(util::stringset&& valid_formats)
+	cache(util::stringset&& valid_formats) noexcept
 	        : valid_formats_(valid_formats) {
 	}
-	~cache() = default;
+	virtual ~cache() noexcept = default;
 
 	[[nodiscard]] ref<T> fetch(std::string_view file) {
 		fs::path canonical_file = fs::weakly_canonical(file);
+
 		if (!fs::exists(canonical_file)) {
 			AETHER_ERRORLOG("File doesn't exist ? file: \"{}\"", file);
 			return nullptr;
 		}
+
 		if (ref<T> from_bank = bank_fetch_(canonical_file)) {
 			AETHER_TRACELOG("{}", (from_bank == nullptr));
 			return from_bank;
 		}
+
 		if (!is_file_format_valid_(canonical_file)) {
 			return nullptr;
 		}
+
 		purge_unused();
+
 		AETHER_DEBUGLOG("Loading resource ? file: \"{}\"", file);
 		util::timer t;
 		t.start();
+
 		ref<T> resource = load_(canonical_file);
+
 		if (!resource) {
 			AETHER_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
 			return nullptr;
 		}
+
 		t.stop();
 		AETHER_DEBUGLOG("Done ({}ms)", t.duration());
+
 		auto const [it, _] = bank_.emplace(canonical_file, std::move(resource));
 		return it->second;
 	}
@@ -57,7 +66,7 @@ public:
 protected:
 	[[nodiscard]] virtual ref<T> load_(fs::path const& file) = 0;
 
-	void clear_() {
+	void clear_() noexcept {
 		bank_.clear();
 	}
 

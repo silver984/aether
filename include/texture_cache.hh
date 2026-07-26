@@ -10,13 +10,13 @@ class texture_cache final : public cache<texture2d> {
 	friend class game;
 
 public:
-	~texture_cache();
+	~texture_cache() noexcept override;
 
 protected:
 	[[nodiscard]] ref<texture2d> load_(fs::path const& file) override;
 
 private:
-	texture_cache();
+	texture_cache() noexcept;
 };
 
 } // namespace aether

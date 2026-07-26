@@ -2,13 +2,13 @@
 #include <debug/log.hh>
 #include <raylib.h>
 #include <util/math.hh>
-#include <utility>
 #include <window.hh>
 
 namespace aether {
 
 window::window()
-        : target_fps_(0) {}
+        : target_fps_(0) {
+}
 
 window::~window() = default;
 
