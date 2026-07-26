@@ -14,9 +14,8 @@ namespace aether {
 renderer::renderer()
         : projection_(mat3::identity()) {
 #ifdef AETHER_DEBUG
-	last_fps_              = 0;
-	last_heap_usage_       = 0.f;
-	last_lua_memory_usage_ = 0.f;
+	last_fps_        = 0;
+	last_heap_usage_ = 0.f;
 #endif
 }
 
@@ -116,14 +115,13 @@ void renderer::start_draw_() {
 }
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-void renderer::end_draw_(uint32_t fps, float heap_usage, float lua_memory_usage) {
+void renderer::end_draw_(uint32_t fps, float heap_usage) {
 	rlPopMatrix();
 
-	if (last_fps_ != fps || last_heap_usage_ != heap_usage || last_lua_memory_usage_ != lua_memory_usage) {
+	if (last_fps_ != fps || last_heap_usage_ != heap_usage) {
 		last_fps_                 = fps;
 		last_heap_usage_          = heap_usage;
-		last_lua_memory_usage_    = lua_memory_usage;
-		debug_text_               = fmt::format("FPS: {}\nHEAP: {:.2f}MB\nLUA GC: {:.2f}MB", fps, heap_usage, lua_memory_usage);
+		debug_text_               = fmt::format("FPS: {}\nHEAP: {:.2f}MB", fps, heap_usage);
 		Vector2 const measurement = MeasureTextEx(GetFontDefault(), debug_text_.c_str(), 10.f, 1.f);
 		debug_text_measure_       = vec2<int>((int)std::round(measurement.x), (int)std::round(measurement.y));
 	}

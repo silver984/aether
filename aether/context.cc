@@ -1,38 +1,43 @@
 #include <context.hh>
+#include <game.hh>
 
 namespace aether {
 
-context::context(descriptor const& desc)
-        : desc_(desc) {
+context::context(game& game) noexcept
+        : game_(game) {
 }
-context::~context() = default;
+context::~context() noexcept = default;
 
-window& context::get_window() const {
-	return desc_.window;
-}
-
-renderer& context::get_renderer() const {
-	return desc_.renderer;
+window& context::window() const noexcept {
+	return game_.window_;
 }
 
-resources<Texture>& context::textures() const {
-	return desc_.textures;
+renderer& context::renderer() const noexcept {
+	return game_.renderer_;
 }
 
-animation_repository& context::animations() const {
-	return desc_.animations;
+SoLoud::Soloud& context::soloud() const noexcept {
+	return game_.soloud_;
 }
 
-audio_repository& context::audios() const {
-	return desc_.audios;
+scene_scheduler& context::scene_scheduler() const noexcept {
+	return game_.scene_scheduler_;
 }
 
-scene_scheduler& context::get_scene_scheduler() const {
-	return desc_.scene_scheduler;
+resources<Texture>& context::textures() const noexcept {
+	return game_.textures_;
 }
 
-SoLoud::Soloud& context::soloud() const {
-	return desc_.soloud;
+util::ziparc& context::aether_resources() const noexcept {
+	return game_.aether_resources_;
 }
+
+// animation_repository& context::animations() const noexcept {
+// 	return game_.animations;
+// }
+
+// audio_repository& context::audios() const noexcept {
+// 	return game_.audios;
+// }
 
 } // namespace aether

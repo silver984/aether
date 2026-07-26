@@ -17,8 +17,8 @@ class scene {
 	friend class scene_scheduler;
 
 public:
-	scene(context const& ctx);
-	virtual ~scene();
+	scene(context const& ctx) noexcept;
+	virtual ~scene() noexcept;
 
 	template <typename T, typename... va>
 	        requires std::derived_from<T, scene>
@@ -58,7 +58,7 @@ private:
 
 	// todo: music member
 
-	context const& mctx_;
+	context const& m_ctx_;
 
 	// camera camera_; // todo
 

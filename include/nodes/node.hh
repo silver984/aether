@@ -22,8 +22,8 @@ class node {
 	// friend class camera;
 
 public:
-	node(context const& ctx);
-	virtual ~node();
+	node(context const& ctx) noexcept;
+	virtual ~node() noexcept;
 
 	template <std::derived_from<node> Type, typename... Args>
 	[[nodiscard]] static ref<Type> create(context const& ctx, Args&&... args) {
@@ -131,7 +131,7 @@ private:
 	[[nodiscard]] mat3 calculate_transform_() const;
 	[[nodiscard]] rgba calculate_combined_rgba_() const;
 
-	context const& mctx_;
+	context const& m_ctx_;
 	scene* scene_;
 	node* parent_;
 	std::vector<ref<node>> children_;

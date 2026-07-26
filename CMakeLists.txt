@@ -18,7 +18,7 @@ add_subdirectory(aether)
 add_subdirectory(external)
 
 configure_file(
-  cmake/version.h.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
   @ONLY
 )
@@ -26,8 +26,8 @@ configure_file(
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE
-    include
-    external
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/external
     ${CMAKE_CURRENT_BINARY_DIR}/generated
 )
 
@@ -39,11 +39,11 @@ target_compile_definitions(
     $<$<BOOL:${AETHER_VERBOSE_DEBUG}>:AETHER_VERBOSE_DEBUG>
 )
 
-target_precompile_headers(
-  ${PROJECT_NAME}
-  PRIVATE
-    <sol/sol.hpp>
-)
+# target_precompile_headers(
+#   ${PROJECT_NAME}
+#   PRIVATE
+#     <sol/sol.hpp>
+# )
 
 include(cmake/deps.cmake)
 aether_fetch_dependencies(${PROJECT_NAME})
@@ -73,7 +73,7 @@ add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E tar cf ${AETHER_OUTPUT_DIR}/aether.res --format=zip .
-  WORKING_DIRECTORY resources
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
   COMMENT "Compressing resources"
   VERBATIM
 )
@@ -91,7 +91,7 @@ add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory
-    licenses
+    ${CMAKE_CURRENT_SOURCE_DIR}/licenses
     ${AETHER_OUTPUT_DIR}/licenses
   COMMENT "Copying licenses folder"
   VERBATIM
@@ -101,7 +101,7 @@ add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy
-    LICENSE.md
+    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md
     ${AETHER_OUTPUT_DIR}/LICENSE.md
   COMMENT "Copying license markdown"
   VERBATIM
@@ -111,7 +111,7 @@ add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy
-    THIRD-PARTY-NOTICES.md
+    ${CMAKE_CURRENT_SOURCE_DIR}/THIRD-PARTY-NOTICES.md
     ${AETHER_OUTPUT_DIR}/THIRD-PARTY-NOTICES.md
   COMMENT "Copying third-party-notices markdown"
   VERBATIM

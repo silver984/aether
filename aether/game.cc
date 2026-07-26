@@ -9,13 +9,7 @@
 namespace aether {
 
 game::game()
-        : ctx_(context::descriptor{.window          = window_,
-                                   .renderer        = renderer_,
-                                   .textures        = textures_,
-                                   .animations      = animations_,
-                                   .audios          = audios_,
-                                   .scene_scheduler = scene_scheduler_,
-                                   .soloud          = soloud_})
+        : ctx_(*this)
         , is_initialized_(false) {
 }
 
@@ -31,11 +25,12 @@ game::~game() {
 	if (scene_scheduler_.has_pending_scene_()) {
 		scene_scheduler_.cleanup_();
 		textures_.purge_all_();
-		animations_.clear_cache_();
-		audios_.clear_cache_();
+		// animations_.clear_cache_();
+		// audios_.clear_cache_();
 	}
 
-	lua_manager_.shutdown_();
+	// lua_manager_.shutdown_();
+	aether_resources_.close();
 	soloud_.deinit();
 	window_.shutdown_();
 	is_initialized_ = false;
@@ -62,6 +57,11 @@ bool game::init(init_descriptor const& desc) {
 		return false;
 	}
 
+	if (!aether_resources_.open("aether.res")) {
+		AETHER_ERRORLOG("Couldn't open/find resources");
+		return false;
+	}
+
 	using enum SoLoud::SOLOUD_ERRORS;
 	if (SoLoud::result result = soloud_.init(); result != SO_NO_ERROR) {
 		AETHER_WARNLOG("SoLoud failed to initialize ? result: {}", result);
@@ -70,8 +70,8 @@ bool game::init(init_descriptor const& desc) {
 	}
 
 	renderer_.setup2d_();
-	lua_manager_.init_();
-	lua_manager_.run_scripts_();
+	// lua_manager_.init_();
+	// lua_manager_.run_scripts_();
 
 	AETHER_INFOLOG("Initialized");
 	return is_initialized_ = true;
@@ -122,8 +122,7 @@ void game::run() {
 		}
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-		float divider = 1024.f * 1024.f;
-		renderer_.end_draw_(evalfps, heap::usage() / divider, lua_manager_.state_.memory_used() / divider);
+		renderer_.end_draw_(evalfps, heap::usage() / (1024.f * 1024.f));
 #else
 		renderer_.end_draw_();
 #endif
@@ -161,9 +160,10 @@ void game::shutdown_() {
 
 	scene_scheduler_.cleanup_();
 	textures_.purge_all_();
-	animations_.clear_cache_();
-	audios_.clear_cache_();
-	lua_manager_.shutdown_();
+	// animations_.clear_cache_();
+	// audios_.clear_cache_();
+	// lua_manager_.shutdown_();
+	aether_resources_.close();
 	soloud_.deinit();
 	window_.shutdown_();
 	is_initialized_ = false;

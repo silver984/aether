@@ -3,16 +3,16 @@
 #include <scene.hh>
 // #include <sound.hh>
 
-class testscene final : public aether::scene {
+class testscene : public aether::scene {
 public:
-	testscene(aether::context const& ctx);
-	~testscene() override;
+	testscene(aether::context const& ctx) noexcept;
+	~testscene() noexcept override;
 
 protected:
 	bool init_() override;
-	bool init_impl_();
+	// bool init_impl_();
 	void update_(float dt) override;
-	void update_impl_(float dt);
+	// void update_impl_(float dt);
 
 	// private:
 	// 	aether::ref<aether::animated_sprite> bf_spin_;

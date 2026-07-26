@@ -4,11 +4,13 @@
 namespace aether::util {
 
 ziparc::ziparc() noexcept
-        : archive_() {
+        : archive_()
+        , is_open_(false) {
 }
 
 ziparc::ziparc(fs::path const& file) noexcept
-        : archive_() {
+        : archive_()
+        , is_open_(false) {
 	open(file);
 }
 
@@ -17,17 +19,35 @@ ziparc::~ziparc() noexcept {
 }
 
 bool ziparc::open(fs::path const& file) noexcept {
-	if (!fs::exists(file)) {
+	if (!fs::exists(file) || is_open_) {
 		return false;
 	}
-	return mz_zip_reader_init_file(&archive_, file.string().data(), 0) == MZ_TRUE;
+	is_open_ = mz_zip_reader_init_file(&archive_, file.string().data(), 0) == MZ_TRUE;
+	return is_open_;
 }
 
 bool ziparc::close() noexcept {
-	return mz_zip_reader_end(&archive_) == MZ_TRUE;
+	if (!is_open_) {
+		return false;
+	}
+
+	bool closed = mz_zip_reader_end(&archive_) == MZ_TRUE;
+
+	if (closed) {
+		is_open_ = false;
+	}
+
+	return closed;
+}
+
+bool ziparc::is_open() const noexcept {
+	return is_open_;
 }
 
 bool ziparc::contains(std::string_view file) noexcept {
+	if (!is_open_) {
+		return false;
+	}
 	constexpr int invalid_index = -1;
 	return mz_zip_reader_locate_file(&archive_, file.data(), nullptr, 0) != invalid_index;
 }

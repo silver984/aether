@@ -6,8 +6,8 @@
 
 namespace aether {
 
-node::node(context const& ctx_)
-        : mctx_(ctx_)
+node::node(context const& ctx_) noexcept
+        : m_ctx_(ctx_)
         , scene_(nullptr)
         , parent_(nullptr)
         , color_(255)
@@ -26,8 +26,7 @@ node::node(context const& ctx_)
         , is_draw_scheduled_(false)
         , is_visible_(true) {
 }
-
-node::~node() = default;
+node::~node() noexcept = default;
 
 bool node::add_child(ref<node> n) {
 	if (!n) {
@@ -385,7 +384,7 @@ scene* node::get_scene() const {
 }
 
 context const& node::ctx_() const {
-	return mctx_;
+	return m_ctx_;
 }
 
 bool node::init_interface_() {

@@ -8,19 +8,14 @@
 
 namespace aether {
 
-scene::scene(context const& ctx)
-        : mctx_(ctx)
+scene::scene(context const& ctx) noexcept
+        : m_ctx_(ctx)
         // , camera_(root_)
-        , root_(node::create<node>(ctx))
+        , root_(nullptr)
         , is_active_(false)
         , is_visit_scheduled_(false) {
-	root_->scene_          = this;
-	auto const window_size = ctx.get_window().target_size();
-	root_->set_bounds(window_size);
-	root_->set_position(window_size / 2.f);
 }
-
-scene::~scene() = default;
+scene::~scene() noexcept = default;
 
 void scene::activate() {
 	is_active_ = true;
@@ -59,6 +54,18 @@ ref<node> scene::root() const {
 // }
 
 bool scene::init_() {
+	root_ = new node(m_ctx_);
+
+	if (!root_) {
+		return false;
+	}
+
+	root_->scene_ = this;
+
+	size<int> const window_size = m_ctx_.window().target_size();
+	root_->set_bounds(window_size);
+	root_->set_position(window_size / 2.f);
+
 	return true;
 }
 
@@ -69,7 +76,7 @@ void scene::visit_() {
 }
 
 context const& scene::ctx_() const {
-	return mctx_;
+	return m_ctx_;
 }
 
 bool scene::init_interface_() {
