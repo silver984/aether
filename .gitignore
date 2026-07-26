@@ -6,18 +6,4 @@ build/
 CMakeUserPresets.json
 
 # temporary
-resources/bf.png
-resources/bf.xml
-resources/BOYFRIEND.png
-resources/BOYFRIEND.xml
-resources/fnf_loss_sfx.ogg
-resources/cuttinDeezeBalls.png
-resources/cuttinDeezeBalls.xml
-resources/WhittyCrazy.png
-resources/WhittyCrazy.xml
-resources/stage_light.png
-resources/Inst.mp3
-resources/icon-bf-old.png
-resources/spooky_dark.png
-resources/spooky_dark.xml
-resources/sound.ogg
+resources/*

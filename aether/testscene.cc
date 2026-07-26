@@ -56,7 +56,7 @@ bool testscene::init_() {
 void testscene::update_(float dt) {
 	// lua::hookchain(this, "testscene:update_", &testscene::update_impl_, dt);
 	for (auto& child : root()->children()) {
-		child->set_rotation(child->rotation() + (90.f * dt));
+		child->set_rotation(child->rotation() + (22.5f * dt));
 	}
 }
 
