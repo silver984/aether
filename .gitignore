@@ -1,9 +1,13 @@
-build/
+# Visual Studio
 .vs/
+
+# Visual Studio Code
 .vscode/
+
+# Clang
 .cache/
 .clangd
-CMakeUserPresets.json
 
-# temporary
-resources/*
+# CMake
+build/
+CMakeUserPresets.json

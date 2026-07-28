@@ -1,10 +1,9 @@
 #include <loader.hh>
 #include <raylib.h>
 
-
 namespace aether {
 
-ref<Texture> loader<Texture>::load(blob& buffer) noexcept {
+ref<Texture> loader<Texture>::load(blob& buffer) {
 	Image img = LoadImageFromMemory(".png", reinterpret_cast<unsigned char*>(buffer.data()), (int)buffer.size());
 
 	if (!IsImageValid(img)) {
@@ -16,8 +15,8 @@ ref<Texture> loader<Texture>::load(blob& buffer) noexcept {
 	return tex;
 };
 
-void loader<Texture>::unload(ref<Texture>& texture) noexcept {
-	UnloadTexture(*texture);
+void loader<Texture>::unload(Texture& texture) {
+	UnloadTexture(texture);
 }
 
 } // namespace aether

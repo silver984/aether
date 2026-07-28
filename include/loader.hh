@@ -11,8 +11,9 @@ struct loader;
 
 template <>
 struct loader<Texture> final {
-	static ref<Texture> load(blob& buffer) noexcept;
-	static void unload(ref<Texture>& texture) noexcept;
+	loader() = delete;
+	static ref<Texture> load(blob& buffer);
+	static void unload(Texture& texture);
 };
 
 } // namespace aether

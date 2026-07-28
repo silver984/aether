@@ -72,7 +72,7 @@ private:
 	void purge_unused_() noexcept {
 		for (auto it = cache_.begin(); it != cache_.end();) {
 			if (it->second.strong_count() <= 1) {
-				unload_(it->second);
+				unload_(*it->second);
 				it = cache_.erase(it);
 				continue;
 			}
@@ -82,14 +82,14 @@ private:
 
 	void purge_all_() noexcept {
 		for (auto it = cache_.begin(); it != cache_.end();) {
-			unload_(it->second);
+			unload_(*it->second);
 			it = cache_.erase(it);
 		}
 	}
 
-	void unload_(ref<Type>& data) {
+	void unload_(Type& data) {
 		loader<Type>::unload(data);
-		AETHER_TRACELOG("Unloaded resource ? address: {}", fmt::ptr(data.get()));
+		AETHER_TRACELOG("Unloaded resource ? address: {}", fmt::ptr(&data));
 	}
 
 	util::stringmap<ref<Type>> cache_;

@@ -14,7 +14,7 @@ option(AETHER_VERBOSE_DEBUG "Enable verbose debug" OFF)
 add_executable(${PROJECT_NAME})
 
 # source files
-add_subdirectory(aether)
+add_subdirectory(src)
 add_subdirectory(external)
 
 configure_file(
