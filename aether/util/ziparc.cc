@@ -8,25 +8,25 @@ ziparc::ziparc() noexcept
         , is_open_(false) {
 }
 
-ziparc::ziparc(fs::path const& file) noexcept
+ziparc::ziparc(fs::path const& file)
         : archive_()
         , is_open_(false) {
 	open(file);
 }
 
-ziparc::~ziparc() noexcept {
+ziparc::~ziparc() {
 	close();
 }
 
-bool ziparc::open(fs::path const& file) noexcept {
+bool ziparc::open(fs::path const& file) {
 	if (!fs::exists(file) || is_open_) {
 		return false;
 	}
-	is_open_ = mz_zip_reader_init_file(&archive_, file.string().data(), 0) == MZ_TRUE;
+	is_open_ = mz_zip_reader_init_file(&archive_, file.string().c_str(), 0) == MZ_TRUE;
 	return is_open_;
 }
 
-bool ziparc::close() noexcept {
+bool ziparc::close() {
 	if (!is_open_) {
 		return false;
 	}
@@ -44,7 +44,7 @@ bool ziparc::is_open() const noexcept {
 	return is_open_;
 }
 
-bool ziparc::contains(std::string_view file) noexcept {
+bool ziparc::contains(std::string_view file) {
 	if (!is_open_) {
 		return false;
 	}
@@ -52,7 +52,7 @@ bool ziparc::contains(std::string_view file) noexcept {
 	return mz_zip_reader_locate_file(&archive_, file.data(), nullptr, 0) != invalid_index;
 }
 
-blob ziparc::read(std::string_view file) noexcept {
+blob ziparc::read(std::string_view file) {
 	if (!contains(file)) {
 		return {};
 	}
