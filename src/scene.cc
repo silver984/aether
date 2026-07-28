@@ -10,8 +10,8 @@ namespace aether {
 
 scene::scene(context const& ctx) noexcept
         : m_ctx_(ctx)
-        // , camera_(root_)
-        , root_(nullptr)
+        // , camera_(root_node_)
+        , root_node_(nullptr)
         , is_active_(false)
         , is_visit_scheduled_(false) {
 }
@@ -33,11 +33,11 @@ void scene::unschedule_visit() {
 	is_visit_scheduled_ = false;
 }
 
-bool scene::add(ref<node> n) {
-	return root_->add_child(n);
+bool scene::add(strong_ref<node> n) {
+	return root_node_->add_child(n);
 }
 
-bool scene::add(ref<sound> s) {
+bool scene::add(strong_ref<sound> s) {
 	if (!s) {
 		return false;
 	}
@@ -45,8 +45,8 @@ bool scene::add(ref<sound> s) {
 	return true;
 }
 
-ref<node> scene::root() const {
-	return root_;
+weak_ref<node> scene::root_node() const {
+	return root_node_;
 }
 
 // camera& scene::get_camera() {
@@ -54,17 +54,17 @@ ref<node> scene::root() const {
 // }
 
 bool scene::init_() {
-	root_ = node::create<node>(m_ctx_);
+	root_node_ = node::create<node>(m_ctx_);
 
-	if (!root_) {
+	if (!root_node_) {
 		return false;
 	}
 
-	root_->scene_ = this;
+	root_node_->scene_ = this;
 
 	size<int> const window_size = m_ctx_.window().target_size();
-	root_->set_bounds(window_size);
-	root_->set_position(window_size / 2.f);
+	root_node_->set_bounds(window_size);
+	root_node_->set_position(window_size / 2.f);
 
 	return true;
 }
@@ -84,14 +84,21 @@ bool scene::init_interface_() {
 }
 
 void scene::update_all_(float dt) {
-	root_->update_all_(dt);
+	if (!root_node_) {
+		return;
+	}
+	AETHER_TRACELOG("node={} strong={} weak={}", fmt::ptr(root_node_.get()), root_node_.strong_count(), root_node_.weak_count());
+	root_node_->update_all_(dt);
 	if (is_active_) {
 		update_(dt);
 	}
 }
 
 void scene::draw_all_() {
-	root_->draw_all_();
+	if (!root_node_) {
+		return;
+	}
+	root_node_->draw_all_();
 	if (is_visit_scheduled_) {
 		visit_();
 	}

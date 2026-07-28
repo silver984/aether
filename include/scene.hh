@@ -36,10 +36,10 @@ public:
 	void schedule_visit();
 	void unschedule_visit();
 
-	bool add(ref<node> n);
-	bool add(ref<sound> s);
+	bool add(strong_ref<node> n);
+	bool add(strong_ref<sound> s);
 
-	[[nodiscard]] ref<node> root() const;
+	[[nodiscard]] weak_ref<node> root_node() const;
 
 	// [[nodiscard]] camera& get_camera();
 
@@ -62,9 +62,9 @@ private:
 
 	// camera camera_; // todo
 
-	ref<node> root_;
+	strong_ref<node> root_node_;
 
-	std::vector<ref<sound>> sounds_;
+	std::vector<strong_ref<sound>> sounds_;
 
 	bool is_active_;
 	bool is_visit_scheduled_;

@@ -17,7 +17,7 @@ class context;
 class scene;
 // class camera;
 
-class node {
+class node : public this_ref<node> {
 	friend class scene;
 	// friend class camera;
 
@@ -26,8 +26,8 @@ public:
 	virtual ~node() noexcept;
 
 	template <std::derived_from<node> Derived, typename... Args>
-	[[nodiscard]] static ref<Derived> create(context const& ctx, Args&&... args) {
-		ref<Derived> ptr = make_ref<Derived>(ctx, std::forward<Args>(args)...);
+	[[nodiscard]] static strong_ref<Derived> create(context const& ctx, Args&&... args) {
+		strong_ref<Derived> ptr = make_strong_ref<Derived>(ctx, std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}
@@ -36,9 +36,8 @@ public:
 
 	// todo: fetch child
 
-	bool add_child(ref<node> n);
-	bool remove_child(ref<node> n);
-	bool remove_child(node* n);
+	bool add_child(strong_ref<node> child);
+	bool remove_child(strong_ref<node> child);
 
 	void destroy_all();
 
@@ -53,7 +52,7 @@ public:
 	[[nodiscard]] size_t child_count() const;
 	[[nodiscard]] size_t recursed_child_count() const;
 
-	[[nodiscard]] node* parent() const;
+	[[nodiscard]] weak_ref<node> parent() const;
 
 	void set_name(std::string_view name); // todo: better naming system
 	[[nodiscard]] std::string_view name() const;
@@ -106,7 +105,7 @@ public:
 	void toggle_flip_y(bool val);
 	[[nodiscard]] bool is_flip_y() const;
 
-	[[nodiscard]] std::vector<ref<node>> children() const;
+	[[nodiscard]] std::vector<strong_ref<node>> children() const;
 
 	[[nodiscard]] scene* get_scene() const;
 
@@ -123,7 +122,7 @@ private:
 	void update_all_(float dt);
 	void draw_all_();
 
-	[[nodiscard]] bool has_ancestor_(node* n) const;
+	[[nodiscard]] bool has_ancestor_(strong_ref<node> n) const;
 
 	void mark_transform_dirty_();
 	void mark_rgba_dirty_();
@@ -133,8 +132,8 @@ private:
 
 	context const& m_ctx_;
 	scene* scene_;
-	node* parent_;
-	std::vector<ref<node>> children_;
+	weak_ref<node> parent_;
+	std::vector<strong_ref<node>> children_;
 	std::string name_;
 
 	mat3 transform_;

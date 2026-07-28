@@ -3,14 +3,14 @@
 
 namespace aether {
 
-ref<Texture> loader<Texture>::load(blob& buffer) {
+strong_ref<Texture> loader<Texture>::load(blob& buffer) {
 	Image img = LoadImageFromMemory(".png", reinterpret_cast<unsigned char*>(buffer.data()), (int)buffer.size());
 
 	if (!IsImageValid(img)) {
 		return nullptr;
 	}
 
-	ref<Texture> tex = new Texture(LoadTextureFromImage(img));
+	strong_ref<Texture> tex = new Texture(LoadTextureFromImage(img));
 	UnloadImage(img);
 	return tex;
 };

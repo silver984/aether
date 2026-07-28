@@ -18,7 +18,7 @@ public:
 	cache() noexcept          = default;
 	virtual ~cache() noexcept = default;
 
-	[[nodiscard]] ref<Type> fetch(std::string_view file) {
+	[[nodiscard]] strong_ref<Type> fetch(std::string_view file) {
 		fs::path canonical_file = fs::weakly_canonical(file);
 
 		if (!fs::exists(canonical_file)) {
@@ -26,7 +26,7 @@ public:
 			return nullptr;
 		}
 
-		if (ref<Type> from_bank = bank_fetch_(canonical_file)) {
+		if (strong_ref<Type> from_bank = bank_fetch_(canonical_file)) {
 			return from_bank;
 		}
 
@@ -36,7 +36,7 @@ public:
 		util::timer t;
 		t.start();
 
-		ref<Type> resource = load_(canonical_file);
+		strong_ref<Type> resource = load_(canonical_file);
 
 		if (!resource) {
 			AETHER_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
@@ -57,21 +57,21 @@ public:
 	}
 
 protected:
-	[[nodiscard]] virtual ref<Type> load_(fs::path const& file) = 0;
+	[[nodiscard]] virtual strong_ref<Type> load_(fs::path const& file) = 0;
 
 	void clear_() noexcept {
 		bank_.clear();
 	}
 
 private:
-	[[nodiscard]] ref<Type> bank_fetch_(fs::path const& file) const {
+	[[nodiscard]] strong_ref<Type> bank_fetch_(fs::path const& file) const {
 		if (auto const it = bank_.find(file); it != bank_.end()) {
 			return it->second;
 		}
 		return nullptr;
 	}
 
-	std::unordered_map<fs::path, ref<Type>> bank_;
+	std::unordered_map<fs::path, strong_ref<Type>> bank_;
 };
 
 } // namespace aether

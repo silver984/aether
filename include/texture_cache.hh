@@ -13,7 +13,7 @@ public:
 	~texture_cache() noexcept override;
 
 protected:
-	[[nodiscard]] ref<texture2d> load_(fs::path const& file) override;
+	[[nodiscard]] strong_ref<texture2d> load_(fs::path const& file) override;
 
 private:
 	texture_cache() noexcept;

@@ -1,8 +1,11 @@
 #include <algorithm>
 #include <cmath>
+#include <debug/log.hh>
 #include <nodes/node.hh>
 #include <scene.hh>
 #include <util/math.hh>
+
+#include <cassert>
 
 namespace aether {
 
@@ -25,82 +28,67 @@ node::node(context const& ctx_) noexcept
         , is_active_(false)
         , is_draw_scheduled_(false)
         , is_visible_(true) {
+	AETHER_TRACELOG("creating {}", fmt::ptr(this));
 }
-node::~node() noexcept = default;
+node::~node() noexcept {
+	AETHER_TRACELOG("destroying {}", fmt::ptr(this));
+}
 
-bool node::add_child(ref<node> n) {
-	if (!n) {
+bool node::add_child(strong_ref<node> child) {
+	if (!child) {
 		return false;
 	}
 
-	bool const is_self = n.get() == this;
+	auto self          = strong_this_();
+	bool const is_self = child == self;
 
 	if (is_self) {
 		return false;
 	}
 
-	bool const has_ancestor = n->has_ancestor_(this);
+	bool const has_ancestor = child->has_ancestor_(self);
 
 	if (has_ancestor) {
 		return false;
 	}
 
-	bool const is_duplicate = std::find(children_.begin(), children_.end(), n) != children_.end();
+	bool const is_duplicate = std::find(children_.begin(), children_.end(), child) != children_.end();
 
 	if (is_duplicate) {
 		return false;
 	}
 
-	if (auto old_parent = n->parent_) {
-		old_parent->remove_child(n);
+	if (auto old_parent = child->parent_.construct()) {
+		old_parent->remove_child(child);
 	}
 
-	auto child     = children_.emplace_back(n);
-	child->parent_ = this;
-	child->mark_transform_dirty_();
-	child->mark_rgba_dirty_();
+	auto placed_child     = children_.emplace_back(child);
+	placed_child->parent_ = this;
+	placed_child->mark_transform_dirty_();
+	placed_child->mark_rgba_dirty_();
 
 	return true;
 }
 
-bool node::remove_child(ref<node> n) {
-	if (!n || n.get() == this) {
+bool node::remove_child(strong_ref<node> child) {
+	if (!child) {
 		return false;
 	}
 
-	auto const it = std::find(children_.begin(), children_.end(), n);
+	auto it = std::find(children_.begin(), children_.end(), child);
 
 	if (it == children_.end()) {
 		return false;
 	}
 
-	(*it)->parent_ = nullptr;
-	children_.erase(it);
-
-	return true;
-}
-
-bool node::remove_child(node* n) {
-	if (!n || n == this) {
-		return false;
-	}
-
-	auto const it = std::find_if(children_.begin(), children_.end(), [n](auto const& child) {
-		return child.get() == n;
-	});
-
-	if (it == children_.end()) {
-		return false;
-	}
-
-	(*it)->parent_ = nullptr;
+	(*it)->parent_.detach();
 	children_.erase(it);
 
 	return true;
 }
 
 void node::destroy_all() {
-	(void)detach_from_parent();
+	detach_from_parent();
 	// recursive destroy
 	while (!children_.empty()) {
 		auto child = children_.back();
@@ -111,13 +99,14 @@ void node::destroy_all() {
 }
 
 bool node::detach_from_parent() {
-	if (parent_) {
-		return parent_->remove_child(this);
+	if (auto p = parent_.construct()) {
+		return p->remove_child(strong_this_());
 	}
 	return false;
 }
 
 void node::activate() {
+	AETHER_TRACELOG("activated from {}", fmt::ptr(this));
 	is_active_ = true;
 }
 
@@ -148,7 +137,7 @@ size_t node::recursed_child_count() const {
 	return c;
 }
 
-node* node::parent() const {
+weak_ref<node> node::parent() const {
 	return parent_;
 }
 
@@ -371,7 +360,7 @@ bool node::is_flip_y() const {
 	return is_flip_y_;
 }
 
-std::vector<ref<node>> node::children() const {
+std::vector<strong_ref<node>> node::children() const {
 	return children_;
 }
 
@@ -389,7 +378,8 @@ scene* node::get_scene() const {
 	if (scene_) {
 		return scene_;
 	}
-	return parent_ ? parent_->get_scene() : nullptr;
+	auto p = parent_.construct();
+	return p ? p->get_scene() : nullptr;
 }
 
 context const& node::ctx_() const {
@@ -401,6 +391,7 @@ bool node::init_interface_() {
 }
 
 void node::update_all_(float dt) {
+	AETHER_TRACELOG("this={} active={}", fmt::ptr(this), is_active_);
 	float const world_dt = dt * time_scale_;
 	if (is_active_) {
 		update_(world_dt);
@@ -435,18 +426,17 @@ void node::draw_all_() {
 		if (!node) {
 			continue;
 		}
-
 		node->draw_all_();
 	}
 }
 
-bool node::has_ancestor_(node* n) const {
-	auto p = parent_;
+bool node::has_ancestor_(strong_ref<node> child) const {
+	auto p = parent_.construct();
 	while (p) {
-		if (p == n) {
+		if (p == child) {
 			return true;
 		}
-		p = p->parent_;
+		p = p->parent_.construct();
 	}
 	return false;
 }
@@ -478,21 +468,24 @@ mat3 node::calculate_transform_() const {
 	vec2<float> const anchor_position = vec2<float>(anchor_.x * bounds_.width, anchor_.y * bounds_.height);
 	vec2<float> const skew_rad        = vec2<float>(util::degrees_to_radians(skew_.x), util::degrees_to_radians(skew_.y));
 	vec2<float> const scale_factor    = vec2<float>(is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f);
-	mat3 const t                      = mat3::translation(position_ * scroll_factor_);
-	mat3 const r                      = mat3::rotation(util::degrees_to_radians(rotation_));
-	mat3 const s                      = mat3::scale(scale_ * scale_factor);
-	mat3 const k                      = mat3::skew(skew_rad);
-	mat3 const a                      = mat3::translation(-anchor_position);
-	mat3 const local                  = t * r * s * k * a;
-	if (parent_) {
-		return parent_->transform_ * local;
+
+	mat3 const t     = mat3::translation(position_ * scroll_factor_);
+	mat3 const r     = mat3::rotation(util::degrees_to_radians(rotation_));
+	mat3 const s     = mat3::scale(scale_ * scale_factor);
+	mat3 const k     = mat3::skew(skew_rad);
+	mat3 const a     = mat3::translation(-anchor_position);
+	mat3 const local = t * r * s * k * a;
+
+	if (auto p = parent_.construct()) {
+		return p->transform_ * local;
 	}
+
 	return local;
 }
 
 rgba node::calculate_combined_rgba_() const {
-	if (parent_) {
-		return parent_->color_ * color_;
+	if (auto p = parent_.construct()) {
+		return p->color_ * color_;
 	}
 	return color_;
 }

@@ -34,7 +34,9 @@ bool testscene::init_() {
 }
 
 void testscene::update_(float dt) {
-	for (auto& child : root()->children()) {
-		child->set_rotation(child->rotation() + (22.5f * dt));
+	if (auto root = root_node().construct()) {
+		for (auto& child : root->children()) {
+			child->set_rotation(child->rotation() + (22.5f * dt));
+		}
 	}
 }

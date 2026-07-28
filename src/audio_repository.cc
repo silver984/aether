@@ -9,7 +9,7 @@ namespace aether {
 audio_repository::audio_repository()  = default;
 audio_repository::~audio_repository() = default;
 
-ref<blob> audio_repository::fetch(std::string_view file) {
+strong_ref<blob> audio_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
@@ -36,8 +36,8 @@ ref<blob> audio_repository::fetch(std::string_view file) {
 		return nullptr;
 	}
 
-	ref<blob> shared_buffer = new blob(std::move(temporary_buffer));
-	auto const [it, _]      = cache_.emplace(lfile, std::move(shared_buffer));
+	strong_ref<blob> shared_buffer = new blob(std::move(temporary_buffer));
+	auto const [it, _]             = cache_.emplace(lfile, std::move(shared_buffer));
 	return it->second;
 }
 
@@ -51,7 +51,7 @@ void audio_repository::clear_cache_() {
 	cache_.clear();
 }
 
-ref<blob> audio_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
+strong_ref<blob> audio_repository::try_fetch_from_cache_(std::filesystem::path const& file) const {
 	if (auto const it = cache_.find(file); it != cache_.end()) {
 		return it->second;
 	}

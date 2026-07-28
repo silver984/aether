@@ -20,8 +20,8 @@ public:
 		purge_all_();
 	}
 
-	[[nodiscard]] ref<Type> load(util::ziparc& archive, std::string_view file) {
-		if (ref<Type> from_cache = cache_fetch_(file)) {
+	[[nodiscard]] strong_ref<Type> load(util::ziparc& archive, std::string_view file) {
+		if (strong_ref<Type> from_cache = cache_fetch_(file)) {
 			return from_cache;
 		}
 
@@ -42,7 +42,7 @@ public:
 
 		AETHER_TRACELOG("Read buffer ? size: {}", buffer.size());
 
-		ref<Type> out = loader<Type>::load(buffer);
+		strong_ref<Type> out = loader<Type>::load(buffer);
 
 		if (!out) {
 			AETHER_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
@@ -62,7 +62,7 @@ public:
 private:
 	resources() noexcept = default;
 
-	[[nodiscard]] ref<Type> cache_fetch_(std::string_view file) const {
+	[[nodiscard]] strong_ref<Type> cache_fetch_(std::string_view file) const {
 		if (auto it = cache_.find(file); it != cache_.end()) {
 			return it->second;
 		}
@@ -92,7 +92,7 @@ private:
 		AETHER_TRACELOG("Unloaded resource ? address: {}", fmt::ptr(&data));
 	}
 
-	util::stringmap<ref<Type>> cache_;
+	util::stringmap<strong_ref<Type>> cache_;
 };
 
 } // namespace aether

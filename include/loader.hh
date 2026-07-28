@@ -12,7 +12,7 @@ struct loader;
 template <>
 struct loader<Texture> final {
 	loader() = delete;
-	static ref<Texture> load(blob& buffer);
+	static strong_ref<Texture> load(blob& buffer);
 	static void unload(Texture& texture);
 };
 

@@ -29,7 +29,7 @@ protected:
 
 private:
 	descriptor const desc_;
-	ref<texture2d> texture_;
+	strong_ref<texture2d> texture_;
 	rect<float> texture_source_rect_;
 	vec2<int> tile_index_;
 };

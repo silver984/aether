@@ -16,8 +16,8 @@ sound::sound(context const& ctx)
 
 sound::~sound() = default;
 
-ref<sound> sound::create(context const& ctx, std::string_view file) {
-	ref<sound> ptr = new sound(ctx);
+strong_ref<sound> sound::create(context const& ctx, std::string_view file) {
+	strong_ref<sound> ptr = new sound(ctx);
 	if (!ptr->init_(ctx.audios(), file)) {
 		return nullptr;
 	}

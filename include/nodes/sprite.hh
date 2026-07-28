@@ -36,7 +36,7 @@ protected:
 
 private:
 	sprite_args const args_;
-	ref<Texture> texture_;
+	strong_ref<Texture> texture_;
 	rect<float> texture_source_rect_;
 };
 

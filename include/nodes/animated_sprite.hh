@@ -40,8 +40,8 @@ private:
 	[[nodiscard]] size<int> calculate_bounds_(std::vector<atlas_region> const& frames) const;
 
 	descriptor const desc_;
-	ref<animation_map> data_;
-	ref<Texture> texture_;
+	strong_ref<animation_map> data_;
+	strong_ref<Texture> texture_;
 	std::string current_animation_name_;
 	size_t current_subtexture_index_;
 	int playback_fps_;

@@ -4,7 +4,6 @@
 #include <util/blob.hh>
 #include <util/ref.hh>
 
-
 namespace SoLoud {
 
 class Soloud;
@@ -21,7 +20,7 @@ public:
 	sound(context const& ctx);
 	~sound();
 
-	[[nodiscard]] static ref<sound> create(context const& ctx, std::string_view file);
+	[[nodiscard]] static strong_ref<sound> create(context const& ctx, std::string_view file);
 
 	bool play();
 
@@ -48,7 +47,7 @@ private:
 
 	SoLoud::handle wave_handle_;
 
-	ref<blob> buffer_;
+	strong_ref<blob> buffer_;
 
 	float volume_;
 	float pan_;
