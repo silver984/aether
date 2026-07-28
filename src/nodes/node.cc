@@ -1,11 +1,8 @@
 #include <algorithm>
 #include <cmath>
-#include <debug/log.hh>
 #include <nodes/node.hh>
 #include <scene.hh>
 #include <util/math.hh>
-
-#include <cassert>
 
 namespace aether {
 
@@ -28,10 +25,8 @@ node::node(context const& ctx_) noexcept
         , is_active_(false)
         , is_draw_scheduled_(false)
         , is_visible_(true) {
-	AETHER_TRACELOG("creating {}", fmt::ptr(this));
 }
 node::~node() noexcept {
-	AETHER_TRACELOG("destroying {}", fmt::ptr(this));
 }
 
 bool node::add_child(strong_ref<node> child) {
@@ -63,7 +58,7 @@ bool node::add_child(strong_ref<node> child) {
 	}
 
 	auto placed_child     = children_.emplace_back(child);
-	placed_child->parent_ = this;
+	placed_child->parent_ = self;
 	placed_child->mark_transform_dirty_();
 	placed_child->mark_rgba_dirty_();
 
@@ -106,7 +101,6 @@ bool node::detach_from_parent() {
 }
 
 void node::activate() {
-	AETHER_TRACELOG("activated from {}", fmt::ptr(this));
 	is_active_ = true;
 }
 
@@ -391,7 +385,6 @@ bool node::init_interface_() {
 }
 
 void node::update_all_(float dt) {
-	AETHER_TRACELOG("this={} active={}", fmt::ptr(this), is_active_);
 	float const world_dt = dt * time_scale_;
 	if (is_active_) {
 		update_(world_dt);

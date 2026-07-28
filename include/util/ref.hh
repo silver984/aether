@@ -3,8 +3,6 @@
 #include <cstddef>
 #include <utility>
 
-#include <debug/log.hh>
-
 namespace aether::ref_impl_ {
 
 struct ref_block final {
@@ -39,7 +37,7 @@ public:
 	        : block_(nullptr) {
 	}
 
-	strong_ref(Type* ptr)
+	explicit strong_ref(Type* ptr)
 	        : block_(new ref_impl_::ref_block{
 	                  .ptr = ptr,
 	                  .deleter =
@@ -53,7 +51,7 @@ public:
 	}
 
 	template <std::derived_from<Type> DerivedType>
-	strong_ref(DerivedType* ptr)
+	explicit strong_ref(DerivedType* ptr)
 	        : block_(new ref_impl_::ref_block{
 	                  .ptr = ptr,
 	                  .deleter =
@@ -210,7 +208,7 @@ private:
 
 template <typename Type, typename... Args>
 [[nodiscard]] strong_ref<Type> make_strong_ref(Args&&... args) {
-	return new Type(std::forward<Args>(args)...);
+	return strong_ref<Type>(new Type(std::forward<Args>(args)...));
 }
 
 template <typename Type>
@@ -319,21 +317,21 @@ class this_ref {
 	friend class strong_ref;
 
 public:
-	// this_ref(this_ref const&) noexcept
-	//         : weak_() {
-	// }
+	this_ref(this_ref const&) noexcept
+	        : weak_() {
+	}
 
-	// this_ref(this_ref&&) noexcept
-	//         : weak_() {
-	// }
+	this_ref(this_ref&&) noexcept
+	        : weak_() {
+	}
 
-	// this_ref& operator=(this_ref const&) noexcept {
-	// 	return *this;
-	// }
+	this_ref& operator=(this_ref const&) noexcept {
+		return *this;
+	}
 
-	// this_ref& operator=(this_ref&&) noexcept {
-	// 	return *this;
-	// }
+	this_ref& operator=(this_ref&&) noexcept {
+		return *this;
+	}
 
 protected:
 	this_ref() noexcept          = default;

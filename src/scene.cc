@@ -87,7 +87,6 @@ void scene::update_all_(float dt) {
 	if (!root_node_) {
 		return;
 	}
-	AETHER_TRACELOG("node={} strong={} weak={}", fmt::ptr(root_node_.get()), root_node_.strong_count(), root_node_.weak_count());
 	root_node_->update_all_(dt);
 	if (is_active_) {
 		update_(dt);

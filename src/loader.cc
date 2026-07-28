@@ -10,7 +10,7 @@ strong_ref<Texture> loader<Texture>::load(blob& buffer) {
 		return nullptr;
 	}
 
-	strong_ref<Texture> tex = new Texture(LoadTextureFromImage(img));
+	strong_ref<Texture> tex(new Texture(LoadTextureFromImage(img)));
 	UnloadImage(img);
 	return tex;
 };
