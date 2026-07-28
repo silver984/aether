@@ -183,4 +183,9 @@ private:
 	ref_impl_::block* block_;
 };
 
+template <typename Type, typename... Args>
+ref<Type> make_ref(Args&&... args) {
+	return new Type(std::forward<Args>(args)...);
+}
+
 } // namespace aether

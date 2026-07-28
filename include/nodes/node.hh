@@ -25,9 +25,9 @@ public:
 	node(context const& ctx) noexcept;
 	virtual ~node() noexcept;
 
-	template <std::derived_from<node> Type, typename... Args>
-	[[nodiscard]] static ref<Type> create(context const& ctx, Args&&... args) {
-		ref<Type> ptr = new Type(ctx, std::forward<Args>(args)...);
+	template <std::derived_from<node> Derived, typename... Args>
+	[[nodiscard]] static ref<Derived> create(context const& ctx, Args&&... args) {
+		ref<Derived> ptr = make_ref<Derived>(ctx, std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}

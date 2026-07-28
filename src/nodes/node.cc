@@ -33,11 +33,21 @@ bool node::add_child(ref<node> n) {
 		return false;
 	}
 
-	bool const is_self      = n.get() == this;
+	bool const is_self = n.get() == this;
+
+	if (is_self) {
+		return false;
+	}
+
 	bool const has_ancestor = n->has_ancestor_(this);
+
+	if (has_ancestor) {
+		return false;
+	}
+
 	bool const is_duplicate = std::find(children_.begin(), children_.end(), n) != children_.end();
 
-	if (is_self || has_ancestor || is_duplicate) {
+	if (is_duplicate) {
 		return false;
 	}
 
@@ -133,7 +143,6 @@ size_t node::recursed_child_count() const {
 		if (!child) {
 			continue;
 		}
-
 		c += child->recursed_child_count();
 	}
 	return c;

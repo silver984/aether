@@ -24,7 +24,7 @@ bool sprite::set_texture(std::string_view file) {
 	if (auto fetched_texture = ctx.textures().load(ctx.aether_resources(), file)) {
 		texture_ = fetched_texture;
 	} else {
-		AETHER_ERRORLOG("Failed");
+		AETHER_ERRORLOG("Texture is nullptr");
 		return false;
 	}
 
@@ -36,20 +36,31 @@ bool sprite::set_texture(std::string_view file) {
 }
 
 void sprite::set_texture_wrap(texture_wrap type) {
+	if (!texture_) {
+		return;
+	}
+
 	switch (type) {
 		using enum texture_wrap;
-	case clamp:
+	case clamp: {
 		SetTextureWrap(*texture_, TEXTURE_WRAP_CLAMP);
 		break;
-	case repeat:
+	}
+	case repeat: {
 		SetTextureWrap(*texture_, TEXTURE_WRAP_REPEAT);
 		break;
-	case mirror_clamp:
+	}
+	case mirror_clamp: {
 		SetTextureWrap(*texture_, TEXTURE_WRAP_MIRROR_CLAMP);
 		break;
-	case mirror_repeat:
+	}
+	case mirror_repeat: {
+		[[fallthrough]];
+	}
+	default: {
 		SetTextureWrap(*texture_, TEXTURE_WRAP_MIRROR_REPEAT);
 		break;
+	}
 	}
 }
 
@@ -71,7 +82,7 @@ bool sprite::init_() {
 	}
 
 	if (!set_texture(args_.file)) {
-		AETHER_ERRORLOG("Failed");
+		AETHER_ERRORLOG("Failed to set texture");
 		return false;
 	}
 

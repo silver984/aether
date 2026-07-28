@@ -54,7 +54,7 @@ ref<node> scene::root() const {
 // }
 
 bool scene::init_() {
-	root_ = new node(m_ctx_);
+	root_ = node::create<node>(m_ctx_);
 
 	if (!root_) {
 		return false;
