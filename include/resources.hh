@@ -92,7 +92,7 @@ private:
 		AETHER_TRACELOG("Unloaded resource ? address: {}", fmt::ptr(&data));
 	}
 
-	util::stringmap<strong_ref<Type>> cache_;
+	util::string_map<strong_ref<Type>> cache_;
 };
 
 } // namespace aether

@@ -1,16 +1,25 @@
+#include <filesystem>
 #include <loader.hh>
 #include <raylib.h>
 
 namespace aether {
 
-strong_ref<Texture> loader<Texture>::load(blob& buffer) {
-	Image img = LoadImageFromMemory(".png", reinterpret_cast<unsigned char*>(buffer.data()), (int)buffer.size());
+namespace fs = std::filesystem;
+
+strong_ref<Texture> loader<Texture>::load(std::string_view filename, blob& buffer) {
+	fs::path ext = fs::path(filename).extension();
+	Image img    = LoadImageFromMemory(ext.string().c_str(), reinterpret_cast<unsigned char*>(buffer.data()), (int)buffer.size());
 
 	if (!IsImageValid(img)) {
 		return nullptr;
 	}
 
-	strong_ref<Texture> tex(new Texture(LoadTextureFromImage(img)));
+	auto tex = strong_ref<Texture>::alloc(LoadTextureFromImage(img));
+
+	if (!IsTextureValid(*tex)) {
+		return nullptr;
+	}
+
 	UnloadImage(img);
 	return tex;
 };

@@ -10,8 +10,8 @@ namespace aether::lua {
 manager::manager()  = default;
 manager::~manager() = default;
 
-util::stringmap<hook>& manager::hook_map() {
-	static util::stringmap<hook> instance;
+util::string_map<hook>& manager::hook_map() {
+	static util::string_map<hook> instance;
 	return instance;
 }
 
@@ -33,8 +33,8 @@ void manager::try_register_hook(std::string_view function_name, sol::function&& 
 	AETHER_TRACELOG("Registered function hook for \"{}\" ? hooked: {}", function_name, lhook_map[function_name_str].callbacks.size());
 }
 
-util::stringset const& manager::hookable_functions_() {
-	static util::stringset const instance({"testscene:init_", "testscene:update_"});
+util::string_set const& manager::hookable_functions_() {
+	static util::string_set const instance({"testscene:init_", "testscene:update_"});
 	return instance;
 }
 

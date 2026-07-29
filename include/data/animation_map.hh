@@ -9,6 +9,6 @@ struct animation_data final {
 	std::vector<atlas_region> frames;
 };
 
-using animation_map = util::stringmap<animation_data>;
+using animation_map = util::string_map<animation_data>;
 
 } // namespace aether

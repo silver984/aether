@@ -37,40 +37,13 @@ public:
 	        : block_(nullptr) {
 	}
 
-	explicit strong_ref(Type* ptr)
-	        : block_(new ref_impl_::ref_block{
-	                  .ptr = ptr,
-	                  .deleter =
-	                          [](void* ptr) {
-		                          delete static_cast<Type*>(ptr);
-	                          },
-	                  .strong_count = 1,
-	                  .weak_count   = 0,
-	          }) {
-		init_weak_this_(ptr);
-	}
-
-	template <std::derived_from<Type> DerivedType>
-	explicit strong_ref(DerivedType* ptr)
-	        : block_(new ref_impl_::ref_block{
-	                  .ptr = ptr,
-	                  .deleter =
-	                          [](void* ptr) {
-		                          delete static_cast<DerivedType*>(ptr);
-	                          },
-	                  .strong_count = 1,
-	                  .weak_count   = 0,
-	          }) {
-		init_weak_this_(ptr);
-	}
-
 	strong_ref(strong_ref const& other) noexcept
 	        : block_(other.block_) {
 		inc_strong_();
 	}
 
-	template <std::derived_from<Type> OtherType>
-	strong_ref(strong_ref<OtherType> const& other) noexcept
+	template <std::derived_from<Type> Derived>
+	strong_ref(strong_ref<Derived> const& other) noexcept
 	        : block_(other.block_) {
 		inc_strong_();
 	}
@@ -79,13 +52,23 @@ public:
 	        : block_(std::exchange(other.block_, nullptr)) {
 	}
 
-	template <std::derived_from<Type> OtherType>
-	strong_ref(strong_ref<OtherType>&& other) noexcept
+	template <std::derived_from<Type> Derived>
+	strong_ref(strong_ref<Derived>&& other) noexcept
 	        : block_(std::exchange(other.block_, nullptr)) {
 	}
 
 	~strong_ref() noexcept {
 		release_();
+	}
+
+	template <typename... Args>
+	[[nodiscard]] static strong_ref alloc(Args&&... args) {
+		return strong_ref(new Type(std::forward<Args>(args)...));
+	}
+
+	template <std::derived_from<Type> Derived, typename... Args>
+	[[nodiscard]] static strong_ref alloc(Args&&... args) {
+		return strong_ref(new Derived(std::forward<Args>(args)...));
 	}
 
 	void nullify() noexcept {
@@ -123,8 +106,8 @@ public:
 		return *this;
 	}
 
-	template <std::derived_from<Type> OtherType>
-	strong_ref& operator=(strong_ref<OtherType> const& other) noexcept {
+	template <std::derived_from<Type> Derived>
+	strong_ref& operator=(strong_ref<Derived> const& other) noexcept {
 		assign_(other.block_);
 		return *this;
 	}
@@ -136,8 +119,8 @@ public:
 		return *this;
 	}
 
-	template <std::derived_from<Type> OtherType>
-	strong_ref& operator=(strong_ref<OtherType>&& other) noexcept {
+	template <std::derived_from<Type> Derived>
+	strong_ref& operator=(strong_ref<Derived>&& other) noexcept {
 		assign_(std::exchange(other.block_, nullptr));
 		return *this;
 	}
@@ -150,17 +133,44 @@ public:
 		return get() != nullptr;
 	}
 
-	template <std::derived_from<Type> OtherType>
-	bool operator==(strong_ref<OtherType> const& other) const noexcept {
+	template <std::derived_from<Type> Derived>
+	bool operator==(strong_ref<Derived> const& other) const noexcept {
 		return get() == other.get();
 	}
 
-	template <std::derived_from<Type> OtherType>
-	bool operator!=(strong_ref<OtherType> const& other) const noexcept {
+	template <std::derived_from<Type> Derived>
+	bool operator!=(strong_ref<Derived> const& other) const noexcept {
 		return !(*this == other);
 	}
 
 private:
+	explicit strong_ref(Type* ptr)
+	        : block_(new ref_impl_::ref_block{
+	                  .ptr = ptr,
+	                  .deleter =
+	                          [](void* ptr) {
+		                          delete static_cast<Type*>(ptr);
+	                          },
+	                  .strong_count = 1,
+	                  .weak_count   = 0,
+	          }) {
+		init_weak_this_(ptr);
+	}
+
+	template <std::derived_from<Type> Derived>
+	explicit strong_ref(Derived* ptr)
+	        : block_(new ref_impl_::ref_block{
+	                  .ptr = ptr,
+	                  .deleter =
+	                          [](void* ptr) {
+		                          delete static_cast<Derived*>(ptr);
+	                          },
+	                  .strong_count = 1,
+	                  .weak_count   = 0,
+	          }) {
+		init_weak_this_(ptr);
+	}
+
 	void inc_strong_() noexcept {
 		if (block_) {
 			++block_->strong_count;
@@ -205,11 +215,6 @@ private:
 
 	ref_impl_::ref_block* block_;
 };
-
-template <typename Type, typename... Args>
-[[nodiscard]] strong_ref<Type> make_strong_ref(Args&&... args) {
-	return strong_ref<Type>(new Type(std::forward<Args>(args)...));
-}
 
 template <typename Type>
 class weak_ref final {

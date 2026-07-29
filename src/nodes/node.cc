@@ -7,7 +7,7 @@
 namespace aether {
 
 node::node(context const& ctx_) noexcept
-        : m_ctx_(ctx_)
+        : context_(ctx_)
         , scene_(nullptr)
         , parent_(nullptr)
         , color_(255)
@@ -377,7 +377,7 @@ scene* node::get_scene() const {
 }
 
 context const& node::ctx_() const {
-	return m_ctx_;
+	return context_;
 }
 
 bool node::init_interface_() {
@@ -390,9 +390,6 @@ void node::update_all_(float dt) {
 		update_(world_dt);
 	}
 	for (auto const& node : children_) {
-		if (!node) {
-			continue;
-		}
 		node->update_all_(world_dt);
 	}
 }
@@ -416,9 +413,6 @@ void node::draw_all_() {
 		draw_(transform_, combined_color_);
 	}
 	for (auto const& node : children_) {
-		if (!node) {
-			continue;
-		}
 		node->draw_all_();
 	}
 }

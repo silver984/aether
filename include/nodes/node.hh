@@ -27,7 +27,7 @@ public:
 
 	template <std::derived_from<node> Derived, typename... Args>
 	[[nodiscard]] static strong_ref<Derived> create(context const& ctx, Args&&... args) {
-		strong_ref<Derived> ptr = make_strong_ref<Derived>(ctx, std::forward<Args>(args)...);
+		auto ptr = strong_ref<Derived>::alloc(ctx, std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}
@@ -130,7 +130,7 @@ private:
 	[[nodiscard]] mat3 calculate_transform_() const;
 	[[nodiscard]] rgba calculate_combined_rgba_() const;
 
-	context const& m_ctx_;
+	context const& context_;
 	scene* scene_;
 	weak_ref<node> parent_;
 	std::vector<strong_ref<node>> children_;
