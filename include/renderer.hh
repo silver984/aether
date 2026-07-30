@@ -28,7 +28,7 @@ private:
 	void update_viewport_(size<int> target_window_size);
 	void start_draw_();
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-	void end_draw_(uint32_t fps, float heap_usage);
+	void end_draw_(uint32_t fps, float dt);
 #else
 	void end_draw_();
 #endif
@@ -36,7 +36,7 @@ private:
 	void define_color_vertex_(rgba color) const;
 	void define_vertex_(vec2<float> position) const;
 	void define_texture_coord_(vec2<float> position) const;
-	[[nodiscard]] mat3 calculate_projection_(size<int> render_size, size<int> target_window_size) const;
+	[[nodiscard]] mat3 calculate_projection_(size<int> render_size, size<int> target_size) const;
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	std::string debug_text_;
@@ -48,6 +48,7 @@ private:
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
 	vec2<int> debug_text_measure_;
 	uint32_t last_fps_;
+	float last_dt_;
 	float last_heap_usage_;
 #endif
 };

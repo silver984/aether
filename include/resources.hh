@@ -40,7 +40,7 @@ public:
 			return nullptr;
 		}
 
-		AETHER_TRACELOG("Read buffer ? size: {}", buffer.size());
+		AETHER_TRACELOG("Read buffer ? size: {:.2f}mib", buffer.size() / (1024.f * 1024.f));
 
 		strong_ref<Type> out = loader<Type>::load(file, buffer);
 

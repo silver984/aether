@@ -1,5 +1,4 @@
 #include <chrono>
-#include <debug/heap.hh>
 #include <debug/log.hh>
 #include <game.hh>
 #include <soloud_error.h>
@@ -122,7 +121,7 @@ void game::run() {
 		}
 
 #if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
-		renderer_.end_draw_(evalfps, heap::usage() / (1024.f * 1024.f));
+		renderer_.end_draw_(evalfps, dt);
 #else
 		renderer_.end_draw_();
 #endif
