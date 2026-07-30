@@ -1,4 +1,5 @@
 set(AETHER_ENGINE engine)
+set(AETHER_ENGINE_OUTPUT_DIR ${AETHER_OUTPUT_DIR}/engine)
 
 # todo: versioning
 
@@ -8,7 +9,7 @@ set_target_properties(
   ${AETHER_ENGINE}
   PROPERTIES
     OUTPUT_NAME "Aether Engine"
-    RUNTIME_OUTPUT_DIRECTORY ${AETHER_OUTPUT_DIR}/engine
+    RUNTIME_OUTPUT_DIRECTORY ${AETHER_ENGINE_OUTPUT_DIR}
 )
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -138,43 +139,43 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   endif()
 endif()
 
-# set(AETHER_OUTPUT_DIR $<TARGET_FILE_DIR:${AETHER_ENGINE}>)
+if(IS_DIRECTORY ${AETHER_ENGINE_OUTPUT_DIR}/licenses)
+  add_custom_command(
+    TARGET ${AETHER_ENGINE}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E rm -rf
+      ${AETHER_ENGINE_OUTPUT_DIR}/licenses
+    COMMENT "Removing old licenses folder"
+    VERBATIM
+  )
+endif()
 
-# # using -E remove_directory doesnt throw an error if the directory doesnt exist yet
-# add_custom_command(
-#   TARGET ${AETHER_ENGINE}
-#   POST_BUILD
-#   COMMAND ${CMAKE_COMMAND} -E remove_directory ${AETHER_OUTPUT_DIR}/licenses
-#   COMMENT "Removing old licenses folder"
-#   VERBATIM
-# )
+add_custom_command(
+  TARGET ${AETHER_ENGINE}
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/licenses
+    ${AETHER_ENGINE_OUTPUT_DIR}/licenses
+  COMMENT "Copying licenses folder"
+  VERBATIM
+)
 
-# add_custom_command(
-#   TARGET ${AETHER_ENGINE}
-#   POST_BUILD
-#   COMMAND ${CMAKE_COMMAND} -E copy_directory
-#     licenses
-#     ${AETHER_OUTPUT_DIR}/licenses
-#   COMMENT "Copying licenses folder"
-#   VERBATIM
-# )
+add_custom_command(
+  TARGET ${AETHER_ENGINE}
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_SOURCE_DIR}/LICENSE.md
+    ${AETHER_ENGINE_OUTPUT_DIR}/LICENSE.md
+  COMMENT "Copying license markdown"
+  VERBATIM
+)
 
-# add_custom_command(
-#   TARGET ${AETHER_ENGINE}
-#   POST_BUILD
-#   COMMAND ${CMAKE_COMMAND} -E copy
-#     LICENSE.md
-#     ${AETHER_OUTPUT_DIR}/LICENSE.md
-#   COMMENT "Copying license markdown"
-#   VERBATIM
-# )
-
-# add_custom_command(
-#   TARGET ${AETHER_ENGINE}
-#   POST_BUILD
-#   COMMAND ${CMAKE_COMMAND} -E copy
-#     THIRD-PARTY-NOTICES.md
-#     ${AETHER_OUTPUT_DIR}/THIRD-PARTY-NOTICES.md
-#   COMMENT "Copying third-party-notices markdown"
-#   VERBATIM
-# )
+add_custom_command(
+  TARGET ${AETHER_ENGINE}
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_SOURCE_DIR}/THIRD-PARTY-NOTICES.md
+    ${AETHER_ENGINE_OUTPUT_DIR}/THIRD-PARTY-NOTICES.md
+  COMMENT "Copying third-party-notices markdown"
+  VERBATIM
+)
