@@ -1,5 +1,6 @@
 #pragma once
-#if (defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB))
+#include <config.h>
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	#include <cstddef>
 
 namespace aether::heap {

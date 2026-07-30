@@ -37,14 +37,6 @@
         "clang",
         "debug"
       ]
-    },
-    {
-      "name": "clang-debverbose",
-      "displayName": "Clang Debug Verbose",
-      "inherits": [
-        "clang",
-        "debverbose"
-      ]
     }
   ],
   "buildPresets": [
@@ -59,10 +51,6 @@
     {
       "name": "clang-debug",
       "configurePreset": "clang-debug"
-    },
-    {
-      "name": "clang-debverbose",
-      "configurePreset": "clang-debverbose"
     }
   ]
 }

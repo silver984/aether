@@ -1,4 +1,5 @@
 #include <chrono>
+#include <config.h>
 #include <debug/log.hh>
 #include <game.hh>
 #include <soloud_error.h>
@@ -36,7 +37,7 @@ game::~game() {
 
 	t.stop();
 	AETHER_INFOLOG("Done ({}ms)", t.duration());
-#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	log_impl_::close_logfile_();
 #endif
 }
@@ -46,23 +47,22 @@ bool game::init(init_descriptor const& desc) {
 		return true;
 	}
 
-#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	if (!log_impl_::create_logfile_()) {
 		AETHER_WARNLOG("Couldn't create logfile");
 	}
 #endif
-
-	if (!window_.init_(desc.window_title, desc.resolution, desc.fps)) {
-		return false;
-	}
 
 	if (!aether_resources_.open("aether.res")) {
 		AETHER_ERRORLOG("Couldn't open/find resources");
 		return false;
 	}
 
-	using enum SoLoud::SOLOUD_ERRORS;
-	if (SoLoud::result result = soloud_.init(); result != SO_NO_ERROR) {
+	if (!window_.init_(desc.window_title, desc.resolution, desc.fps)) {
+		return false;
+	}
+
+	if (SoLoud::result result = soloud_.init(); result != SoLoud::SOLOUD_ERRORS::SO_NO_ERROR) {
 		AETHER_WARNLOG("SoLoud failed to initialize ? result: {}", result);
 	} else {
 		AETHER_INFOLOG("SoLoud initialized");
@@ -82,7 +82,7 @@ void game::run() {
 		return;
 	}
 
-#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	uint32_t framecount = 0;
 	uint32_t evalfps    = 0;
 	float accumulator   = 0.f;
@@ -120,7 +120,7 @@ void game::run() {
 			scene_scheduler_.draw_scene_();
 		}
 
-#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 		renderer_.end_draw_(evalfps, dt);
 #else
 		renderer_.end_draw_();
@@ -134,7 +134,7 @@ void game::run() {
 		next_frametime += duration_cast<clock::duration>(duration<float>(1.f / window_.target_fps()));
 		std::this_thread::sleep_until(next_frametime);
 
-#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 		++framecount;
 		accumulator += dt;
 		while (accumulator >= 1.f) {
@@ -169,7 +169,7 @@ void game::shutdown_() {
 
 	t.stop();
 	AETHER_INFOLOG("Done ({}ms)", t.duration());
-#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	log_impl_::close_logfile_();
 #endif
 }

@@ -1,5 +1,6 @@
 #pragma once
-#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
+#include <config.h>
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	#include <fmt/format.h>
 	#include <source_location>
 	#include <string_view>
@@ -15,7 +16,7 @@ void close_logfile_();
 
 namespace aether::log {
 
-	#ifdef AETHER_VERBOSE_DEBUG
+	#if !defined(AETHER_ENGINE_RELWITHDEB)
 template <typename... va>
 void trace(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
 	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "TRACE", loc);
@@ -44,8 +45,8 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmtstr, va
 
 } // namespace aether::log
 
-	#ifdef AETHER_VERBOSE_DEBUG
-		#ifdef _MSC_VER
+	#if !defined(AETHER_ENGINE_RELWITHDEB)
+		#if defined(_MSC_VER)
 			#define AETHER_TRACELOG(__STR__, ...) aether::log::trace(std::source_location::current(), __STR__, ##__VA_ARGS__)
 			#define AETHER_DEBUGLOG(__STR__, ...) aether::log::debug(std::source_location::current(), __STR__, ##__VA_ARGS__)
 		#else
@@ -59,7 +60,7 @@ void error(std::source_location const& loc, fmt::format_string<va...> fmtstr, va
 		#define AETHER_DEBUGLOG(...) ((void)0)
 	#endif
 
-	#ifdef _MSC_VER
+	#if defined(_MSC_VER)
 		#define AETHER_INFOLOG(__STR__, ...)  aether::log::info(std::source_location::current(), __STR__, ##__VA_ARGS__)
 		#define AETHER_WARNLOG(__STR__, ...)  aether::log::warn(std::source_location::current(), __STR__, ##__VA_ARGS__)
 		#define AETHER_ERRORLOG(__STR__, ...) aether::log::error(std::source_location::current(), __STR__, ##__VA_ARGS__)

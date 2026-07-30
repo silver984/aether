@@ -33,14 +33,6 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
-    },
-    {
-      "name": "debverbose",
-      "hidden": true,
-      "inherits": "debug",
-      "cacheVariables": {
-        "AETHER_VERBOSE_DEBUG": "ON"
-      }
     }
   ]
 }

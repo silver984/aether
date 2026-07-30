@@ -1,6 +1,6 @@
-#if defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB)
+#include <debug/log.hh>
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	#include <chrono>
-	#include <debug/log.hh>
 	#include <filesystem>
 	#include <fmt/chrono.h>
 	#include <fstream>
@@ -47,7 +47,7 @@ void print_(std::string_view msg, std::string_view lvl, std::source_location con
 }
 
 bool create_logfile_() {
-	(void)fs::create_directory("logs");
+	fs::create_directory("logs");
 	timepoint const now     = std::chrono::system_clock::now();
 	fs::path const filepath = fmt::format("logs/aether_{}_{}.log", date(now), timehyph(now));
 	logfile.open(filepath);

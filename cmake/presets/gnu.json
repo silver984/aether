@@ -36,14 +36,6 @@
         "gnu",
         "debug"
       ]
-    },
-    {
-      "name": "gnu-debverbose",
-      "displayName": "GNU Debug Verbose",
-      "inherits": [
-        "gnu",
-        "debverbose"
-      ]
     }
   ],
   "buildPresets": [
@@ -58,10 +50,6 @@
     {
       "name": "gnu-debug",
       "configurePreset": "gnu-debug"
-    },
-    {
-      "name": "gnu-debverbose",
-      "configurePreset": "gnu-debverbose"
     }
   ]
 }

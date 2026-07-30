@@ -138,7 +138,7 @@ animation_repository::xml_parse_delegate_(tinyxml2::XMLDocument const& document,
 
 	t.stop();
 
-#ifdef AETHER_VERBOSE_DEBUG
+#ifndef AETHER_ENGINE_RELWITHDEB
 	size_t frame_count = 0;
 	for (auto& [_, data] : *shared_map) {
 		frame_count += data.frames.size();
@@ -303,7 +303,7 @@ std::string animation_repository::parse_frame_name_(std::string_view unparsed_na
 	return std::string(unparsed_name.substr(0, prefix_end));
 }
 
-#ifdef AETHER_VERBOSE_DEBUG
+#ifndef AETHER_ENGINE_RELWITHDEB
 void animation_repository::log_defective_frame_(std::string_view message, std::optional<std::string_view> name) const {
 	if (name.has_value()) {
 		AETHER_TRACELOG("Skipping frame with {} ? on: \"{}\"", message, name.value());

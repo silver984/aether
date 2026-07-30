@@ -1,5 +1,5 @@
 set(AETHER_ENGINE engine)
-set(AETHER_ENGINE_OUTPUT_DIR ${AETHER_OUTPUT_DIR}/engine)
+set(AETHER_ENGINE_OUTPUT_DIR ${AETHER_OUTPUT_DIR}/${AETHER_ENGINE})
 
 # todo: versioning
 
@@ -21,15 +21,12 @@ target_include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/external
 )
-    
-option(AETHER_VERBOSE_DEBUG "Enable verbose debug" OFF)
 
 target_compile_definitions(
   ${AETHER_ENGINE}
   PRIVATE
-    $<$<CONFIG:Debug>:AETHER_DEBUG>
-    $<$<CONFIG:RelWithDebInfo>:AETHER_RELWITHDEB>
-    $<$<AND:$<CONFIG:Debug>,$<BOOL:${AETHER_VERBOSE_DEBUG}>>:AETHER_VERBOSE_DEBUG>
+    $<$<CONFIG:Debug>:AETHER_ENGINE_DEBUG>
+    $<$<CONFIG:RelWithDebInfo>:AETHER_ENGINE_RELWITHDEB>
 )
 
 include(${CMAKE_SOURCE_DIR}/cmake/CPM.cmake)

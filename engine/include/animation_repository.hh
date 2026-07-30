@@ -45,7 +45,7 @@ private:
 	[[nodiscard]] strong_ref<animation_map> xml_texture_packer_parse_(tinyxml2::XMLDocument const& document);
 	[[nodiscard]] xml_format assess_xml_format_(tinyxml2::XMLDocument const& document) const;
 	[[nodiscard]] std::string parse_frame_name_(std::string_view unparsed_name) const;
-#ifdef AETHER_VERBOSE_DEBUG
+#ifndef AETHER_ENGINE_RELWITHDEB
 	void log_defective_frame_(std::string_view message, std::optional<std::string_view> name = std::nullopt) const;
 #endif
 

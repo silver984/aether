@@ -36,14 +36,6 @@
         "msvc",
         "debug"
       ]
-    },
-    {
-      "name": "msvc-debverbose",
-      "displayName": "MSVC Debug Verbose",
-      "inherits": [
-        "msvc",
-        "debverbose"
-      ]
     }
   ],
   "buildPresets": [
@@ -58,10 +50,6 @@
     {
       "name": "msvc-debug",
       "configurePreset": "msvc-debug"
-    },
-    {
-      "name": "msvc-debverbose",
-      "configurePreset": "msvc-debverbose"
     }
   ]
 }

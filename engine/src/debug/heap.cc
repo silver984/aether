@@ -1,6 +1,6 @@
-#if (defined(AETHER_DEBUG) || defined(AETHER_RELWITHDEB))
+#include <debug/heap.hh>
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	#include <cstdlib>
-	#include <debug/heap.hh>
 
 namespace {
 
