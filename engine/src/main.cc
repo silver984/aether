@@ -2,13 +2,12 @@
 #include <game.hh>
 #include <scene_scheduler.hh>
 #include <testscene.hh>
-#include <version.h>
 
 int main() {
 	aether::game aether;
 
 	if (!aether.init({
-	            .window_title = ("Aether Engine " AETHER_VERSION),
+	            .window_title = "Aether Engine",
 	            .resolution   = aether::size<int>(1280, 720),
 	    })) {
 		return 0;

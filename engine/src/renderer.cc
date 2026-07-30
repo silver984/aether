@@ -119,16 +119,18 @@ void renderer::start_draw_() {
 void renderer::end_draw_(uint32_t fps, float dt) {
 	rlPopMatrix();
 
-	float const heap_usage = heap::usage() / (1024.f * 1024.f);
+	float const heap_usage   = heap::usage() / (1024.f * 1024.f);
+	bool const is_text_dirty = last_fps_ != fps || last_dt_ != dt || last_heap_usage_ != heap_usage;
 
-	if (last_fps_ != fps || last_dt_ != dt || last_heap_usage_ != heap_usage) {
-		last_fps_        = fps;
-		last_dt_         = dt;
-		last_heap_usage_ = heap_usage;
-		debug_text_      = fmt::format("FPS: {}\nFRAME: {:.0f}MS\nHEAP: {:.2f}MiB", fps, dt * 1000.f, heap_usage);
+	if (is_text_dirty) {
+		debug_text_ = fmt::format("FPS: {}\nFRAME: {:.0f}MS\nHEAP: {:.2f}MiB", fps, dt * 1000.f, heap_usage);
 
 		Vector2 const measurement = MeasureTextEx(GetFontDefault(), debug_text_.c_str(), 10.f, 1.f);
 		debug_text_measure_       = vec2<int>((int)std::round(measurement.x), (int)std::round(measurement.y));
+
+		last_fps_        = fps;
+		last_dt_         = dt;
+		last_heap_usage_ = heap_usage;
 	}
 
 	if (!debug_text_.empty()) {
