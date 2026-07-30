@@ -14,21 +14,21 @@
 
 namespace aether {
 
+struct game_init_args final {
+	std::string_view window_title;
+	size<int> resolution;
+	int fps = 240;
+};
+
 class game final {
 	friend class context;
 
 public:
-	struct init_descriptor final {
-		std::string_view window_title;
-		size<int> resolution;
-		int fps = 240;
-	};
-
-	game();
+	game() noexcept;
 	game(game const&) = delete;
 	game(game&&)      = delete;
-	~game();
-	bool init(init_descriptor const& desc);
+	~game() noexcept;
+	bool init(game_init_args const& args);
 	void run();
 	[[nodiscard]] context const& ctx() const;
 	game& operator=(game const&) = delete;

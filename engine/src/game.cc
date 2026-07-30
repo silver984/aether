@@ -8,41 +8,19 @@
 
 namespace aether {
 
-game::game()
+game::game() noexcept
         : ctx_(*this)
         , is_initialized_(false) {
 }
 
-game::~game() {
+game::~game() noexcept {
 	if (!is_initialized_) {
 		return;
 	}
-
-	AE_INFOLOG("Shutting down");
-	util::timer t;
-	t.start();
-
-	if (scene_scheduler_.has_pending_scene_()) {
-		scene_scheduler_.cleanup_();
-		textures_.purge_all_();
-		// animations_.clear_cache_();
-		// audios_.clear_cache_();
-	}
-
-	// lua_manager_.shutdown_();
-	aether_resources_.close();
-	soloud_.deinit();
-	window_.shutdown_();
-	is_initialized_ = false;
-
-	t.stop();
-	AE_INFOLOG("Done ({}ms)", t.duration());
-#if defined(AE_HAS_DEBUG)
-	log_impl_::close_logfile_();
-#endif
+	shutdown_();
 }
 
-bool game::init(init_descriptor const& desc) {
+bool game::init(game_init_args const& args) {
 	if (is_initialized_) {
 		return true;
 	}
@@ -58,22 +36,25 @@ bool game::init(init_descriptor const& desc) {
 		return false;
 	}
 
-	if (!window_.init_(desc.window_title, desc.resolution, desc.fps)) {
+	if (!window_.init_(args.window_title, args.resolution, args.fps)) {
 		return false;
 	}
 
-	if (SoLoud::result result = soloud_.init(); result != SoLoud::SOLOUD_ERRORS::SO_NO_ERROR) {
+	using enum SoLoud::SOLOUD_ERRORS;
+	SoLoud::result result = soloud_.init();
+
+	if (result != SO_NO_ERROR) {
 		AE_WARNLOG("SoLoud failed to initialize ? result: {}", result);
 	} else {
 		AE_INFOLOG("SoLoud initialized");
 	}
 
 	renderer_.setup2d_();
-	// lua_manager_.init_();
-	// lua_manager_.run_scripts_();
 
 	AE_INFOLOG("Initialized");
-	return is_initialized_ = true;
+	is_initialized_ = true;
+
+	return true;
 }
 
 void game::run() {
@@ -125,6 +106,7 @@ void game::run() {
 #else
 		renderer_.end_draw_();
 #endif
+
 		if (is_window_minimized) {
 			next_frametime = clock::now();
 			std::this_thread::sleep_for(milliseconds(100));
@@ -157,11 +139,11 @@ void game::shutdown_() {
 	util::timer t;
 	t.start();
 
-	scene_scheduler_.cleanup_();
-	textures_.purge_all_();
-	// animations_.clear_cache_();
-	// audios_.clear_cache_();
-	// lua_manager_.shutdown_();
+	if (scene_scheduler_.has_pending_scene_()) {
+		scene_scheduler_.cleanup_();
+		textures_.purge_all_();
+	}
+
 	aether_resources_.close();
 	soloud_.deinit();
 	window_.shutdown_();
@@ -169,6 +151,7 @@ void game::shutdown_() {
 
 	t.stop();
 	AE_INFOLOG("Done ({}ms)", t.duration());
+
 #if defined(AE_HAS_DEBUG)
 	log_impl_::close_logfile_();
 #endif
