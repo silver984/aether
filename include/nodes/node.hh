@@ -27,7 +27,7 @@ public:
 
 	template <std::derived_from<node> Derived, typename... Args>
 	[[nodiscard]] static strong_ref<Derived> create(context const& ctx, Args&&... args) {
-		auto ptr = strong_ref<Derived>::alloc(ctx, std::forward<Args>(args)...);
+		auto ptr = strong_ref<Derived>::make(ctx, std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}

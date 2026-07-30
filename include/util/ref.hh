@@ -62,12 +62,12 @@ public:
 	}
 
 	template <typename... Args>
-	[[nodiscard]] static strong_ref alloc(Args&&... args) {
+	[[nodiscard]] static strong_ref make(Args&&... args) {
 		return strong_ref(new Type(std::forward<Args>(args)...));
 	}
 
 	template <std::derived_from<Type> Derived, typename... Args>
-	[[nodiscard]] static strong_ref alloc(Args&&... args) {
+	[[nodiscard]] static strong_ref make(Args&&... args) {
 		return strong_ref(new Derived(std::forward<Args>(args)...));
 	}
 

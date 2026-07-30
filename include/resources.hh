@@ -42,7 +42,7 @@ public:
 
 		AETHER_TRACELOG("Read buffer ? size: {}", buffer.size());
 
-		strong_ref<Type> out = loader<Type>::load(buffer);
+		strong_ref<Type> out = loader<Type>::load(file, buffer);
 
 		if (!out) {
 			AETHER_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
