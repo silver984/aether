@@ -26,7 +26,7 @@ vec2<int> tilemap::tile_count() const {
 
 void tilemap::seek_tile(vec2<int> tile_index) {
 	if (!texture_) {
-		AETHER_DEBUGLOG("Attempted to seek tile with nullptr texture");
+		AE_DEBUGLOG("Attempted to seek tile with nullptr texture");
 		return;
 	}
 
@@ -47,13 +47,13 @@ bool tilemap::init_() {
 	texture_ = ctx_().textures().fetch(desc_.file);
 
 	if (!texture_) {
-		AETHER_ERRORLOG("Failed");
+		AE_ERRORLOG("Failed");
 		return false;
 	}
 
 	auto const texture_bounds = texture_->bounds();
 	if (desc_.tile_bounds.width > texture_bounds.width || desc_.tile_bounds.height > texture_bounds.height) {
-		AETHER_ERRORLOG("Invalid parameters");
+		AE_ERRORLOG("Invalid parameters");
 		return false;
 	}
 

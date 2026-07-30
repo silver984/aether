@@ -18,19 +18,19 @@ util::string_map<hook>& manager::hook_map() {
 void manager::try_register_hook(std::string_view function_name, sol::function&& callback) {
 	auto& hookable_functions = hookable_functions_();
 	if (hookable_functions.find(function_name) == hookable_functions.end()) {
-		AETHER_ERRORLOG("\"{}\" is not a hookable function", function_name);
+		AE_ERRORLOG("\"{}\" is not a hookable function", function_name);
 		return;
 	}
 
 	auto& lhook_map = hook_map();
 	if (lhook_map.size() >= lhook_map.max_size()) {
-		AETHER_ERRORLOG("Can't register any more function hooks!");
+		AE_ERRORLOG("Can't register any more function hooks!");
 		return;
 	}
 
 	std::string const function_name_str = std::string(function_name);
 	lhook_map[function_name_str].callbacks.emplace_back(std::move(callback));
-	AETHER_TRACELOG("Registered function hook for \"{}\" ? hooked: {}", function_name, lhook_map[function_name_str].callbacks.size());
+	AE_TRACELOG("Registered function hook for \"{}\" ? hooked: {}", function_name, lhook_map[function_name_str].callbacks.size());
 }
 
 util::string_set const& manager::hookable_functions_() {
@@ -52,7 +52,7 @@ void manager::init_() {
 	state_.open_libraries(base, string, table, math, utf8);
 	run_and_clear_all_bindings_();
 	try_create_scripts_directory_();
-	AETHER_INFOLOG("Initialized");
+	AE_INFOLOG("Initialized");
 }
 
 void manager::shutdown_() {
@@ -62,7 +62,7 @@ void manager::shutdown_() {
 void manager::run_and_clear_all_bindings_() {
 	auto& registered_bindings = registered_bindings_();
 
-	AETHER_DEBUGLOG("Running all bindings ? count: {}", registered_bindings->size());
+	AE_DEBUGLOG("Running all bindings ? count: {}", registered_bindings->size());
 	util::timer t;
 	t.start();
 
@@ -77,21 +77,21 @@ void manager::run_and_clear_all_bindings_() {
 	registered_bindings = nullptr;
 
 	t.stop();
-	AETHER_DEBUGLOG("Done ({}ms)", t.duration());
+	AE_DEBUGLOG("Done ({}ms)", t.duration());
 }
 
 void manager::try_create_scripts_directory_() {
 	if (std::filesystem::create_directory("scripts")) {
-		AETHER_DEBUGLOG("Created missing lua scripts directory");
+		AE_DEBUGLOG("Created missing lua scripts directory");
 	}
 }
 
 void manager::run_scripts_() {
-	AETHER_INFOLOG("Running lua scripts");
+	AE_INFOLOG("Running lua scripts");
 	std::vector<std::filesystem::path> available_scripts = gather_available_scripts_();
 
 	if (available_scripts.empty()) {
-		AETHER_INFOLOG("Nothing to run");
+		AE_INFOLOG("Nothing to run");
 		return;
 	}
 
@@ -103,12 +103,12 @@ void manager::run_scripts_() {
 		        it->string(), sol::environment(state_, sol::create, state_.globals()),
 		        [](lua_State*, sol::protected_function_result result) -> sol::protected_function_result {
 			        sol::error e = result;
-			        AETHER_ERRORLOG("Script invalid ? what: {}", e.what());
+			        AE_ERRORLOG("Script invalid ? what: {}", e.what());
 			        return result;
 		        },
 		        sol::load_mode::any);
 		if (!script_result.valid()) {
-			AETHER_ERRORLOG("Excluding invalid script ? file: \"{}\"", it->filename().string());
+			AE_ERRORLOG("Excluding invalid script ? file: \"{}\"", it->filename().string());
 			it = available_scripts.erase(it);
 			continue;
 		}
@@ -116,26 +116,26 @@ void manager::run_scripts_() {
 	}
 
 	t.stop();
-	AETHER_INFOLOG("Done ({}ms)", t.duration());
+	AE_INFOLOG("Done ({}ms)", t.duration());
 }
 
 std::vector<std::filesystem::path> manager::gather_available_scripts_() {
 	std::vector<std::filesystem::path> out;
 
-	AETHER_DEBUGLOG("Gathering available lua scripts");
+	AE_DEBUGLOG("Gathering available lua scripts");
 	util::timer t;
 	t.start();
 
 	for (auto const& entry : std::filesystem::directory_iterator("scripts")) {
 		if (entry.path().extension() == ".lua") {
 			auto const path = entry.path();
-			AETHER_TRACELOG("Found lua script: \"{}\"", path.filename().generic_string());
+			AE_TRACELOG("Found lua script: \"{}\"", path.filename().generic_string());
 			out.emplace_back(path);
 		}
 	}
 
 	t.stop();
-	AETHER_DEBUGLOG("Done ({}ms) ? count: {} ", t.duration(), out.size());
+	AE_DEBUGLOG("Done ({}ms) ? count: {} ", t.duration(), out.size());
 
 	return out;
 }

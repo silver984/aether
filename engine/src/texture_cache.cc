@@ -11,7 +11,7 @@ strong_ref<texture2d> texture_cache::load_(fs::path const& file) {
 	size<int> const texture_bounds = texture->bounds();
 	bool const is_texture_valid    = texture->id() > 0 && texture_bounds.width > 0 && texture_bounds.height > 0;
 	if (!is_texture_valid) {
-		AETHER_ERRORLOG("Invalid texture properties");
+		AE_ERRORLOG("Invalid texture properties");
 		return nullptr;
 	}
 	return texture;

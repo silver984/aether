@@ -39,7 +39,7 @@ target_compile_definitions(
 )
 
 target_link_libraries(
-  ${AETHER_ENGINE}
+  ${AE}
   PRIVATE
     SoLoud
 )

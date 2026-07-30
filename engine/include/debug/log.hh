@@ -1,6 +1,6 @@
 #pragma once
 #include <config.h>
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(AE_HAS_DEBUG)
 	#include <fmt/format.h>
 	#include <source_location>
 	#include <string_view>
@@ -16,64 +16,63 @@ void close_logfile_();
 
 namespace aether::log {
 
-	#if !defined(AETHER_ENGINE_RELWITHDEB)
-template <typename... va>
-void trace(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "TRACE", loc);
+	#if !defined(AE_RELWITHDEB)
+template <typename... Args>
+void trace(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "TRACE", loc);
 }
 
-template <typename... va>
-void debug(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "DEBUG", loc);
+template <typename... Args>
+void debug(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "DEBUG", loc);
 }
 	#endif
 
-template <typename... va>
-void info(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "INFO", loc);
+template <typename... Args>
+void info(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "INFO", loc);
 }
 
-template <typename... va>
-void warn(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "WARN", loc);
+template <typename... Args>
+void warn(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "WARN", loc);
 }
 
-template <typename... va>
-void error(std::source_location const& loc, fmt::format_string<va...> fmtstr, va&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<va>(args)...), "ERROR", loc);
+template <typename... Args>
+void error(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
+	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "ERROR", loc);
 }
 
 } // namespace aether::log
 
-	#if !defined(AETHER_ENGINE_RELWITHDEB)
-		#if defined(_MSC_VER)
-			#define AETHER_TRACELOG(__STR__, ...) aether::log::trace(std::source_location::current(), __STR__, ##__VA_ARGS__)
-			#define AETHER_DEBUGLOG(__STR__, ...) aether::log::debug(std::source_location::current(), __STR__, ##__VA_ARGS__)
-		#else
-			#define AETHER_TRACELOG(__STR__, ...)                                                                              \
+	#if !defined(AE_RELWITHDEB)
+		#if defined(__clang__) || defined(__GNUC__)
+			#define AE_TRACELOG(__STR__, ...)                                                                                  \
 				aether::log::trace(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
-			#define AETHER_DEBUGLOG(__STR__, ...)                                                                              \
+			#define AE_DEBUGLOG(__STR__, ...)                                                                                  \
 				aether::log::debug(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+		#else
+			#define AE_TRACELOG(__STR__, ...) aether::log::trace(std::source_location::current(), __STR__, ##__VA_ARGS__)
+			#define AE_DEBUGLOG(__STR__, ...) aether::log::debug(std::source_location::current(), __STR__, ##__VA_ARGS__)
 		#endif
 	#else
-		#define AETHER_TRACELOG(...) ((void)0)
-		#define AETHER_DEBUGLOG(...) ((void)0)
+		#define AE_TRACELOG(...) ((void)0)
+		#define AE_DEBUGLOG(...) ((void)0)
 	#endif
 
-	#if defined(_MSC_VER)
-		#define AETHER_INFOLOG(__STR__, ...)  aether::log::info(std::source_location::current(), __STR__, ##__VA_ARGS__)
-		#define AETHER_WARNLOG(__STR__, ...)  aether::log::warn(std::source_location::current(), __STR__, ##__VA_ARGS__)
-		#define AETHER_ERRORLOG(__STR__, ...) aether::log::error(std::source_location::current(), __STR__, ##__VA_ARGS__)
+	#if defined(__clang__) || defined(__GNUC__)
+		#define AE_INFOLOG(__STR__, ...)  aether::log::info(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+		#define AE_WARNLOG(__STR__, ...)  aether::log::warn(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+		#define AE_ERRORLOG(__STR__, ...) aether::log::error(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
 	#else
-		#define AETHER_INFOLOG(__STR__, ...) aether::log::info(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
-		#define AETHER_WARNLOG(__STR__, ...) aether::log::warn(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
-		#define AETHER_ERRORLOG(__STR__, ...)                                                                                      \
-			aether::log::error(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+		#define AE_INFOLOG(__STR__, ...)  aether::log::info(std::source_location::current(), __STR__, ##__VA_ARGS__)
+		#define AE_WARNLOG(__STR__, ...)  aether::log::warn(std::source_location::current(), __STR__, ##__VA_ARGS__)
+		#define AE_ERRORLOG(__STR__, ...) aether::log::error(std::source_location::current(), __STR__, ##__VA_ARGS__)
 	#endif
 #else
-	#define AETHER_TRACELOG(...) ((void)0)
-	#define AETHER_DEBUGLOG(...) ((void)0)
-	#define AETHER_INFOLOG(...)  ((void)0)
-	#define AETHER_WARNLOG(...)  ((void)0)
-	#define AETHER_ERRORLOG(...) ((void)0)
+	#define AE_TRACELOG(...) ((void)0)
+	#define AE_DEBUGLOG(...) ((void)0)
+	#define AE_INFOLOG(...)  ((void)0)
+	#define AE_WARNLOG(...)  ((void)0)
+	#define AE_ERRORLOG(...) ((void)0)
 #endif

@@ -1,5 +1,5 @@
 #include <debug/log.hh>
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(AE_HAS_DEBUG)
 	#include <chrono>
 	#include <filesystem>
 	#include <fmt/chrono.h>

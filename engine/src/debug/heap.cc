@@ -1,5 +1,5 @@
 #include <debug/heap.hh>
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(AE_HAS_DEBUG)
 	#include <cstdlib>
 
 namespace {

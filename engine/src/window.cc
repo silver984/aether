@@ -33,7 +33,7 @@ bool window::init_(std::string_view title, size<int> bounds, int fps) {
 	InitWindow(target_size_.width, target_size_.height, title_.c_str());
 
 	if (!IsWindowReady()) {
-		AETHER_ERRORLOG("Not ready");
+		AE_ERRORLOG("Not ready");
 		return false;
 	}
 
@@ -41,7 +41,7 @@ bool window::init_(std::string_view title, size<int> bounds, int fps) {
 	SetExitKey(KEY_NULL);
 	SetWindowMinSize(minimum_size.width, minimum_size.height);
 
-	AETHER_INFOLOG("Initialized");
+	AE_INFOLOG("Initialized");
 	return true;
 }
 

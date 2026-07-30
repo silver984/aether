@@ -29,12 +29,12 @@ void animated_sprite::toggle_antialiasing(bool val) const {
 
 bool animated_sprite::play_animation(std::string_view name) {
 	if (!data_) {
-		AETHER_DEBUGLOG("Attempted to play animation with nullptr data");
+		AE_DEBUGLOG("Attempted to play animation with nullptr data");
 		return false;
 	}
 
 	if (!data_->contains(name)) {
-		AETHER_DEBUGLOG("Attempted to play animation not found from data ? name: \"{}\"", name);
+		AE_DEBUGLOG("Attempted to play animation not found from data ? name: \"{}\"", name);
 		return false;
 	}
 
@@ -72,19 +72,19 @@ bool animated_sprite::init_() {
 	texture_        = ctx.textures().load(desc_.imagefile);
 
 	if (!texture_) {
-		AETHER_ERRORLOG("Failed ? nullptr texture");
+		AE_ERRORLOG("Failed ? nullptr texture");
 		return false;
 	}
 
 	data_ = ctx.animations().fetch(desc_.datafile);
 
 	if (!data_) {
-		AETHER_ERRORLOG("Failed ? nullptr data");
+		AE_ERRORLOG("Failed ? nullptr data");
 		return false;
 	}
 
 	if (data_->empty()) {
-		AETHER_ERRORLOG("Failed ? no valid frames");
+		AE_ERRORLOG("Failed ? no valid frames");
 		return false;
 	}
 

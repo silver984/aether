@@ -1,21 +1,22 @@
+#include <config.h>
 #include <context.hh>
 #include <game.hh>
 #include <scene_scheduler.hh>
 #include <testscene.hh>
 
 int main() {
-	aether::game aether;
+	aether::game ae;
 
-	if (!aether.init({
-	            .window_title = "Aether Engine",
+	if (!ae.init({
+	            .window_title = ("Aether Engine " AE_VERSION_STR),
 	            .resolution   = aether::size<int>(1280, 720),
 	    })) {
 		return 0;
 	}
 
-	aether::context const& ctx = aether.ctx();
+	aether::context const& ctx = ae.ctx();
 	ctx.scene_scheduler().replace_scene(aether::scene::create<testscene>(ctx));
-	aether.run();
+	ae.run();
 
 	return 0;
 }
