@@ -7,17 +7,18 @@ add_executable(${AETHER_ENGINE})
 set_target_properties(
   ${AETHER_ENGINE}
   PROPERTIES
-  OUTPUT_NAME "Aether Engine"
+    OUTPUT_NAME "Aether Engine"
+    RUNTIME_OUTPUT_DIRECTORY ${AETHER_OUTPUT_DIR}/engine
 )
 
-add_subdirectory(src)
-add_subdirectory(external)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external)
 
 target_include_directories(
   ${AETHER_ENGINE}
   PRIVATE
-    include
-    external
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/external
 )
     
 option(AETHER_VERBOSE_DEBUG "Enable verbose debug" OFF)

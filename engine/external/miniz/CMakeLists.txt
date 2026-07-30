@@ -1,5 +1,5 @@
 target_sources(
   ${AETHER_ENGINE}
   PRIVATE
-    miniz.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/miniz.c
 )

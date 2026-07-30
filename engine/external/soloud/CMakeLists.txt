@@ -1,26 +1,26 @@
 file(
   GLOB_RECURSE
   SOLOUD_AUDIO_SRC
-    src/audiosource/*.c*
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audiosource/*.c*
 )
 
 file(
   GLOB_RECURSE
   SOLOUD_CORE_SRC
-    src/core/*.c*
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/*.c*
 )
 
 file(
   GLOB_RECURSE
   SOLOUD_FILTER_SRC
-    src/filter/*.c*
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/filter/*.c*
 )
 
 add_library(
   SoLoud
   STATIC
-    src/backend/miniaudio/soloud_miniaudio.cpp
-    src/c_api/soloud_c.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backend/miniaudio/soloud_miniaudio.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/c_api/soloud_c.cpp
     ${SOLOUD_AUDIO_SRC}
     ${SOLOUD_CORE_SRC}
     ${SOLOUD_FILTER_SRC}
@@ -29,7 +29,7 @@ add_library(
 target_include_directories(
   SoLoud
   PUBLIC
-    include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 target_compile_definitions(
