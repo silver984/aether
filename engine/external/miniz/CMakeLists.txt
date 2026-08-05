@@ -1,5 +1,5 @@
 target_sources(
-  ${AE}
+  ${AETHER_ENGINE}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/miniz.c
 )

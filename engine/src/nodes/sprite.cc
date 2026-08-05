@@ -24,7 +24,7 @@ bool sprite::set_texture(std::string_view file) {
 	if (auto fetched_texture = ctx.textures().load(ctx.aether_resources(), file)) {
 		texture_ = fetched_texture;
 	} else {
-		AE_ERRORLOG("Texture is nullptr");
+		AETHER_ENGINE_ERRORLOG("Texture is nullptr");
 		return false;
 	}
 
@@ -82,7 +82,7 @@ bool sprite::init_() {
 	}
 
 	if (!set_texture(args_.file)) {
-		AE_ERRORLOG("Failed to set texture");
+		AETHER_ENGINE_ERRORLOG("Failed to set texture");
 		return false;
 	}
 

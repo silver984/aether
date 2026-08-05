@@ -20,7 +20,7 @@ strong_ref<animation_map> animation_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
-		AE_ERRORLOG("File doesn't exist | file: \"{}\"", file);
+		AETHER_ENGINE_ERRORLOG("File doesn't exist | file: \"{}\"", file);
 		return nullptr;
 	}
 
@@ -32,13 +32,13 @@ strong_ref<animation_map> animation_repository::fetch(std::string_view file) {
 
 	// todo: json, plist, and txt
 	if (!util::string_matches_any(file_extension, {".xml"})) {
-		AE_ERRORLOG("Unsupported file format ? file: \"{}\"", lfile.filename().string());
+		AETHER_ENGINE_ERRORLOG("Unsupported file format ? file: \"{}\"", lfile.filename().string());
 		return nullptr;
 	}
 
 	purge_unused();
 
-	AE_DEBUGLOG("Loading \"{}\"", lfile.filename().string());
+	AETHER_ENGINE_DEBUGLOG("Loading \"{}\"", lfile.filename().string());
 	util::timer t;
 	t.start();
 
@@ -49,14 +49,14 @@ strong_ref<animation_map> animation_repository::fetch(std::string_view file) {
 	}
 
 	if (!shared_map) {
-		AE_ERRORLOG("Failed");
+		AETHER_ENGINE_ERRORLOG("Failed");
 		return nullptr;
 	}
 
 	auto const [it, _] = cache_.emplace(lfile, std::move(shared_map));
 	t.stop();
-	AE_TRACELOG("Successfully inserted to cache ? cache size: {}", cache_.size());
-	AE_DEBUGLOG("Done ({}ms)", t.duration());
+	AETHER_ENGINE_TRACELOG("Successfully inserted to cache ? cache size: {}", cache_.size());
+	AETHER_ENGINE_DEBUGLOG("Done ({}ms)", t.duration());
 
 	return it->second;
 }
@@ -83,28 +83,28 @@ strong_ref<animation_map> animation_repository::xml_parse_(std::filesystem::path
 
 	using enum tinyxml2::XMLError;
 	if (document.LoadFile(file.string().c_str()) != XML_SUCCESS) {
-		AE_ERRORLOG("Failed to load XML file");
+		AETHER_ENGINE_ERRORLOG("Failed to load XML file");
 		return nullptr;
 	}
 
 	switch (assess_xml_format_(document)) {
 		using enum xml_format;
 	case adobe_animate: {
-		AE_TRACELOG("Detected Adobe Animate's XML format");
+		AETHER_ENGINE_TRACELOG("Detected Adobe Animate's XML format");
 		return xml_adobe_animate_parse_(document);
 	}
 	case texture_packer: {
-		AE_TRACELOG("Detected TexturePacker's generic XML format");
+		AETHER_ENGINE_TRACELOG("Detected TexturePacker's generic XML format");
 		return xml_texture_packer_parse_(document);
 	}
 	case unknown:
 	default: {
-		AE_ERRORLOG("Unknown XML format");
+		AETHER_ENGINE_ERRORLOG("Unknown XML format");
 		return nullptr;
 	}
 	}
 
-	AE_ERRORLOG("Undefined error");
+	AETHER_ENGINE_ERRORLOG("Undefined error");
 	return nullptr;
 }
 
@@ -114,16 +114,16 @@ animation_repository::xml_parse_delegate_(tinyxml2::XMLDocument const& document,
 	tinyxml2::XMLElement const* root_element = document.FirstChildElement("TextureAtlas");
 
 	if (!root_element) {
-		AE_ERRORLOG("Couldn't find root element");
+		AETHER_ENGINE_ERRORLOG("Couldn't find root element");
 		return nullptr;
 	}
 
-	AE_DEBUGLOG("Parsing");
+	AETHER_ENGINE_DEBUGLOG("Parsing");
 	util::timer t;
 	t.start();
 
 	strong_ref<animation_map> shared_map = new animation_map();
-	AE_TRACELOG("Allocated shared animation map ? address: {}", fmt::ptr(shared_map.get()));
+	AETHER_ENGINE_TRACELOG("Allocated shared animation map ? address: {}", fmt::ptr(shared_map.get()));
 
 	char const* const element_name_data = element_name.data();
 	for (tinyxml2::XMLElement const* current_element = root_element->FirstChildElement(element_name_data); current_element != nullptr;
@@ -132,20 +132,20 @@ animation_repository::xml_parse_delegate_(tinyxml2::XMLDocument const& document,
 	}
 
 	if (shared_map->empty()) {
-		AE_ERRORLOG("Failed ? map has no data");
+		AETHER_ENGINE_ERRORLOG("Failed ? map has no data");
 		return nullptr;
 	}
 
 	t.stop();
 
-#ifndef AE_RELWITHDEB
+#ifndef AETHER_ENGINE_RELWITHDEB
 	size_t frame_count = 0;
 	for (auto& [_, data] : *shared_map) {
 		frame_count += data.frames.size();
 	}
-	AE_TRACELOG("Map populated ? count: {}, frames: {}", shared_map->size(), frame_count);
+	AETHER_ENGINE_TRACELOG("Map populated ? count: {}, frames: {}", shared_map->size(), frame_count);
 #endif
-	AE_DEBUGLOG("Done ({}ms)", t.duration());
+	AETHER_ENGINE_DEBUGLOG("Done ({}ms)", t.duration());
 
 	return shared_map;
 }
@@ -303,13 +303,13 @@ std::string animation_repository::parse_frame_name_(std::string_view unparsed_na
 	return std::string(unparsed_name.substr(0, prefix_end));
 }
 
-#ifndef AE_RELWITHDEB
+#ifndef AETHER_ENGINE_RELWITHDEB
 void animation_repository::log_defective_frame_(std::string_view message, std::optional<std::string_view> name) const {
 	if (name.has_value()) {
-		AE_TRACELOG("Skipping frame with {} ? on: \"{}\"", message, name.value());
+		AETHER_ENGINE_TRACELOG("Skipping frame with {} ? on: \"{}\"", message, name.value());
 		return;
 	}
-	AE_TRACELOG("Skipping frame with {}", message);
+	AETHER_ENGINE_TRACELOG("Skipping frame with {}", message);
 }
 #endif
 

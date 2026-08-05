@@ -25,14 +25,14 @@ bool game::init(game_init_args const& args) {
 		return true;
 	}
 
-#if defined(AE_HAS_DEBUG)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	if (!log_impl_::create_logfile_()) {
-		AE_WARNLOG("Couldn't create logfile");
+		AETHER_ENGINE_WARNLOG("Couldn't create logfile");
 	}
 #endif
 
 	if (!aether_resources_.open("aether.res")) {
-		AE_ERRORLOG("Couldn't open/find resources");
+		AETHER_ENGINE_ERRORLOG("Couldn't open/find resources");
 		return false;
 	}
 
@@ -44,14 +44,14 @@ bool game::init(game_init_args const& args) {
 	SoLoud::result result = soloud_.init();
 
 	if (result != SO_NO_ERROR) {
-		AE_WARNLOG("SoLoud failed to initialize ? result: {}", result);
+		AETHER_ENGINE_WARNLOG("SoLoud failed to initialize ? result: {}", result);
 	} else {
-		AE_INFOLOG("SoLoud initialized");
+		AETHER_ENGINE_INFOLOG("SoLoud initialized");
 	}
 
 	renderer_.setup2d_();
 
-	AE_INFOLOG("Initialized");
+	AETHER_ENGINE_INFOLOG("Initialized");
 	is_initialized_ = true;
 
 	return true;
@@ -59,11 +59,11 @@ bool game::init(game_init_args const& args) {
 
 void game::run() {
 	if (!is_initialized_) {
-		AE_ERRORLOG("Can't run loop while uninitialized");
+		AETHER_ENGINE_ERRORLOG("Can't run loop while uninitialized");
 		return;
 	}
 
-#if defined(AE_HAS_DEBUG)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	uint32_t framecount = 0;
 	uint32_t evalfps    = 0;
 	float accumulator   = 0.f;
@@ -101,7 +101,7 @@ void game::run() {
 			scene_scheduler_.draw_scene_();
 		}
 
-#if defined(AE_HAS_DEBUG)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 		renderer_.end_draw_(evalfps, dt);
 #else
 		renderer_.end_draw_();
@@ -116,7 +116,7 @@ void game::run() {
 		next_frametime += duration_cast<clock::duration>(duration<float>(1.f / window_.target_fps()));
 		std::this_thread::sleep_until(next_frametime);
 
-#if defined(AE_HAS_DEBUG)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 		++framecount;
 		accumulator += dt;
 		while (accumulator >= 1.f) {
@@ -135,7 +135,7 @@ context const& game::ctx() const {
 }
 
 void game::shutdown_() {
-	AE_INFOLOG("Shutting down");
+	AETHER_ENGINE_INFOLOG("Shutting down");
 	util::timer t;
 	t.start();
 
@@ -150,9 +150,9 @@ void game::shutdown_() {
 	is_initialized_ = false;
 
 	t.stop();
-	AE_INFOLOG("Done ({}ms)", t.duration());
+	AETHER_ENGINE_INFOLOG("Done ({}ms)", t.duration());
 
-#if defined(AE_HAS_DEBUG)
+#if defined(AETHER_ENGINE_HAS_DEBUG)
 	log_impl_::close_logfile_();
 #endif
 }

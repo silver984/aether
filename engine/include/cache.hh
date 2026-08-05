@@ -22,7 +22,7 @@ public:
 		fs::path canonical_file = fs::weakly_canonical(file);
 
 		if (!fs::exists(canonical_file)) {
-			AE_ERRORLOG("File doesn't exist ? file: \"{}\"", file);
+			AETHER_ENGINE_ERRORLOG("File doesn't exist ? file: \"{}\"", file);
 			return nullptr;
 		}
 
@@ -32,19 +32,19 @@ public:
 
 		purge_unused();
 
-		AE_DEBUGLOG("Loading resource ? file: \"{}\"", file);
+		AETHER_ENGINE_DEBUGLOG("Loading resource ? file: \"{}\"", file);
 		util::timer t;
 		t.start();
 
 		strong_ref<Type> resource = load_(canonical_file);
 
 		if (!resource) {
-			AE_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
+			AETHER_ENGINE_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
 			return nullptr;
 		}
 
 		t.stop();
-		AE_DEBUGLOG("Done ({}ms)", t.duration());
+		AETHER_ENGINE_DEBUGLOG("Done ({}ms)", t.duration());
 
 		auto const [it, _] = bank_.emplace(canonical_file, std::move(resource));
 		return it->second;

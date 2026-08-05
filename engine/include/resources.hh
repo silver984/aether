@@ -29,30 +29,30 @@ public:
 			return nullptr;
 		}
 
-		AE_DEBUGLOG("Loading resource ? file: \"{}\"", file);
+		AETHER_ENGINE_DEBUGLOG("Loading resource ? file: \"{}\"", file);
 		util::timer t;
 		t.start();
 
 		blob buffer = archive.read(file);
 
 		if (buffer.empty()) {
-			AE_ERRORLOG("Failed to read buffer ? file: \"{}\"", file);
+			AETHER_ENGINE_ERRORLOG("Failed to read buffer ? file: \"{}\"", file);
 			return nullptr;
 		}
 
-		AE_TRACELOG("Read buffer ? size: {:.2f}mib", buffer.size() / (1024.f * 1024.f));
+		AETHER_ENGINE_TRACELOG("Read buffer ? size: {:.2f}mib", buffer.size() / (1024.f * 1024.f));
 
 		strong_ref<Type> out = loader<Type>::load(file, buffer);
 
 		if (!out) {
-			AE_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
+			AETHER_ENGINE_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
 			return nullptr;
 		}
 
-		AE_TRACELOG("Loaded resource ? address: {}", fmt::ptr(out.get()));
+		AETHER_ENGINE_TRACELOG("Loaded resource ? address: {}", fmt::ptr(out.get()));
 
 		t.stop();
-		AE_DEBUGLOG("Done ({}ms)", t.duration());
+		AETHER_ENGINE_DEBUGLOG("Done ({}ms)", t.duration());
 
 		purge_unused_();
 		auto [it, _] = cache_.emplace(std::string(file), std::move(out));
@@ -89,7 +89,7 @@ private:
 
 	void unload_(Type& data) {
 		loader<Type>::unload(data);
-		AE_TRACELOG("Unloaded resource ? address: {}", fmt::ptr(&data));
+		AETHER_ENGINE_TRACELOG("Unloaded resource ? address: {}", fmt::ptr(&data));
 	}
 
 	util::string_map<strong_ref<Type>> cache_;

@@ -38,7 +38,7 @@ auto hookchain(obj* ptr, std::string_view function_name, fn impl, va... args) {
 
 		if (!result.valid()) {
 			sol::error e = result;
-			AE_ERRORLOG("Invalid hook for \"{}\" ? index: {}, what: {}", function_name, i, e.what());
+			AETHER_ENGINE_ERRORLOG("Invalid hook for \"{}\" ? index: {}, what: {}", function_name, i, e.what());
 			invalid_indices.emplace_back(i);
 			return std::invoke(impl, lptr, chain_args...);
 		}
@@ -47,7 +47,8 @@ auto hookchain(obj* ptr, std::string_view function_name, fn impl, va... args) {
 			try {
 				return result.get<ret>();
 			} catch (sol::error const& e) {
-				AE_ERRORLOG("Missing hook return value for \"{}\" ? index: {}, what: {}", function_name, i, e.what());
+				AETHER_ENGINE_ERRORLOG("Missing hook return value for \"{}\" ? index: {}, what: {}", function_name, i,
+				                       e.what());
 				invalid_indices.emplace_back(i);
 				return std::invoke(impl, lptr, chain_args...);
 			}
@@ -58,7 +59,7 @@ auto hookchain(obj* ptr, std::string_view function_name, fn impl, va... args) {
 		auto& callbacks = it->second.callbacks;
 		for (size_t i : invalid_indices) {
 			callbacks.erase(callbacks.begin() + i);
-			AE_DEBUGLOG("Removed hook for \"{}\" at index {}", function_name, i);
+			AETHER_ENGINE_DEBUGLOG("Removed hook for \"{}\" at index {}", function_name, i);
 		}
 		if (callbacks.empty()) {
 			hook_map.erase(it);

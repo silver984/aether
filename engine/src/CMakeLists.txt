@@ -1,47 +1,37 @@
-file(
-  GLOB
-  AE_NODES_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/nodes/*.cc
-)
+file(GLOB AETHER_ENGINE_MATH_SRC math/*.c*)
+file(GLOB AETHER_ENGINE_NODES_SRC nodes/*.c*)
+file(GLOB AETHER_ENGINE_UTIL_SRC util/*.c*)
+file(GLOB AETHER_ENGINE_GENERAL_SRC *.c*)
 
-file(
-  GLOB
-  AE_UTIL_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/util/*.cc
-)
-
-file(
-  GLOB
-  AE_GENERAL_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cc
+# temporary
+list(
+  REMOVE_ITEM
+  AETHER_ENGINE_NODES_SRC
+    nodes/animated_sprite.cc
+    nodes/tilemap.cc
 )
 
 # temporary
 list(
   REMOVE_ITEM
-  AE_NODES_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/nodes/animated_sprite.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/nodes/tilemap.cc
-)
-
-# temporary
-list(
-  REMOVE_ITEM
-  AE_GENERAL_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/animation_repository.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/audio_repository.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/camera.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/sound.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/texture_cache.cc
+  AETHER_ENGINE_GENERAL_SRC
+    animation_repository.cc
+    audio_repository.cc
+    camera.cc
+    sound.cc
+    texture_cache.cc
 )
 
 target_sources(
-  ${AE}
+  ${AETHER_ENGINE}
   PRIVATE
-    $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/log.cc>
-    $<$<CONFIG:Debug,RelWithDebInfo>:${CMAKE_CURRENT_SOURCE_DIR}/debug/heap.cc>
-    ${CMAKE_CURRENT_SOURCE_DIR}/math/mat3.cc
-    ${AE_NODES_SRC}
-    ${AE_UTIL_SRC}
-    ${AE_GENERAL_SRC}
+    ${AETHER_ENGINE_MATH_SRC}
+    ${AETHER_ENGINE_NODES_SRC}
+    ${AETHER_ENGINE_UTIL_SRC}
+    ${AETHER_ENGINE_GENERAL_SRC}
 )
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug|RelWithDebInfo")
+  file(GLOB AETHER_ENGINE_DEBUG_SRC debug/*.c*)
+  target_sources(${AETHER_ENGINE} PRIVATE ${AETHER_ENGINE_DEBUG_SRC})
+endif()

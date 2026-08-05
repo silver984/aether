@@ -1,32 +1,32 @@
-set(AE engine)
-set(AE_OUTPUT_DIR ${AETHER_OUTPUT_DIR}/${AE})
+set(AETHER_ENGINE engine)
+set(AETHER_ENGINE_OUTPUT_DIR ${AETHER_OUTPUT_DIR}/${AETHER_ENGINE})
 
 # todo: versioning
 
-add_executable(${AE})
+add_executable(${AETHER_ENGINE})
 
 set_target_properties(
-  ${AE}
+  ${AETHER_ENGINE}
   PROPERTIES
     OUTPUT_NAME "Aether Engine"
-    RUNTIME_OUTPUT_DIRECTORY ${AE_OUTPUT_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${AETHER_ENGINE_OUTPUT_DIR}
 )
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external)
+add_subdirectory(src)
+add_subdirectory(external)
 
 target_include_directories(
-  ${AE}
+  ${AETHER_ENGINE}
   PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/external
+    include
+    external
 )
 
 target_compile_definitions(
-  ${AE}
+  ${AETHER_ENGINE}
   PRIVATE
-    $<$<CONFIG:Debug>:AE_DEBUG>
-    $<$<CONFIG:RelWithDebInfo>:AE_RELWITHDEB>
+    $<$<CONFIG:Debug>:AETHER_ENGINE_DEBUG>
+    $<$<CONFIG:RelWithDebInfo>:AETHER_ENGINE_RELWITHDEB>
 )
 
 include(${CMAKE_SOURCE_DIR}/cmake/CPM.cmake)
@@ -77,17 +77,9 @@ list(
     ${lua-src_SOURCE_DIR}/onelua.c
 )
 
-add_library(
-  lua
-  STATIC
-    ${LUA_SRC}
-)
+add_library(lua STATIC ${LUA_SRC})
 
-target_include_directories(
-  lua
-  PUBLIC
-    ${lua-src_SOURCE_DIR}
-)
+target_include_directories(lua PUBLIC ${lua-src_SOURCE_DIR})
 
 # sol2
 set(SOL2_BUILD_LUA OFF)
@@ -109,7 +101,7 @@ CPMAddPackage(
 )
 
 target_link_libraries(
-  ${AE}
+  ${AETHER_ENGINE}
   PRIVATE
     raylib
     lua
@@ -120,14 +112,14 @@ target_link_libraries(
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "GNU")
     target_link_options(
-      ${AE}
+      ${AETHER_ENGINE}
       PRIVATE
         $<$<CONFIG:Debug>:-mconsole>
         $<$<NOT:$<CONFIG:Debug>>:-mwindows>
     )
   else()
     target_link_options(
-      ${AE}
+      ${AETHER_ENGINE}
       PRIVATE
         $<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>
         $<$<NOT:$<CONFIG:Debug>>:/SUBSYSTEM:WINDOWS>
@@ -136,43 +128,43 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   endif()
 endif()
 
-if(IS_DIRECTORY ${AE_OUTPUT_DIR}/licenses)
+if(IS_DIRECTORY ${AETHER_ENGINE_OUTPUT_DIR}/licenses)
   add_custom_command(
-    TARGET ${AE}
+    TARGET ${AETHER_ENGINE}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rm -rf
-      ${AE_OUTPUT_DIR}/licenses
+      ${AETHER_ENGINE_OUTPUT_DIR}/licenses
     COMMENT "Removing old licenses folder"
     VERBATIM
   )
 endif()
 
 add_custom_command(
-  TARGET ${AE}
+  TARGET ${AETHER_ENGINE}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/licenses
-    ${AE_OUTPUT_DIR}/licenses
+    ${AETHER_ENGINE_OUTPUT_DIR}/licenses
   COMMENT "Copying licenses folder"
   VERBATIM
 )
 
 add_custom_command(
-  TARGET ${AE}
+  TARGET ${AETHER_ENGINE}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy
     ${CMAKE_SOURCE_DIR}/LICENSE.md
-    ${AE_OUTPUT_DIR}/LICENSE.md
+    ${AETHER_ENGINE_OUTPUT_DIR}/LICENSE.md
   COMMENT "Copying license markdown"
   VERBATIM
 )
 
 add_custom_command(
-  TARGET ${AE}
+  TARGET ${AETHER_ENGINE}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy
     ${CMAKE_SOURCE_DIR}/THIRD-PARTY-NOTICES.md
-    ${AE_OUTPUT_DIR}/THIRD-PARTY-NOTICES.md
+    ${AETHER_ENGINE_OUTPUT_DIR}/THIRD-PARTY-NOTICES.md
   COMMENT "Copying third-party-notices markdown"
   VERBATIM
 )

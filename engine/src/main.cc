@@ -8,7 +8,7 @@ int main() {
 	aether::game ae;
 
 	if (!ae.init({
-	            .window_title = ("Aether Engine " AE_VERSION_STR),
+	            .window_title = ("Aether Engine " AETHER_ENGINE_VERSION_STR),
 	            .resolution   = aether::size<int>(1280, 720),
 	    })) {
 		return 0;
