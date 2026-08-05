@@ -7,19 +7,19 @@ file(GLOB AETHER_ENGINE_GENERAL_SRC *.c*)
 list(
   REMOVE_ITEM
   AETHER_ENGINE_NODES_SRC
-    nodes/animated_sprite.cc
-    nodes/tilemap.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/nodes/animated_sprite.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/nodes/tilemap.cc
 )
 
 # temporary
 list(
   REMOVE_ITEM
   AETHER_ENGINE_GENERAL_SRC
-    animation_repository.cc
-    audio_repository.cc
-    camera.cc
-    sound.cc
-    texture_cache.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/animation_repository.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/audio_repository.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/camera.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/sound.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/texture_cache.cc
 )
 
 target_sources(
