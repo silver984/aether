@@ -31,7 +31,7 @@ bool game::init(game_init_args const& args) {
 	}
 #endif
 
-	if (!aether_resources_.open("aether.res")) {
+	if (!aether_resources_.open("aether.pkg")) {
 		AETHER_ENGINE_ERRORLOG("Couldn't open/find resources");
 		return false;
 	}

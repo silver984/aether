@@ -18,15 +18,16 @@ bool testscene::init_() {
 		return false;
 	}
 
-	auto const& ctx  = ctx_();
-	auto window_size = ctx.window().target_size();
-	auto spr         = node::create<sprite>(ctx, sprite_args{.file = "boy.png"});
+	context const& ctx          = ctx_();
+	size<int> const window_size = ctx.window().target_size();
+	strong_ref<sprite> spr      = node::create<sprite>(ctx, sprite_args{.file = "boy"});
+
 	if (!spr) {
 		return false;
 	}
 
 	spr->set_scale(0.6f);
-	spr->set_position(window_size / 2.f);
+	spr->set_position(window_size * 0.5f);
 	add(spr);
 	activate();
 
@@ -34,8 +35,8 @@ bool testscene::init_() {
 }
 
 void testscene::update_(float dt) {
-	if (auto root = root_node().construct()) {
-		for (auto& child : root->children()) {
+	if (strong_ref<node> root = root_node().construct()) {
+		for (strong_ref<node>& child : root->children()) {
 			child->set_rotation(child->rotation() + (22.5f * dt));
 		}
 	}

@@ -128,13 +128,26 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   endif()
 endif()
 
+# post build process
+
+find_package(Python COMPONENTS Interpreter REQUIRED)
+message(STATUS "Python: ${Python_EXECUTABLE}")
+
+add_custom_command(
+  TARGET ${AETHER_ENGINE}
+  POST_BUILD
+  COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/resource_packer.py
+    ${CMAKE_SOURCE_DIR}/resources
+    ${AETHER_ENGINE_OUTPUT_DIR}/aether
+  VERBATIM
+)
+
 if(IS_DIRECTORY ${AETHER_ENGINE_OUTPUT_DIR}/licenses)
   add_custom_command(
     TARGET ${AETHER_ENGINE}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rm -rf
       ${AETHER_ENGINE_OUTPUT_DIR}/licenses
-    COMMENT "Removing old licenses folder"
     VERBATIM
   )
 endif()
@@ -145,7 +158,6 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/licenses
     ${AETHER_ENGINE_OUTPUT_DIR}/licenses
-  COMMENT "Copying licenses folder"
   VERBATIM
 )
 
@@ -155,7 +167,6 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E copy
     ${CMAKE_SOURCE_DIR}/LICENSE.md
     ${AETHER_ENGINE_OUTPUT_DIR}/LICENSE.md
-  COMMENT "Copying license markdown"
   VERBATIM
 )
 
@@ -165,6 +176,5 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E copy
     ${CMAKE_SOURCE_DIR}/THIRD-PARTY-NOTICES.md
     ${AETHER_ENGINE_OUTPUT_DIR}/THIRD-PARTY-NOTICES.md
-  COMMENT "Copying third-party-notices markdown"
   VERBATIM
 )
