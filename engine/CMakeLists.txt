@@ -15,12 +15,7 @@ set_target_properties(
 add_subdirectory(src)
 add_subdirectory(external)
 
-target_include_directories(
-  ${AETHER_ENGINE}
-  PRIVATE
-    include
-    external
-)
+target_include_directories(${AETHER_ENGINE} PRIVATE include external)
 
 target_compile_definitions(
   ${AETHER_ENGINE}
@@ -69,16 +64,9 @@ CPMAddPackage(
 )
 
 file(GLOB LUA_SRC ${lua-src_SOURCE_DIR}/*.c)
-
-list(
-  REMOVE_ITEM
-  LUA_SRC
-    ${lua-src_SOURCE_DIR}/lua.c
-    ${lua-src_SOURCE_DIR}/onelua.c
-)
+list(REMOVE_ITEM LUA_SRC ${lua-src_SOURCE_DIR}/lua.c ${lua-src_SOURCE_DIR}/onelua.c)
 
 add_library(lua STATIC ${LUA_SRC})
-
 target_include_directories(lua PUBLIC ${lua-src_SOURCE_DIR})
 
 # sol2
@@ -100,32 +88,26 @@ CPMAddPackage(
   GIT_SHALLOW TRUE
 )
 
-target_link_libraries(
-  ${AETHER_ENGINE}
-  PRIVATE
-    raylib
-    lua
-    sol2::sol2
-    fmt::fmt
-)
+target_link_libraries(${AETHER_ENGINE} PRIVATE raylib lua sol2::sol2 fmt::fmt)
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "GNU")
-    target_link_options(
-      ${AETHER_ENGINE}
-      PRIVATE
-        $<$<CONFIG:Debug>:-mconsole>
-        $<$<NOT:$<CONFIG:Debug>>:-mwindows>
-    )
-  else()
-    target_link_options(
-      ${AETHER_ENGINE}
-      PRIVATE
-        $<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>
-        $<$<NOT:$<CONFIG:Debug>>:/SUBSYSTEM:WINDOWS>
-        $<$<NOT:$<CONFIG:Debug>>:/ENTRY:mainCRTStartup>
-    )
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_BUILD_TYPE MATCHES "Release|RelWithDebInfo")
+  set_target_properties(${AETHER_ENGINE} PROPERTIES WIN32_EXECUTABLE TRUE)
+
+  if(MSVC)
+    target_link_options(${AETHER_ENGINE} PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
+
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    if(CMAKE_LINKER MATCHES "lld-link|link.exe")
+      target_link_options(${AETHER_ENGINE} PRIVATE -Wl,/subsystem:windows -Wl,/entry:mainCRTStartup)
+    else()
+      target_link_options(${AETHER_ENGINE} PRIVATE -mwindows)
+    endif()
+
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    target_link_options(${AETHER_ENGINE} PRIVATE -mwindows)
   endif()
+    
+  target_compile_definitions(${AETHER_ENGINE} PRIVATE _WINDOWS)
 endif()
 
 # post build process

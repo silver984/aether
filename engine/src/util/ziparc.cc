@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <cstring>
 #include <util/ziparc.hh>
 
 namespace aether::util {

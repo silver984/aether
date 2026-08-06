@@ -1,6 +1,7 @@
 #pragma once
 #include <concepts>
 #include <cstddef>
+#include <cstdint>
 #include <utility>
 
 namespace aether::ref_impl_ {
