@@ -34,7 +34,7 @@ bool node::add_child(strong_ref<node> child) {
 		return false;
 	}
 
-	auto self          = strong_this_();
+	auto self          = this->strong_this_();
 	bool const is_self = child == self;
 
 	if (is_self) {
@@ -95,7 +95,7 @@ void node::destroy_all() {
 
 bool node::detach_from_parent() {
 	if (auto p = parent_.construct()) {
-		return p->remove_child(strong_this_());
+		return p->remove_child(this->strong_this_());
 	}
 	return false;
 }
@@ -147,7 +147,7 @@ std::string_view node::name() const {
 }
 
 void node::set_bounds(size<int> val) {
-	val = util::max(size<int>(0), val);
+	val = max(size<int>(0), val);
 	if (bounds_ == val) {
 		return;
 	}
@@ -199,7 +199,7 @@ void node::set_anchor(vec2<float> val) {
 	if (anchor_ == val) {
 		return;
 	}
-	anchor_ = util::clamp(val, vec2<float>(0.f), vec2<float>(1.f));
+	anchor_ = clamp(val, vec2<float>(0.f), vec2<float>(1.f));
 	mark_transform_dirty_();
 }
 
@@ -453,11 +453,11 @@ void node::mark_rgba_dirty_() {
 mat3 node::calculate_transform_() const {
 	// todo: use scene camera
 	vec2<float> const anchor_position = vec2<float>(anchor_.x * bounds_.width, anchor_.y * bounds_.height);
-	vec2<float> const skew_rad        = vec2<float>(util::degrees_to_radians(skew_.x), util::degrees_to_radians(skew_.y));
+	vec2<float> const skew_rad        = vec2<float>(degrees_to_radians(skew_.x), degrees_to_radians(skew_.y));
 	vec2<float> const scale_factor    = vec2<float>(is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f);
 
 	mat3 const t     = mat3::translation(position_ * scroll_factor_);
-	mat3 const r     = mat3::rotation(util::degrees_to_radians(rotation_));
+	mat3 const r     = mat3::rotation(degrees_to_radians(rotation_));
 	mat3 const s     = mat3::scale(scale_ * scale_factor);
 	mat3 const k     = mat3::skew(skew_rad);
 	mat3 const a     = mat3::translation(-anchor_position);

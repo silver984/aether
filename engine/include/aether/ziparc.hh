@@ -4,8 +4,7 @@
 #include <miniz/miniz.h>
 #include <string_view>
 
-
-namespace aether::util {
+namespace aether {
 
 namespace fs = std::filesystem;
 
@@ -25,4 +24,4 @@ private:
 	bool is_open_;
 };
 
-} // namespace aether::util
+} // namespace aether

@@ -151,12 +151,12 @@ void renderer::end_draw_() {
 
 void renderer::push_matrix_(mat3 const& matrix) const {
 	rlPushMatrix();
-	rlmat4 const m = util::to_rlmat4(matrix);
+	rlmat4 const m = to_rlmat4(matrix);
 	rlMultMatrixf(MatrixToFloat(m));
 }
 
 void renderer::define_color_vertex_(rgba color) const {
-	rlrgba const c = util::to_rlrgba(color);
+	rlrgba const c = to_rlrgba(color);
 	rlColor4ub(c.r, c.g, c.b, c.a);
 }
 
@@ -176,7 +176,7 @@ mat3 renderer::calculate_projection_(size<int> render_size, size<int> target_siz
 
 	vec2<float> const scaled_size    = vec2<float>(target_size.width * scale_factor, target_size.height * scale_factor);
 	vec2<float> const offset         = vec2<float>(render_size.width - scaled_size.x, render_size.height - scaled_size.y);
-	vec2<float> const snapped_offset = util::round(offset / 2.f);
+	vec2<float> const snapped_offset = round(offset / 2.f);
 
 	mat3 out    = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
 	out.m[0][2] = std::round(out.m[0][2]);

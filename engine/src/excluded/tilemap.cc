@@ -6,7 +6,6 @@
 #include <nodes/tilemap.hh>
 #include <texture_cache.hh>
 
-
 namespace aether {
 
 tilemap::tilemap(context const& ctx, descriptor const& desc)
@@ -31,7 +30,7 @@ void tilemap::seek_tile(vec2<int> tile_index) {
 		return;
 	}
 
-	tile_index_            = util::clamp(tile_index, vec2<int>(0), tile_count() - 1);
+	tile_index_            = clamp(tile_index, vec2<int>(0), tile_count() - 1);
 	texture_source_rect_.x = desc_.tile_bounds.width * (float)tile_index_.x;
 	texture_source_rect_.y = desc_.tile_bounds.height * (float)tile_index_.y;
 }

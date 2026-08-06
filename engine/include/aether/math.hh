@@ -14,7 +14,7 @@ struct size;
 
 } // namespace aether
 
-namespace aether::util {
+namespace aether {
 
 template <numeric T>
 [[nodiscard]] constexpr T lerp(T a, T b, T t) {
@@ -180,4 +180,4 @@ template <numeric T>
 	return deg * (T{180} / std::numbers::pi_v<T>);
 }
 
-} // namespace aether::util
+} // namespace aether

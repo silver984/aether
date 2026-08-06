@@ -2,7 +2,6 @@
 #include <aether/log.hh>
 #include <aether/node.hh>
 #include <aether/scene.hh>
-#include <aether/sound.hh>
 #include <aether/window.hh>
 #include <cassert>
 
@@ -35,14 +34,6 @@ void scene::unschedule_visit() {
 
 bool scene::add(strong_ref<node> n) {
 	return root_node_->add_child(n);
-}
-
-bool scene::add(strong_ref<sound> s) {
-	if (!s) {
-		return false;
-	}
-	sounds_.emplace_back(s);
-	return true;
 }
 
 weak_ref<node> scene::root_node() const {
@@ -84,9 +75,6 @@ bool scene::init_interface_() {
 }
 
 void scene::update_all_(float dt) {
-	if (!root_node_) {
-		return;
-	}
 	root_node_->update_all_(dt);
 	if (is_active_) {
 		update_(dt);
@@ -94,9 +82,6 @@ void scene::update_all_(float dt) {
 }
 
 void scene::draw_all_() {
-	if (!root_node_) {
-		return;
-	}
 	root_node_->draw_all_();
 	if (is_visit_scheduled_) {
 		visit_();

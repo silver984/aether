@@ -42,7 +42,7 @@ private:
 	SoLoud::Soloud soloud_;
 	scene_scheduler scene_scheduler_;
 	resources<Texture> textures_;
-	util::ziparc aether_resources_;
+	ziparc aether_resources_;
 	// lua::manager lua_manager_;
 	// banimation_repository animations_;
 	// audio_repository audios_;

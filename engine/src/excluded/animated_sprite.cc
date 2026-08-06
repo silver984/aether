@@ -126,8 +126,8 @@ void animated_sprite::draw_(mat3 const& transform, rgba color) {
 
 	if (is_current_subtexture_rotated_) {
 		mat3 const fix        = mat3::translation(vec2<float>(0.f, bounds().height - current_subtexture_offsets_.y));
-		mat3 const r          = mat3::rotation(util::degrees_to_radians(-90.f));
-		mat3 const t          = mat3::translation(util::reverse(-current_subtexture_offsets_));
+		mat3 const r          = mat3::rotation(degrees_to_radians(-90.f));
+		mat3 const t          = mat3::translation(reverse(-current_subtexture_offsets_));
 		subtexture_transform_ = transform * fix * r * t;
 	} else {
 		mat3 const t          = mat3::translation(-current_subtexture_offsets_);
@@ -158,14 +158,14 @@ size<int> animated_sprite::calculate_bounds_(std::vector<atlas_region> const& fr
 
 	for (auto const& frame : frames) {
 		size<int> const source_bounds = frame.source_rect.bounds();
-		vec2<int> const offsets       = util::abs(frame.offsets);
+		vec2<int> const offsets       = abs(frame.offsets);
 
 		if (frame.is_rotated) {
-			ret = util::max(ret, util::reverse(source_bounds) + offsets);
+			ret = max(ret, reverse(source_bounds) + offsets);
 			continue;
 		}
 
-		ret = util::max(ret, source_bounds + offsets);
+		ret = max(ret, source_bounds + offsets);
 	}
 
 	return ret;

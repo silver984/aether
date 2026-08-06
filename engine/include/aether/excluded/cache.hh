@@ -33,7 +33,7 @@ public:
 		purge_unused();
 
 		AETHER_ENGINE_DEBUGLOG("Loading resource ? file: \"{}\"", file);
-		util::timer t;
+		timer t;
 		t.start();
 
 		strong_ref<Type> resource = load_(canonical_file);

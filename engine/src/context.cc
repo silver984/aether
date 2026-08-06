@@ -28,7 +28,7 @@ resources<Texture>& context::textures() const noexcept {
 	return game_.textures_;
 }
 
-util::ziparc& context::aether_resources() const noexcept {
+ziparc& context::aether_resources() const noexcept {
 	return game_.aether_resources_;
 }
 

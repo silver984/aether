@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <tinyxml2/tinyxml2.h>
 
-
 #ifndef AETHER_VERBOSE_DEBUG
 	#define log_defective_frame_(...) ((void)0)
 #endif
@@ -29,10 +28,10 @@ strong_ref<animation_map> animation_repository::fetch(std::string_view file) {
 		return from_cache;
 	}
 
-	auto const file_extension = util::file_extension(lfile);
+	auto const file_extension = file_extension(lfile);
 
 	// todo: json, plist, and txt
-	if (!util::string_matches_any(file_extension, {".xml"})) {
+	if (!string_matches_any(file_extension, {".xml"})) {
 		AETHER_ENGINE_ERRORLOG("Unsupported file format ? file: \"{}\"", lfile.filename().string());
 		return nullptr;
 	}
@@ -40,7 +39,7 @@ strong_ref<animation_map> animation_repository::fetch(std::string_view file) {
 	purge_unused();
 
 	AETHER_ENGINE_DEBUGLOG("Loading \"{}\"", lfile.filename().string());
-	util::timer t;
+	timer t;
 	t.start();
 
 	strong_ref<animation_map> shared_map = nullptr;
@@ -120,7 +119,7 @@ animation_repository::xml_parse_delegate_(tinyxml2::XMLDocument const& document,
 	}
 
 	AETHER_ENGINE_DEBUGLOG("Parsing");
-	util::timer t;
+	timer t;
 	t.start();
 
 	strong_ref<animation_map> shared_map = new animation_map();

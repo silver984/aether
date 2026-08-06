@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
 
-namespace aether::util {
+namespace aether {
 
 class timer final {
 public:
@@ -16,4 +16,4 @@ private:
 	long long duration_;
 };
 
-} // namespace aether::util
+} // namespace aether

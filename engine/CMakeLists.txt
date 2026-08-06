@@ -12,19 +12,6 @@ set_target_properties(
 
 file(GLOB AETHER_SRC src/*.c*)
 
-# temporary
-list(
-  REMOVE_ITEM
-  AETHER_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/animated_sprite.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/tilemap.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/animation_repository.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio_repository.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/camera.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/sound.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/texture_cache.cc
-)
-
 target_sources(${AETHER_ENGINE} PRIVATE ${AETHER_SRC})
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug|RelWithDebInfo")

@@ -1,3 +1,4 @@
+#include "aether/ref.hh"
 #include <aether/context.hh>
 #include <aether/log.hh>
 #include <aether/renderer.hh>
@@ -5,7 +6,6 @@
 #include <aether/sprite.hh>
 #include <cmath>
 #include <raylib.h>
-
 
 namespace aether {
 
@@ -20,8 +20,8 @@ void sprite::toggle_antialiasing(bool val) const {
 }
 
 bool sprite::set_texture(std::string_view file) {
-	context const& ctx      = this->ctx_();
-	util::ziparc& resources = ctx.aether_resources();
+	context const& ctx = this->ctx_();
+	ziparc& resources  = ctx.aether_resources();
 
 	if (auto fetched_texture = ctx.textures().load(resources, file)) {
 		texture_ = fetched_texture;

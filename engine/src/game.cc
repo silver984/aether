@@ -137,7 +137,7 @@ context const& game::ctx() const {
 
 void game::shutdown_() {
 	AETHER_ENGINE_INFOLOG("Shutting down");
-	util::timer t;
+	timer t;
 	t.start();
 
 	scene_scheduler_.cleanup_();

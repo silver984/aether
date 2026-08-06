@@ -4,15 +4,12 @@
 #include <concepts>
 #include <memory>
 #include <utility>
-#include <vector>
-
 
 namespace aether {
 
 class scene_scheduler;
 class context;
 class node;
-class sound;
 
 class scene {
 	friend class scene_scheduler;
@@ -38,7 +35,6 @@ public:
 	void unschedule_visit();
 
 	bool add(strong_ref<node> n);
-	bool add(strong_ref<sound> s);
 
 	[[nodiscard]] weak_ref<node> root_node() const;
 
@@ -64,8 +60,6 @@ private:
 	// camera camera_; // todo
 
 	strong_ref<node> root_node_;
-
-	std::vector<strong_ref<sound>> sounds_;
 
 	bool is_active_;
 	bool is_visit_scheduled_;

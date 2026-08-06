@@ -2,8 +2,7 @@
 #include <cstddef>
 #include <cstring>
 
-
-namespace aether::util {
+namespace aether {
 
 ziparc::ziparc() noexcept
         : archive_()
@@ -73,4 +72,4 @@ blob ziparc::read(std::string_view file) {
 	return bytes;
 }
 
-} // namespace aether::util
+} // namespace aether

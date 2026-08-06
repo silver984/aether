@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <raylib.h>
 
-
 namespace aether {
 
 window::window()
@@ -29,7 +28,7 @@ bool window::init_(std::string_view title, size<int> bounds, int fps) {
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
 	size<int> const minimum_size = size<int>(640, 360);
 	title_                       = std::string(title);
-	target_size_                 = util::max(minimum_size, bounds);
+	target_size_                 = max(minimum_size, bounds);
 	target_fps_                  = std::max(1, fps);
 	InitWindow(target_size_.width, target_size_.height, title_.c_str());
 

@@ -1,6 +1,6 @@
 #include <aether/timer.hh>
 
-namespace aether::util {
+namespace aether {
 
 timer::timer()
         : duration_(0) {
@@ -23,4 +23,4 @@ long long timer::duration() const {
 	return duration_;
 }
 
-} // namespace aether::util
+} // namespace aether

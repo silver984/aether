@@ -8,12 +8,6 @@ class Soloud;
 
 }
 
-namespace aether::util {
-
-class ziparc;
-
-}
-
 namespace aether {
 
 class game;
@@ -22,6 +16,7 @@ class renderer;
 class scene_scheduler;
 template <typename>
 class resources;
+class ziparc;
 
 // class animation_repository;
 // class audio_repository;
@@ -36,7 +31,7 @@ public:
 	[[nodiscard]] SoLoud::Soloud& soloud() const noexcept;
 	[[nodiscard]] scene_scheduler& scene_scheduler() const noexcept;
 	[[nodiscard]] resources<Texture>& textures() const noexcept;
-	[[nodiscard]] util::ziparc& aether_resources() const noexcept;
+	[[nodiscard]] ziparc& aether_resources() const noexcept;
 
 	// [[nodiscard]] animation_repository& animations() const;
 	// [[nodiscard]] audio_repository& audios() const;

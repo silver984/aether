@@ -1,7 +1,7 @@
 #include <aether/rltype.hh>
 #include <raylib.h>
 
-namespace aether::util {
+namespace aether {
 
 rlvec2 to_rlvec2(vec2<float> vec2) {
 	return {
@@ -41,4 +41,4 @@ rlrect to_rlrect(rect<float> const& rectangle) {
 	};
 }
 
-} // namespace aether::util
+} // namespace aether

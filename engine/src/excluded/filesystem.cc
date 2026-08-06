@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <fstream>
 
-namespace aether::util {
+namespace aether {
 
 std::string file_extension(std::filesystem::path const& file) {
 	if (!file.has_extension()) {
@@ -37,4 +37,4 @@ blob read_file_to_buffer(std::filesystem::path const& file) {
 	return out;
 }
 
-} // namespace aether::util
+} // namespace aether

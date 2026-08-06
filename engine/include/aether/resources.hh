@@ -20,7 +20,7 @@ public:
 		purge_all_();
 	}
 
-	[[nodiscard]] strong_ref<Type> load(util::ziparc& archive, std::string_view file) {
+	[[nodiscard]] strong_ref<Type> load(ziparc& archive, std::string_view file) {
 		if (strong_ref<Type> from_cache = cache_fetch_(file)) {
 			return from_cache;
 		}
@@ -30,7 +30,7 @@ public:
 		}
 
 		AETHER_ENGINE_DEBUGLOG("Loading resource ? file: \"{}\"", file);
-		util::timer t;
+		timer t;
 		t.start();
 
 		blob buffer = archive.read(file);
@@ -92,7 +92,7 @@ private:
 		AETHER_ENGINE_TRACELOG("Unloaded resource ? address: {}", fmt::ptr(&data));
 	}
 
-	util::string_map<strong_ref<Type>> cache_;
+	string_map<strong_ref<Type>> cache_;
 };
 
 } // namespace aether

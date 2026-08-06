@@ -4,7 +4,6 @@
 #include <audio_repository.hh>
 #include <utility>
 
-
 namespace aether {
 
 audio_repository::audio_repository()  = default;
@@ -22,15 +21,15 @@ strong_ref<blob> audio_repository::fetch(std::string_view file) {
 		return from_cache;
 	}
 
-	if (std::string const file_extension = util::file_extension(lfile);
-	    !util::string_matches_any(file_extension, {".wav", ".mp3", ".ogg", ".flac"})) {
+	if (std::string const file_extension = file_extension(lfile);
+	    !string_matches_any(file_extension, {".wav", ".mp3", ".ogg", ".flac"})) {
 		AETHER_ENGINE_ERRORLOG("Unsupported file format ? file: \"{}\"", file);
 		return nullptr;
 	}
 
 	purge_unused();
 
-	blob temporary_buffer = util::read_file_to_buffer(lfile);
+	blob temporary_buffer = read_file_to_buffer(lfile);
 
 	if (temporary_buffer.empty()) {
 		AETHER_ENGINE_ERRORLOG("Failed ? empty buffer");
