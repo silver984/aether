@@ -1,5 +1,4 @@
 #pragma once
-#include <config.h>
 #if defined(AETHER_ENGINE_HAS_DEBUG)
 	#include <cstddef>
 

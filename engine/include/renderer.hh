@@ -1,5 +1,4 @@
 #pragma once
-#include <config.h>
 #include <cstdint>
 #include <math/mat3.hh>
 #include <math/rect.hh>

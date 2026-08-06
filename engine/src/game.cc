@@ -1,5 +1,4 @@
 #include <chrono>
-#include <config.h>
 #include <debug/log.hh>
 #include <game.hh>
 #include <soloud_error.h>

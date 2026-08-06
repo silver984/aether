@@ -1,5 +1,4 @@
 #pragma once
-#include <config.h>
 #if defined(AETHER_ENGINE_HAS_DEBUG)
 	#include <fmt/format.h>
 	#include <source_location>
@@ -17,29 +16,29 @@ namespace aether::log {
 
 	#if !defined(AETHER_ENGINE_RELWITHDEB)
 template <typename... Args>
-void trace(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "TRACE", loc);
+void trace(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
+	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "TRACE", loc);
 }
 
 template <typename... Args>
-void debug(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "DEBUG", loc);
+void debug(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
+	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "DEBUG", loc);
 }
 	#endif
 
 template <typename... Args>
-void info(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "INFO", loc);
+void info(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
+	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "INFO", loc);
 }
 
 template <typename... Args>
-void warn(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "WARN", loc);
+void warn(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
+	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "WARN", loc);
 }
 
 template <typename... Args>
-void error(std::source_location const& loc, fmt::format_string<Args...> fmtstr, Args&&... args) {
-	log_impl_::print_(fmt::format(fmtstr, std::forward<Args>(args)...), "ERROR", loc);
+void error(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
+	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "ERROR", loc);
 }
 
 } // namespace aether::log
