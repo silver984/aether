@@ -1,14 +1,14 @@
-#include <context.hh>
-#include <debug/heap.hh>
-#include <debug/log.hh>
+#include <aether/context.hh>
+#include <aether/heap.hh>
+#include <aether/log.hh>
+#include <aether/math.hh>
+#include <aether/renderer.hh>
+#include <aether/rltype.hh>
+#include <aether/window.hh>
 #include <fmt/format.h>
 #include <raylib.h>
 #include <raymath.h>
-#include <renderer.hh>
 #include <rlgl.h>
-#include <util/math.hh>
-#include <util/rltype.hh>
-#include <window.hh>
 
 namespace aether {
 

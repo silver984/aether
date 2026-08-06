@@ -1,11 +1,12 @@
-#include <animation_repository.hh>
+#include <aether/animation_repository.hh>
+#include <aether/filesystem.hh>
+#include <aether/log.hh>
+#include <aether/string.hh>
+#include <aether/timer.hh>
 #include <cctype>
 #include <cstddef>
-#include <debug/log.hh>
 #include <tinyxml2/tinyxml2.h>
-#include <util/filesystem.hh>
-#include <util/string.hh>
-#include <util/timer.hh>
+
 
 #ifndef AETHER_VERBOSE_DEBUG
 	#define log_defective_frame_(...) ((void)0)

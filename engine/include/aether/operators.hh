@@ -1,0 +1,236 @@
+#pragma once
+#include <aether/numeric.hh>
+#include <cstddef>
+#include <functional>
+#include <type_traits>
+
+
+namespace aether {
+
+template <template <typename> class derived, numeric T, size_t N>
+struct operators {
+	[[nodiscard]] static constexpr size_t capacity() {
+		return N;
+	}
+
+	[[nodiscard]] constexpr derived<T> operator+() const {
+		return self_();
+	}
+
+	[[nodiscard]] constexpr derived<T> operator-() const {
+		derived<T> out;
+		for (size_t i = 0; i < N; ++i) {
+			out[i] = -(self_()[i]);
+		}
+		return out;
+	}
+
+	template <indexed_numeric Rhs>
+	[[nodiscard]] constexpr auto operator+(Rhs const& rhs) const {
+		return binary_(rhs, std::plus<>{});
+	}
+
+	template <numeric U>
+	[[nodiscard]] constexpr auto operator+(U rhs) const {
+		return binary_(rhs, std::plus<>{});
+	}
+
+	template <indexed_numeric Rhs>
+	[[nodiscard]] constexpr auto operator-(Rhs const& rhs) const {
+		return binary_(rhs, std::minus<>{});
+	}
+
+	template <numeric U>
+	[[nodiscard]] constexpr auto operator-(U rhs) const {
+		return binary_(rhs, std::minus<>{});
+	}
+
+	template <indexed_numeric Rhs>
+	[[nodiscard]] constexpr auto operator*(Rhs const& rhs) const {
+		return binary_(rhs, std::multiplies<>{});
+	}
+
+	template <numeric U>
+	[[nodiscard]] constexpr auto operator*(U rhs) const {
+		return binary_(rhs, std::multiplies<>{});
+	}
+
+	template <indexed_numeric Rhs>
+	[[nodiscard]] constexpr auto operator/(Rhs const& rhs) const {
+		return binary_(rhs, std::divides<>{});
+	}
+
+	template <numeric U>
+	[[nodiscard]] constexpr auto operator/(U rhs) const {
+		return binary_(rhs, std::divides<>{});
+	}
+
+	constexpr derived<T>& operator+=(derived<T> const& rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] += rhs[i];
+		}
+		return self_();
+	}
+
+	template <numeric U>
+	constexpr derived<T>& operator+=(derived<U> const& rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] += static_cast<T>(rhs[i]);
+		}
+		return self_();
+	}
+
+	template <numeric U>
+	constexpr derived<T>& operator+=(U rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] += static_cast<T>(rhs);
+		}
+		return self_();
+	}
+
+	constexpr derived<T>& operator-=(derived<T> const& rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] -= rhs[i];
+		}
+		return self_();
+	}
+
+	template <numeric U>
+	constexpr derived<T>& operator-=(derived<U> const& rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] -= static_cast<T>(rhs[i]);
+		}
+		return self_();
+	}
+
+	template <numeric U>
+	constexpr derived<T>& operator-=(U rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] -= static_cast<T>(rhs);
+		}
+		return self_();
+	}
+
+	constexpr derived<T>& operator*=(derived<T> const& rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] *= rhs[i];
+		}
+		return self_();
+	}
+
+	template <numeric U>
+	constexpr derived<T>& operator*=(derived<U> const& rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] *= static_cast<T>(rhs[i]);
+		}
+		return self_();
+	}
+
+	template <numeric U>
+	constexpr derived<T>& operator*=(U rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] *= static_cast<T>(rhs);
+		}
+		return self_();
+	}
+
+	constexpr derived<T>& operator/=(derived<T> const& rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] /= rhs[i];
+		}
+		return self_();
+	}
+
+	template <numeric U>
+	constexpr derived<T>& operator/=(derived<U> const& rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] /= static_cast<T>(rhs[i]);
+		}
+		return self_();
+	}
+
+	template <numeric U>
+	constexpr derived<T>& operator/=(U rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			self_()[i] /= static_cast<T>(rhs);
+		}
+		return self_();
+	}
+
+	constexpr derived<T>& operator++() {
+		for (size_t i = 0; i < N; ++i) {
+			++self_()[i];
+		}
+		return self_();
+	}
+
+	constexpr derived<T> operator++(int) {
+		derived<T> out(self_());
+		++self_();
+		return out;
+	}
+
+	constexpr derived<T>& operator--() {
+		for (size_t i = 0; i < N; ++i) {
+			--self_()[i];
+		}
+		return self_();
+	}
+
+	constexpr derived<T> operator--(int) {
+		derived<T> out(self_());
+		--self_();
+		return out;
+	}
+
+	[[nodiscard]] constexpr bool operator==(derived<T> const& rhs) const {
+		for (size_t i = 0; i < N; ++i) {
+			if (self_()[i] != rhs[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	[[nodiscard]] constexpr bool operator!=(derived<T> const& rhs) const {
+		return !(self_() == rhs);
+	}
+
+	template <numeric U>
+	[[nodiscard]] explicit constexpr operator derived<U>() const {
+		derived<U> out;
+		for (size_t i = 0; i < N; ++i) {
+			out[i] = static_cast<U>(self_()[i]);
+		}
+		return out;
+	}
+
+private:
+	template <indexed_numeric Rhs, typename F>
+	constexpr auto binary_(Rhs const& rhs, F&& op) const -> derived<std::common_type_t<T, typename Rhs::value_type>> {
+		derived<std::common_type_t<T, typename Rhs::value_type>> out;
+		for (size_t i = 0; i < N; ++i) {
+			out[i] = op(self_()[i], rhs[i]);
+		}
+		return out;
+	}
+
+	template <numeric U, typename F>
+	constexpr auto binary_(U rhs, F&& op) const -> derived<std::common_type_t<T, U>> {
+		derived<std::common_type_t<T, U>> out;
+		for (size_t i = 0; i < N; ++i) {
+			out[i] = op(self_()[i], rhs);
+		}
+		return out;
+	}
+
+	[[nodiscard]] constexpr derived<T> const& self_() const {
+		return static_cast<derived<T> const&>(*this);
+	}
+
+	[[nodiscard]] constexpr derived<T>& self_() {
+		return static_cast<derived<T>&>(*this);
+	}
+};
+
+} // namespace aether

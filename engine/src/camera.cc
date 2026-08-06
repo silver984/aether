@@ -1,10 +1,12 @@
+#include <aether/node.hh>
 #include <camera.hh>
-#include <nodes/node.hh>
+
 
 namespace aether {
 
 camera::camera(std::shared_ptr<node>& root)
-        : root_node_(root) {}
+        : root_node_(root) {
+}
 
 camera::~camera() = default;
 

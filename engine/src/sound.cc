@@ -1,9 +1,9 @@
+#include <aether/context.hh>
+#include <aether/log.hh>
+#include <aether/sound.hh>
 #include <algorithm>
 #include <audio_repository.hh>
-#include <context.hh>
-#include <debug/log.hh>
 #include <soloud_error.h>
-#include <sound.hh>
 
 namespace aether {
 

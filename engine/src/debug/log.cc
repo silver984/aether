@@ -1,4 +1,4 @@
-#include <debug/log.hh>
+#include <aether/log.hh>
 #if defined(AETHER_ENGINE_HAS_DEBUG)
 	#include <chrono>
 	#include <filesystem>

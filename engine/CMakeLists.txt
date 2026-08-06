@@ -1,7 +1,5 @@
 set(AETHER_ENGINE engine)
-set(AETHER_ENGINE_OUTPUT_DIR ${AETHER_OUTPUT_DIR}/${AETHER_ENGINE})
-
-# todo: versioning
+set(AETHER_ENGINE_OUTPUT_DIR ${AETHER_OUTPUT_DIR}/engine)
 
 add_executable(${AETHER_ENGINE})
 
@@ -12,16 +10,36 @@ set_target_properties(
     RUNTIME_OUTPUT_DIRECTORY ${AETHER_ENGINE_OUTPUT_DIR}
 )
 
-add_subdirectory(src)
+file(GLOB AETHER_SRC src/*.c*)
+
+# temporary
+list(
+  REMOVE_ITEM
+  AETHER_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/animated_sprite.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/tilemap.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/animation_repository.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio_repository.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/camera.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/sound.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/texture_cache.cc
+)
+
+target_sources(${AETHER_ENGINE} PRIVATE ${AETHER_SRC})
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug|RelWithDebInfo")
+  file(GLOB AETHER_ENGINE_DEBUG_SRC src/debug/*.c*)
+  target_sources(${AETHER_ENGINE} PRIVATE ${AETHER_ENGINE_DEBUG_SRC})
+endif()
+
 add_subdirectory(external)
 
 target_include_directories(${AETHER_ENGINE} PRIVATE include external)
 
-if(CMAKE_BUILD_TYPE MATCHES "Debug|RelWithDebInfo")
-  target_compile_definitions(${AETHER_ENGINE} PRIVATE AETHER_ENGINE_HAS_DEBUG)
-  if(CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
-    target_compile_definitions(${AETHER_ENGINE} PRIVATE AETHER_ENGINE_RELWITHDEB)
-  endif()
+if(CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
+  target_compile_definitions(${AETHER_ENGINE} PRIVATE AETHER_ENGINE_RELWITHDEB)
+elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
+  target_compile_definitions(${AETHER_ENGINE} PRIVATE AETHER_ENGINE_DEBUG)
 endif()
 
 include(${CMAKE_SOURCE_DIR}/cmake/CPM.cmake)

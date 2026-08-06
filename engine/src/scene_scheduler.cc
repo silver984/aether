@@ -1,7 +1,7 @@
-#include <context.hh>
-#include <debug/log.hh>
-#include <scene.hh>
-#include <scene_scheduler.hh>
+#include <aether/context.hh>
+#include <aether/log.hh>
+#include <aether/scene.hh>
+#include <aether/scene_scheduler.hh>
 #include <utility>
 
 namespace aether {

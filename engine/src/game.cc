@@ -1,9 +1,9 @@
+#include <aether/game.hh>
+#include <aether/log.hh>
+#include <aether/timer.hh>
 #include <chrono>
-#include <debug/log.hh>
-#include <game.hh>
 #include <soloud_error.h>
 #include <thread>
-#include <util/timer.hh>
 
 namespace aether {
 

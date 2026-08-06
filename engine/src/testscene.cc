@@ -1,7 +1,7 @@
-#include <context.hh>
-#include <nodes/sprite.hh>
-#include <testscene.hh>
-#include <window.hh>
+#include <aether/context.hh>
+#include <aether/sprite.hh>
+#include <aether/testscene.hh>
+#include <aether/window.hh>
 
 using namespace aether;
 

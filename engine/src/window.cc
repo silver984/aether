@@ -1,8 +1,9 @@
+#include <aether/log.hh>
+#include <aether/math.hh>
+#include <aether/window.hh>
 #include <algorithm>
-#include <debug/log.hh>
 #include <raylib.h>
-#include <util/math.hh>
-#include <window.hh>
+
 
 namespace aether {
 

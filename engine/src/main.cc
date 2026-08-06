@@ -1,7 +1,7 @@
-#include <context.hh>
-#include <game.hh>
-#include <scene_scheduler.hh>
-#include <testscene.hh>
+#include <aether/context.hh>
+#include <aether/game.hh>
+#include <aether/scene_scheduler.hh>
+#include <aether/testscene.hh>
 
 int main() {
 	aether::game ae;
