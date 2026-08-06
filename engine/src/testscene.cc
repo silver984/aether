@@ -1,7 +1,4 @@
 #include <context.hh>
-#include <debug/log.hh>
-// #include <lua/manager.hh>
-// #include <lua/templates.hh>
 #include <nodes/sprite.hh>
 #include <testscene.hh>
 #include <window.hh>
@@ -18,25 +15,46 @@ bool testscene::init_() {
 		return false;
 	}
 
-	context const& ctx          = ctx_();
-	size<int> const window_size = ctx.window().target_size();
-	strong_ref<sprite> spr      = node::create<sprite>(ctx, sprite_args{.file = "boy"});
+	size<int> const window_size = ctx_().window().target_size();
 
-	if (!spr) {
+	auto boy = node::create<sprite>(ctx_(), sprite_args{
+	                                                .file = "boy",
+	                                        });
+	if (!boy) {
 		return false;
 	}
+	boy->set_scale(0.6f);
+	boy->set_position(window_size * 0.5f);
+	this->add(boy);
 
-	spr->set_scale(0.6f);
-	spr->set_position(window_size * 0.5f);
-	add(spr);
+	auto silly = node::create<sprite>(ctx_(), sprite_args{
+	                                                  .file = "cats.silly",
+	                                          });
+	if (!silly) {
+		return false;
+	}
+	silly->set_scale(0.2f);
+	silly->set_position(boy->position() - 200.f);
+	this->add(silly);
+
+	auto traffic_cones = node::create<sprite>(ctx_(), sprite_args{
+	                                                          .file = "cats.funny.traffic-ones",
+	                                                  });
+	if (!traffic_cones) {
+		return false;
+	}
+	traffic_cones->set_scale(0.4f);
+	traffic_cones->set_position(boy->position() + 200.f);
+	this->add(traffic_cones);
+
 	activate();
 
 	return true;
 }
 
 void testscene::update_(float dt) {
-	if (strong_ref<node> root = root_node().construct()) {
-		for (strong_ref<node>& child : root->children()) {
+	if (auto root = root_node().construct()) {
+		for (auto& child : root->children()) {
 			child->set_rotation(child->rotation() + (22.5f * dt));
 		}
 	}

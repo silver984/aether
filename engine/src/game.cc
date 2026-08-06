@@ -31,7 +31,7 @@ bool game::init(game_init_args const& args) {
 	}
 #endif
 
-	if (!aether_resources_.open("aether.pkg")) {
+	if (!aether_resources_.open("aether.res")) {
 		AETHER_ENGINE_ERRORLOG("Couldn't open/find resources");
 		return false;
 	}
@@ -84,14 +84,16 @@ void game::run() {
 
 		if (!is_window_minimized) {
 			if (is_audio_paused) {
-				soloud_.setPauseAll(is_audio_paused = false);
+				is_audio_paused = false;
+				soloud_.setPauseAll(false);
 			}
 			window_.update_();
 			renderer_.update_viewport_(window_.target_size());
 			scene_scheduler_.update_scene_(dt);
 		} else {
 			if (!is_audio_paused) {
-				soloud_.setPauseAll(is_audio_paused = true);
+				is_audio_paused = true;
+				soloud_.setPauseAll(true);
 			}
 		}
 

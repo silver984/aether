@@ -10,7 +10,7 @@ strong_ref<Texture> loader<Texture>::load(std::string_view filename, blob& buffe
 		return nullptr;
 	}
 
-	strong_ref<Texture> tex = strong_ref<Texture>::make(LoadTextureFromImage(img));
+	auto tex = strong_ref<Texture>::make(LoadTextureFromImage(img));
 
 	if (!IsTextureValid(*tex)) {
 		return nullptr;

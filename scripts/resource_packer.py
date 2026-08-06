@@ -64,7 +64,7 @@ def pack_resources(input_dir: Path, output_file: Path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Pack resources into a flattened .pkg archive."
+        description="Pack resources into a flattened .res archive."
     )
 
     parser.add_argument(
@@ -76,14 +76,14 @@ def main():
     parser.add_argument(
         "output",
         type=Path,
-        help="Output .pkg file",
+        help="Output .res file",
     )
 
     args = parser.parse_args()
 
     output = args.output
-    if output.suffix != ".pkg":
-        output = output.with_suffix(".pkg")
+    if output.suffix != ".res":
+        output = output.with_suffix(".res")
 
     pack_resources(args.input, output)
 
