@@ -31,33 +31,31 @@ std::string date(timepoint const& now) {
 	return fmt::format("{:%Y-%m-%d}", days);
 }
 
-std::ofstream logfile;
+fs::path logfile;
 
 } // namespace
 
 namespace aether::log_impl_ {
 
 void print_(std::string_view msg, std::string_view lvl, std::source_location const& loc) {
-	timepoint const now      = std::chrono::system_clock::now();
-	std::string const logmsg = fmt::format("{:<8} | {:<5} | {:<14} | {}", time(now), lvl, where(loc), msg);
-	if (logfile.is_open()) {
-		logfile << logmsg << "\n";
+	timepoint const now       = std::chrono::system_clock::now();
+	std::string const log_msg = fmt::format("{:<8} | {:<5} | {:<14} | {}", time(now), lvl, where(loc), msg);
+
+	std::ofstream file(logfile, std::ios_base::app);
+	if (file.is_open()) {
+		file << log_msg << "\n";
+		file.close();
 	}
-	fmt::println(fmt::runtime(logmsg));
+
+	fmt::println(fmt::runtime(log_msg));
 }
 
 bool create_logfile_() {
 	fs::create_directory("logs");
-	timepoint const now     = std::chrono::system_clock::now();
-	fs::path const filepath = fmt::format("logs/aether_{}_{}.log", date(now), timehyph(now));
-	logfile.open(filepath);
-	return logfile.is_open();
-}
-
-void close_logfile_() {
-	if (logfile.is_open()) {
-		logfile.close();
-	}
+	timepoint const now = std::chrono::system_clock::now();
+	logfile             = fs::absolute(fmt::format("logs/aether_{}_{}.log", date(now), timehyph(now)));
+	(void)std::ofstream(logfile);
+	return fs::exists(logfile);
 }
 
 } // namespace aether::log_impl_

@@ -10,7 +10,6 @@ namespace aether::log_impl_ {
 
 void print_(std::string_view str, std::string_view lvl, std::source_location const& loc);
 bool create_logfile_();
-void close_logfile_();
 
 } // namespace aether::log_impl_
 

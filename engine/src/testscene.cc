@@ -15,11 +15,12 @@ bool testscene::init_() {
 		return false;
 	}
 
-	size<int> const window_size = ctx_().window().target_size();
+	context const& ctx          = this->ctx_();
+	size<int> const window_size = ctx.window().target_size();
 
-	auto boy = node::create<sprite>(ctx_(), sprite_args{
-	                                                .file = "boy",
-	                                        });
+	auto boy = node::create<sprite>(ctx, sprite_args{
+	                                             .file = "boy",
+	                                     });
 	if (!boy) {
 		return false;
 	}
@@ -27,9 +28,9 @@ bool testscene::init_() {
 	boy->set_position(window_size * 0.5f);
 	this->add(boy);
 
-	auto silly = node::create<sprite>(ctx_(), sprite_args{
-	                                                  .file = "cats.silly",
-	                                          });
+	auto silly = node::create<sprite>(ctx, sprite_args{
+	                                               .file = "cats.silly",
+	                                       });
 	if (!silly) {
 		return false;
 	}
@@ -37,9 +38,9 @@ bool testscene::init_() {
 	silly->set_position(boy->position() - 200.f);
 	this->add(silly);
 
-	auto traffic_cones = node::create<sprite>(ctx_(), sprite_args{
-	                                                          .file = "cats.funny.traffic-ones",
-	                                                  });
+	auto traffic_cones = node::create<sprite>(ctx, sprite_args{
+	                                                       .file = "cats.funny.traffic-cones",
+	                                               });
 	if (!traffic_cones) {
 		return false;
 	}

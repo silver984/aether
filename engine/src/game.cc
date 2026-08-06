@@ -141,11 +141,8 @@ void game::shutdown_() {
 	util::timer t;
 	t.start();
 
-	if (scene_scheduler_.has_pending_scene_()) {
-		scene_scheduler_.cleanup_();
-		textures_.purge_all_();
-	}
-
+	scene_scheduler_.cleanup_();
+	textures_.purge_all_();
 	aether_resources_.close();
 	soloud_.deinit();
 	window_.shutdown_();
@@ -153,10 +150,6 @@ void game::shutdown_() {
 
 	t.stop();
 	AETHER_ENGINE_INFOLOG("Done ({}ms)", t.duration());
-
-#if defined(AETHER_ENGINE_HAS_DEBUG)
-	log_impl_::close_logfile_();
-#endif
 }
 
 } // namespace aether
