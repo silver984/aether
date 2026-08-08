@@ -12,9 +12,13 @@ namespace aether {
 
 class game;
 
+}
+
+namespace aether::core {
+
 template <typename Type>
 class resources final {
-	friend class game;
+	friend class aether::game;
 
 public:
 	~resources() noexcept {
@@ -99,4 +103,4 @@ private:
 	string_map<strong_ref<Type>> cache_;
 };
 
-} // namespace aether
+} // namespace aether::core

@@ -7,8 +7,12 @@ namespace aether {
 class game;
 class scene;
 
+} // namespace aether
+
+namespace aether::core {
+
 class scene_scheduler final {
-	friend class game;
+	friend class aether::game;
 
 public:
 	~scene_scheduler();
@@ -26,4 +30,4 @@ private:
 	std::unique_ptr<scene> pending_scene_;
 };
 
-} // namespace aether
+} // namespace aether::core

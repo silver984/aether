@@ -10,7 +10,7 @@
 #include <raymath.h>
 #include <rlgl.h>
 
-namespace aether {
+namespace aether::core {
 
 renderer::renderer()
         : projection_(mat3::identity()) {
@@ -185,4 +185,4 @@ mat3 renderer::calculate_projection_(size<int> render_size, size<int> target_siz
 	return out;
 }
 
-} // namespace aether
+} // namespace aether::core

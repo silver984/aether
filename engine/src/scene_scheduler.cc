@@ -4,7 +4,7 @@
 #include <aether/scene_scheduler.hh>
 #include <utility>
 
-namespace aether {
+namespace aether::core {
 
 scene_scheduler::scene_scheduler()  = default;
 scene_scheduler::~scene_scheduler() = default;
@@ -44,4 +44,4 @@ bool scene_scheduler::has_pending_scene_() const {
 	return pending_scene_ != nullptr;
 }
 
-} // namespace aether
+} // namespace aether::core

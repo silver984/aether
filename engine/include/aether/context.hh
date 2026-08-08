@@ -9,16 +9,20 @@ class Soloud;
 
 }
 
-namespace aether {
+namespace aether::core {
 
-class game;
 class window;
 class renderer;
 class scene_scheduler;
-class zip_archive;
 
 template <typename>
 class resources;
+
+} // namespace aether::core
+
+namespace aether {
+
+class game;
 
 class context final {
 	friend class game;
@@ -27,18 +31,14 @@ public:
 	~context() noexcept;
 	DELETE_COPY_AND_MOVE(context);
 
-	[[nodiscard]] inline SoLoud::Soloud& soloud() const noexcept {
-		return soloud_;
-	}
-
-	window& window;
-	renderer& renderer;
-	scene_scheduler& scene_scheduler;
-	resources<Texture>& textures;
+	core::window& window;
+	core::renderer& renderer;
+	core::scene_scheduler& scene_scheduler;
+	core::resources<Texture>& textures;
+	SoLoud::Soloud& soloud;
 
 private:
 	context(game& game) noexcept;
-	SoLoud::Soloud& soloud_;
 };
 
 } // namespace aether

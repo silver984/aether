@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <raylib.h>
 
-namespace aether {
+namespace aether::core {
 
 window::window()
         : target_fps_(0) {
@@ -63,4 +63,4 @@ bool window::is_minimized_() const {
 	return IsWindowMinimized();
 }
 
-} // namespace aether
+} // namespace aether::core

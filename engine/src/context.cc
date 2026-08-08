@@ -8,7 +8,7 @@ context::context(game& game) noexcept
         , renderer(game.renderer_)
         , scene_scheduler(game.scene_scheduler_)
         , textures(game.textures_)
-        , soloud_(game.soloud_) {
+        , soloud(game.soloud_) {
 }
 
 context::~context() noexcept = default;

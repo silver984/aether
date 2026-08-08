@@ -13,11 +13,13 @@ using rltexture2d = Texture;
 namespace aether {
 
 class game;
-class window;
-class context;
+
+}
+
+namespace aether::core {
 
 class renderer final {
-	friend class game;
+	friend class aether::game;
 
 public:
 	~renderer();
@@ -56,4 +58,4 @@ private:
 #endif
 };
 
-} // namespace aether
+} // namespace aether::core

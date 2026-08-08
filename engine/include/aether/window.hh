@@ -7,8 +7,12 @@ namespace aether {
 
 class game;
 
+}
+
+namespace aether::core {
+
 class window final {
-	friend class game;
+	friend class aether::game;
 
 public:
 	~window();
@@ -20,6 +24,7 @@ public:
 
 private:
 	window();
+
 	bool init_(std::string_view title, size<int> bounds, int fps);
 	void shutdown_();
 	void update_();
@@ -31,4 +36,4 @@ private:
 	int target_fps_;
 };
 
-} // namespace aether
+} // namespace aether::core

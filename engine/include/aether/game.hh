@@ -31,17 +31,17 @@ public:
 
 	bool init(game_init_args const& args);
 	void run();
-	[[nodiscard]] context const& ctx() const;
+
+	context const ctx;
 
 private:
 	void shutdown_();
 
-	window window_;
-	renderer renderer_;
+	core::window window_;
+	core::renderer renderer_;
+	core::scene_scheduler scene_scheduler_;
+	core::resources<Texture> textures_;
 	SoLoud::Soloud soloud_;
-	scene_scheduler scene_scheduler_;
-	resources<Texture> textures_;
-	context ctx_;
 	bool is_initialized_;
 };
 

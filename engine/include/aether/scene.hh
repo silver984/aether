@@ -5,23 +5,27 @@
 #include <memory>
 #include <utility>
 
-namespace aether {
+namespace aether::core {
 
 class scene_scheduler;
+
+}
+
+namespace aether {
+
 class context;
 class node;
 
 class scene {
-	friend class scene_scheduler;
+	friend class core::scene_scheduler;
 
 public:
 	scene(context const& ctx) noexcept;
 	virtual ~scene() noexcept;
 
-	template <typename T, typename... va>
-	        requires std::derived_from<T, scene>
-	[[nodiscard]] static std::unique_ptr<T> create(context const& ctx, va&&... args) {
-		std::unique_ptr<T> ptr = std::make_unique<T>(ctx, std::forward<va>(args)...);
+	template <std::derived_from<scene> Type, typename... Args>
+	[[nodiscard]] static std::unique_ptr<Type> create(context const& ctx, Args&&... args) {
+		auto ptr = std::make_unique<Type>(ctx, std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}

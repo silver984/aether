@@ -8,7 +8,7 @@
 namespace aether {
 
 game::game() noexcept
-        : ctx_(*this)
+        : ctx(*this)
         , is_initialized_(false) {
 }
 
@@ -124,10 +124,6 @@ void game::run() {
 	}
 
 	shutdown_();
-}
-
-context const& game::ctx() const {
-	return ctx_;
 }
 
 void game::shutdown_() {
