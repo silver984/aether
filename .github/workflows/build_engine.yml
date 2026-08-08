@@ -60,7 +60,7 @@ jobs:
             libgl1-mesa-dev
       
       - name: Install Pillow
-        run: pip install pillow
+        run: python -m pip install pillow
 
       - name: Build
         run: |
