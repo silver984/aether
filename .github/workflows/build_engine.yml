@@ -58,6 +58,9 @@ jobs:
             libxcursor-dev \
             libxi-dev \
             libgl1-mesa-dev
+      
+      - name: Install Pillow
+        run: pip install pillow
 
       - name: Build
         run: |
@@ -68,4 +71,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: aether_${{ matrix.target }}_${{ matrix.cmake-preset }}_${{ steps.git.outputs.sha }}
-          path: build/${{ matrix.cmake-preset }}/bin/engine
+          path: build/${{ matrix.cmake-preset }}-release/bin/engine

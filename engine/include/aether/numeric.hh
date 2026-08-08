@@ -1,5 +1,6 @@
 #pragma once
 #include <concepts>
+#include <cstddef>
 #include <type_traits>
 
 namespace aether {
@@ -14,4 +15,4 @@ concept indexed_numeric = numeric<typename T::value_type> && requires(T t, T con
 	{ ct[i] } -> std::same_as<typename T::value_type const&>;
 };
 
-}
+} // namespace aether
