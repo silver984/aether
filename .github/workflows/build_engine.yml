@@ -61,8 +61,8 @@ jobs:
 
       - name: Build
         run: |
-          cmake --preset ${{ matrix.cmake-preset }}
-          cmake --build --preset ${{ matrix.cmake-preset }}
+          cmake --preset ${{ matrix.cmake-preset }}-release
+          cmake --build --preset ${{ matrix.cmake-preset }}-release
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
