@@ -17,7 +17,7 @@ class context;
 class scene;
 // class camera;
 
-class node : public this_ref<node> {
+class node : public self_ref<node> {
 	friend class scene;
 	// friend class camera;
 
@@ -25,9 +25,9 @@ public:
 	node(context const& ctx) noexcept;
 	virtual ~node() noexcept;
 
-	template <std::derived_from<node> Derived, typename... Args>
-	[[nodiscard]] static strong_ref<Derived> create(context const& ctx, Args&&... args) {
-		auto ptr = strong_ref<Derived>::make(ctx, std::forward<Args>(args)...);
+	template <std::derived_from<node> Type, typename... Args>
+	[[nodiscard]] static strong_ref<Type> create(context const& ctx, Args&&... args) {
+		auto ptr = strong_ref<Type>::create(ctx, std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}
@@ -109,12 +109,12 @@ public:
 
 	[[nodiscard]] scene* get_scene() const;
 
+	context const& ctx;
+
 protected:
 	virtual bool init_();
 	virtual void update_(float dt);
 	virtual void draw_(mat3 const& transform, rgba color);
-
-	[[nodiscard]] context const& ctx_() const;
 
 private:
 	bool init_interface_();
@@ -130,7 +130,6 @@ private:
 	[[nodiscard]] mat3 calculate_transform_() const;
 	[[nodiscard]] rgba calculate_combined_rgba_() const;
 
-	context const& context_;
 	scene* scene_;
 	weak_ref<node> parent_;
 	std::vector<strong_ref<node>> children_;

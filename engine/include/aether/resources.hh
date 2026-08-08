@@ -1,10 +1,11 @@
 #pragma once
+#include <aether/general.h>
 #include <aether/loader.hh>
 #include <aether/log.hh>
 #include <aether/ref.hh>
 #include <aether/string.hh>
 #include <aether/timer.hh>
-#include <aether/ziparc.hh>
+#include <aether/zip_archive.hh>
 #include <utility>
 
 namespace aether {
@@ -20,12 +21,15 @@ public:
 		purge_all_();
 	}
 
-	[[nodiscard]] strong_ref<Type> load(ziparc& archive, std::string_view file) {
+	DELETE_COPY_AND_MOVE(resources);
+
+	[[nodiscard]] strong_ref<Type> load(zip_archive& pkg, std::string_view file) {
 		if (strong_ref<Type> from_cache = cache_fetch_(file)) {
 			return from_cache;
 		}
 
-		if (!archive.contains(file)) {
+		if (!pkg.contains(file)) {
+			AETHER_ENGINE_ERRORLOG("\"{}\" does not exist from the specified resource package", file);
 			return nullptr;
 		}
 
@@ -33,7 +37,7 @@ public:
 		timer t;
 		t.start();
 
-		blob buffer = archive.read(file);
+		blob buffer = pkg.read(file);
 
 		if (buffer.empty()) {
 			AETHER_ENGINE_ERRORLOG("Failed to read buffer ? file: \"{}\"", file);

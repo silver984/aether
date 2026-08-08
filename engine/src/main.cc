@@ -14,7 +14,7 @@ int main() {
 	}
 
 	aether::context const& ctx = ae.ctx();
-	ctx.scene_scheduler().replace_scene(aether::scene::create<testscene>(ctx));
+	ctx.scene_scheduler.replace_scene(aether::scene::create<testscene>(ctx));
 	ae.run();
 
 	return 0;

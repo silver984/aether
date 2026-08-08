@@ -2,13 +2,14 @@
 // #include <aether/animation_repository.hh>
 // #include <audio_repository.hh>
 #include <aether/context.hh>
+#include <aether/general.h>
 // #include <lua/manager.hh>
 #include <aether/renderer.hh>
 #include <aether/resources.hh>
 #include <aether/scene_scheduler.hh>
 #include <aether/size.hh>
 #include <aether/window.hh>
-#include <aether/ziparc.hh>
+#include <aether/zip_archive.hh>
 #include <soloud.h>
 #include <string_view>
 
@@ -25,14 +26,12 @@ class game final {
 
 public:
 	game() noexcept;
-	game(game const&) = delete;
-	game(game&&)      = delete;
 	~game() noexcept;
+	DELETE_COPY_AND_MOVE(game);
+
 	bool init(game_init_args const& args);
 	void run();
 	[[nodiscard]] context const& ctx() const;
-	game& operator=(game const&) = delete;
-	game& operator=(game&&)      = delete;
 
 private:
 	void shutdown_();
@@ -42,10 +41,6 @@ private:
 	SoLoud::Soloud soloud_;
 	scene_scheduler scene_scheduler_;
 	resources<Texture> textures_;
-	ziparc aether_resources_;
-	// lua::manager lua_manager_;
-	// banimation_repository animations_;
-	// audio_repository audios_;
 	context ctx_;
 	bool is_initialized_;
 };

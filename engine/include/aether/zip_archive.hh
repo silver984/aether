@@ -1,20 +1,18 @@
 #pragma once
 #include <aether/blob.hh>
-#include <filesystem>
 #include <miniz/miniz.h>
 #include <string_view>
 
 namespace aether {
 
-namespace fs = std::filesystem;
-
-class ziparc final {
+class zip_archive final {
 public:
-	ziparc() noexcept;
-	ziparc(fs::path const& file);
-	~ziparc();
-	bool open(fs::path const& file);
-	bool close();
+	zip_archive() noexcept;
+	zip_archive(char const* pkg) noexcept;
+	~zip_archive() noexcept;
+
+	bool open(std::string_view pkg) noexcept;
+	bool close() noexcept;
 	[[nodiscard]] bool is_open() const noexcept;
 	[[nodiscard]] bool contains(std::string_view file);
 	[[nodiscard]] blob read(std::string_view file);

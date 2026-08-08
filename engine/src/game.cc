@@ -30,11 +30,6 @@ bool game::init(game_init_args const& args) {
 	}
 #endif
 
-	if (!aether_resources_.open("aether.res")) {
-		AETHER_ENGINE_ERRORLOG("Couldn't open/find resources");
-		return false;
-	}
-
 	if (!window_.init_(args.window_title, args.resolution, args.fps)) {
 		return false;
 	}
@@ -142,7 +137,6 @@ void game::shutdown_() {
 
 	scene_scheduler_.cleanup_();
 	textures_.purge_all_();
-	aether_resources_.close();
 	soloud_.deinit();
 	window_.shutdown_();
 	is_initialized_ = false;

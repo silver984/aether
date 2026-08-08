@@ -1,7 +1,7 @@
 #pragma once
+#include <aether/general.h>
 #include <aether/size.hh>
-#include <string>
-#include <string_view>
+#include <aether/string.hh>
 
 namespace aether {
 
@@ -12,6 +12,8 @@ class window final {
 
 public:
 	~window();
+	DELETE_COPY_AND_MOVE(window);
+
 	[[nodiscard]] std::string_view title() const;
 	[[nodiscard]] size<int> target_size() const;
 	[[nodiscard]] int target_fps() const;

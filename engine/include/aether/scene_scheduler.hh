@@ -1,4 +1,5 @@
 #pragma once
+#include <aether/general.h>
 #include <memory>
 
 namespace aether {
@@ -11,6 +12,7 @@ class scene_scheduler final {
 
 public:
 	~scene_scheduler();
+	DELETE_COPY_AND_MOVE(scene_scheduler);
 	void replace_scene(std::unique_ptr<scene> new_scene);
 
 private:

@@ -7,7 +7,7 @@
 namespace aether {
 
 node::node(context const& ctx_) noexcept
-        : context_(ctx_)
+        : ctx(ctx_)
         , scene_(nullptr)
         , parent_(nullptr)
         , color_(255)
@@ -34,7 +34,7 @@ bool node::add_child(strong_ref<node> child) {
 		return false;
 	}
 
-	auto self          = this->strong_this_();
+	auto self          = strong_self_();
 	bool const is_self = child == self;
 
 	if (is_self) {
@@ -95,7 +95,7 @@ void node::destroy_all() {
 
 bool node::detach_from_parent() {
 	if (auto p = parent_.construct()) {
-		return p->remove_child(this->strong_this_());
+		return p->remove_child(strong_self_());
 	}
 	return false;
 }
@@ -374,10 +374,6 @@ scene* node::get_scene() const {
 	}
 	auto p = parent_.construct();
 	return p ? p->get_scene() : nullptr;
-}
-
-context const& node::ctx_() const {
-	return context_;
 }
 
 bool node::init_interface_() {

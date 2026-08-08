@@ -21,6 +21,8 @@ class renderer final {
 
 public:
 	~renderer();
+	DELETE_COPY_AND_MOVE(renderer);
+
 	void draw_texture(rltexture2d const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
 
 private:

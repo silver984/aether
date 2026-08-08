@@ -38,24 +38,18 @@ public:
 
 	[[nodiscard]] weak_ref<node> root_node() const;
 
-	// [[nodiscard]] camera& get_camera();
+	context const& ctx;
 
 protected:
 	virtual bool init_();
 	virtual void update_(float dt);
 	virtual void visit_();
 
-	[[nodiscard]] context const& ctx_() const;
-
 private:
 	bool init_interface_();
 
 	void update_all_(float dt);
 	void draw_all_();
-
-	// todo: music member
-
-	context const& m_ctx_;
 
 	// camera camera_; // todo
 
