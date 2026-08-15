@@ -6,40 +6,40 @@
 	#include <string_view>
 	#include <utility>
 
-namespace aether::log_impl_ {
+namespace aether::_log_impl {
 
-void print_(std::string_view str, std::string_view lvl, std::source_location const& loc);
-bool create_logfile_();
+void print(std::string_view str, std::string_view lvl, std::source_location const& loc);
+bool create_logfile();
 
-} // namespace aether::log_impl_
+} // namespace aether::_log_impl
 
 namespace aether::log {
 
 	#if !defined(AETHER_ENGINE_RELWITHDEB)
 template <typename... Args>
 void trace(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "TRACE", loc);
+	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "TRACE", loc);
 }
 
 template <typename... Args>
 void debug(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "DEBUG", loc);
+	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "DEBUG", loc);
 }
 	#endif
 
 template <typename... Args>
 void info(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "INFO", loc);
+	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "INFO", loc);
 }
 
 template <typename... Args>
 void warn(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "WARN", loc);
+	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "WARN", loc);
 }
 
 template <typename... Args>
 void error(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	log_impl_::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "ERROR", loc);
+	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "ERROR", loc);
 }
 
 } // namespace aether::log

@@ -1,25 +1,156 @@
 #pragma once
-#include <aether/general.h>
 #include <concepts>
 #include <cstddef>
-#include <cstdint>
+#include <new>
 #include <utility>
 
-namespace aether::ref_impl_ {
+namespace aether::_ref_impl {
 
 template <typename Type>
-concept is_self_referenceable_ = requires { typename Type::self_ref_tag; };
+concept is_self_referenceable = requires { typename Type::self_referenceable_; };
 
-struct ref_block final {
+struct shared_block final {
 	void* ptr;
 	void (*deleter)(void*);
 	uint32_t strong_count;
 	uint32_t weak_count;
 };
 
-} // namespace aether::ref_impl_
+struct unique_block final {
+	void* ptr;
+	void (*deleter)(void*);
+};
+
+} // namespace aether::_ref_impl
 
 namespace aether {
+
+template <typename Type>
+class unique_ref final {
+	template <typename>
+	friend class unique_ref;
+
+public:
+	unique_ref() noexcept
+	        : ptr_(nullptr)
+	        , block_(nullptr) {
+	}
+
+	unique_ref(std::nullptr_t) noexcept
+	        : ptr_(nullptr)
+	        , block_(nullptr) {
+	}
+
+	unique_ref(unique_ref const&) = delete;
+
+	unique_ref(unique_ref&& other) noexcept
+	        : ptr_(std::exchange(other.ptr_, nullptr))
+	        , block_(std::exchange(other.block_, nullptr)) {
+	}
+
+	template <std::derived_from<Type> Other>
+	unique_ref(unique_ref<Other>&& other) noexcept
+	        : ptr_(static_cast<Type*>(std::exchange(other.ptr_, nullptr)))
+	        , block_(std::exchange(other.block_, nullptr)) {
+	}
+
+	~unique_ref() noexcept {
+		release();
+	}
+
+	template <typename... Args>
+	[[nodiscard]] static unique_ref create(Args&&... args) noexcept {
+		return new (std::nothrow) Type(std::forward<Args>(args)...);
+	}
+
+	void release() noexcept {
+		if (!block_) {
+			return;
+		}
+
+		block_->deleter(block_->ptr);
+		block_->ptr = nullptr;
+
+		delete block_;
+
+		ptr_   = nullptr;
+		block_ = nullptr;
+	}
+
+	[[nodiscard]] Type* get() const noexcept {
+		return ptr_;
+	}
+
+	[[nodiscard]] Type* operator->() const noexcept {
+		return get();
+	}
+
+	[[nodiscard]] Type& operator*() const noexcept {
+		return *get();
+	}
+
+	explicit operator bool() const noexcept {
+		return get() != nullptr;
+	}
+
+	unique_ref& operator=(unique_ref const&) = delete;
+
+	unique_ref& operator=(unique_ref&& other) noexcept {
+		if (this != &other) {
+			return move_(other);
+		}
+		return *this;
+	}
+
+	template <std::derived_from<Type> Other>
+	unique_ref& operator=(unique_ref<Other>&& other) noexcept {
+		return move_(other);
+	}
+
+	bool operator==(std::nullptr_t) const noexcept {
+		return get() == nullptr;
+	}
+
+	bool operator!=(std::nullptr_t) const noexcept {
+		return !(*this == nullptr);
+	}
+
+	template <std::derived_from<Type> Other>
+	bool operator==(unique_ref<Other> const& other) const noexcept {
+		return get() == other.get();
+	}
+
+	template <std::derived_from<Type> Other>
+	bool operator!=(unique_ref<Other> const& other) const noexcept {
+		return !(*this == other);
+	}
+
+private:
+	unique_ref(Type* ptr) noexcept {
+		block_ = new (std::nothrow) _ref_impl::unique_block;
+
+		if (!block_) {
+			return;
+		}
+
+		ptr_            = ptr;
+		block_->ptr     = ptr;
+		block_->deleter = [](void* p) {
+			delete static_cast<Type*>(p);
+		};
+	}
+
+	template <std::derived_from<Type> Other>
+	unique_ref& move_(unique_ref<Other>& other) noexcept {
+		release();
+		ptr_   = static_cast<Type*>(std::exchange(other.ptr_, nullptr));
+		block_ = std::exchange(other.block_, nullptr);
+		return *this;
+	}
+
+	Type* ptr_;
+	_ref_impl::unique_block* block_;
+};
 
 template <typename>
 class weak_ref;
@@ -37,48 +168,70 @@ class strong_ref final {
 
 public:
 	strong_ref() noexcept
-	        : block_(nullptr) {
+	        : ptr_(nullptr)
+	        , block_(nullptr) {
 	}
 
 	strong_ref(std::nullptr_t) noexcept
-	        : block_(nullptr) {
+	        : ptr_(nullptr)
+	        , block_(nullptr) {
 	}
 
 	strong_ref(strong_ref const& other) noexcept
-	        : block_(other.block_) {
+	        : ptr_(other.ptr_)
+	        , block_(other.block_) {
 		inc_strong_();
 	}
 
-	template <std::derived_from<Type> OtherType>
-	strong_ref(strong_ref<OtherType> const& other) noexcept
-	        : block_(other.block_) {
+	template <std::derived_from<Type> Other>
+	strong_ref(strong_ref<Other> const& other) noexcept
+	        : ptr_(static_cast<Type*>(other.ptr_))
+	        , block_(other.block_) {
 		inc_strong_();
 	}
 
 	strong_ref(strong_ref&& other) noexcept
-	        : block_(std::exchange(other.block_, nullptr)) {
+	        : ptr_(std::exchange(other.ptr_, nullptr))
+	        , block_(std::exchange(other.block_, nullptr)) {
 	}
 
-	template <std::derived_from<Type> OtherType>
-	strong_ref(strong_ref<OtherType>&& other) noexcept
-	        : block_(std::exchange(other.block_, nullptr)) {
+	template <std::derived_from<Type> Other>
+	strong_ref(strong_ref<Other>&& other) noexcept
+	        : ptr_(static_cast<Type*>(std::exchange(other.ptr_, nullptr)))
+	        , block_(std::exchange(other.block_, nullptr)) {
 	}
 
 	~strong_ref() noexcept {
-		release_();
+		release();
 	}
 
 	template <typename... Args>
 	[[nodiscard]] static strong_ref create(Args&&... args) {
-		return new Type(std::forward<Args>(args)...);
+		return new (std::nothrow) Type(std::forward<Args>(args)...);
 	}
 
-	void nullify() noexcept {
-		release_();
+	void release() noexcept {
+		if (!block_) {
+			return;
+		}
+
+		_ref_impl::shared_block* old_block = std::exchange(block_, nullptr);
+		ptr_                               = nullptr;
+
+		if (--old_block->strong_count != 0) {
+			return;
+		}
+
+		old_block->deleter(old_block->ptr);
+		old_block->ptr = nullptr;
+
+		if (--old_block->weak_count == 0) {
+			delete old_block;
+		}
 	}
 
 	[[nodiscard]] Type* get() const noexcept {
-		return block_ ? static_cast<Type*>(block_->ptr) : nullptr;
+		return ptr_;
 	}
 
 	[[nodiscard]] Type* operator->() const noexcept {
@@ -94,14 +247,8 @@ public:
 	}
 
 	[[nodiscard]] uint32_t weak_count() const noexcept {
-		if (!block_) {
-			return 0;
-		}
-		if (block_->strong_count >= 1) {
-			// subtract implicit count
-			return block_->weak_count - 1;
-		}
-		return block_->weak_count;
+		// subtract implicit count
+		return block_ ? (block_->weak_count - 1) : 0;
 	}
 
 	explicit operator bool() const noexcept {
@@ -110,28 +257,26 @@ public:
 
 	strong_ref& operator=(strong_ref const& other) noexcept {
 		if (this != &other) {
-			assign_(other.block_);
+			return copy_(other);
 		}
 		return *this;
 	}
 
-	template <std::derived_from<Type> OtherType>
-	strong_ref& operator=(strong_ref<OtherType> const& other) noexcept {
-		assign_(other.block_);
-		return *this;
+	template <std::derived_from<Type> Other>
+	strong_ref& operator=(strong_ref<Other> const& other) noexcept {
+		return copy_(other);
 	}
 
 	strong_ref& operator=(strong_ref&& other) noexcept {
 		if (this != &other) {
-			assign_(std::exchange(other.block_, nullptr));
+			return move_(other);
 		}
 		return *this;
 	}
 
-	template <std::derived_from<Type> OtherType>
-	strong_ref& operator=(strong_ref<OtherType>&& other) noexcept {
-		assign_(std::exchange(other.block_, nullptr));
-		return *this;
+	template <std::derived_from<Type> Other>
+	strong_ref& operator=(strong_ref<Other>&& other) noexcept {
+		return move_(other);
 	}
 
 	bool operator==(std::nullptr_t) const noexcept {
@@ -139,33 +284,39 @@ public:
 	}
 
 	bool operator!=(std::nullptr_t) const noexcept {
-		return get() != nullptr;
+		return !(*this == nullptr);
 	}
 
-	template <std::derived_from<Type> OtherType>
-	bool operator==(strong_ref<OtherType> const& other) const noexcept {
+	template <std::derived_from<Type> Other>
+	bool operator==(strong_ref<Other> const& other) const noexcept {
 		return get() == other.get();
 	}
 
-	template <std::derived_from<Type> OtherType>
-	bool operator!=(strong_ref<OtherType> const& other) const noexcept {
+	template <std::derived_from<Type> Other>
+	bool operator!=(strong_ref<Other> const& other) const noexcept {
 		return !(*this == other);
 	}
 
 private:
-	strong_ref(Type* ptr)
-	        : block_(new ref_impl_::ref_block{
-	                  .ptr = ptr,
-	                  .deleter =
-	                          [](void* ptr) {
-		                          delete static_cast<Type*>(ptr);
-	                          },
-	                  .strong_count = 1,
-	                  .weak_count   = 1, // add implicit count
-	          }) {
-		if constexpr (ref_impl_::is_self_referenceable_<Type>) {
-			// we can expect that ptr is not nullptr
-			ptr->init_self_ref_(block_);
+	strong_ref(Type* ptr) noexcept {
+		block_ = new (std::nothrow) _ref_impl::shared_block;
+
+		if (!block_) {
+			return;
+		}
+
+		ptr_                 = ptr;
+		block_->ptr          = ptr;
+		block_->strong_count = 1;
+		block_->weak_count   = 1; // implicit count
+		block_->deleter      = [](void* p) {
+			delete static_cast<Type*>(p);
+		};
+
+		if constexpr (_ref_impl::is_self_referenceable<Type>) {
+			if (ptr) {
+				ptr->init_self_ref_(*this);
+			}
 		}
 	}
 
@@ -175,35 +326,26 @@ private:
 		}
 	}
 
-	void release_() noexcept {
-		if (!block_) {
-			return;
-		}
-
-		ref_impl_::ref_block* old_block = std::exchange(block_, nullptr);
-
-		if (--old_block->strong_count != 0) {
-			return;
-		}
-
-		old_block->deleter(old_block->ptr);
-		old_block->ptr = nullptr;
-
-		if (--old_block->weak_count == 0) {
-			delete old_block;
-		}
-	}
-
-	void assign_(ref_impl_::ref_block* new_block) noexcept {
-		if (block_ == new_block) {
-			return;
-		}
-		release_();
-		block_ = new_block;
+	template <std::derived_from<Type> Other>
+	strong_ref& copy_(strong_ref<Other> const& other) noexcept {
+		release();
+		ptr_   = static_cast<Type*>(other.ptr_);
+		block_ = other.block_;
 		inc_strong_();
+		return *this;
 	}
 
-	ref_impl_::ref_block* block_;
+	template <std::derived_from<Type> Other>
+	strong_ref& move_(strong_ref<Other>& other) noexcept {
+		release();
+		ptr_   = static_cast<Type*>(std::exchange(other.ptr_, nullptr));
+		block_ = std::exchange(other.block_, nullptr);
+		inc_strong_();
+		return *this;
+	}
+
+	Type* ptr_;
+	_ref_impl::shared_block* block_;
 };
 
 template <typename Type>
@@ -232,11 +374,18 @@ public:
 	}
 
 	~weak_ref() noexcept {
-		release_();
+		release();
 	}
 
-	void detach() noexcept {
-		release_();
+	// stop observing the managed object
+	void release() noexcept {
+		if (!block_) {
+			return;
+		}
+		_ref_impl::shared_block* old_block = std::exchange(block_, nullptr);
+		if (--old_block->weak_count == 0 && old_block->strong_count == 0) {
+			delete old_block;
+		}
 	}
 
 	[[nodiscard]] strong_ref<Type> construct() const noexcept {
@@ -244,6 +393,7 @@ public:
 			return nullptr;
 		}
 		strong_ref<Type> out;
+		out.ptr_   = static_cast<Type*>(block_->ptr);
 		out.block_ = block_;
 		out.inc_strong_();
 		return out;
@@ -257,7 +407,7 @@ public:
 		if (this == &other) {
 			return *this;
 		}
-		release_();
+		release();
 		return copy_(other.block_);
 	}
 
@@ -265,13 +415,13 @@ public:
 		if (this == &other) {
 			return *this;
 		}
-		release_();
+		release();
 		block_ = std::exchange(other.block_, nullptr);
 		return *this;
 	}
 
 	weak_ref& operator=(strong_ref<Type> const& other) noexcept {
-		release_();
+		release();
 		return copy_(other.block_);
 	}
 
@@ -282,26 +432,13 @@ private:
 		}
 	}
 
-	void release_() noexcept {
-		if (!block_) {
-			return;
-		}
-
-		ref_impl_::ref_block* old_block = block_;
-		block_                          = nullptr;
-
-		if (--old_block->weak_count == 0 && old_block->strong_count == 0) {
-			delete old_block;
-		}
-	}
-
-	weak_ref& copy_(ref_impl_::ref_block* b) noexcept {
-		block_ = b;
+	weak_ref& copy_(_ref_impl::shared_block* block) noexcept {
+		block_ = block;
 		inc_weak_();
 		return *this;
 	}
 
-	ref_impl_::ref_block* block_;
+	_ref_impl::shared_block* block_;
 };
 
 template <typename Type>
@@ -313,7 +450,10 @@ class self_ref {
 	friend class strong_ref;
 
 public:
-	DELETE_COPY_AND_MOVE(self_ref);
+	self_ref(self_ref const&)            = delete;
+	self_ref(self_ref&&)                 = delete;
+	self_ref& operator=(self_ref const&) = delete;
+	self_ref& operator=(self_ref&&)      = delete;
 
 protected:
 	self_ref() noexcept          = default;
@@ -328,12 +468,11 @@ protected:
 	}
 
 private:
-	using self_ref_tag = void;
+	using self_referenceable_ = void;
 
-	void init_self_ref_(ref_impl_::ref_block* block) noexcept {
+	void init_self_ref_(strong_ref<Type> const& ref) noexcept {
 		// its expected that this function is only called once
-		weak_.block_ = block;
-		weak_.inc_weak_();
+		weak_ = ref;
 	}
 
 	weak_ref<Type> mutable weak_;

@@ -25,7 +25,7 @@ bool game::init(game_init_args const& args) {
 	}
 
 #if defined(AETHER_ENGINE_HAS_DEBUG)
-	if (!log_impl_::create_logfile_()) {
+	if (!_log_impl::create_logfile()) {
 		AETHER_ENGINE_WARNLOG("Couldn't create logfile");
 	}
 #endif

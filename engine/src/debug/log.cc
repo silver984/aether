@@ -35,9 +35,9 @@ fs::path logfile;
 
 } // namespace
 
-namespace aether::log_impl_ {
+namespace aether::_log_impl {
 
-void print_(std::string_view msg, std::string_view lvl, std::source_location const& loc) {
+void print(std::string_view msg, std::string_view lvl, std::source_location const& loc) {
 	timepoint const now       = std::chrono::system_clock::now();
 	std::string const log_msg = fmt::format("{:<8} | {:<5} | {:<14} | {}", time(now), lvl, where(loc), msg);
 
@@ -50,7 +50,7 @@ void print_(std::string_view msg, std::string_view lvl, std::source_location con
 	fmt::println(fmt::runtime(log_msg));
 }
 
-bool create_logfile_() {
+bool create_logfile() {
 	fs::create_directory("logs");
 	timepoint const now = std::chrono::system_clock::now();
 	logfile             = fs::absolute(fmt::format("logs/aether_{}_{}.log", date(now), timehyph(now)));
@@ -58,5 +58,5 @@ bool create_logfile_() {
 	return fs::exists(logfile);
 }
 
-} // namespace aether::log_impl_
+} // namespace aether::_log_impl
 #endif
