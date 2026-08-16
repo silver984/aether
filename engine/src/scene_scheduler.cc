@@ -6,7 +6,7 @@
 namespace aether {
 
 scene_scheduler::scene_scheduler() {
-	expose_();
+	this->expose_();
 }
 
 scene_scheduler::~scene_scheduler() noexcept = default;

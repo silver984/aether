@@ -61,7 +61,7 @@ void sprite::set_texture_source_rect(rect<float> const& val) {
 	texture_source_rect_ = val;
 	int w                = (int)std::round(texture_source_rect_.width);
 	int h                = (int)std::round(texture_source_rect_.height);
-	set_bounds(size<int>(w, h));
+	this->set_bounds(size<int>(w, h));
 }
 
 rect<float> sprite::texture_source_rect() const {
@@ -73,7 +73,7 @@ bool sprite::init_() {
 		return false;
 	}
 
-	schedule_draw();
+	this->schedule_draw();
 
 	if (!set_texture(args_.pak, args_.file)) {
 		AETHER_ENGINE_WARNLOG("Failed to set texture, using fallback texture instead");

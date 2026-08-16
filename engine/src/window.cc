@@ -8,7 +8,7 @@ namespace aether {
 
 window::window()
         : target_fps_(0) {
-	expose_();
+	this->expose_();
 }
 
 window::~window() noexcept = default;

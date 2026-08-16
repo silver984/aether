@@ -40,7 +40,7 @@ bool testscene::init_() {
 	traffic_cones->set_position(boy->position() + 200.f);
 	this->add(traffic_cones);
 
-	activate();
+	this->activate();
 
 	return true;
 }

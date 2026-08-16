@@ -17,7 +17,7 @@ renderer::renderer()
 	last_fps_        = 0;
 	last_heap_usage_ = 0.f;
 #endif
-	expose_();
+	this->expose_();
 }
 
 renderer::~renderer() noexcept = default;
