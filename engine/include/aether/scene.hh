@@ -1,8 +1,6 @@
 #pragma once
-// #include <camera.hh>
 #include <aether/ref.hh>
 #include <concepts>
-#include <memory>
 #include <utility>
 
 namespace aether::core {
@@ -24,8 +22,8 @@ public:
 	virtual ~scene() noexcept;
 
 	template <std::derived_from<scene> Type, typename... Args>
-	[[nodiscard]] static std::unique_ptr<Type> create(context const& ctx, Args&&... args) {
-		auto ptr = std::make_unique<Type>(ctx, std::forward<Args>(args)...);
+	[[nodiscard]] static unique_ref<Type> create(context const& ctx, Args&&... args) {
+		auto ptr = unique_ref<Type>::create(ctx, std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}

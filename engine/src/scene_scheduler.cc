@@ -9,7 +9,7 @@ namespace aether::core {
 scene_scheduler::scene_scheduler()  = default;
 scene_scheduler::~scene_scheduler() = default;
 
-void scene_scheduler::replace_scene(std::unique_ptr<scene> new_scene) {
+void scene_scheduler::replace_scene(unique_ref<scene> new_scene) {
 	if (!new_scene) {
 		AETHER_ENGINE_ERRORLOG("Can't switch to a nullptr scene");
 		return;
@@ -20,8 +20,8 @@ void scene_scheduler::replace_scene(std::unique_ptr<scene> new_scene) {
 }
 
 void scene_scheduler::cleanup_() {
-	current_scene_.reset();
-	pending_scene_.reset();
+	current_scene_.release();
+	pending_scene_.release();
 }
 
 void scene_scheduler::update_scene_(float dt) {

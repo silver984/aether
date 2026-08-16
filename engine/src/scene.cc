@@ -39,10 +39,6 @@ weak_ref<node> scene::root_node() const {
 	return root_node_;
 }
 
-// camera& scene::get_camera() {
-// 	return camera_;
-// }
-
 bool scene::init_() {
 	root_node_ = node::create<node>(ctx);
 
