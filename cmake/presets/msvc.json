@@ -14,7 +14,7 @@
       }
     },
     {
-      "name": "msvc-release",
+      "name": "msvc/release",
       "displayName": "MSVC Release",
       "inherits": [
         "msvc",
@@ -22,7 +22,7 @@
       ]
     },
     {
-      "name": "msvc-relwithdeb",
+      "name": "msvc/relwithdeb",
       "displayName": "MSVC RelWithDeb",
       "inherits": [
         "msvc",
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "name": "msvc-debug",
+      "name": "msvc/debug",
       "displayName": "MSVC Debug",
       "inherits": [
         "msvc",
@@ -40,16 +40,16 @@
   ],
   "buildPresets": [
     {
-      "name": "msvc-release",
-      "configurePreset": "msvc-release"
+      "name": "msvc/release",
+      "configurePreset": "msvc/release"
     },
     {
-      "name": "msvc-relwithdeb",
-      "configurePreset": "msvc-relwithdeb"
+      "name": "msvc/relwithdeb",
+      "configurePreset": "msvc/relwithdeb"
     },
     {
-      "name": "msvc-debug",
-      "configurePreset": "msvc-debug"
+      "name": "msvc/debug",
+      "configurePreset": "msvc/debug"
     }
   ]
 }
