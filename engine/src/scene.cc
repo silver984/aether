@@ -1,4 +1,3 @@
-#include <aether/context.hh>
 #include <aether/log.hh>
 #include <aether/node.hh>
 #include <aether/scene.hh>
@@ -7,9 +6,8 @@
 
 namespace aether {
 
-scene::scene(context const& ctx) noexcept
-        : ctx(ctx)
-        , root_node_(nullptr)
+scene::scene() noexcept
+        : root_node_(nullptr)
         , is_active_(false)
         , is_visit_scheduled_(false) {
 }
@@ -40,7 +38,7 @@ weak_ref<node> scene::root_node() const {
 }
 
 bool scene::init_() {
-	root_node_ = node::create<node>(ctx);
+	root_node_ = node::create<node>();
 
 	if (!root_node_) {
 		return false;
@@ -48,7 +46,7 @@ bool scene::init_() {
 
 	root_node_->scene_ = this;
 
-	size<int> const window_size = ctx.window.target_size();
+	size<int> const window_size = window::instance()->target_size();
 	root_node_->set_bounds(window_size);
 	root_node_->set_position(window_size / 2.f);
 

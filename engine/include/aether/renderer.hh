@@ -3,6 +3,7 @@
 #include <aether/mat3.hh>
 #include <aether/rect.hh>
 #include <aether/rgba.hh>
+#include <aether/service.hh>
 #include <aether/size.hh>
 #include <aether/vec2.hh>
 #include <cstdint>
@@ -14,17 +15,11 @@ namespace aether {
 
 class game;
 
-}
-
-namespace aether::core {
-
-class renderer final {
-	friend class aether::game;
+class renderer final : public service<renderer> {
+	friend class game;
 
 public:
-	~renderer();
-	DELETE_COPY_AND_MOVE(renderer);
-
+	~renderer() noexcept override;
 	void draw_texture(rltexture2d const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
 
 private:
@@ -58,4 +53,4 @@ private:
 #endif
 };
 
-} // namespace aether::core
+} // namespace aether

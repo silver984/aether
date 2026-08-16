@@ -3,6 +3,7 @@
 #include <aether/loader.hh>
 #include <aether/log.hh>
 #include <aether/ref.hh>
+#include <aether/service.hh>
 #include <aether/string.hh>
 #include <aether/timer.hh>
 #include <aether/zip_archive.hh>
@@ -12,20 +13,14 @@ namespace aether {
 
 class game;
 
-}
-
-namespace aether::core {
-
 template <typename Type>
-class resources final {
-	friend class aether::game;
+class resources final : public service<resources<Type>> {
+	friend class game;
 
 public:
-	~resources() noexcept {
+	~resources() noexcept override {
 		purge_all_();
 	}
-
-	DELETE_COPY_AND_MOVE(resources);
 
 	[[nodiscard]] strong_ref<Type> load(zip_archive& pkg, std::string_view file) {
 		if (strong_ref<Type> from_cache = cache_fetch_(file)) {
@@ -68,7 +63,7 @@ public:
 	}
 
 private:
-	resources() noexcept = default;
+	resources() = default;
 
 	[[nodiscard]] strong_ref<Type> cache_fetch_(std::string_view file) const {
 		if (auto it = cache_.find(file); it != cache_.end()) {
@@ -103,4 +98,4 @@ private:
 	string_map<strong_ref<Type>> cache_;
 };
 
-} // namespace aether::core
+} // namespace aether

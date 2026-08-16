@@ -6,9 +6,8 @@
 
 namespace aether {
 
-node::node(context const& ctx_) noexcept
-        : ctx(ctx_)
-        , scene_(nullptr)
+node::node() noexcept
+        : scene_(nullptr)
         , parent_(nullptr)
         , color_(255)
         , combined_color_(color_)
@@ -26,8 +25,8 @@ node::node(context const& ctx_) noexcept
         , is_draw_scheduled_(false)
         , is_visible_(true) {
 }
-node::~node() noexcept {
-}
+
+node::~node() noexcept = default;
 
 bool node::add_child(strong_ref<node> child) {
 	if (!child) {

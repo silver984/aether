@@ -24,7 +24,7 @@ struct sprite_args final {
 
 class sprite : public node {
 public:
-	sprite(context const& ctx, sprite_args const& args) noexcept;
+	sprite(sprite_args const& args) noexcept;
 	~sprite() noexcept override;
 	void toggle_antialiasing(bool val) const;
 	bool set_texture(zip_archive& pak, std::string_view file);

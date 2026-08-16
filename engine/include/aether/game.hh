@@ -1,9 +1,5 @@
 #pragma once
-// #include <aether/animation_repository.hh>
-// #include <audio_repository.hh>
-#include <aether/context.hh>
 #include <aether/general.h>
-// #include <lua/manager.hh>
 #include <aether/renderer.hh>
 #include <aether/resources.hh>
 #include <aether/scene_scheduler.hh>
@@ -22,25 +18,25 @@ struct game_init_args final {
 };
 
 class game final {
-	friend class context;
-
 public:
 	game() noexcept;
+	game(game&&)      = delete;
+	game(game const&) = delete;
 	~game() noexcept;
-	DELETE_COPY_AND_MOVE(game);
 
 	bool init(game_init_args const& args);
 	void run();
 
-	context const ctx;
+	game& operator=(game&&)      = delete;
+	game& operator=(game const&) = delete;
 
 private:
 	void shutdown_();
 
-	core::window window_;
-	core::renderer renderer_;
-	core::scene_scheduler scene_scheduler_;
-	core::resources<Texture> textures_;
+	window window_;
+	renderer renderer_;
+	scene_scheduler scene_scheduler_;
+	resources<Texture> textures_;
 	SoLoud::Soloud soloud_;
 	bool is_initialized_;
 };

@@ -4,13 +4,13 @@
 #include <algorithm>
 #include <raylib.h>
 
-namespace aether::core {
+namespace aether {
 
 window::window()
         : target_fps_(0) {
 }
 
-window::~window() = default;
+window::~window() noexcept = default;
 
 std::string_view window::title() const {
 	return title_;
@@ -63,4 +63,4 @@ bool window::is_minimized_() const {
 	return IsWindowMinimized();
 }
 
-} // namespace aether::core
+} // namespace aether

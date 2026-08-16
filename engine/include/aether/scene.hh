@@ -3,27 +3,21 @@
 #include <concepts>
 #include <utility>
 
-namespace aether::core {
-
-class scene_scheduler;
-
-}
-
 namespace aether {
 
-class context;
+class scene_scheduler;
 class node;
 
 class scene {
-	friend class core::scene_scheduler;
+	friend class scene_scheduler;
 
 public:
-	scene(context const& ctx) noexcept;
+	scene() noexcept;
 	virtual ~scene() noexcept;
 
 	template <std::derived_from<scene> Type, typename... Args>
-	[[nodiscard]] static unique_ref<Type> create(context const& ctx, Args&&... args) {
-		auto ptr = unique_ref<Type>::create(ctx, std::forward<Args>(args)...);
+	[[nodiscard]] static unique_ref<Type> create(Args&&... args) {
+		auto ptr = unique_ref<Type>::create(std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}
@@ -39,8 +33,6 @@ public:
 	bool add(strong_ref<node> n);
 
 	[[nodiscard]] weak_ref<node> root_node() const;
-
-	context const& ctx;
 
 protected:
 	virtual bool init_();

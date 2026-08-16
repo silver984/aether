@@ -1,13 +1,12 @@
-#include <aether/context.hh>
 #include <aether/log.hh>
 #include <aether/scene.hh>
 #include <aether/scene_scheduler.hh>
 #include <utility>
 
-namespace aether::core {
+namespace aether {
 
-scene_scheduler::scene_scheduler()  = default;
-scene_scheduler::~scene_scheduler() = default;
+scene_scheduler::scene_scheduler()           = default;
+scene_scheduler::~scene_scheduler() noexcept = default;
 
 void scene_scheduler::replace_scene(unique_ref<scene> new_scene) {
 	if (!new_scene) {
@@ -44,4 +43,4 @@ bool scene_scheduler::has_pending_scene_() const {
 	return pending_scene_ != nullptr;
 }
 
-} // namespace aether::core
+} // namespace aether

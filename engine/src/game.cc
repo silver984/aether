@@ -8,8 +8,7 @@
 namespace aether {
 
 game::game() noexcept
-        : ctx(*this)
-        , is_initialized_(false) {
+        : is_initialized_(false) {
 }
 
 game::~game() noexcept {

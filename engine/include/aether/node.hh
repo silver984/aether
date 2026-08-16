@@ -13,21 +13,18 @@
 
 namespace aether {
 
-class context;
 class scene;
-// class camera;
 
 class node : public self_ref<node> {
 	friend class scene;
-	// friend class camera;
 
 public:
-	node(context const& ctx) noexcept;
+	node() noexcept;
 	virtual ~node() noexcept;
 
 	template <std::derived_from<node> Type, typename... Args>
-	[[nodiscard]] static strong_ref<Type> create(context const& ctx, Args&&... args) {
-		auto ptr = strong_ref<Type>::create(ctx, std::forward<Args>(args)...);
+	[[nodiscard]] static strong_ref<Type> create(Args&&... args) {
+		auto ptr = strong_ref<Type>::create(std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}
@@ -108,8 +105,6 @@ public:
 	[[nodiscard]] std::vector<strong_ref<node>> children() const;
 
 	[[nodiscard]] scene* get_scene() const;
-
-	context const& ctx;
 
 protected:
 	virtual bool init_();

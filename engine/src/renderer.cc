@@ -1,4 +1,3 @@
-#include <aether/context.hh>
 #include <aether/heap.hh>
 #include <aether/log.hh>
 #include <aether/math.hh>
@@ -10,7 +9,7 @@
 #include <raymath.h>
 #include <rlgl.h>
 
-namespace aether::core {
+namespace aether {
 
 renderer::renderer()
         : projection_(mat3::identity()) {
@@ -20,7 +19,7 @@ renderer::renderer()
 #endif
 }
 
-renderer::~renderer() = default;
+renderer::~renderer() noexcept = default;
 
 void renderer::draw_texture(rltexture2d const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const {
 	if (texture.id < 1) {
@@ -185,4 +184,4 @@ mat3 renderer::calculate_projection_(size<int> render_size, size<int> target_siz
 	return out;
 }
 
-} // namespace aether::core
+} // namespace aether
