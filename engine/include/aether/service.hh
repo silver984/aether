@@ -6,18 +6,12 @@ namespace aether {
 template <typename Type>
 class service {
 public:
-	service() {
-		if (instance_s_) {
-			throw std::logic_error("service instance already exists");
-		}
-		instance_s_ = static_cast<Type*>(this);
-	}
-
+	service() noexcept      = default;
 	service(service const&) = delete;
 	service(service&&)      = delete;
 
 	virtual ~service() noexcept {
-		instance_s_ = nullptr;
+		hide_();
 	}
 
 	[[nodiscard]] static Type* instance() noexcept {
@@ -26,6 +20,25 @@ public:
 
 	service& operator=(service const&) = delete;
 	service& operator=(service&&)      = delete;
+
+protected:
+	void expose_() {
+		Type* ptr = dynamic_cast<Type*>(this);
+
+		if (instance_s_ == ptr) {
+			return;
+		}
+
+		if (instance_s_) {
+			throw std::logic_error("service instance already exists");
+		}
+
+		instance_s_ = ptr;
+	}
+
+	void hide_() noexcept {
+		instance_s_ = nullptr;
+	}
 
 private:
 	static inline Type* instance_s_ = nullptr;

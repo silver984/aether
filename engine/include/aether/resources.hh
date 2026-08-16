@@ -63,7 +63,9 @@ public:
 	}
 
 private:
-	resources() = default;
+	resources() {
+		this->expose_();
+	}
 
 	[[nodiscard]] strong_ref<Type> cache_fetch_(std::string_view file) const {
 		if (auto it = cache_.find(file); it != cache_.end()) {
