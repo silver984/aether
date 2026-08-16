@@ -374,11 +374,10 @@ public:
 	}
 
 	~weak_ref() noexcept {
-		release();
+		detach();
 	}
 
-	// stop observing the managed object
-	void release() noexcept {
+	void detach() noexcept {
 		if (!block_) {
 			return;
 		}
@@ -407,7 +406,7 @@ public:
 		if (this == &other) {
 			return *this;
 		}
-		release();
+		detach();
 		return copy_(other.block_);
 	}
 
@@ -415,13 +414,13 @@ public:
 		if (this == &other) {
 			return *this;
 		}
-		release();
+		detach();
 		block_ = std::exchange(other.block_, nullptr);
 		return *this;
 	}
 
 	weak_ref& operator=(strong_ref<Type> const& other) noexcept {
-		release();
+		detach();
 		return copy_(other.block_);
 	}
 
