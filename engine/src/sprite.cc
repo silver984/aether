@@ -94,7 +94,7 @@ void sprite::draw_(mat3 const& transform, rgba color) {
 
 void sprite::use_fallback_texture_() {
 	// assuming that the fallback texture always exists
-	zip_archive pak = "aether.pak";
+	zip_archive pak("aether.pak");
 	(void)set_texture(pak, "null");
 	set_texture_source_rect(rect<float>(0.f, 0.f, 100.f, 100.f));
 	set_texture_wrap(texture_wrap::repeat);

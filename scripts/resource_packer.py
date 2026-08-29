@@ -25,12 +25,22 @@ def sanitize_name(name: str) -> str:
 
 def archive_name(root: Path, file: Path) -> str:
     relative = file.relative_to(root)
-    no_extension = relative.with_suffix("")
+    parts    = list(relative.parts)
+    filename = parts[-1]
+    stem     = sanitize_name(Path(filename).stem)
+    suffix   = Path(filename).suffix.lower()
 
-    return ".".join(
+    if suffix in IMAGE_EXTENSIONS:
+        suffix = ".png"
+
+    parts = [
         sanitize_name(part)
-        for part in no_extension.parts
-    )
+        for part in parts[:-1]
+    ]
+
+    parts.append(stem + suffix)
+
+    return ".".join(parts)
 
 
 def convert_image_to_png(file: Path) -> bytes:

@@ -27,25 +27,11 @@ public:
 			return from_cache;
 		}
 
-		if (!pkg.contains(file)) {
-			AETHER_ENGINE_ERRORLOG("\"{}\" does not exist from the specified resource package", file);
-			return nullptr;
-		}
-
 		AETHER_ENGINE_DEBUGLOG("Loading resource ? file: \"{}\"", file);
 		timer t;
 		t.start();
 
-		blob buffer = pkg.read(file);
-
-		if (buffer.empty()) {
-			AETHER_ENGINE_ERRORLOG("Failed to read buffer ? file: \"{}\"", file);
-			return nullptr;
-		}
-
-		AETHER_ENGINE_TRACELOG("Read buffer ? size: {:.2f}mib", buffer.size() / (1024.f * 1024.f));
-
-		strong_ref<Type> out = loader<Type>::load(file, buffer);
+		strong_ref<Type> out = loader<Type>::load(pkg, file);
 
 		if (!out) {
 			AETHER_ENGINE_ERRORLOG("Failed to load resource ? file: \"{}\"", file);

@@ -13,15 +13,14 @@ bool testscene::init_() {
 		return false;
 	}
 
-	size<int> const window_size = window::instance()->target_size();
-	zip_archive pak             = "aether.pak";
+	zip_archive pak("aether.pak");
 
 	auto boy = node::create<sprite>(sprite_args{
 	        .pak  = pak,
 	        .file = "boy",
 	});
 	boy->set_scale(0.6f);
-	boy->set_position(window_size * 0.5f);
+	boy->set_position(window::instance()->target_size() * 0.5f);
 	this->add(boy);
 
 	auto silly = node::create<sprite>(sprite_args{

@@ -12,21 +12,21 @@ zip_archive::zip_archive() noexcept
         , is_open_(false) {
 }
 
-zip_archive::zip_archive(char const* pkg) noexcept
+zip_archive::zip_archive(std::string_view file)
         : archive_()
         , is_open_(false) {
-	(void)open(pkg);
+	open(file);
 }
 
 zip_archive::~zip_archive() noexcept {
-	(void)close();
+	close();
 }
 
-bool zip_archive::open(std::string_view pkg) noexcept {
-	if (!fs::exists(pkg) || is_open_) {
+bool zip_archive::open(std::string_view file) noexcept {
+	if (!fs::exists(file) || is_open_) {
 		return false;
 	}
-	is_open_ = (mz_zip_reader_init_file(&archive_, pkg.data(), 0) == MZ_TRUE);
+	is_open_ = (mz_zip_reader_init_file(&archive_, file.data(), 0) == MZ_TRUE);
 	return is_open_;
 }
 
@@ -66,7 +66,7 @@ blob zip_archive::read(std::string_view file) {
 	}
 
 	blob bytes(size);
-	(void)std::memcpy(bytes.data(), mem, size);
+	std::memcpy(bytes.data(), mem, size);
 	mz_free(mem);
 
 	return bytes;
