@@ -1,5 +1,5 @@
 #include <aether/log.hh>
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 	#include <chrono>
 	#include <filesystem>
 	#include <fmt/chrono.h>

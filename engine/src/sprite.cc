@@ -21,7 +21,7 @@ bool sprite::set_texture(zip_archive& pak, std::string_view file) {
 	if (auto fetched_texture = resources<Texture>::instance()->load(pak, file)) {
 		texture_ = fetched_texture;
 	} else {
-		AETHER_ENGINE_ERRORLOG("Requested texture is nullptr");
+		ae_error("Requested texture is nullptr");
 		return false;
 	}
 
@@ -76,7 +76,7 @@ bool sprite::init_() {
 	this->schedule_draw();
 
 	if (!set_texture(args_.pak, args_.file)) {
-		AETHER_ENGINE_WARNLOG("Failed to set texture, using fallback texture instead");
+		ae_warn("Failed to set texture, using fallback texture instead");
 		use_fallback_texture_();
 		return true;
 	}

@@ -13,12 +13,12 @@ scene_scheduler::~scene_scheduler() noexcept = default;
 
 void scene_scheduler::replace_scene(unique_ref<scene> new_scene) {
 	if (!new_scene) {
-		AETHER_ENGINE_ERRORLOG("Can't switch to a nullptr scene");
+		ae_error("Can't switch to a nullptr scene");
 		return;
 	}
 	pending_scene_ = std::move(new_scene);
-	AETHER_ENGINE_DEBUGLOG("Replacing scene");
-	AETHER_ENGINE_TRACELOG("Pending scene: {}", fmt::ptr(pending_scene_.get()));
+	ae_debug("Replacing scene");
+	ae_trace("Pending scene: {}", fmt::ptr(pending_scene_.get()));
 }
 
 void scene_scheduler::cleanup_() {
@@ -29,7 +29,7 @@ void scene_scheduler::cleanup_() {
 void scene_scheduler::update_scene_(float dt) {
 	if (pending_scene_) {
 		current_scene_ = std::move(pending_scene_);
-		AETHER_ENGINE_INFOLOG("Scene replaced");
+		ae_info("Scene replaced");
 	}
 	if (current_scene_) {
 		current_scene_->update_all_(dt);

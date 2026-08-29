@@ -13,7 +13,7 @@ namespace aether {
 
 renderer::renderer()
         : projection_(mat3::identity()) {
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 	last_fps_        = 0;
 	last_heap_usage_ = 0.f;
 #endif
@@ -115,7 +115,7 @@ void renderer::start_draw_() {
 	push_matrix_(projection_);
 }
 
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 void renderer::end_draw_(uint32_t fps, float dt) {
 	rlPopMatrix();
 

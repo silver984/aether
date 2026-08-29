@@ -13,7 +13,7 @@ strong_ref<blob> audio_repository::fetch(std::string_view file) {
 	std::filesystem::path lfile = std::filesystem::weakly_canonical(file);
 
 	if (!std::filesystem::exists(lfile)) {
-		AETHER_ENGINE_ERRORLOG("File doesn't exist ? file: \"{}\"", file);
+		ae_error("File doesn't exist ? file: \"{}\"", file);
 		return nullptr;
 	}
 
@@ -23,7 +23,7 @@ strong_ref<blob> audio_repository::fetch(std::string_view file) {
 
 	if (std::string const file_extension = file_extension(lfile);
 	    !string_matches_any(file_extension, {".wav", ".mp3", ".ogg", ".flac"})) {
-		AETHER_ENGINE_ERRORLOG("Unsupported file format ? file: \"{}\"", file);
+		ae_error("Unsupported file format ? file: \"{}\"", file);
 		return nullptr;
 	}
 
@@ -32,7 +32,7 @@ strong_ref<blob> audio_repository::fetch(std::string_view file) {
 	blob temporary_buffer = read_file_to_buffer(lfile);
 
 	if (temporary_buffer.empty()) {
-		AETHER_ENGINE_ERRORLOG("Failed ? empty buffer");
+		ae_error("Failed ? empty buffer");
 		return nullptr;
 	}
 

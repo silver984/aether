@@ -27,21 +27,21 @@ public:
 			return from_cache;
 		}
 
-		AETHER_ENGINE_DEBUGLOG("Loading resource ? file: \"{}\"", file);
+		ae_debug("Loading resource ? file: \"{}\"", file);
 		timer t;
 		t.start();
 
 		strong_ref<Type> out = loader<Type>::load(pkg, file);
 
 		if (!out) {
-			AETHER_ENGINE_ERRORLOG("Failed to load resource ? file: \"{}\"", file);
+			ae_error("Failed to load resource ? file: \"{}\"", file);
 			return nullptr;
 		}
 
-		AETHER_ENGINE_TRACELOG("Loaded resource ? address: {}", fmt::ptr(out.get()));
+		ae_trace("Loaded resource ? address: {}", fmt::ptr(out.get()));
 
 		t.stop();
-		AETHER_ENGINE_DEBUGLOG("Done ({}ms)", t.duration());
+		ae_debug("Done ({}ms)", t.duration());
 
 		purge_unused_();
 		auto [it, _] = cache_.emplace(std::string(file), std::move(out));
@@ -80,7 +80,7 @@ private:
 
 	void unload_(Type& data) {
 		loader<Type>::unload(data);
-		AETHER_ENGINE_TRACELOG("Unloaded resource ? address: {}", fmt::ptr(&data));
+		ae_trace("Unloaded resource ? address: {}", fmt::ptr(&data));
 	}
 
 	string_map<strong_ref<Type>> cache_;

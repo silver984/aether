@@ -1,5 +1,5 @@
 #include <aether/heap.hh>
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 	#include <cstdlib>
 
 namespace {

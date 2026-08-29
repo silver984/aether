@@ -24,9 +24,9 @@ add_subdirectory(external)
 target_include_directories(${AETHER_ENGINE} PRIVATE include external)
 
 if(CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
-  target_compile_definitions(${AETHER_ENGINE} PRIVATE AETHER_ENGINE_RELWITHDEB)
+  target_compile_definitions(${AETHER_ENGINE} PRIVATE __ae_relwithdeb__)
 elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
-  target_compile_definitions(${AETHER_ENGINE} PRIVATE AETHER_ENGINE_DEBUG)
+  target_compile_definitions(${AETHER_ENGINE} PRIVATE __ae_debug__)
 endif()
 
 include(${CMAKE_SOURCE_DIR}/cmake/CPM.cmake)

@@ -1,6 +1,6 @@
 #pragma once
 #include <aether/general.h>
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 	#include <fmt/format.h>
 	#include <source_location>
 	#include <string_view>
@@ -15,7 +15,7 @@ bool create_logfile();
 
 namespace aether::log {
 
-	#if !defined(AETHER_ENGINE_RELWITHDEB)
+	#if !defined(__ae_relwithdeb__)
 template <typename... Args>
 void trace(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
 	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "TRACE", loc);
@@ -44,39 +44,34 @@ void error(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args
 
 } // namespace aether::log
 
-	#if !defined(AETHER_ENGINE_RELWITHDEB)
+	#if !defined(__ae_relwithdeb__)
 		#if defined(__clang__) || defined(__GNUC__)
-			#define AETHER_ENGINE_TRACELOG(__STR__, ...)                                                                       \
+			#define ae_trace(__STR__, ...)                                                                                     \
 				aether::log::trace(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
-			#define AETHER_ENGINE_DEBUGLOG(__STR__, ...)                                                                       \
+			#define ae_debug(__STR__, ...)                                                                                     \
 				aether::log::debug(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
 		#else
-			#define AETHER_ENGINE_TRACELOG(__STR__, ...)                                                                       \
-				aether::log::trace(std::source_location::current(), __STR__, ##__VA_ARGS__)
-			#define AETHER_ENGINE_DEBUGLOG(__STR__, ...)                                                                       \
-				aether::log::debug(std::source_location::current(), __STR__, ##__VA_ARGS__)
+			#define ae_trace(__STR__, ...) aether::log::trace(std::source_location::current(), __STR__, ##__VA_ARGS__)
+			#define ae_debug(__STR__, ...) aether::log::debug(std::source_location::current(), __STR__, ##__VA_ARGS__)
 		#endif
 	#else
-		#define AETHER_ENGINE_TRACELOG(...) ((void)0)
-		#define AETHER_ENGINE_DEBUGLOG(...) ((void)0)
+		#define ae_trace(...) ((void)0)
+		#define ae_debug(...) ((void)0)
 	#endif
 
 	#if defined(__clang__) || defined(__GNUC__)
-		#define AETHER_ENGINE_INFOLOG(__STR__, ...)                                                                                \
-			aether::log::info(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
-		#define AETHER_ENGINE_WARNLOG(__STR__, ...)                                                                                \
-			aether::log::warn(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
-		#define AETHER_ENGINE_ERRORLOG(__STR__, ...)                                                                               \
-			aether::log::error(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+		#define ae_info(__STR__, ...)  aether::log::info(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+		#define ae_warn(__STR__, ...)  aether::log::warn(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
+		#define ae_error(__STR__, ...) aether::log::error(std::source_location::current(), __STR__ __VA_OPT__(, ) __VA_ARGS__)
 	#else
-		#define AETHER_ENGINE_INFOLOG(__STR__, ...)  aether::log::info(std::source_location::current(), __STR__, ##__VA_ARGS__)
-		#define AETHER_ENGINE_WARNLOG(__STR__, ...)  aether::log::warn(std::source_location::current(), __STR__, ##__VA_ARGS__)
-		#define AETHER_ENGINE_ERRORLOG(__STR__, ...) aether::log::error(std::source_location::current(), __STR__, ##__VA_ARGS__)
+		#define ae_info(__STR__, ...)  aether::log::info(std::source_location::current(), __STR__, ##__VA_ARGS__)
+		#define ae_warn(__STR__, ...)  aether::log::warn(std::source_location::current(), __STR__, ##__VA_ARGS__)
+		#define ae_error(__STR__, ...) aether::log::error(std::source_location::current(), __STR__, ##__VA_ARGS__)
 	#endif
 #else
-	#define AETHER_ENGINE_TRACELOG(...) ((void)0)
-	#define AETHER_ENGINE_DEBUGLOG(...) ((void)0)
-	#define AETHER_ENGINE_INFOLOG(...)  ((void)0)
-	#define AETHER_ENGINE_WARNLOG(...)  ((void)0)
-	#define AETHER_ENGINE_ERRORLOG(...) ((void)0)
+	#define ae_trace(...) ((void)0)
+	#define ae_debug(...) ((void)0)
+	#define ae_info(...)  ((void)0)
+	#define ae_warn(...)  ((void)0)
+	#define ae_error(...) ((void)0)
 #endif

@@ -23,9 +23,9 @@ bool game::init(game_init_args const& args) {
 		return true;
 	}
 
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 	if (!_log_impl::create_logfile()) {
-		AETHER_ENGINE_WARNLOG("Couldn't create logfile");
+		ae_warn("Couldn't create logfile");
 	}
 #endif
 
@@ -37,14 +37,14 @@ bool game::init(game_init_args const& args) {
 	SoLoud::result result = soloud_.init();
 
 	if (result != SO_NO_ERROR) {
-		AETHER_ENGINE_WARNLOG("SoLoud failed to initialize ? result: {}", result);
+		ae_warn("SoLoud failed to initialize ? result: {}", result);
 	} else {
-		AETHER_ENGINE_INFOLOG("SoLoud initialized");
+		ae_info("SoLoud initialized");
 	}
 
 	renderer_.setup2d_();
 
-	AETHER_ENGINE_INFOLOG("Initialized");
+	ae_info("Initialized");
 	is_initialized_ = true;
 
 	return true;
@@ -52,11 +52,11 @@ bool game::init(game_init_args const& args) {
 
 void game::run() {
 	if (!is_initialized_) {
-		AETHER_ENGINE_ERRORLOG("Can't run loop while uninitialized");
+		ae_error("Can't run loop while uninitialized");
 		return;
 	}
 
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 	uint32_t framecount = 0;
 	uint32_t evalfps    = 0;
 	float accumulator   = 0.f;
@@ -96,7 +96,7 @@ void game::run() {
 			scene_scheduler_.draw_scene_();
 		}
 
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 		renderer_.end_draw_(evalfps, dt);
 #else
 		renderer_.end_draw_();
@@ -111,7 +111,7 @@ void game::run() {
 		next_frametime += duration_cast<clock::duration>(duration<float>(1.f / window_.target_fps()));
 		std::this_thread::sleep_until(next_frametime);
 
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 		++framecount;
 		accumulator += dt;
 		while (accumulator >= 1.f) {
@@ -126,7 +126,7 @@ void game::run() {
 }
 
 void game::shutdown_() {
-	AETHER_ENGINE_INFOLOG("Shutting down");
+	ae_info("Shutting down");
 	timer t;
 	t.start();
 
@@ -137,7 +137,7 @@ void game::shutdown_() {
 	is_initialized_ = false;
 
 	t.stop();
-	AETHER_ENGINE_INFOLOG("Done ({}ms)", t.duration());
+	ae_info("Done ({}ms)", t.duration());
 }
 
 } // namespace aether

@@ -1,6 +1,6 @@
 #pragma once
 #include <aether/general.h>
-#if defined(AETHER_ENGINE_HAS_DEBUG)
+#if defined(__ae_anydebug__)
 	#include <cstddef>
 
 namespace aether::heap {

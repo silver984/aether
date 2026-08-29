@@ -1,5 +1,5 @@
 #pragma once
 
-#if defined(AETHER_ENGINE_DEBUG) || defined(AETHER_ENGINE_RELWITHDEB)
-	#define AETHER_ENGINE_HAS_DEBUG 1
+#if defined(__ae_debug__) || defined(__ae_relwithdeb__)
+	#define __ae_anydebug__ 1
 #endif
