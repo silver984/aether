@@ -3,7 +3,7 @@
 
 namespace aether {
 
-template <typename Type>
+template <typename T>
 class service {
 public:
 	service() noexcept      = default;
@@ -14,7 +14,7 @@ public:
 		hide_();
 	}
 
-	[[nodiscard]] static Type* instance() noexcept {
+	[[nodiscard]] static T* instance() noexcept {
 		return instance_s_;
 	}
 
@@ -23,7 +23,7 @@ public:
 
 protected:
 	void expose_() {
-		Type* ptr = dynamic_cast<Type*>(this);
+		T* ptr = dynamic_cast<T*>(this);
 
 		if (instance_s_ == ptr) {
 			return;
@@ -41,7 +41,7 @@ protected:
 	}
 
 private:
-	static inline Type* instance_s_ = nullptr;
+	static inline T* instance_s_ = nullptr;
 };
 
 } // namespace aether

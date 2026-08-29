@@ -19,8 +19,8 @@ concept has_loader = requires {
 
 class game;
 
-template <has_loader Type>
-class resources final : public service<resources<Type>> {
+template <has_loader T>
+class resources final : public service<resources<T>> {
 	friend class game;
 
 public:
@@ -28,8 +28,8 @@ public:
 		purge_all_();
 	}
 
-	[[nodiscard]] strong_ref<Type> load(zip_archive const& pkg, std::string_view file) {
-		if (strong_ref<Type> from_cache = cache_fetch_(file)) {
+	[[nodiscard]] strong_ref<T> load(zip_archive const& pkg, std::string_view file) {
+		if (strong_ref<T> from_cache = cache_fetch_(file)) {
 			return from_cache;
 		}
 
@@ -37,7 +37,7 @@ public:
 		timer t;
 		t.start();
 
-		strong_ref<Type> out = loader<Type>::load(pkg, file);
+		strong_ref<T> out = loader<T>::load(pkg, file);
 
 		if (!out) {
 			ae_error("Failed to load resource ? file: \"{}\"", file);
@@ -59,7 +59,7 @@ private:
 		this->expose_();
 	}
 
-	[[nodiscard]] strong_ref<Type> cache_fetch_(std::string_view file) const {
+	[[nodiscard]] strong_ref<T> cache_fetch_(std::string_view file) const {
 		if (auto it = cache_.find(file); it != cache_.end()) {
 			return it->second;
 		}
@@ -84,12 +84,12 @@ private:
 		}
 	}
 
-	void unload_(Type& data) {
-		loader<Type>::unload(data);
+	void unload_(T& data) {
+		loader<T>::unload(data);
 		ae_trace("Unloaded resource ? address: {}", fmt::ptr(&data));
 	}
 
-	string_map<strong_ref<Type>> cache_;
+	string_map<strong_ref<T>> cache_;
 };
 
 } // namespace aether

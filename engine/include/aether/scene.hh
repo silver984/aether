@@ -15,9 +15,9 @@ public:
 	scene() noexcept;
 	virtual ~scene() noexcept;
 
-	template <std::derived_from<scene> Type, typename... Args>
-	[[nodiscard]] static unique_ref<Type> create(Args&&... args) {
-		auto ptr = unique_ref<Type>::create(std::forward<Args>(args)...);
+	template <std::derived_from<scene> T, typename... Args>
+	[[nodiscard]] static unique_ref<T> create(Args&&... args) {
+		auto ptr = unique_ref<T>::create(std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}

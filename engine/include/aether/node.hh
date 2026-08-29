@@ -22,9 +22,9 @@ public:
 	node() noexcept;
 	virtual ~node() noexcept;
 
-	template <std::derived_from<node> Type, typename... Args>
-	[[nodiscard]] static strong_ref<Type> create(Args&&... args) {
-		auto ptr = strong_ref<Type>::create(std::forward<Args>(args)...);
+	template <std::derived_from<node> T, typename... Args>
+	[[nodiscard]] static strong_ref<T> create(Args&&... args) {
+		auto ptr = strong_ref<T>::create(std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}
