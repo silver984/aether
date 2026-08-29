@@ -6,11 +6,9 @@
 
 namespace aether {
 
-window::window()
+window::window() noexcept
         : target_fps_(0) {
-	this->expose_();
 }
-
 window::~window() noexcept = default;
 
 std::string_view window::title() const {

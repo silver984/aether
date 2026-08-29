@@ -1,3 +1,4 @@
+#include <aether/context.hh>
 #include <aether/sprite.hh>
 #include <aether/testscene.hh>
 #include <aether/window.hh>
@@ -5,7 +6,9 @@
 
 using namespace aether;
 
-testscene::testscene() noexcept  = default;
+testscene::testscene(aether::context const& ctx) noexcept
+        : scene(ctx) {
+}
 testscene::~testscene() noexcept = default;
 
 bool testscene::init_() {
@@ -15,26 +18,26 @@ bool testscene::init_() {
 
 	zip_archive pak("aether.pak");
 
-	auto boy = node::create<sprite>(sprite_args{
-	        .pak  = pak,
-	        .file = "boy",
-	});
+	auto boy = node::create<sprite>(this->ctx_, sprite_args{
+	                                                    .pak  = pak,
+	                                                    .file = "boy",
+	                                            });
 	boy->set_scale(0.6f);
-	boy->set_position(window::instance()->target_size() * 0.5f);
+	boy->set_position(this->ctx_.window->target_size() * 0.5f);
 	this->add(boy);
 
-	auto silly = node::create<sprite>(sprite_args{
-	        .pak  = pak,
-	        .file = "cats.silly",
-	});
+	auto silly = node::create<sprite>(this->ctx_, sprite_args{
+	                                                      .pak  = pak,
+	                                                      .file = "cats.silly",
+	                                              });
 	silly->set_scale(0.2f);
 	silly->set_position(boy->position() - 200.f);
 	this->add(silly);
 
-	auto traffic_cones = node::create<sprite>(sprite_args{
-	        .pak  = pak,
-	        .file = "cats.funny.traffic-cones",
-	});
+	auto traffic_cones = node::create<sprite>(this->ctx_, sprite_args{
+	                                                              .pak  = pak,
+	                                                              .file = "cats.funny.traffic-cones",
+	                                                      });
 	traffic_cones->set_scale(0.4f);
 	traffic_cones->set_position(boy->position() + 200.f);
 	this->add(traffic_cones);

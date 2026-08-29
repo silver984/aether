@@ -14,7 +14,8 @@ int main() {
 		return -1;
 	}
 
-	scene_scheduler::instance()->replace_scene(scene::create<testscene>());
+	context ctx = engine.ctx();
+	ctx.scene_scheduler->replace_scene(scene::create<testscene>(ctx));
 	engine.run();
 
 	return 0;

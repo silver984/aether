@@ -125,6 +125,15 @@ void game::run() {
 	shutdown_();
 }
 
+context game::ctx() noexcept {
+	return {
+	        .window          = &window_,
+	        .renderer        = &renderer_,
+	        .scene_scheduler = &scene_scheduler_,
+	        .textures        = &textures_,
+	};
+}
+
 void game::shutdown_() {
 	ae_info("Shutting down");
 	timer t;

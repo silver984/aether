@@ -5,10 +5,7 @@
 
 namespace aether {
 
-scene_scheduler::scene_scheduler() {
-	this->expose_();
-}
-
+scene_scheduler::scene_scheduler() noexcept  = default;
 scene_scheduler::~scene_scheduler() noexcept = default;
 
 void scene_scheduler::replace_scene(unique_ref<scene> new_scene) {

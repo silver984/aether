@@ -1,22 +1,21 @@
 #pragma once
 #include <aether/general.h>
 #include <aether/ref.hh>
-#include <aether/service.hh>
 
 namespace aether {
 
 class game;
 class scene;
 
-class scene_scheduler final : public service<scene_scheduler> {
+class scene_scheduler final {
 	friend class game;
 
 public:
-	~scene_scheduler() noexcept override;
+	~scene_scheduler() noexcept;
 	void replace_scene(unique_ref<scene> new_scene);
 
 private:
-	scene_scheduler();
+	scene_scheduler() noexcept;
 	void cleanup_();
 	void update_scene_(float dt);
 	void draw_scene_();

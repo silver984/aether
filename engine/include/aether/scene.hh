@@ -7,17 +7,18 @@ namespace aether {
 
 class scene_scheduler;
 class node;
+class context;
 
 class scene {
 	friend class scene_scheduler;
 
 public:
-	scene() noexcept;
+	scene(context const& ctx) noexcept;
 	virtual ~scene() noexcept;
 
 	template <std::derived_from<scene> T, typename... Args>
-	[[nodiscard]] static unique_ref<T> create(Args&&... args) {
-		auto ptr = unique_ref<T>::create(std::forward<Args>(args)...);
+	[[nodiscard]] static unique_ref<T> create(context const& ctx, Args&&... args) {
+		auto ptr = unique_ref<T>::create(ctx, std::forward<Args>(args)...);
 		if (!ptr->init_interface_()) {
 			return nullptr;
 		}
@@ -38,6 +39,8 @@ protected:
 	virtual bool init_();
 	virtual void update_(float dt);
 	virtual void visit_();
+
+	context const& ctx_;
 
 private:
 	bool init_interface_();

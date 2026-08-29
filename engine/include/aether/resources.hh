@@ -3,7 +3,6 @@
 #include <aether/loader.hh>
 #include <aether/log.hh>
 #include <aether/ref.hh>
-#include <aether/service.hh>
 #include <aether/string.hh>
 #include <aether/timer.hh>
 #include <aether/zip_archive.hh>
@@ -20,11 +19,11 @@ concept has_loader = requires {
 class game;
 
 template <has_loader T>
-class resources final : public service<resources<T>> {
+class resources final {
 	friend class game;
 
 public:
-	~resources() noexcept override {
+	~resources() noexcept {
 		purge_all_();
 	}
 
@@ -55,9 +54,7 @@ public:
 	}
 
 private:
-	resources() {
-		this->expose_();
-	}
+	resources() noexcept = default;
 
 	[[nodiscard]] strong_ref<T> cache_fetch_(std::string_view file) const {
 		if (auto it = cache_.find(file); it != cache_.end()) {

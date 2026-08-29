@@ -1,3 +1,4 @@
+#include <aether/context.hh>
 #include <aether/math.hh>
 #include <aether/node.hh>
 #include <aether/scene.hh>
@@ -6,8 +7,9 @@
 
 namespace aether {
 
-node::node() noexcept
-        : scene_(nullptr)
+node::node(context const& ctx) noexcept
+        : ctx_(ctx)
+        , scene_(nullptr)
         , parent_(nullptr)
         , color_(255)
         , combined_color_(color_)

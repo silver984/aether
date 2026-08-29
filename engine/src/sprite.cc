@@ -1,3 +1,4 @@
+#include <aether/context.hh>
 #include <aether/log.hh>
 #include <aether/renderer.hh>
 #include <aether/resources.hh>
@@ -8,8 +9,9 @@
 
 namespace aether {
 
-sprite::sprite(sprite_args const& args) noexcept
-        : args_(args) {
+sprite::sprite(context const& ctx, sprite_args const& args) noexcept
+        : node(ctx)
+        , args_(args) {
 }
 sprite::~sprite() noexcept = default;
 
@@ -18,7 +20,7 @@ void sprite::toggle_antialiasing(bool val) const {
 }
 
 bool sprite::set_texture(zip_archive const& pak, std::string_view file) {
-	if (auto fetched_texture = resources<Texture>::instance()->load(pak, file)) {
+	if (auto fetched_texture = this->ctx_.textures->load(pak, file)) {
 		texture_ = fetched_texture;
 	} else {
 		ae_error("Requested texture is nullptr");
@@ -89,7 +91,7 @@ bool sprite::init_() {
 
 void sprite::draw_(mat3 const& transform, rgba color) {
 	node::draw_(transform, color);
-	renderer::instance()->draw_texture(*texture_, texture_source_rect_, transform, color);
+	this->ctx_.renderer->draw_texture(*texture_, texture_source_rect_, transform, color);
 }
 
 void sprite::use_fallback_texture_() {

@@ -1,6 +1,5 @@
 #pragma once
 #include <aether/general.h>
-#include <aether/service.hh>
 #include <aether/size.hh>
 #include <aether/string.hh>
 
@@ -8,17 +7,17 @@ namespace aether {
 
 class game;
 
-class window final : public service<window> {
+class window final {
 	friend class game;
 
 public:
-	~window() noexcept override;
+	~window() noexcept;
 	[[nodiscard]] std::string_view title() const;
 	[[nodiscard]] size<int> target_size() const;
 	[[nodiscard]] int target_fps() const;
 
 private:
-	window();
+	window() noexcept;
 	bool init_(std::string_view title, size<int> bounds, int fps);
 	void shutdown_();
 	void update_();

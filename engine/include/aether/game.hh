@@ -1,4 +1,5 @@
 #pragma once
+#include <aether/context.hh>
 #include <aether/general.h>
 #include <aether/renderer.hh>
 #include <aether/resources.hh>
@@ -20,15 +21,15 @@ struct game_init_args final {
 class game final {
 public:
 	game() noexcept;
-	game(game&&)      = delete;
-	game(game const&) = delete;
+	game(game&&)                 = delete;
+	game(game const&)            = delete;
+	game& operator=(game&&)      = delete;
+	game& operator=(game const&) = delete;
 	~game() noexcept;
 
 	bool init(game_init_args const& args);
 	void run();
-
-	game& operator=(game&&)      = delete;
-	game& operator=(game const&) = delete;
+	[[nodiscard]] context ctx() noexcept;
 
 private:
 	void shutdown_();
