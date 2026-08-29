@@ -9,10 +9,10 @@ class renderer;
 class scene_scheduler;
 
 struct context final {
-	window* window;
-	renderer* renderer;
-	scene_scheduler* scene_scheduler;
-	resources<Texture>* textures;
+	aether::window* window;
+	aether::renderer* renderer;
+	aether::scene_scheduler* scene_scheduler;
+	aether::resources<Texture>* textures;
 };
 
 } // namespace aether
