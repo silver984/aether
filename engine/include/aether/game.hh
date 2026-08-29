@@ -1,6 +1,7 @@
 #pragma once
 #include <aether/context.hh>
 #include <aether/general.h>
+#include <aether/ref.hh>
 #include <aether/renderer.hh>
 #include <aether/resources.hh>
 #include <aether/scene_scheduler.hh>
@@ -28,7 +29,7 @@ public:
 	~game() noexcept;
 
 	bool init(game_init_args const& args);
-	void run();
+	void run(unique_ref<scene> s);
 	[[nodiscard]] context ctx() noexcept;
 
 private:

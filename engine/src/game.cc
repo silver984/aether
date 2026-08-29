@@ -50,11 +50,13 @@ bool game::init(game_init_args const& args) {
 	return true;
 }
 
-void game::run() {
+void game::run(unique_ref<scene> s) {
 	if (!is_initialized_) {
 		ae_error("Can't run loop while uninitialized");
 		return;
 	}
+
+	scene_scheduler_.replace_scene(std::move(s));
 
 #if defined(__ae_anydebug__)
 	uint32_t framecount = 0;
