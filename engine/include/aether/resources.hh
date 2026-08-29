@@ -11,9 +11,15 @@
 
 namespace aether {
 
+template <typename T>
+concept has_loader = requires {
+	{ loader<T>::load(std::declval<zip_archive&>(), std::declval<std::string_view>()) } -> std::same_as<strong_ref<T>>;
+	{ loader<T>::unload(std::declval<T&>()) } -> std::same_as<void>;
+};
+
 class game;
 
-template <typename Type>
+template <has_loader Type>
 class resources final : public service<resources<Type>> {
 	friend class game;
 
