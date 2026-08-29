@@ -449,10 +449,14 @@ class self_ref {
 	friend class strong_ref;
 
 public:
-	self_ref(self_ref const&)            = delete;
-	self_ref(self_ref&&)                 = delete;
-	self_ref& operator=(self_ref const&) = delete;
-	self_ref& operator=(self_ref&&)      = delete;
+	self_ref(self_ref const&) {
+	}
+	self_ref(self_ref&&) {
+	}
+	self_ref& operator=(self_ref const&) {
+	}
+	self_ref& operator=(self_ref&&) {
+	}
 
 protected:
 	self_ref() noexcept          = default;
