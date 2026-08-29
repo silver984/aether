@@ -6,8 +6,9 @@
 
 namespace aether {
 
-strong_ref<Texture> loader<Texture>::load(zip_archive& arc, std::string_view filename) {
-	std::string fn = std::string(filename).append(".png");
+strong_ref<Texture> loader<Texture>::load(zip_archive const& arc, std::string_view filename) {
+	std::string fn(filename);
+	fn.append(".png");
 
 	if (!arc.contains(fn)) {
 		return nullptr;
@@ -35,7 +36,7 @@ strong_ref<Texture> loader<Texture>::load(zip_archive& arc, std::string_view fil
 	return tex;
 };
 
-void loader<Texture>::unload(Texture& texture) {
+void loader<Texture>::unload(Texture const& texture) {
 	UnloadTexture(texture);
 }
 

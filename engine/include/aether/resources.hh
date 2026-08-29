@@ -13,8 +13,8 @@ namespace aether {
 
 template <typename T>
 concept has_loader = requires {
-	{ loader<T>::load(std::declval<zip_archive&>(), std::declval<std::string_view>()) } -> std::same_as<strong_ref<T>>;
-	{ loader<T>::unload(std::declval<T&>()) } -> std::same_as<void>;
+	{ loader<T>::load(std::declval<zip_archive const&>(), std::declval<std::string_view>()) } -> std::same_as<strong_ref<T>>;
+	{ loader<T>::unload(std::declval<T const&>()) } -> std::same_as<void>;
 };
 
 class game;
@@ -28,7 +28,7 @@ public:
 		purge_all_();
 	}
 
-	[[nodiscard]] strong_ref<Type> load(zip_archive& pkg, std::string_view file) {
+	[[nodiscard]] strong_ref<Type> load(zip_archive const& pkg, std::string_view file) {
 		if (strong_ref<Type> from_cache = cache_fetch_(file)) {
 			return from_cache;
 		}

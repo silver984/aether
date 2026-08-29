@@ -1,6 +1,6 @@
 #pragma once
 #include <aether/blob.hh>
-#include <miniz/miniz.h>
+#include <aether/ref.hh>
 #include <string_view>
 
 namespace aether {
@@ -9,17 +9,17 @@ class zip_archive final {
 public:
 	zip_archive() noexcept;
 	explicit zip_archive(std::string_view file);
-	~zip_archive() noexcept;
+	~zip_archive();
 
-	bool open(std::string_view file) noexcept;
-	bool close() noexcept;
+	bool open(std::string_view file) const;
+	bool close() const;
 	[[nodiscard]] bool is_open() const noexcept;
-	[[nodiscard]] bool contains(std::string_view file);
-	[[nodiscard]] blob read(std::string_view file);
+	[[nodiscard]] bool contains(std::string_view file) const;
+	[[nodiscard]] blob read(std::string_view file) const;
 
 private:
-	mz_zip_archive archive_;
-	bool is_open_;
+	struct impl;
+	unique_ref<impl> impl_;
 };
 
 } // namespace aether
