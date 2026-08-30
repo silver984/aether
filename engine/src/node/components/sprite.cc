@@ -55,7 +55,9 @@ void sprite::set_texture_source_rect(rect<float> const& val, bool update_bounds)
 	if (update_bounds) {
 		int w = (uint32_t)std::abs(std::round(texture_source_rect_.width));
 		int h = (uint32_t)std::abs(std::round(texture_source_rect_.height));
-		this->strong_node_()->component<transform>()->set_bounds(size<uint32_t>(w, h));
+		if (transform* t = this->strong_node_()->component<transform>()) {
+			t->set_bounds(size<uint32_t>(w, h));
+		}
 	}
 }
 
@@ -74,7 +76,8 @@ void sprite::draw_() {
 	}
 
 	transform* t = n->component<transform>();
-	this->ctx_.renderer->draw_texture(*texture_, texture_source_rect_, t->matrix(), rgba(255) /* temporary rgba */);
+	this->ctx_.renderer->draw_texture(*texture_, texture_source_rect_, t ? t->matrix() : mat3::identity(),
+	                                  rgba(255) /* temporary rgba */);
 }
 
 } // namespace aether

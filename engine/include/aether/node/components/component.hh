@@ -17,14 +17,14 @@ concept component = std::derived_from<T, node_component> && !std::same_as<T, nod
                     std::constructible_from<T, context const&, strong_ref<node>>;
 
 template <_node_comp_impl::component... T>
-struct required_components {
-	using required_components_identifier = void;
+struct required_components final {
+	using is_required_components_t = void;
 };
 
 template <typename T>
 concept has_requirements = component<T> && requires {
 	typename T::requirements;
-	typename T::requirements::required_components_identifier;
+	typename T::requirements::is_required_components_t;
 };
 
 } // namespace aether::_node_comp_impl

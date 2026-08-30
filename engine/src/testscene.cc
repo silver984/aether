@@ -35,6 +35,9 @@ void testscene::update_(float dt) {
 	for (auto& child : root->children()) {
 		if (transform* t = child->component<transform>()) {
 			t->set_rotation(t->rotation() + (22.5f * dt));
+			if (t->rotation() >= 90.f) {
+				child->remove_component<transform>();
+			}
 		}
 	}
 }

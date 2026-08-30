@@ -58,6 +58,19 @@ public:
 	}
 
 	template <_node_comp_impl::component T>
+	bool remove_component() {
+		for (auto it = components_.begin(); it != components_.end();) {
+			if (!dynamic_cast<T*>((*it).get())) {
+				++it;
+				continue;
+			}
+			components_.erase(it);
+			return true;
+		}
+		return false;
+	}
+
+	template <_node_comp_impl::component T>
 	[[nodiscard]] T* component() const {
 		for (auto& comp : components_) {
 			if (T* ptr = dynamic_cast<T*>(comp.get())) {
