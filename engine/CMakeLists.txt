@@ -11,8 +11,14 @@ set_target_properties(
 )
 
 file(GLOB AETHER_SRC src/*.c*)
+file(GLOB AETHER_NODE_COMPONENTS_SRC src/node/components/*.c*)
 
-target_sources(${AETHER_ENGINE} PRIVATE ${AETHER_SRC})
+target_sources(
+  ${AETHER_ENGINE} PRIVATE
+  src/node/node.cc
+  ${AETHER_SRC}
+  ${AETHER_NODE_COMPONENTS_SRC}
+)
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug|RelWithDebInfo")
   file(GLOB AETHER_ENGINE_DEBUG_SRC src/debug/*.c*)

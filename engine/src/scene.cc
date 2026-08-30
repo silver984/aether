@@ -1,6 +1,6 @@
 #include <aether/context.hh>
 #include <aether/log.hh>
-#include <aether/node.hh>
+#include <aether/node/node.hh>
 #include <aether/scene.hh>
 #include <aether/window.hh>
 #include <cassert>

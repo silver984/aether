@@ -56,7 +56,7 @@ vec2<float> mat3::transform_point(vec2<float> p) const {
 	return round(out);
 }
 
-mat3 mat3::operator*(mat3 const& o) const {
+mat3 mat3::operator*(mat3 const& o) const noexcept {
 	mat3 r;
 
 	for (size_t row = 0; row < 3; ++row) {
@@ -66,6 +66,10 @@ mat3 mat3::operator*(mat3 const& o) const {
 	}
 
 	return r;
+}
+
+mat3& mat3::operator*=(mat3 const& o) noexcept {
+	return *this = *this * o;
 }
 
 } // namespace aether

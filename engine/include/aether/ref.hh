@@ -207,7 +207,7 @@ public:
 	}
 
 	template <typename... Args>
-	[[nodiscard]] static strong_ref create(Args&&... args) {
+	[[nodiscard]] static strong_ref create(Args&&... args) noexcept {
 		return new (std::nothrow) T(std::forward<Args>(args)...);
 	}
 

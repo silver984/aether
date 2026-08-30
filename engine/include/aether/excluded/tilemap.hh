@@ -1,5 +1,5 @@
 #pragma once
-#include <aether/node.hh>
+#include <aether/node/node.hh>
 #include <aether/rect.hh>
 
 namespace aether {
