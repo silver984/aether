@@ -1,5 +1,6 @@
 #pragma once
 #include <aether/context.hh>
+#include <aether/log.hh>
 #include <aether/mat3.hh>
 #include <aether/node/components/component.hh>
 #include <aether/ref.hh>
@@ -9,6 +10,7 @@
 #include <cstddef>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -53,31 +55,41 @@ public:
 		}
 
 		unique_ref<T> c = node_component::create<T>(ctx_, this->strong_self_());
-		auto& out       = components_.emplace_back(std::move(c));
-		return dynamic_cast<T*>(out.get());
+		T* ptr          = c.get();
+
+		components_.emplace_back(std::move(c));
+		component_lookup_.emplace(_node_comp_impl::id_v<T>, static_cast<node_component*>(ptr));
+
+		return ptr;
 	}
 
 	template <_node_comp_impl::component T>
 	bool remove_component() {
-		for (auto it = components_.begin(); it != components_.end();) {
-			if (!dynamic_cast<T*>((*it).get())) {
-				++it;
-				continue;
-			}
-			components_.erase(it);
-			return true;
+		auto it = component_lookup_.find(_node_comp_impl::id_v<T>);
+		if (it == component_lookup_.end()) {
+			return false;
 		}
+
+		node_component* ptr = it->second;
+		component_lookup_.erase(it);
+
+		for (auto comp = components_.begin(); comp != components_.end(); ++comp) {
+			if (comp->get() == ptr) {
+				components_.erase(comp);
+				return true;
+			}
+		}
+
 		return false;
 	}
 
 	template <_node_comp_impl::component T>
 	[[nodiscard]] T* component() const {
-		for (auto& comp : components_) {
-			if (T* ptr = dynamic_cast<T*>(comp.get())) {
-				return ptr;
-			}
+		auto it = component_lookup_.find(_node_comp_impl::id_v<T>);
+		if (it == component_lookup_.end()) {
+			return nullptr;
 		}
-		return nullptr;
+		return static_cast<T*>(it->second);
 	}
 
 	[[nodiscard]] size_t child_count() const { return children_.size(); }
@@ -114,9 +126,12 @@ private:
 	context const& ctx_;
 
 	aether::scene* scene_;
+
 	weak_ref<node> parent_;
 	std::vector<strong_ref<node>> children_;
+
 	std::vector<unique_ref<node_component>> components_;
+	std::unordered_map<_node_comp_impl::id, node_component*> component_lookup_;
 
 	std::string name_;
 

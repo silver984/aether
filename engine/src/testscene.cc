@@ -28,11 +28,7 @@ bool testscene::init_() {
 
 void testscene::update_(float dt) {
 	scene::update_(dt);
-	strong_ref<node> root = root_node().construct();
-	if (!root) {
-		return;
-	}
-	for (auto& child : root->children()) {
+	for (auto& child : root_node().construct()->children()) {
 		if (transform* t = child->component<transform>()) {
 			t->set_rotation(t->rotation() + (22.5f * dt));
 			if (t->rotation() >= 90.f) {

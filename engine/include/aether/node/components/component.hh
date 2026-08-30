@@ -27,6 +27,14 @@ concept has_requirements = component<T> && requires {
 	typename T::requirements::is_required_components_t;
 };
 
+using id = void const*;
+
+template <typename T>
+constexpr char id_storage{};
+
+template <typename T>
+constexpr id id_v = &id_storage<T>;
+
 } // namespace aether::_node_comp_impl
 
 namespace aether {
