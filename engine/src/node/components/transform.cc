@@ -131,7 +131,7 @@ void transform::update_matrix_() {
 	}
 
 	if (transform* t = node_parent->component<transform>()) {
-		t->matrix_ *= matrix_;
+		matrix_ *= t->matrix_;
 	}
 }
 
