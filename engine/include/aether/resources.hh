@@ -23,9 +23,7 @@ class resources final {
 	friend class game;
 
 public:
-	~resources() noexcept {
-		purge_all_();
-	}
+	~resources() { purge_all_(); }
 
 	[[nodiscard]] strong_ref<T> load(zip_archive const& pkg, std::string_view file) {
 		if (strong_ref<T> from_cache = cache_fetch_(file)) {
@@ -54,7 +52,7 @@ public:
 	}
 
 private:
-	resources() noexcept = default;
+	resources() = default;
 
 	[[nodiscard]] strong_ref<T> cache_fetch_(std::string_view file) const {
 		if (auto it = cache_.find(file); it != cache_.end()) {
@@ -63,7 +61,7 @@ private:
 		return nullptr;
 	}
 
-	void purge_unused_() noexcept {
+	void purge_unused_() {
 		for (auto it = cache_.begin(); it != cache_.end();) {
 			if (it->second.strong_count() <= 1) {
 				unload_(*it->second);
@@ -74,7 +72,7 @@ private:
 		}
 	}
 
-	void purge_all_() noexcept {
+	void purge_all_() {
 		for (auto it = cache_.begin(); it != cache_.end();) {
 			unload_(*it->second);
 			it = cache_.erase(it);

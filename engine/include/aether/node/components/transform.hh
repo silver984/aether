@@ -10,35 +10,35 @@ class transform final : public node_component {
 public:
 	using node_component::node_component;
 
-	void set_bounds(size<uint32_t> val) noexcept;
+	void set_bounds(size<uint32_t> val);
 
-	void set_position(vec2<float> val) noexcept;
-	void set_anchor(vec2<float> val) noexcept;
-	void set_scale(vec2<float> val) noexcept;
-	void set_shear(vec2<float> val) noexcept;
+	void set_position(vec2<float> val);
+	void set_anchor(vec2<float> val);
+	void set_scale(vec2<float> val);
+	void set_shear(vec2<float> val);
 
-	void set_flipped(vec2<bool> val) noexcept;
+	void set_flipped(vec2<bool> val);
 
-	void set_rotation(float val) noexcept;
+	void set_rotation(float val);
 
-	[[nodiscard]] inline mat3 matrix() const noexcept { return matrix_; }
+	[[nodiscard]] inline mat3 matrix() const { return matrix_; }
 
-	[[nodiscard]] inline size<uint32_t> bounds() const noexcept { return bounds_; }
-	[[nodiscard]] inline uint32_t width() const noexcept { return bounds_.width; }
-	[[nodiscard]] inline uint32_t height() const noexcept { return bounds_.height; }
+	[[nodiscard]] inline size<uint32_t> bounds() const { return bounds_; }
+	[[nodiscard]] inline uint32_t width() const { return bounds_.width; }
+	[[nodiscard]] inline uint32_t height() const { return bounds_.height; }
 
-	[[nodiscard]] inline vec2<float> position() const noexcept { return position_; }
-	[[nodiscard]] inline vec2<float> anchor() const noexcept { return anchor_; }
-	[[nodiscard]] inline vec2<float> scale() const noexcept { return scale_; }
-	[[nodiscard]] inline vec2<float> shear() const noexcept { return shear_; }
+	[[nodiscard]] inline vec2<float> position() const { return position_; }
+	[[nodiscard]] inline vec2<float> anchor() const { return anchor_; }
+	[[nodiscard]] inline vec2<float> scale() const { return scale_; }
+	[[nodiscard]] inline vec2<float> shear() const { return shear_; }
 
-	[[nodiscard]] inline vec2<bool> is_flipped() const noexcept { return is_flipped_; }
+	[[nodiscard]] inline vec2<bool> is_flipped() const { return is_flipped_; }
 
-	[[nodiscard]] inline float rotation() const noexcept { return rotation_; }
+	[[nodiscard]] inline float rotation() const { return rotation_; }
 
 protected:
-	void node_pushed_() noexcept override;
-	void visit_() noexcept override;
+	void node_pushed_() override;
+	void visit_() override;
 
 private:
 	void mark_transform_dirty_();

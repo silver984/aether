@@ -3,7 +3,7 @@
 
 namespace aether {
 
-bool scene::add_child(strong_ref<node> n) noexcept { return root_node_->add_child(n); }
+bool scene::add_child(strong_ref<node> n) { return root_node_->add_child(n); }
 
 bool scene::init_() {
 	root_node_         = node::create<node>(ctx_);

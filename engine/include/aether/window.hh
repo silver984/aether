@@ -11,13 +11,13 @@ class window final {
 	friend class game;
 
 public:
-	~window() noexcept;
+	~window();
 	[[nodiscard]] std::string_view title() const;
 	[[nodiscard]] size<int> target_size() const;
 	[[nodiscard]] int target_fps() const;
 
 private:
-	window() noexcept;
+	window();
 	bool init_(std::string_view title, size<int> bounds, int fps);
 	void shutdown_();
 	void update_();

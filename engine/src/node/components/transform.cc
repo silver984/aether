@@ -5,7 +5,7 @@
 
 namespace aether {
 
-void transform::set_bounds(size<uint32_t> val) noexcept {
+void transform::set_bounds(size<uint32_t> val) {
 	if (bounds_ == val) {
 		return;
 	}
@@ -13,7 +13,7 @@ void transform::set_bounds(size<uint32_t> val) noexcept {
 	mark_transform_dirty_();
 }
 
-void transform::set_position(vec2<float> val) noexcept {
+void transform::set_position(vec2<float> val) {
 	if (position_ == val) {
 		return;
 	}
@@ -21,7 +21,7 @@ void transform::set_position(vec2<float> val) noexcept {
 	mark_transform_dirty_();
 }
 
-void transform::set_anchor(vec2<float> val) noexcept {
+void transform::set_anchor(vec2<float> val) {
 	val = clamp(val, vec2<float>(0.f), vec2<float>(1.f));
 	if (anchor_ == val) {
 		return;
@@ -30,7 +30,7 @@ void transform::set_anchor(vec2<float> val) noexcept {
 	mark_transform_dirty_();
 }
 
-void transform::set_scale(vec2<float> val) noexcept {
+void transform::set_scale(vec2<float> val) {
 	val = max(val, vec2<float>(0.f));
 	if (scale_ == val) {
 		return;
@@ -39,7 +39,7 @@ void transform::set_scale(vec2<float> val) noexcept {
 	mark_transform_dirty_();
 }
 
-void transform::set_shear(vec2<float> val) noexcept {
+void transform::set_shear(vec2<float> val) {
 	if (shear_ == val) {
 		return;
 	}
@@ -47,7 +47,7 @@ void transform::set_shear(vec2<float> val) noexcept {
 	mark_transform_dirty_();
 }
 
-void transform::set_flipped(vec2<bool> val) noexcept {
+void transform::set_flipped(vec2<bool> val) {
 	if (is_flipped_ == val) {
 		return;
 	}
@@ -55,7 +55,7 @@ void transform::set_flipped(vec2<bool> val) noexcept {
 	mark_transform_dirty_();
 }
 
-void transform::set_rotation(float val) noexcept {
+void transform::set_rotation(float val) {
 	if (rotation_ == val) {
 		return;
 	}
@@ -63,12 +63,12 @@ void transform::set_rotation(float val) noexcept {
 	mark_transform_dirty_();
 }
 
-void transform::node_pushed_() noexcept {
+void transform::node_pushed_() {
 	node_component::node_pushed_();
 	mark_transform_dirty_();
 }
 
-void transform::visit_() noexcept {
+void transform::visit_() {
 	node_component::visit_();
 	visibility* v = this->strong_node_()->component<visibility>();
 	if (v && !v->is_visible()) {

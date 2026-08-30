@@ -15,22 +15,15 @@ struct size final : operators<size, T, 2> {
 
 	constexpr size()
 	        : width(T{0})
-	        , height(T{0}) {
-	}
-
+	        , height(T{0}) {}
 	constexpr size(T v)
 	        : width(v)
-	        , height(v) {
-	}
-
+	        , height(v) {}
 	constexpr size(T wv, T hv)
 	        : width(wv)
-	        , height(hv) {
-	}
+	        , height(hv) {}
 
-	[[nodiscard]] constexpr operator vec2<T>() const {
-		return vec2<T>(width, height);
-	}
+	[[nodiscard]] constexpr operator vec2<T>() const { return vec2<T>(width, height); }
 
 	constexpr T& operator[](size_t i) {
 		switch (i) {

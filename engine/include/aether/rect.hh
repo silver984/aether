@@ -20,30 +20,20 @@ struct rect final : operators<rect, T, 4> {
 	        : x(T{0})
 	        , y(T{0})
 	        , width(T{0})
-	        , height(T{0}) {
-	}
-
+	        , height(T{0}) {}
 	constexpr rect(T v)
 	        : x(v)
 	        , y(v)
 	        , width(v)
-	        , height(v) {
-	}
-
+	        , height(v) {}
 	constexpr rect(T xv, T yv, T wv, T hv)
 	        : x(xv)
 	        , y(yv)
 	        , width(wv)
-	        , height(hv) {
-	}
+	        , height(hv) {}
 
-	[[nodiscard]] constexpr vec2<T> position() const {
-		return vec2<T>(x, y);
-	}
-
-	[[nodiscard]] constexpr size<T> bounds() const {
-		return vec2<T>(width, height);
-	};
+	[[nodiscard]] constexpr vec2<T> position() const { return vec2<T>(x, y); }
+	[[nodiscard]] constexpr size<T> bounds() const { return vec2<T>(width, height); };
 
 	constexpr T& operator[](size_t i) {
 		switch (i) {

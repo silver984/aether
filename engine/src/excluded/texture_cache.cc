@@ -3,8 +3,8 @@
 
 namespace aether {
 
-texture_cache::texture_cache() noexcept  = default;
-texture_cache::~texture_cache() noexcept = default;
+texture_cache::texture_cache()  = default;
+texture_cache::~texture_cache() = default;
 
 strong_ref<texture2d> texture_cache::load_(fs::path const& file) {
 	strong_ref<texture2d> texture  = new texture2d(file.string());

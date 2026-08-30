@@ -15,22 +15,15 @@ struct vec2 final : operators<vec2, T, 2> {
 
 	constexpr vec2()
 	        : x(T{0})
-	        , y(T{0}) {
-	}
-
+	        , y(T{0}) {}
 	constexpr vec2(T v)
 	        : x(v)
-	        , y(v) {
-	}
-
+	        , y(v) {}
 	constexpr vec2(T xv, T yv)
 	        : x(xv)
-	        , y(yv) {
-	}
+	        , y(yv) {}
 
-	[[nodiscard]] constexpr operator size<T>() const {
-		return size<T>(x, y);
-	}
+	[[nodiscard]] constexpr operator size<T>() const { return size<T>(x, y); }
 
 	constexpr T& operator[](size_t i) {
 		switch (i) {

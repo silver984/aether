@@ -5,29 +5,6 @@
 
 namespace aether {
 
-node::node(context const& ctx) noexcept
-        : ctx_(ctx)
-        , scene_(nullptr)
-        , parent_(nullptr)
-// , color_(255)
-// , combined_color_(color_)
-// , transform_(mat3::identity())
-// , anchor_(0.5f)
-// , scale_(1.f)
-// , scroll_factor_(1.f)
-// , rotation_(0.f)
-// , time_scale_(1.f)
-// , is_flip_x_(false)
-// , is_flip_y_(false)
-// , is_transform_dirty_(false)
-// , is_rgba_dirty_(false)
-// // , is_active_(false)
-// , is_draw_scheduled_(false)
-// , is_visible_(true)
-{}
-
-node::~node() noexcept = default;
-
 bool node::add_child(strong_ref<node> child) {
 	if (!child) {
 		return false;
@@ -43,9 +20,7 @@ bool node::add_child(strong_ref<node> child) {
 		return false;
 	}
 
-	if (strong_ref<node> old_parent = child->parent_.construct()) {
-		old_parent->remove_child(child);
-	}
+	child->detach_from_parent();
 
 	children_.emplace_back(child);
 	child->parent_ = self;
@@ -84,25 +59,11 @@ void node::destroy_all() {
 }
 
 bool node::detach_from_parent() {
-	if (auto p = parent_.construct()) {
+	if (strong_ref<node> p = parent_.construct()) {
 		return p->remove_child(this->strong_self_());
 	}
 	return false;
 }
-
-// void node::activate() {
-// 	is_active_ = true;
-// }
-
-// void node::deactivate() {
-// 	is_active_ = false;
-// }
-
-// void node::schedule_draw() { is_draw_scheduled_ = true; }
-
-// void node::unschedule_draw() { is_draw_scheduled_ = false; }
-
-size_t node::child_count() const { return children_.size(); }
 
 size_t node::recursed_child_count() const {
 	size_t c = children_.size();
@@ -115,149 +76,12 @@ size_t node::recursed_child_count() const {
 	return c;
 }
 
-weak_ref<node> node::parent() const { return parent_; }
-
 void node::set_name(std::string_view name) {
 	if (name_ == name) {
 		return;
 	}
 	name_ = std::string(name);
 }
-
-std::string_view node::name() const { return name_; }
-
-// void node::set_bounds(size<int> val) {
-// 	val = max(size<int>(0), val);
-// 	if (bounds_ == val) {
-// 		return;
-// 	}
-// 	bounds_ = val;
-// 	mark_transform_dirty_();
-// }
-
-// size<int> node::bounds() const {
-// 	return bounds_;
-// }
-
-// int node::width() const {
-// 	return bounds_.width;
-// }
-
-// int node::height() const {
-// 	return bounds_.height;
-// }
-
-// void node::set_position(vec2<float> val) {
-// 	if (position_ == val) {
-// 		return;
-// 	}
-// 	position_ = val;
-// 	mark_transform_dirty_();
-// }
-
-// void node::set_position_x(float val) {
-// 	if (position_.x == val) {
-// 		return;
-// 	}
-// 	position_.x = val;
-// 	mark_transform_dirty_();
-// }
-
-// void node::set_position_y(float val) {
-// 	if (position_.y == val) {
-// 		return;
-// 	}
-// 	position_.y = val;
-// 	mark_transform_dirty_();
-// }
-
-// vec2<float> node::position() const {
-// 	return position_;
-// }
-
-// void node::set_anchor(vec2<float> val) {
-// 	if (anchor_ == val) {
-// 		return;
-// 	}
-// 	anchor_ = clamp(val, vec2<float>(0.f), vec2<float>(1.f));
-// 	mark_transform_dirty_();
-// }
-
-// vec2<float> node::anchor() const {
-// 	return anchor_;
-// }
-
-// void node::set_scale(vec2<float> val) {
-// 	if (scale_ == val) {
-// 		return;
-// 	}
-// 	scale_ = val;
-// 	mark_transform_dirty_();
-// }
-
-// void node::set_scale(float val) {
-// 	if (scale_.x == val && scale_.y == val) {
-// 		return;
-// 	}
-// 	scale_ = vec2<float>(val);
-// 	mark_transform_dirty_();
-// }
-
-// void node::set_scale_x(float val) {
-// 	if (scale_.x == val) {
-// 		return;
-// 	}
-// 	scale_.x = val;
-// 	mark_transform_dirty_();
-// }
-
-// void node::set_scale_y(float val) {
-// 	if (scale_.y == val) {
-// 		return;
-// 	}
-// 	scale_.y = val;
-// 	mark_transform_dirty_();
-// }
-
-// vec2<float> node::scale() const {
-// 	return scale_;
-// }
-
-// void node::set_skew(vec2<float> val) {
-// 	if (skew_ == val) {
-// 		return;
-// 	}
-// 	skew_ = val;
-// 	mark_transform_dirty_();
-// }
-
-// vec2<float> node::skew() const {
-// 	return skew_;
-// }
-
-// void node::set_scroll_factor(vec2<float> val) {
-// 	if (scroll_factor_ == val) {
-// 		return;
-// 	}
-// 	scroll_factor_ = val;
-// 	mark_transform_dirty_();
-// }
-
-// vec2<float> node::scroll_factor() const {
-// 	return scroll_factor_;
-// }
-
-// void node::set_rotation(float val) {
-// 	if (rotation_ == val) {
-// 		return;
-// 	}
-// 	rotation_ = val;
-// 	mark_transform_dirty_();
-// }
-
-// float node::rotation() const {
-// 	return rotation_;
-// }
 
 // void node::set_color(rgba val) {
 // 	if (color_ == val) {
@@ -281,76 +105,15 @@ std::string_view node::name() const { return name_; }
 
 // float node::alpha() const { return color_.a / 255.f; }
 
-// void node::toggle_visibility(bool val) { is_visible_ = val; }
-
-// bool node::is_visible() const { return is_visible_; }
-
-// void node::set_time_scale(float val) {
-// 	time_scale_ = std::max(0.f, val);
-// }
-
-// float node::time_scale() const {
-// 	return time_scale_;
-// }
-
-// void node::toggle_flip(bool val) {
-// 	if (is_flip_x_ == val && is_flip_y_ == val) {
-// 		return;
-// 	}
-// 	is_flip_x_ = val;
-// 	is_flip_y_ = val;
-// 	mark_transform_dirty_();
-// }
-
-// void node::toggle_flip_x(bool val) {
-// 	if (is_flip_x_ == val) {
-// 		return;
-// 	}
-// 	is_flip_x_ = val;
-// 	mark_transform_dirty_();
-// }
-
-// bool node::is_flip_x() const {
-// 	return is_flip_x_;
-// }
-
-// void node::toggle_flip_y(bool val) {
-// 	if (is_flip_y_ == val) {
-// 		return;
-// 	}
-// 	is_flip_y_ = val;
-// 	mark_transform_dirty_();
-// }
-
-// bool node::is_flip_y() const {
-// 	return is_flip_y_;
-// }
-
-std::vector<strong_ref<node>> node::children() const { return children_; }
-
-// bool node::init_() {
-// 	return true;
-// }
-
-// void node::update_(float dt) {
-// }
-
-// void node::draw_(mat3 const& transform, rgba color) {
-// }
-
-scene* node::get_scene() const {
+aether::scene* node::scene() const {
 	if (scene_) {
 		return scene_;
 	}
 	auto p = parent_.construct();
-	return p ? p->get_scene() : nullptr;
+	return p ? p->scene() : nullptr;
 }
 
-// bool node::init_interface_() {
-// 	return init_();
-// }
-
-void node::update_(float dt) noexcept {
+void node::update_(float dt) {
 	for (auto& component : components_) {
 		component->update_(dt);
 	}
@@ -359,20 +122,13 @@ void node::update_(float dt) noexcept {
 	}
 }
 
-void node::draw_() noexcept {
-	// if (!is_visible_) {
-	// 	return;
-	// }
+void node::draw_() {
 	// if (is_rgba_dirty_) {
 	// 	combined_color_ = calculate_combined_rgba_();
 	// 	is_rgba_dirty_  = false;
 	// }
 	// if (combined_color_.a == 0) {
 	// 	return;
-	// }
-	// if (is_transform_dirty_) {
-	// 	transform_          = calculate_transform_();
-	// 	is_transform_dirty_ = false;
 	// }
 
 	for (auto& component : components_) {
@@ -387,7 +143,7 @@ void node::draw_() noexcept {
 }
 
 bool node::has_ancestor_(strong_ref<node> child) const {
-	auto p = parent_.construct();
+	strong_ref<node> p = parent_.construct();
 	while (p) {
 		if (p == child) {
 			return true;
@@ -396,54 +152,5 @@ bool node::has_ancestor_(strong_ref<node> child) const {
 	}
 	return false;
 }
-
-// void node::mark_transform_dirty_() {
-// 	if (is_transform_dirty_) {
-// 		// already dirty
-// 		return;
-// 	}
-// 	is_transform_dirty_ = true;
-// 	for (auto& child : children_) {
-// 		child->mark_transform_dirty_();
-// 	}
-// }
-
-// void node::mark_rgba_dirty_() {
-// 	if (is_rgba_dirty_) {
-// 		// already dirty
-// 		return;
-// 	}
-// 	is_rgba_dirty_ = true;
-// 	for (auto& child : children_) {
-// 		child->mark_rgba_dirty_();
-// 	}
-// }
-
-// mat3 node::calculate_transform_() const {
-// 	// todo: use scene camera
-// 	vec2<float> const anchor_position = vec2<float>(anchor_.x * bounds_.width, anchor_.y * bounds_.height);
-// 	vec2<float> const skew_rad        = vec2<float>(degrees_to_radians(skew_.x), degrees_to_radians(skew_.y));
-// 	vec2<float> const scale_factor    = vec2<float>(is_flip_x_ ? -1.f : 1.f, is_flip_y_ ? -1.f : 1.f);
-
-// 	mat3 const t     = mat3::translation(position_ * scroll_factor_);
-// 	mat3 const r     = mat3::rotation(degrees_to_radians(rotation_));
-// 	mat3 const s     = mat3::scale(scale_ * scale_factor);
-// 	mat3 const k     = mat3::skew(skew_rad);
-// 	mat3 const a     = mat3::translation(-anchor_position);
-// 	mat3 const local = t * r * s * k * a;
-
-// 	if (auto p = parent_.construct()) {
-// 		return p->transform_ * local;
-// 	}
-
-// 	return local;
-// }
-
-// rgba node::calculate_combined_rgba_() const {
-// 	if (auto p = parent_.construct()) {
-// 		return p->color_ * color_;
-// 	}
-// 	return color_;
-// }
 
 } // namespace aether

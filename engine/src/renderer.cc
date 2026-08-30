@@ -11,14 +11,14 @@
 
 namespace aether {
 
-renderer::renderer() noexcept
+renderer::renderer()
         : projection_(mat3::identity()) {
 #if defined(__ae_anydebug__)
 	last_fps_        = 0;
 	last_heap_usage_ = 0.f;
 #endif
 }
-renderer::~renderer() noexcept = default;
+renderer::~renderer() = default;
 
 void renderer::draw_texture(rltexture2d const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const {
 	if (texture.id < 1) {
@@ -158,13 +158,9 @@ void renderer::define_color_vertex_(rgba color) const {
 	rlColor4ub(c.r, c.g, c.b, c.a);
 }
 
-void renderer::define_vertex_(vec2<float> position) const {
-	rlVertex2f(position.x, position.y);
-}
+void renderer::define_vertex_(vec2<float> position) const { rlVertex2f(position.x, position.y); }
 
-void renderer::define_texture_coord_(vec2<float> position) const {
-	rlTexCoord2f(position.x, position.y);
-}
+void renderer::define_texture_coord_(vec2<float> position) const { rlTexCoord2f(position.x, position.y); }
 
 mat3 renderer::calculate_projection_(size<int> render_size, size<int> target_size) const {
 	vec2<float> const scale_ratio =

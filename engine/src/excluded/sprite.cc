@@ -9,15 +9,12 @@
 
 namespace aether {
 
-sprite::sprite(context const& ctx, sprite_args const& args) noexcept
+sprite::sprite(context const& ctx, sprite_args const& args)
         : node(ctx)
-        , args_(args) {
-}
-sprite::~sprite() noexcept = default;
+        , args_(args) {}
+sprite::~sprite() = default;
 
-void sprite::toggle_antialiasing(bool val) const {
-	SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
-}
+void sprite::toggle_antialiasing(bool val) const { SetTextureFilter(*texture_, val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT); }
 
 bool sprite::set_texture(zip_archive const& pak, std::string_view file) {
 	if (auto fetched_texture = this->ctx_.textures->load(pak, file)) {
@@ -66,9 +63,7 @@ void sprite::set_texture_source_rect(rect<float> const& val) {
 	this->set_bounds(size<int>(w, h));
 }
 
-rect<float> sprite::texture_source_rect() const {
-	return texture_source_rect_;
-}
+rect<float> sprite::texture_source_rect() const { return texture_source_rect_; }
 
 bool sprite::init_() {
 	if (!node::init_()) {

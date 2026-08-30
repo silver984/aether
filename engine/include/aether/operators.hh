@@ -8,13 +8,9 @@ namespace aether {
 
 template <template <typename> class Derived, numeric T, size_t N>
 struct operators {
-	[[nodiscard]] static constexpr size_t capacity() {
-		return N;
-	}
+	[[nodiscard]] static constexpr size_t capacity() { return N; }
 
-	[[nodiscard]] constexpr Derived<T> operator+() const {
-		return self_();
-	}
+	[[nodiscard]] constexpr Derived<T> operator+() const { return self_(); }
 
 	[[nodiscard]] constexpr Derived<T> operator-() const {
 		Derived<T> out;
@@ -191,9 +187,7 @@ struct operators {
 		return true;
 	}
 
-	[[nodiscard]] constexpr bool operator!=(Derived<T> const& other) const {
-		return !(self_() == other);
-	}
+	[[nodiscard]] constexpr bool operator!=(Derived<T> const& other) const { return !(self_() == other); }
 
 	template <numeric U>
 	[[nodiscard]] explicit constexpr operator Derived<U>() const {
@@ -223,13 +217,9 @@ private:
 		return out;
 	}
 
-	[[nodiscard]] constexpr Derived<T> const& self_() const {
-		return static_cast<Derived<T> const&>(*this);
-	}
+	[[nodiscard]] constexpr Derived<T> const& self_() const { return static_cast<Derived<T> const&>(*this); }
 
-	[[nodiscard]] constexpr Derived<T>& self_() {
-		return static_cast<Derived<T>&>(*this);
-	}
+	[[nodiscard]] constexpr Derived<T>& self_() { return static_cast<Derived<T>&>(*this); }
 };
 
 } // namespace aether

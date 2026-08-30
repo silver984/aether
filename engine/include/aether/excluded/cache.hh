@@ -15,8 +15,8 @@ namespace fs = std::filesystem;
 template <typename Type>
 class cache {
 public:
-	cache() noexcept          = default;
-	virtual ~cache() noexcept = default;
+	cache()          = default;
+	virtual ~cache() = default;
 
 	[[nodiscard]] strong_ref<Type> fetch(std::string_view file) {
 		fs::path canonical_file = fs::weakly_canonical(file);
@@ -59,9 +59,7 @@ public:
 protected:
 	[[nodiscard]] virtual strong_ref<Type> load_(fs::path const& file) = 0;
 
-	void clear_() noexcept {
-		bank_.clear();
-	}
+	void clear_() { bank_.clear(); }
 
 private:
 	[[nodiscard]] strong_ref<Type> bank_fetch_(fs::path const& file) const {

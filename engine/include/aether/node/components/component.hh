@@ -17,7 +17,7 @@ public:
 
 	template <typename T, typename... Args>
 	        requires std::derived_from<T, node_component>
-	[[nodiscard]] static unique_ref<T> create(context const& ctx, strong_ref<node> n, Args&&... args) noexcept {
+	[[nodiscard]] static unique_ref<T> create(context const& ctx, strong_ref<node> n, Args&&... args) {
 		auto out = unique_ref<T>::create(ctx, n, std::forward<Args>(args)...);
 		if (!out->init_interface_()) {
 			return nullptr;
@@ -26,19 +26,19 @@ public:
 	}
 
 protected:
-	virtual void node_pushed_() noexcept {}
-	virtual bool init_() noexcept { return true; }
-	virtual void update_(float dt) noexcept {}
-	virtual void visit_() noexcept {}
-	virtual void draw_() noexcept {}
+	virtual void node_pushed_() {}
+	virtual bool init_() { return true; }
+	virtual void update_(float dt) {}
+	virtual void visit_() {}
+	virtual void draw_() {}
 
-	[[nodiscard]] inline strong_ref<node> strong_node_() const noexcept { return weak_node_.construct(); }
+	[[nodiscard]] inline strong_ref<node> strong_node_() const { return weak_node_.construct(); }
 
 	context const& ctx_;
 	weak_ref<node> weak_node_;
 
 private:
-	bool init_interface_() noexcept { return init_(); }
+	bool init_interface_() { return init_(); }
 };
 
 template <typename T>

@@ -7,11 +7,10 @@
 
 namespace aether {
 
-game::game() noexcept
-        : is_initialized_(false) {
-}
+game::game()
+        : is_initialized_(false) {}
 
-game::~game() noexcept {
+game::~game() {
 	if (!is_initialized_) {
 		return;
 	}
@@ -127,7 +126,7 @@ void game::run(unique_ref<scene> s) {
 	shutdown_();
 }
 
-context game::ctx() noexcept {
+context game::ctx() {
 	return {
 	        .window          = &window_,
 	        .renderer        = &renderer_,

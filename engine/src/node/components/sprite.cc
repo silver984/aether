@@ -9,16 +9,16 @@
 
 namespace aether {
 
-sprite::sprite(context const& ctx, strong_ref<node> n, sprite_args const& args) noexcept
+sprite::sprite(context const& ctx, strong_ref<node> n, sprite_args const& args)
         : node_component(ctx, n)
         , maybe_args_(unique_ref<sprite_args>::create(args)) {}
 
-void sprite::set_antialiasing(bool val) noexcept {
+void sprite::set_antialiasing(bool val) {
 	int filter = val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT;
 	SetTextureFilter(*texture_, filter);
 }
 
-bool sprite::set_texture(zip_archive const& pak, std::string_view file) noexcept {
+bool sprite::set_texture(zip_archive const& pak, std::string_view file) {
 	if (strong_ref<Texture> tx = this->ctx_.textures->load(pak, file)) {
 		texture_ = tx;
 	} else {
@@ -30,7 +30,7 @@ bool sprite::set_texture(zip_archive const& pak, std::string_view file) noexcept
 	return true;
 }
 
-void sprite::set_texture_wrap(texture_wrap wrap_type) noexcept {
+void sprite::set_texture_wrap(texture_wrap wrap_type) {
 	switch (wrap_type) {
 	case texture_wrap::clamp: {
 		SetTextureWrap(*texture_, TEXTURE_WRAP_CLAMP);
@@ -54,7 +54,7 @@ void sprite::set_texture_wrap(texture_wrap wrap_type) noexcept {
 	}
 }
 
-void sprite::set_texture_source_rect(rect<float> const& val, bool update_bounds) noexcept {
+void sprite::set_texture_source_rect(rect<float> const& val, bool update_bounds) {
 	texture_source_rect_ = val;
 	if (update_bounds) {
 		int w = (uint32_t)std::abs(std::round(texture_source_rect_.width));
@@ -63,7 +63,7 @@ void sprite::set_texture_source_rect(rect<float> const& val, bool update_bounds)
 	}
 }
 
-bool sprite::init_() noexcept {
+bool sprite::init_() {
 	if (!node_component::init_()) {
 		return false;
 	}
@@ -87,7 +87,7 @@ bool sprite::init_() noexcept {
 	return true;
 }
 
-void sprite::draw_() noexcept {
+void sprite::draw_() {
 	node_component::draw_();
 	strong_ref<node> n = this->strong_node_();
 	visibility* v      = n->component<visibility>();
@@ -100,7 +100,7 @@ void sprite::draw_() noexcept {
 	this->ctx_.renderer->draw_texture(*texture_, texture_source_rect_, t->matrix(), rgba(255) /* temporary rgba */);
 }
 
-void sprite::use_fallback_texture_() noexcept {
+void sprite::use_fallback_texture_() {
 	// assuming that the fallback texture always exists
 	set_texture(zip_archive("aether.pak"), "null");
 	set_texture_source_rect(rect<float>(0.f, 0.f, 100.f, 100.f));

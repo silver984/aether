@@ -7,13 +7,13 @@ namespace aether {
 
 class zip_archive final {
 public:
-	zip_archive() noexcept;
+	zip_archive();
 	explicit zip_archive(std::string_view file);
 	~zip_archive();
 
 	bool open(std::string_view file) const;
 	bool close() const;
-	[[nodiscard]] bool is_open() const noexcept;
+	[[nodiscard]] bool is_open() const;
 	[[nodiscard]] bool contains(std::string_view file) const;
 	[[nodiscard]] blob read(std::string_view file) const;
 

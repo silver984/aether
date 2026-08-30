@@ -21,16 +21,16 @@ struct game_init_args final {
 
 class game final {
 public:
-	game() noexcept;
+	game();
 	game(game&&)                 = delete;
 	game(game const&)            = delete;
 	game& operator=(game&&)      = delete;
 	game& operator=(game const&) = delete;
-	~game() noexcept;
+	~game();
 
 	bool init(game_init_args const& args);
 	void run(unique_ref<scene> s);
-	[[nodiscard]] context ctx() noexcept;
+	[[nodiscard]] context ctx();
 
 private:
 	void shutdown_();

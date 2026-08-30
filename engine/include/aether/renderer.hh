@@ -18,11 +18,11 @@ class renderer final {
 	friend class game;
 
 public:
-	~renderer() noexcept;
+	~renderer();
 	void draw_texture(rltexture2d const& texture, rect<float> source_rect, mat3 const& transform, rgba color) const;
 
 private:
-	renderer() noexcept;
+	renderer();
 	void setup2d_();
 	void update_viewport_(size<int> target_window_size);
 	void start_draw_();

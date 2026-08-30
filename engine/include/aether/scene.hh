@@ -13,10 +13,10 @@ class scene {
 	friend class scene_scheduler;
 
 public:
-	scene(context const& ctx) noexcept
+	scene(context const& ctx)
 	        : ctx_(ctx)
 	        , root_node_(nullptr) {}
-	virtual ~scene() noexcept = default;
+	virtual ~scene() = default;
 
 	template <std::derived_from<scene> T, typename... Args>
 	[[nodiscard]] static unique_ref<T> create(context const& ctx, Args&&... args) {
@@ -27,9 +27,9 @@ public:
 		return ptr;
 	}
 
-	bool add_child(strong_ref<node> n) noexcept;
+	bool add_child(strong_ref<node> n);
 
-	[[nodiscard]] weak_ref<node> root_node() const noexcept { return root_node_; }
+	[[nodiscard]] weak_ref<node> root_node() const { return root_node_; }
 
 protected:
 	virtual bool init_();

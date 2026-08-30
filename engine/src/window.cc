@@ -6,22 +6,15 @@
 
 namespace aether {
 
-window::window() noexcept
-        : target_fps_(0) {
-}
-window::~window() noexcept = default;
+window::window()
+        : target_fps_(0) {}
+window::~window() = default;
 
-std::string_view window::title() const {
-	return title_;
-}
+std::string_view window::title() const { return title_; }
 
-size<int> window::target_size() const {
-	return target_size_;
-}
+size<int> window::target_size() const { return target_size_; }
 
-int window::target_fps() const {
-	return target_fps_;
-}
+int window::target_fps() const { return target_fps_; }
 
 bool window::init_(std::string_view title, size<int> bounds, int fps) {
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
@@ -44,9 +37,7 @@ bool window::init_(std::string_view title, size<int> bounds, int fps) {
 	return true;
 }
 
-void window::shutdown_() {
-	CloseWindow();
-}
+void window::shutdown_() { CloseWindow(); }
 
 void window::update_() {
 	if (IsKeyPressed(KEY_F11)) {
@@ -54,12 +45,8 @@ void window::update_() {
 	}
 }
 
-bool window::should_close_() const {
-	return WindowShouldClose();
-}
+bool window::should_close_() const { return WindowShouldClose(); }
 
-bool window::is_minimized_() const {
-	return IsWindowMinimized();
-}
+bool window::is_minimized_() const { return IsWindowMinimized(); }
 
 } // namespace aether
