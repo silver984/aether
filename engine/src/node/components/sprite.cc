@@ -10,6 +10,9 @@
 namespace aether {
 
 void sprite::set_antialiasing(bool val) {
+	if (!texture_) {
+		return;
+	}
 	int filter = val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT;
 	SetTextureFilter(*texture_, filter);
 }
@@ -27,6 +30,10 @@ bool sprite::set_texture(zip_archive const& pak, std::string_view file) {
 }
 
 void sprite::set_texture_wrap(texture_wrap wrap_type) {
+	if (!texture_) {
+		return;
+	}
+
 	switch (wrap_type) {
 	case texture_wrap::clamp: {
 		SetTextureWrap(*texture_, TEXTURE_WRAP_CLAMP);

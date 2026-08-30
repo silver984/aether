@@ -13,11 +13,13 @@ bool testscene::init_() {
 		return false;
 	}
 
+	zip_archive pak("aether.pak");
 	strong_ref<node> boy = node::create(this->ctx_);
 	boy->set_name("boy");
+
 	{
 		sprite* s = boy->add_component<sprite>();
-		s->set_texture(zip_archive("aether.pak"), "boy");
+		s->set_texture(pak, "boy");
 		s->set_antialiasing(true);
 
 		transform* t = boy->component<transform>();
@@ -27,10 +29,10 @@ bool testscene::init_() {
 	}
 
 	strong_ref<node> silly = node::create(this->ctx_);
-	silly->set_name("silly");
+
 	{
 		sprite* s = silly->add_component<sprite>();
-		s->set_texture(zip_archive("aether.pak"), "cats.silly");
+		s->set_texture(pak, "cats.silly");
 		s->set_antialiasing(true);
 
 		transform* silly_t = silly->component<transform>();
@@ -46,6 +48,7 @@ bool testscene::init_() {
 void testscene::update_(float dt) {
 	scene::update_(dt);
 	constexpr float ROTATION_VAL = 22.5f;
+
 	for (auto& child : root_node().construct()->children()) {
 		if (child->name() != "boy") {
 			return;
@@ -56,7 +59,7 @@ void testscene::update_(float dt) {
 			if (!t) {
 				return;
 			}
-			t->set_rotation(t->rotation() + ((ROTATION_VAL * 2) * dt));
+			t->set_rotation(t->rotation() + (ROTATION_VAL * 2 * dt));
 		}
 
 		{

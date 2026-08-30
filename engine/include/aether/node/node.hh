@@ -50,8 +50,8 @@ public:
 			return existing;
 		}
 
-		if constexpr (_node_comp_impl::has_requirements<T>) {
-			ensure_required_components_(typename T::requirements{});
+		if constexpr (_node_comp_impl::has_dependencies<T>) {
+			ensure_dependency_components_(typename T::dependencies{});
 		}
 
 		unique_ref<T> c = node_component::create<T>(ctx_, this->strong_self_());
@@ -116,7 +116,7 @@ private:
 	[[nodiscard]] bool has_ancestor_(strong_ref<node> n) const;
 
 	template <_node_comp_impl::component... T>
-	void ensure_required_components_(node_component_list<T...>) {
+	void ensure_dependency_components_(node_component_list<T...>) {
 		(add_component<T>(), ...);
 	}
 

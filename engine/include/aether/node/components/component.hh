@@ -17,14 +17,14 @@ concept component = std::derived_from<T, node_component> && !std::same_as<T, nod
                     std::constructible_from<T, context const&, strong_ref<node>>;
 
 template <_node_comp_impl::component... T>
-struct required_components final {
-	using is_required_components_t = void;
+struct dependency_components final {
+	using is_dependency_components_t = void;
 };
 
 template <typename T>
-concept has_requirements = component<T> && requires {
-	typename T::requirements;
-	typename T::requirements::is_required_components_t;
+concept has_dependencies = component<T> && requires {
+	typename T::dependencies;
+	typename T::dependencies::is_dependency_components_t;
 };
 
 using id = void const*;
@@ -40,7 +40,7 @@ constexpr id id_v = &id_storage<T>;
 namespace aether {
 
 template <_node_comp_impl::component... T>
-using node_component_list = _node_comp_impl::required_components<T...>;
+using node_component_list = _node_comp_impl::dependency_components<T...>;
 
 class node_component {
 	friend class node;

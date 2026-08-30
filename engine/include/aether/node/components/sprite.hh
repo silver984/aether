@@ -20,7 +20,7 @@ enum class texture_wrap : uint8_t {
 
 class sprite final : public node_component {
 public:
-	using requirements = node_component_list<transform>;
+	using dependencies = node_component_list<transform>;
 	using node_component::node_component;
 
 	void set_antialiasing(bool val);
