@@ -3,8 +3,7 @@
 
 class testscene : public aether::scene {
 public:
-	testscene(aether::context const& ctx) noexcept;
-	~testscene() noexcept override;
+	using aether::scene::scene;
 
 protected:
 	bool init_() override;

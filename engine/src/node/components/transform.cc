@@ -1,19 +1,9 @@
 #include <aether/math.hh>
 #include <aether/node/components/transform.hh>
+#include <aether/node/components/visibility.hh>
 #include <aether/node/node.hh>
 
 namespace aether {
-
-transform::transform(context const& ctx, strong_ref<node> n) noexcept
-        : node_component(ctx, n)
-        , matrix_(mat3::identity())
-        , anchor_(0.5f)
-        , scale_(1.f)
-        , shear_(1.f)
-        , is_flipped_(false)
-        , rotation_(0.f)
-        , is_transform_dirty_(false) {
-}
 
 void transform::set_bounds(size<uint32_t> val) noexcept {
 	if (bounds_ == val) {
@@ -57,40 +47,33 @@ void transform::set_shear(vec2<float> val) noexcept {
 	mark_transform_dirty_();
 }
 
-mat3 transform::matrix() const noexcept {
-	return matrix_;
-}
-
-size<uint32_t> transform::bounds() const noexcept {
-	return bounds_;
-}
-
-vec2<float> transform::position() const noexcept {
-	return position_;
-}
-
-vec2<float> transform::anchor() const noexcept {
-	return anchor_;
-}
-
-vec2<float> transform::scale() const noexcept {
-	return scale_;
-}
-
-vec2<float> transform::shear() const noexcept {
-	return shear_;
-}
-
-bool transform::init_() noexcept {
-	if (!node_component::init_()) {
-		return false;
+void transform::set_flipped(vec2<bool> val) noexcept {
+	if (is_flipped_ == val) {
+		return;
 	}
-	this->schedule(schedule_level::visit);
-	return true;
+	is_flipped_ = val;
+	mark_transform_dirty_();
+}
+
+void transform::set_rotation(float val) noexcept {
+	if (rotation_ == val) {
+		return;
+	}
+	rotation_ = val;
+	mark_transform_dirty_();
+}
+
+void transform::node_pushed_() noexcept {
+	node_component::node_pushed_();
+	mark_transform_dirty_();
 }
 
 void transform::visit_() noexcept {
 	node_component::visit_();
+	visibility* v = this->strong_node_()->component<visibility>();
+	if (v && !v->is_visible()) {
+		return;
+	}
 	if (is_transform_dirty_) {
 		is_transform_dirty_ = false;
 		update_matrix_();
@@ -102,15 +85,8 @@ void transform::mark_transform_dirty_() {
 		// already dirty
 		return;
 	}
-
-	is_transform_dirty_          = true;
-	strong_ref<node> strong_node = this->weak_node_.construct();
-
-	if (!strong_node) {
-		return;
-	}
-
-	for (strong_ref<node>& child : strong_node->children()) {
+	is_transform_dirty_ = true;
+	for (auto& child : this->strong_node_()->children()) {
 		if (transform* t = child->component<transform>()) {
 			t->mark_transform_dirty_();
 		}
@@ -141,14 +117,14 @@ void transform::update_matrix_() {
 	mat3 const k = mat3::skew(shear_rad);
 	mat3 const a = mat3::translation(-anchor_position);
 
-	matrix_                      = t * r * s * k * a;
-	strong_ref<node> strong_node = this->weak_node_.construct();
+	matrix_            = t * r * s * k * a;
+	strong_ref<node> n = this->strong_node_();
 
-	if (!strong_node) {
+	if (!n) {
 		return;
 	}
 
-	strong_ref<node> node_parent = strong_node->parent().construct();
+	strong_ref<node> node_parent = n->parent().construct();
 
 	if (!node_parent) {
 		return;

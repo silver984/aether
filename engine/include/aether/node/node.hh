@@ -1,4 +1,5 @@
 #pragma once
+#include <aether/context.hh>
 #include <aether/mat3.hh>
 #include <aether/node/components/component.hh>
 #include <aether/ref.hh>
@@ -41,7 +42,7 @@ public:
 	template <node_component_type T, typename... Args>
 	bool add_component(Args&&... args) { // todo: remove_component<T>
 		if (component<T>()) {
-			return false;
+			return true;
 		}
 		unique_ref<T> component = node_component::create<T>(ctx_, this->strong_self_(), std::forward<Args>(args)...);
 		if (!component) {
@@ -61,11 +62,11 @@ public:
 		return nullptr;
 	}
 
-	void activate();
-	void deactivate();
+	// void activate();
+	// void deactivate();
 
-	void schedule_draw();
-	void unschedule_draw();
+	// void schedule_draw();
+	// void unschedule_draw();
 
 	[[nodiscard]] size_t child_count() const;
 	[[nodiscard]] size_t recursed_child_count() const;
@@ -103,25 +104,25 @@ public:
 	// void set_rotation(float val);
 	// [[nodiscard]] float rotation() const;
 
-	void set_color(rgba val);
-	[[nodiscard]] rgba color() const;
+	// void set_color(rgba val);
+	// [[nodiscard]] rgba color() const;
 
-	void set_alpha(float val);
-	[[nodiscard]] float alpha() const;
+	// void set_alpha(float val);
+	// [[nodiscard]] float alpha() const;
 
-	void toggle_visibility(bool val);
-	[[nodiscard]] bool is_visible() const;
+	// void toggle_visibility(bool val);
+	// [[nodiscard]] bool is_visible() const;
 
-	void set_time_scale(float val);
-	[[nodiscard]] float time_scale() const;
+	// void set_time_scale(float val);
+	// [[nodiscard]] float time_scale() const;
 
-	void toggle_flip(bool val);
+	// void toggle_flip(bool val);
 
-	void toggle_flip_x(bool val);
-	[[nodiscard]] bool is_flip_x() const;
+	// void toggle_flip_x(bool val);
+	// [[nodiscard]] bool is_flip_x() const;
 
-	void toggle_flip_y(bool val);
-	[[nodiscard]] bool is_flip_y() const;
+	// void toggle_flip_y(bool val);
+	// [[nodiscard]] bool is_flip_y() const;
 
 	[[nodiscard]] std::vector<strong_ref<node>> children() const;
 
@@ -141,11 +142,11 @@ private:
 
 	[[nodiscard]] bool has_ancestor_(strong_ref<node> n) const;
 
-	void mark_transform_dirty_();
-	void mark_rgba_dirty_();
+	// void mark_transform_dirty_();
+	// void mark_rgba_dirty_();
 
-	[[nodiscard]] mat3 calculate_transform_() const;
-	[[nodiscard]] rgba calculate_combined_rgba_() const;
+	// [[nodiscard]] mat3 calculate_transform_() const;
+	// [[nodiscard]] rgba calculate_combined_rgba_() const;
 
 	scene* scene_;
 
@@ -168,16 +169,16 @@ private:
 	// float rotation_; // degrees
 	// float time_scale_;
 
-	rgba color_;
-	rgba combined_color_;
+	// rgba color_;
+	// rgba combined_color_;
 
 	// bool is_flip_x_;
 	// bool is_flip_y_;
 	// bool is_transform_dirty_;
-	bool is_rgba_dirty_;
-	// bool is_active_;
-	bool is_draw_scheduled_;
-	bool is_visible_;
+	// bool is_rgba_dirty_;
+	// // bool is_active_;
+	// bool is_draw_scheduled_;
+	// bool is_visible_;
 };
 
 } // namespace aether

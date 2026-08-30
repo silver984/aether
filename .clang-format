@@ -18,7 +18,7 @@ DerivePointerAlignment: false
 PointerAlignment: Left
 QualifierAlignment: Right
 
-AllowShortFunctionsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AllowShortBlocksOnASingleLine: false

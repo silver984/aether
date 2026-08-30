@@ -13,8 +13,10 @@ class scene {
 	friend class scene_scheduler;
 
 public:
-	scene(context const& ctx) noexcept;
-	virtual ~scene() noexcept;
+	scene(context const& ctx) noexcept
+	        : ctx_(ctx)
+	        , root_node_(nullptr) {}
+	virtual ~scene() noexcept = default;
 
 	template <std::derived_from<scene> T, typename... Args>
 	[[nodiscard]] static unique_ref<T> create(context const& ctx, Args&&... args) {
@@ -25,35 +27,25 @@ public:
 		return ptr;
 	}
 
-	void activate();
-	void deactivate();
+	bool add_child(strong_ref<node> n) noexcept;
 
-	void schedule_visit();
-	void unschedule_visit();
-
-	bool add(strong_ref<node> n);
-
-	[[nodiscard]] weak_ref<node> root_node() const;
+	[[nodiscard]] weak_ref<node> root_node() const noexcept { return root_node_; }
 
 protected:
 	virtual bool init_();
-	virtual void update_(float dt);
-	virtual void visit_();
+	virtual void update_(float dt) {}
+	virtual void visit_() {}
 
 	context const& ctx_;
 
 private:
-	bool init_interface_();
-
+	bool init_interface_() { return init_(); }
 	void update_all_(float dt);
 	void draw_all_();
 
 	// camera camera_; // todo
 
 	strong_ref<node> root_node_;
-
-	bool is_active_;
-	bool is_visit_scheduled_;
 };
 
 } // namespace aether

@@ -1,10 +1,7 @@
-#include "aether/node/components/component.hh"
-#include <aether/context.hh>
 #include <aether/math.hh>
 #include <aether/node/node.hh>
 #include <aether/scene.hh>
 #include <algorithm>
-#include <cmath>
 
 namespace aether {
 
@@ -12,22 +9,22 @@ node::node(context const& ctx) noexcept
         : ctx_(ctx)
         , scene_(nullptr)
         , parent_(nullptr)
-        , color_(255)
-        , combined_color_(color_)
-        // , transform_(mat3::identity())
-        // , anchor_(0.5f)
-        // , scale_(1.f)
-        // , scroll_factor_(1.f)
-        // , rotation_(0.f)
-        // , time_scale_(1.f)
-        // , is_flip_x_(false)
-        // , is_flip_y_(false)
-        // , is_transform_dirty_(false)
-        , is_rgba_dirty_(false)
-        // , is_active_(false)
-        , is_draw_scheduled_(false)
-        , is_visible_(true) {
-}
+// , color_(255)
+// , combined_color_(color_)
+// , transform_(mat3::identity())
+// , anchor_(0.5f)
+// , scale_(1.f)
+// , scroll_factor_(1.f)
+// , rotation_(0.f)
+// , time_scale_(1.f)
+// , is_flip_x_(false)
+// , is_flip_y_(false)
+// , is_transform_dirty_(false)
+// , is_rgba_dirty_(false)
+// // , is_active_(false)
+// , is_draw_scheduled_(false)
+// , is_visible_(true)
+{}
 
 node::~node() noexcept = default;
 
@@ -36,33 +33,25 @@ bool node::add_child(strong_ref<node> child) {
 		return false;
 	}
 
-	auto self          = this->strong_self_();
-	bool const is_self = child == self;
-
-	if (is_self) {
-		return false;
-	}
-
-	bool const has_ancestor = child->has_ancestor_(self);
-
-	if (has_ancestor) {
+	strong_ref<node> self = this->strong_self_();
+	if (child == self || child->has_ancestor_(self)) {
 		return false;
 	}
 
 	bool const is_duplicate = std::find(children_.begin(), children_.end(), child) != children_.end();
-
 	if (is_duplicate) {
 		return false;
 	}
 
-	if (auto old_parent = child->parent_.construct()) {
+	if (strong_ref<node> old_parent = child->parent_.construct()) {
 		old_parent->remove_child(child);
 	}
 
-	auto placed_child     = children_.emplace_back(child);
-	placed_child->parent_ = self;
-	placed_child->mark_transform_dirty_();
-	placed_child->mark_rgba_dirty_();
+	children_.emplace_back(child);
+	child->parent_ = self;
+	for (auto& component : child->components_) {
+		component->node_pushed_();
+	}
 
 	return true;
 }
@@ -73,7 +62,6 @@ bool node::remove_child(strong_ref<node> child) {
 	}
 
 	auto it = std::find(children_.begin(), children_.end(), child);
-
 	if (it == children_.end()) {
 		return false;
 	}
@@ -110,17 +98,11 @@ bool node::detach_from_parent() {
 // 	is_active_ = false;
 // }
 
-void node::schedule_draw() {
-	is_draw_scheduled_ = true;
-}
+// void node::schedule_draw() { is_draw_scheduled_ = true; }
 
-void node::unschedule_draw() {
-	is_draw_scheduled_ = false;
-}
+// void node::unschedule_draw() { is_draw_scheduled_ = false; }
 
-size_t node::child_count() const {
-	return children_.size();
-}
+size_t node::child_count() const { return children_.size(); }
 
 size_t node::recursed_child_count() const {
 	size_t c = children_.size();
@@ -133,9 +115,7 @@ size_t node::recursed_child_count() const {
 	return c;
 }
 
-weak_ref<node> node::parent() const {
-	return parent_;
-}
+weak_ref<node> node::parent() const { return parent_; }
 
 void node::set_name(std::string_view name) {
 	if (name_ == name) {
@@ -144,9 +124,7 @@ void node::set_name(std::string_view name) {
 	name_ = std::string(name);
 }
 
-std::string_view node::name() const {
-	return name_;
-}
+std::string_view node::name() const { return name_; }
 
 // void node::set_bounds(size<int> val) {
 // 	val = max(size<int>(0), val);
@@ -281,39 +259,31 @@ std::string_view node::name() const {
 // 	return rotation_;
 // }
 
-void node::set_color(rgba val) {
-	if (color_ == val) {
-		return;
-	}
-	color_ = val;
-	mark_rgba_dirty_();
-}
+// void node::set_color(rgba val) {
+// 	if (color_ == val) {
+// 		return;
+// 	}
+// 	color_ = val;
+// 	mark_rgba_dirty_();
+// }
 
-rgba node::color() const {
-	return color_;
-}
+// rgba node::color() const { return color_; }
 
-void node::set_alpha(float val) {
-	val                  = 255.f * std::clamp(val, 0.f, 1.f);
-	uint8_t const valui8 = (uint8_t)std::round(val);
-	if (color_.a == valui8) {
-		return;
-	}
-	color_.a = valui8;
-	mark_rgba_dirty_();
-}
+// void node::set_alpha(float val) {
+// 	val                  = 255.f * std::clamp(val, 0.f, 1.f);
+// 	uint8_t const valui8 = (uint8_t)std::round(val);
+// 	if (color_.a == valui8) {
+// 		return;
+// 	}
+// 	color_.a = valui8;
+// 	mark_rgba_dirty_();
+// }
 
-float node::alpha() const {
-	return color_.a / 255.f;
-}
+// float node::alpha() const { return color_.a / 255.f; }
 
-void node::toggle_visibility(bool val) {
-	is_visible_ = val;
-}
+// void node::toggle_visibility(bool val) { is_visible_ = val; }
 
-bool node::is_visible() const {
-	return is_visible_;
-}
+// bool node::is_visible() const { return is_visible_; }
 
 // void node::set_time_scale(float val) {
 // 	time_scale_ = std::max(0.f, val);
@@ -356,9 +326,7 @@ bool node::is_visible() const {
 // 	return is_flip_y_;
 // }
 
-std::vector<strong_ref<node>> node::children() const {
-	return children_;
-}
+std::vector<strong_ref<node>> node::children() const { return children_; }
 
 // bool node::init_() {
 // 	return true;
@@ -384,9 +352,7 @@ scene* node::get_scene() const {
 
 void node::update_(float dt) noexcept {
 	for (auto& component : components_) {
-		if (component->is_scheduled(schedule_level::update)) {
-			component->update_(dt * component->time_scale_);
-		}
+		component->update_(dt);
 	}
 	for (auto& child : children_) {
 		child->update_(dt);
@@ -410,17 +376,11 @@ void node::draw_() noexcept {
 	// }
 
 	for (auto& component : components_) {
-		if (component->is_scheduled(schedule_level::visit)) {
-			component->visit_();
-		}
+		component->visit_();
 	}
-
 	for (auto& component : components_) {
-		if (component->is_scheduled(schedule_level::draw)) {
-			component->draw_();
-		}
+		component->draw_();
 	}
-
 	for (auto& child : children_) {
 		child->draw_();
 	}
@@ -448,16 +408,16 @@ bool node::has_ancestor_(strong_ref<node> child) const {
 // 	}
 // }
 
-void node::mark_rgba_dirty_() {
-	if (is_rgba_dirty_) {
-		// already dirty
-		return;
-	}
-	is_rgba_dirty_ = true;
-	for (auto& child : children_) {
-		child->mark_rgba_dirty_();
-	}
-}
+// void node::mark_rgba_dirty_() {
+// 	if (is_rgba_dirty_) {
+// 		// already dirty
+// 		return;
+// 	}
+// 	is_rgba_dirty_ = true;
+// 	for (auto& child : children_) {
+// 		child->mark_rgba_dirty_();
+// 	}
+// }
 
 // mat3 node::calculate_transform_() const {
 // 	// todo: use scene camera
@@ -479,11 +439,11 @@ void node::mark_rgba_dirty_() {
 // 	return local;
 // }
 
-rgba node::calculate_combined_rgba_() const {
-	if (auto p = parent_.construct()) {
-		return p->color_ * color_;
-	}
-	return color_;
-}
+// rgba node::calculate_combined_rgba_() const {
+// 	if (auto p = parent_.construct()) {
+// 		return p->color_ * color_;
+// 	}
+// 	return color_;
+// }
 
 } // namespace aether
