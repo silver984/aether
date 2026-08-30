@@ -63,8 +63,13 @@ void transform::set_rotation(float val) {
 	mark_transform_dirty_();
 }
 
-void transform::node_pushed_() {
-	node_component::node_pushed_();
+void transform::node_parented_() {
+	node_component::node_parented_();
+	mark_transform_dirty_();
+}
+
+void transform::node_detached_() {
+	node_component::node_detached_();
 	mark_transform_dirty_();
 }
 
@@ -118,19 +123,13 @@ void transform::update_matrix_() {
 	mat3 const a = mat3::translation(-anchor_position);
 
 	matrix_            = t * r * s * k * a;
-	strong_ref<node> n = this->strong_node_();
+	strong_ref<node> p = this->strong_node_()->parent().construct();
 
-	if (!n) {
+	if (!p) {
 		return;
 	}
 
-	strong_ref<node> node_parent = n->parent().construct();
-
-	if (!node_parent) {
-		return;
-	}
-
-	if (transform* t = node_parent->component<transform>()) {
+	if (transform* t = p->component<transform>()) {
 		matrix_ *= t->matrix_;
 	}
 }

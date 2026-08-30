@@ -21,11 +21,10 @@ bool node::add_child(strong_ref<node> child) {
 	}
 
 	child->detach_from_parent();
-
 	children_.emplace_back(child);
 	child->parent_ = self;
 	for (auto& component : child->components_) {
-		component->node_pushed_();
+		component->node_parented_();
 	}
 
 	return true;
@@ -43,6 +42,9 @@ bool node::remove_child(strong_ref<node> child) {
 
 	(*it)->parent_.detach();
 	children_.erase(it);
+	for (auto& component : child->components_) {
+		component->node_detached_();
+	}
 
 	return true;
 }

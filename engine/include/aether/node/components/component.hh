@@ -46,15 +46,14 @@ public:
 	template <_node_comp_impl::component T>
 	[[nodiscard]] static unique_ref<T> create(context const& ctx, strong_ref<node> n) {
 		auto out = unique_ref<T>::create(ctx, n);
-		if (!out->init_interface_()) {
-			return nullptr;
-		}
+		out->init_interface_();
 		return out;
 	}
 
 protected:
-	virtual void node_pushed_() {}
-	virtual bool init_() { return true; }
+	virtual void node_parented_() {}
+	virtual void node_detached_() {}
+	virtual void init_() {}
 	virtual void update_(float dt) {}
 	virtual void visit_() {}
 	virtual void draw_() {}
@@ -65,7 +64,7 @@ protected:
 	weak_ref<node> weak_node_;
 
 private:
-	bool init_interface_() { return init_(); }
+	void init_interface_() { return init_(); }
 };
 
 } // namespace aether

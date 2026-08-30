@@ -31,12 +31,9 @@ public:
 	[[nodiscard]] weak_ref<Texture> texture() const { return texture_; }
 
 protected:
-	bool init_() override;
 	void draw_() override;
 
 private:
-	void use_fallback_texture_();
-
 	strong_ref<Texture> texture_;
 	rect<float> texture_source_rect_;
 };

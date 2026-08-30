@@ -37,7 +37,8 @@ public:
 	[[nodiscard]] float rotation() const { return rotation_; }
 
 protected:
-	void node_pushed_() override;
+	void node_parented_() override;
+	void node_detached_() override;
 	void visit_() override;
 
 private:

@@ -49,17 +49,11 @@ public:
 		}
 
 		if constexpr (_node_comp_impl::has_requirements<T>) {
-			if (!ensure_required_components_(typename T::requirements{})) {
-				return nullptr;
-			}
+			ensure_required_components_(typename T::requirements{});
 		}
 
 		unique_ref<T> c = node_component::create<T>(ctx_, this->strong_self_());
-		if (!c) {
-			return nullptr;
-		}
-
-		auto& out = components_.emplace_back(std::move(c));
+		auto& out       = components_.emplace_back(std::move(c));
 		return dynamic_cast<T*>(out.get());
 	}
 
@@ -97,8 +91,8 @@ private:
 	[[nodiscard]] bool has_ancestor_(strong_ref<node> n) const;
 
 	template <_node_comp_impl::component... T>
-	bool ensure_required_components_(node_component_list<T...>) {
-		return ((add_component<T>() != nullptr) && ...);
+	void ensure_required_components_(node_component_list<T...>) {
+		(add_component<T>(), ...);
 	}
 
 	// void mark_rgba_dirty_();
