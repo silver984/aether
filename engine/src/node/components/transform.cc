@@ -130,7 +130,7 @@ void transform::update_matrix_() {
 	}
 
 	if (transform* t = p->component<transform>()) {
-		matrix_ *= t->matrix_;
+		matrix_ = t->matrix_ * matrix_;
 	}
 }
 

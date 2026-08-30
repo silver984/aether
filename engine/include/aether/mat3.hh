@@ -15,7 +15,6 @@ struct mat3 final {
 	[[nodiscard]] vec2<float> transform_point(vec2<float> p) const;
 	[[nodiscard]] vec2<float> translation() const;
 	[[nodiscard]] mat3 operator*(mat3 const& o) const;
-	mat3& operator*=(mat3 const& o);
 
 	float m[3][3];
 };

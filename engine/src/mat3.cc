@@ -58,6 +58,4 @@ mat3 mat3::operator*(mat3 const& o) const {
 	return r;
 }
 
-mat3& mat3::operator*=(mat3 const& o) { return *this = *this * o; }
-
 } // namespace aether
