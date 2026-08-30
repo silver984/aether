@@ -32,7 +32,7 @@ protected:
 	virtual void visit_() {}
 	virtual void draw_() {}
 
-	[[nodiscard]] inline strong_ref<node> strong_node_() const { return weak_node_.construct(); }
+	[[nodiscard]] strong_ref<node> strong_node_() const { return weak_node_.construct(); }
 
 	context const& ctx_;
 	weak_ref<node> weak_node_;

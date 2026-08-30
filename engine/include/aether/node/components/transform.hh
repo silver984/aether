@@ -21,20 +21,20 @@ public:
 
 	void set_rotation(float val);
 
-	[[nodiscard]] inline mat3 matrix() const { return matrix_; }
+	[[nodiscard]] mat3 matrix() const { return matrix_; }
 
-	[[nodiscard]] inline size<uint32_t> bounds() const { return bounds_; }
-	[[nodiscard]] inline uint32_t width() const { return bounds_.width; }
-	[[nodiscard]] inline uint32_t height() const { return bounds_.height; }
+	[[nodiscard]] size<uint32_t> bounds() const { return bounds_; }
+	[[nodiscard]] uint32_t width() const { return bounds_.width; }
+	[[nodiscard]] uint32_t height() const { return bounds_.height; }
 
-	[[nodiscard]] inline vec2<float> position() const { return position_; }
-	[[nodiscard]] inline vec2<float> anchor() const { return anchor_; }
-	[[nodiscard]] inline vec2<float> scale() const { return scale_; }
-	[[nodiscard]] inline vec2<float> shear() const { return shear_; }
+	[[nodiscard]] vec2<float> position() const { return position_; }
+	[[nodiscard]] vec2<float> anchor() const { return anchor_; }
+	[[nodiscard]] vec2<float> scale() const { return scale_; }
+	[[nodiscard]] vec2<float> shear() const { return shear_; }
 
-	[[nodiscard]] inline vec2<bool> is_flipped() const { return is_flipped_; }
+	[[nodiscard]] vec2<bool> is_flipped() const { return is_flipped_; }
 
-	[[nodiscard]] inline float rotation() const { return rotation_; }
+	[[nodiscard]] float rotation() const { return rotation_; }
 
 protected:
 	void node_pushed_() override;

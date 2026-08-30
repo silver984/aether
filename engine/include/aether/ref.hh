@@ -417,7 +417,6 @@ protected:
 	virtual ~self_ref() = default;
 
 	[[nodiscard]] strong_ref<T> strong_self_() const { return weak_.construct(); }
-
 	[[nodiscard]] weak_ref<T> weak_self_() const { return weak_; }
 
 private:

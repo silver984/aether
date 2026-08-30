@@ -25,7 +25,7 @@ public:
 	        : ctx_(ctx)
 	        , scene_(nullptr)
 	        , parent_(nullptr) {}
-	~node() = default;
+	~node() override = default;
 
 	template <typename... Args>
 	[[nodiscard]] static strong_ref<node> create(context const& ctx) {
@@ -68,10 +68,10 @@ public:
 	[[nodiscard]] size_t child_count() const { return children_.size(); }
 	[[nodiscard]] size_t recursed_child_count() const;
 
-	[[nodiscard]] inline weak_ref<node> parent() const { return parent_; }
+	[[nodiscard]] weak_ref<node> parent() const { return parent_; }
 
 	void set_name(std::string_view name); // todo: better naming system
-	[[nodiscard]] inline std::string_view name() const { return name_; }
+	[[nodiscard]] std::string_view name() const { return name_; }
 
 	// void set_color(rgba val);
 	// [[nodiscard]] rgba color() const;
@@ -79,7 +79,7 @@ public:
 	// void set_alpha(float val);
 	// [[nodiscard]] float alpha() const;
 
-	[[nodiscard]] inline std::vector<strong_ref<node>> children() const { return children_; }
+	[[nodiscard]] std::vector<strong_ref<node>> children() const { return children_; }
 	[[nodiscard]] aether::scene* scene() const;
 
 private:
