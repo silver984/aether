@@ -4,8 +4,36 @@
 
 namespace aether {
 
+class node_component;
 class node;
 class context;
+
+} // namespace aether
+
+namespace aether::_node_comp_impl {
+
+template <typename T>
+concept component = std::derived_from<T, node_component> && !std::same_as<T, node_component> &&
+                    std::constructible_from<T, context const&, strong_ref<node>>;
+
+template <_node_comp_impl::component... T>
+struct required_components {
+	using required_components_identifier = void;
+};
+
+template <typename T>
+concept has_requirements = component<T> && requires {
+	typename T::requirements;
+	typename T::requirements::required_components_identifier;
+};
+
+} // namespace aether::_node_comp_impl
+
+namespace aether {
+
+template <_node_comp_impl::component... T>
+using node_component_list = _node_comp_impl::required_components<T...>;
+
 class node_component {
 	friend class node;
 
@@ -15,10 +43,9 @@ public:
 	        , weak_node_(n) {}
 	virtual ~node_component() = default;
 
-	template <typename T, typename... Args>
-	        requires std::derived_from<T, node_component>
-	[[nodiscard]] static unique_ref<T> create(context const& ctx, strong_ref<node> n, Args&&... args) {
-		auto out = unique_ref<T>::create(ctx, n, std::forward<Args>(args)...);
+	template <_node_comp_impl::component T>
+	[[nodiscard]] static unique_ref<T> create(context const& ctx, strong_ref<node> n) {
+		auto out = unique_ref<T>::create(ctx, n);
 		if (!out->init_interface_()) {
 			return nullptr;
 		}
@@ -40,8 +67,5 @@ protected:
 private:
 	bool init_interface_() { return init_(); }
 };
-
-template <typename T>
-concept node_component_type = std::derived_from<T, node_component> && !std::same_as<T, node_component>;
 
 } // namespace aether

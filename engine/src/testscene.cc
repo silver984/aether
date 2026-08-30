@@ -13,17 +13,14 @@ bool testscene::init_() {
 		return false;
 	}
 
-	zip_archive pak("aether.pak");
 	strong_ref<node> boy = node::create(this->ctx_);
-
-	if (!boy->add_component<sprite>(sprite_args{.pak = pak, .file = "boy"})) {
-		return false;
-	}
+	sprite* s            = boy->add_component<sprite>();
+	s->set_texture(zip_archive("aether.pak"), "boy");
+	s->set_antialiasing(true);
 
 	transform* t = boy->component<transform>();
 	t->set_scale(0.6f);
 	t->set_position(this->ctx_.window->target_size() * 0.5f);
-
 	this->add_child(boy);
 
 	return true;

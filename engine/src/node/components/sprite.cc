@@ -9,10 +9,6 @@
 
 namespace aether {
 
-sprite::sprite(context const& ctx, strong_ref<node> n, sprite_args const& args)
-        : node_component(ctx, n)
-        , maybe_args_(unique_ref<sprite_args>::create(args)) {}
-
 void sprite::set_antialiasing(bool val) {
 	int filter = val ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT;
 	SetTextureFilter(*texture_, filter);
@@ -67,23 +63,7 @@ bool sprite::init_() {
 	if (!node_component::init_()) {
 		return false;
 	}
-
-	strong_ref<node> n = this->strong_node_();
-
-	if (!n || !n->add_component<transform>()) {
-		return false;
-	}
-
-	if (!maybe_args_->file.has_value() || !set_texture(maybe_args_->pak, maybe_args_->file.value())) {
-		use_fallback_texture_();
-		maybe_args_.release();
-		return true;
-	}
-
-	set_antialiasing(maybe_args_->antialiasing);
-	set_texture_wrap(maybe_args_->wrap_type);
-	maybe_args_.release();
-
+	use_fallback_texture_();
 	return true;
 }
 

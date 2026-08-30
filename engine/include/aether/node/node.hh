@@ -42,20 +42,28 @@ public:
 
 	bool detach_from_parent();
 
-	template <node_component_type T, typename... Args>
-	bool add_component(Args&&... args) { // todo: remove_component<T>
-		if (component<T>()) {
-			return true;
+	template <_node_comp_impl::component T>
+	T* add_component() {
+		if (T* existing = component<T>()) {
+			return existing;
 		}
-		unique_ref<T> component = node_component::create<T>(ctx_, this->strong_self_(), std::forward<Args>(args)...);
-		if (!component) {
-			return false;
+
+		if constexpr (_node_comp_impl::has_requirements<T>) {
+			if (!ensure_required_components_(typename T::requirements{})) {
+				return nullptr;
+			}
 		}
-		components_.emplace_back(std::move(component));
-		return true;
+
+		unique_ref<T> c = node_component::create<T>(ctx_, this->strong_self_());
+		if (!c) {
+			return nullptr;
+		}
+
+		auto& out = components_.emplace_back(std::move(c));
+		return dynamic_cast<T*>(out.get());
 	}
 
-	template <node_component_type T>
+	template <_node_comp_impl::component T>
 	[[nodiscard]] T* component() const {
 		for (auto& comp : components_) {
 			if (T* ptr = dynamic_cast<T*>(comp.get())) {
@@ -87,6 +95,11 @@ private:
 	void draw_();
 
 	[[nodiscard]] bool has_ancestor_(strong_ref<node> n) const;
+
+	template <_node_comp_impl::component... T>
+	bool ensure_required_components_(node_component_list<T...>) {
+		return ((add_component<T>() != nullptr) && ...);
+	}
 
 	// void mark_rgba_dirty_();
 	// [[nodiscard]] rgba calculate_combined_rgba_() const;
