@@ -35,7 +35,7 @@ public:
 			return from_cache;
 		}
 
-		ae_debug("Loading resource ? file: \"{}\"", file);
+		ae_trace("Loading resource ? file: \"{}\"", file);
 		timer t;
 		t.start();
 
@@ -46,10 +46,8 @@ public:
 			return nullptr;
 		}
 
-		ae_trace("Loaded resource ? address: {}", fmt::ptr(out.get()));
-
 		t.stop();
-		ae_debug("Done ({}ms)", t.duration());
+		ae_trace("Done ({}ms) ? address: {}", t.duration(), fmt::ptr(out.get()));
 
 		purge_unused_();
 		auto [it, _] = cache_.emplace(std::string(file), std::move(out));

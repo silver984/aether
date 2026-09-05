@@ -8,6 +8,8 @@
 
 #include <raylib.h>
 
+#include <cmath>
+
 namespace aether {
 
 void sprite::set_antialiasing(bool val) {
