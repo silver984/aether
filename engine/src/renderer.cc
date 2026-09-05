@@ -6,6 +6,8 @@
 #include <raymath.h>
 #include <rlgl.h>
 
+#include <cmath>
+
 namespace aether::_renderer_impl {
 
 void setup_2d_() {
