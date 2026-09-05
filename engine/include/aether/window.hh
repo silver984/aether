@@ -6,7 +6,7 @@
 
 namespace aether::_window_impl {
 
-void try_init_(std::string_view title, size<uint32_t> bounds, uint32_t fps);
+bool init_(std::string_view title, size<uint32_t> bounds, uint32_t fps);
 void close_();
 [[nodiscard]] bool should_close_();
 [[nodiscard]] bool is_minimized_();

@@ -4,14 +4,12 @@
 
 #include <raylib.h>
 
-#include <stdexcept>
-
 namespace aether::_window_impl {
 
 size<uint32_t> bounds_;
 uint32_t fps_{0};
 
-void try_init_(std::string_view title, size<uint32_t> bounds, uint32_t fps) {
+bool init_(std::string_view title, size<uint32_t> bounds, uint32_t fps) {
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
 
 	bounds_ = bounds;
@@ -20,12 +18,14 @@ void try_init_(std::string_view title, size<uint32_t> bounds, uint32_t fps) {
 	InitWindow(bounds.width, bounds.height, title.data());
 
 	if (!IsWindowReady()) {
-		throw std::runtime_error("window not ready");
+		return false;
 	}
 
 	SetTargetFPS(0);
 	SetExitKey(KEY_NULL);
 	SetWindowMinSize(640, 360);
+
+	return true;
 }
 
 void close_() { CloseWindow(); }

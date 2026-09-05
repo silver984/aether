@@ -7,20 +7,27 @@
 #include <soloud_error.h>
 
 #include <chrono>
-#include <stdexcept>
 #include <thread>
 
 namespace aether {
 
 game::~game() {
-	if (!is_initialized_) {
-		return;
-	}
-	shutdown_();
+	ae_info("Shutting down");
+	timer t;
+	t.start();
+
+	scene_scheduler_.cleanup_();
+	textures_.purge_all_();
+	soloud_.deinit();
+	_window_impl::close_();
+	init_ = false;
+
+	t.stop();
+	ae_info("Done ({}ms)", t.duration());
 }
 
-bool game::init(game_init_args const& args) {
-	if (is_initialized_) {
+bool game::init(_args::game_init_ const& args) {
+	if (init_) {
 		return true;
 	}
 
@@ -30,31 +37,23 @@ bool game::init(game_init_args const& args) {
 	}
 #endif
 
-	try {
-		_window_impl::try_init_(args.window_title, args.resolution, args.fps);
-	} catch (std::runtime_error const&) {
-		throw;
+	if (!_window_impl::init_(args.window_title, args.resolution, args.fps)) {
+		ae_error("Window failed to initialize");
+		return false;
 	}
 
-	using enum SoLoud::SOLOUD_ERRORS;
 	SoLoud::result result = soloud_.init();
-
-	if (result != SO_NO_ERROR) {
-		ae_warn("SoLoud failed to initialize ? result: {}", result);
-	} else {
-		ae_info("SoLoud initialized");
+	if (result != SoLoud::SOLOUD_ERRORS::SO_NO_ERROR) {
+		ae_error("SoLoud failed to initialize ({})", result);
+		return false;
 	}
 
 	_renderer_impl::setup_2d_();
-
-	ae_info("Initialized");
-	is_initialized_ = true;
-
-	return true;
+	return init_ = true;
 }
 
 void game::run(unique_ref<scene> s) {
-	if (!is_initialized_) {
+	if (!init_) {
 		ae_error("Can't run loop while uninitialized");
 		return;
 	}
@@ -100,8 +99,6 @@ void game::run(unique_ref<scene> s) {
 		next_frametime += std::chrono::duration_cast<std::chrono::steady_clock::duration>(raw_dt);
 		std::this_thread::sleep_until(next_frametime);
 	}
-
-	shutdown_();
 }
 
 context game::ctx() {
@@ -109,21 +106,6 @@ context game::ctx() {
 	        .scene_scheduler = &scene_scheduler_,
 	        .textures        = &textures_,
 	};
-}
-
-void game::shutdown_() {
-	ae_info("Shutting down");
-	timer t;
-	t.start();
-
-	scene_scheduler_.cleanup_();
-	textures_.purge_all_();
-	soloud_.deinit();
-	_window_impl::close_();
-	is_initialized_ = false;
-
-	t.stop();
-	ae_info("Done ({}ms)", t.duration());
 }
 
 } // namespace aether
