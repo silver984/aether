@@ -6,12 +6,13 @@
 #include <aether/string.hh>
 #include <aether/timer.hh>
 #include <aether/zip_archive.hh>
+
 #include <utility>
 
 namespace aether::_res_impl {
 
 template <typename T>
-concept has_loader = requires {
+concept loadable_ = requires {
 	{ loader<T>::load(std::declval<zip_archive const&>(), std::declval<std::string_view>()) } -> std::same_as<strong_ref<T>>;
 	{ loader<T>::unload(std::declval<T const&>()) } -> std::same_as<void>;
 };
@@ -22,7 +23,7 @@ namespace aether {
 
 class game;
 
-template <_res_impl::has_loader T>
+template <_res_impl::loadable_ T>
 class resources final {
 	friend class game;
 

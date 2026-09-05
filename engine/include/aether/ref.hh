@@ -8,16 +8,16 @@
 namespace aether::_ref_impl {
 
 template <typename T>
-concept is_self_referenceable = requires { typename T::self_referenceable_; };
+concept self_referenceable_ = requires(T a) { typename T::self_ref_ide_; };
 
-struct shared_block final {
+struct shared_block_ final {
 	void* ptr;
 	void (*deleter)(void*);
 	uint32_t strong_count;
 	uint32_t weak_count;
 };
 
-struct unique_block final {
+struct unique_block_ final {
 	void* ptr;
 	void (*deleter)(void*);
 };
@@ -73,9 +73,7 @@ public:
 	}
 
 	[[nodiscard]] T* get() const { return ptr_; }
-
 	[[nodiscard]] T* operator->() const { return get(); }
-
 	[[nodiscard]] T& operator*() const { return *get(); }
 
 	explicit operator bool() const { return get() != nullptr; }
@@ -95,7 +93,6 @@ public:
 	}
 
 	bool operator==(std::nullptr_t) const { return get() == nullptr; }
-
 	bool operator!=(std::nullptr_t) const { return !(*this == nullptr); }
 
 	template <std::derived_from<T> Other>
@@ -110,7 +107,7 @@ public:
 
 private:
 	unique_ref(T* ptr) {
-		block_ = new (std::nothrow) _ref_impl::unique_block;
+		block_ = new (std::nothrow) _ref_impl::unique_block_;
 
 		if (!block_) {
 			return;
@@ -132,7 +129,7 @@ private:
 	}
 
 	T* ptr_;
-	_ref_impl::unique_block* block_;
+	_ref_impl::unique_block_* block_;
 };
 
 template <typename>
@@ -192,8 +189,8 @@ public:
 			return;
 		}
 
-		_ref_impl::shared_block* old_block = std::exchange(block_, nullptr);
-		ptr_                               = nullptr;
+		_ref_impl::shared_block_* old_block = std::exchange(block_, nullptr);
+		ptr_                                = nullptr;
 
 		if (--old_block->strong_count != 0) {
 			return;
@@ -208,11 +205,8 @@ public:
 	}
 
 	[[nodiscard]] T* get() const { return ptr_; }
-
 	[[nodiscard]] T* operator->() const { return get(); }
-
 	[[nodiscard]] T& operator*() const { return *get(); }
-
 	[[nodiscard]] uint32_t strong_count() const { return block_ ? block_->strong_count : 0; }
 
 	[[nodiscard]] uint32_t weak_count() const {
@@ -247,7 +241,6 @@ public:
 	}
 
 	bool operator==(std::nullptr_t) const { return get() == nullptr; }
-
 	bool operator!=(std::nullptr_t) const { return !(*this == nullptr); }
 
 	template <std::derived_from<T> Other>
@@ -262,7 +255,7 @@ public:
 
 private:
 	strong_ref(T* ptr) {
-		block_ = new (std::nothrow) _ref_impl::shared_block;
+		block_ = new (std::nothrow) _ref_impl::shared_block_;
 
 		if (!block_) {
 			return;
@@ -276,7 +269,7 @@ private:
 			delete static_cast<T*>(p);
 		};
 
-		if constexpr (_ref_impl::is_self_referenceable<T>) {
+		if constexpr (_ref_impl::self_referenceable_<T>) {
 			if (ptr) {
 				ptr->init_self_ref_(*this);
 			}
@@ -308,7 +301,7 @@ private:
 	}
 
 	T* ptr_;
-	_ref_impl::shared_block* block_;
+	_ref_impl::shared_block_* block_;
 };
 
 template <typename T>
@@ -317,8 +310,7 @@ class weak_ref final {
 	friend class self_ref;
 
 public:
-	weak_ref()
-	        : block_(nullptr) {}
+	weak_ref() = default;
 
 	weak_ref(weak_ref const& other)
 	        : block_(other.block_) {
@@ -341,7 +333,7 @@ public:
 		if (!block_) {
 			return;
 		}
-		_ref_impl::shared_block* old_block = std::exchange(block_, nullptr);
+		_ref_impl::shared_block_* old_block = std::exchange(block_, nullptr);
 		if (--old_block->weak_count == 0 && old_block->strong_count == 0) {
 			delete old_block;
 		}
@@ -389,13 +381,13 @@ private:
 		}
 	}
 
-	weak_ref& copy_(_ref_impl::shared_block* block) {
+	weak_ref& copy_(_ref_impl::shared_block_* block) {
 		block_ = block;
 		inc_weak_();
 		return *this;
 	}
 
-	_ref_impl::shared_block* block_;
+	_ref_impl::shared_block_* block_ = nullptr;
 };
 
 template <typename T>
@@ -420,7 +412,7 @@ protected:
 	[[nodiscard]] weak_ref<T> weak_self_() const { return weak_; }
 
 private:
-	using self_referenceable_ = void;
+	using self_ref_ide_ = void;
 
 	void init_self_ref_(strong_ref<T> const& ref) {
 		// its expected that this function is only called once

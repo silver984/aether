@@ -5,9 +5,9 @@
 
 namespace aether::_renderer_impl {
 
-void setup_2d();
-void start_draw();
-void end_draw();
+void setup_2d_();
+void start_draw_();
+void end_draw_();
 
 } // namespace aether::_renderer_impl
 

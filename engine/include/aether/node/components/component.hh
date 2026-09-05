@@ -13,34 +13,34 @@ class context;
 namespace aether::_node_comp_impl {
 
 template <typename T>
-concept component = std::derived_from<T, node_component> && !std::same_as<T, node_component> &&
-                    std::constructible_from<T, context const&, strong_ref<node>>;
+concept comp_ = std::derived_from<T, node_component> && !std::same_as<T, node_component> &&
+                std::constructible_from<T, context const&, strong_ref<node>>;
 
-template <_node_comp_impl::component... T>
-struct dependency_components final {
-	using is_dependency_components_t = void;
+template <_node_comp_impl::comp_... T>
+struct dep_comps_ final {
+	using dep_comps_ide_ = void;
 };
 
 template <typename T>
-concept has_dependencies = component<T> && requires {
+concept has_deps_ = comp_<T> && requires {
 	typename T::dependencies;
-	typename T::dependencies::is_dependency_components_t;
+	typename T::dependencies::dep_comps_ide_;
 };
 
-using type_id = void const*;
+using type_id_ = void const*;
 
 template <typename T>
-constexpr char id{};
+constexpr char id_{};
 
 template <typename T>
-constexpr type_id type_id_v = &id<T>;
+constexpr type_id_ type_id_v_ = &id_<T>;
 
 } // namespace aether::_node_comp_impl
 
 namespace aether {
 
-template <_node_comp_impl::component... T>
-using node_component_list = _node_comp_impl::dependency_components<T...>;
+template <_node_comp_impl::comp_... T>
+using node_component_list = _node_comp_impl::dep_comps_<T...>;
 
 class node_component {
 	friend class node;
@@ -51,7 +51,7 @@ public:
 	        , weak_node_(n) {}
 	virtual ~node_component() = default;
 
-	template <_node_comp_impl::component T>
+	template <_node_comp_impl::comp_ T>
 	[[nodiscard]] static unique_ref<T> create(context const& ctx, strong_ref<node> n) {
 		auto out = unique_ref<T>::create(ctx, n);
 		out->init_interface_();
@@ -72,7 +72,7 @@ protected:
 	weak_ref<node> weak_node_;
 
 private:
-	void init_interface_() { return init_(); }
+	void init_interface_() { init_(); }
 };
 
 } // namespace aether

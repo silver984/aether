@@ -8,19 +8,19 @@
 
 namespace aether::_renderer_impl {
 
-void setup_2d() {
+void setup_2d_() {
 	rlDisableBackfaceCulling();
 	rlDisableDepthTest();
 }
 
-void start_draw() {
+void start_draw_() {
 	BeginDrawing();
 	ClearBackground(WHITE);
 }
 
-void end_draw() { EndDrawing(); }
+void end_draw_() { EndDrawing(); }
 
-void push_matrix(mat3 const& mat) {
+void push_matrix_(mat3 const& mat) {
 	rlPushMatrix();
 	Matrix m{};
 	m.m0  = mat[0][0];
@@ -34,7 +34,7 @@ void push_matrix(mat3 const& mat) {
 	rlMultMatrixf(MatrixToFloat(m));
 }
 
-void define_color_vertex(rgba color) {
+void define_color_vertex_(rgba color) {
 	Color const c = {
 	        .r = color.r,
 	        .g = color.g,
@@ -44,8 +44,8 @@ void define_color_vertex(rgba color) {
 	rlColor4ub(c.r, c.g, c.b, c.a);
 }
 
-void define_vertex(vec2<float> position) { rlVertex2f(position.x, position.y); }
-void define_texture_coord(vec2<float> position) { rlTexCoord2f(position.x, position.y); }
+void define_vertex_(vec2<float> position) { rlVertex2f(position.x, position.y); }
+void define_texture_coord_(vec2<float> position) { rlTexCoord2f(position.x, position.y); }
 
 } // namespace aether::_renderer_impl
 
@@ -74,12 +74,12 @@ void draw_texture(Texture const& texture, rect<float> src, mat3 const& transform
 
 	vec2<float> const src_pos = src.position();
 
-	_renderer_impl::push_matrix(transform);
+	_renderer_impl::push_matrix_(transform);
 
 	rlSetTexture(texture.id);
 	rlBegin(RL_QUADS);
 
-	_renderer_impl::define_color_vertex(color);
+	_renderer_impl::define_color_vertex_(color);
 
 	rlNormal3f(0.f, 0.f, 1.f);
 
@@ -89,8 +89,8 @@ void draw_texture(Texture const& texture, rect<float> src, mat3 const& transform
 		if (flip_x) {
 			coord.x += src.width;
 		}
-		_renderer_impl::define_texture_coord(coord / bounds);
-		_renderer_impl::define_vertex({});
+		_renderer_impl::define_texture_coord_(coord / bounds);
+		_renderer_impl::define_vertex_({});
 	}
 
 	// bottom left
@@ -100,8 +100,8 @@ void draw_texture(Texture const& texture, rect<float> src, mat3 const& transform
 		if (flip_x) {
 			coord.x += src.width;
 		}
-		_renderer_impl::define_texture_coord(coord / bounds);
-		_renderer_impl::define_vertex({0.f, src.height});
+		_renderer_impl::define_texture_coord_(coord / bounds);
+		_renderer_impl::define_vertex_({0.f, src.height});
 	}
 
 	// bottom right
@@ -110,8 +110,8 @@ void draw_texture(Texture const& texture, rect<float> src, mat3 const& transform
 		if (flip_x) {
 			coord.x -= src.width;
 		}
-		_renderer_impl::define_texture_coord(coord / bounds);
-		_renderer_impl::define_vertex({src.width, src.height});
+		_renderer_impl::define_texture_coord_(coord / bounds);
+		_renderer_impl::define_vertex_({src.width, src.height});
 	}
 
 	// top right
@@ -120,8 +120,8 @@ void draw_texture(Texture const& texture, rect<float> src, mat3 const& transform
 		if (!flip_x) {
 			coord.x += src.width;
 		}
-		_renderer_impl::define_texture_coord(coord / bounds);
-		_renderer_impl::define_vertex({src.width, 0.f});
+		_renderer_impl::define_texture_coord_(coord / bounds);
+		_renderer_impl::define_vertex_({src.width, 0.f});
 	}
 
 	rlEnd();

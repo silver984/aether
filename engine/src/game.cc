@@ -2,8 +2,12 @@
 #include <aether/log.hh>
 #include <aether/renderer.hh>
 #include <aether/timer.hh>
-#include <chrono>
+#include <aether/window.hh>
+
 #include <soloud_error.h>
+
+#include <chrono>
+#include <stdexcept>
 #include <thread>
 
 namespace aether {
@@ -21,13 +25,15 @@ bool game::init(game_init_args const& args) {
 	}
 
 #if defined(__ae_anydebug__)
-	if (!_log_impl::create_logfile()) {
+	if (!_log_impl::create_logfile_()) {
 		ae_warn("Couldn't create logfile");
 	}
 #endif
 
-	if (!window_.init_(args.window_title, args.resolution, args.fps)) {
-		return false;
+	try {
+		_window_impl::try_init_(args.window_title, args.resolution, args.fps);
+	} catch (std::runtime_error const&) {
+		throw;
 	}
 
 	using enum SoLoud::SOLOUD_ERRORS;
@@ -39,7 +45,7 @@ bool game::init(game_init_args const& args) {
 		ae_info("SoLoud initialized");
 	}
 
-	_renderer_impl::setup_2d();
+	_renderer_impl::setup_2d_();
 
 	ae_info("Initialized");
 	is_initialized_ = true;
@@ -55,46 +61,43 @@ void game::run(unique_ref<scene> s) {
 
 	scene_scheduler_.replace_scene(std::move(s));
 
-	using namespace std::chrono;
 	bool is_audio_paused = false;
-	auto last_frametime  = steady_clock::now();
+	auto last_frametime  = std::chrono::steady_clock::now();
 	auto next_frametime  = last_frametime;
 
-	while (!window_.should_close_()) {
-		auto const now                 = steady_clock::now();
-		float const dt                 = duration<float>(now - last_frametime).count();
+	while (!_window_impl::should_close_()) {
+		auto const now                 = std::chrono::steady_clock::now();
+		float const dt                 = std::chrono::duration<float>(now - last_frametime).count();
 		last_frametime                 = now;
-		bool const is_window_minimized = window_.is_minimized_();
+		bool const is_window_minimized = _window_impl::is_minimized_();
 
 		if (!is_window_minimized) {
 			if (is_audio_paused) {
-				is_audio_paused = false;
-				soloud_.setPauseAll(false);
+				soloud_.setPauseAll(is_audio_paused = false);
 			}
-			window_.update_();
 			scene_scheduler_.update_scene_(dt);
 		} else {
 			if (!is_audio_paused) {
-				is_audio_paused = true;
-				soloud_.setPauseAll(true);
+				soloud_.setPauseAll(is_audio_paused = true);
 			}
 		}
 
-		_renderer_impl::start_draw();
+		_renderer_impl::start_draw_();
 
 		if (!is_window_minimized) {
 			scene_scheduler_.draw_scene_();
 		}
 
-		_renderer_impl::end_draw();
+		_renderer_impl::end_draw_();
 
 		if (is_window_minimized) {
-			next_frametime = steady_clock::now();
-			std::this_thread::sleep_for(milliseconds(100));
+			next_frametime = std::chrono::steady_clock::now();
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			continue;
 		}
 
-		next_frametime += duration_cast<steady_clock::duration>(duration<float>(1.f / window_.target_fps()));
+		std::chrono::duration<float> raw_dt(1.f / window::fps());
+		next_frametime += std::chrono::duration_cast<std::chrono::steady_clock::duration>(raw_dt);
 		std::this_thread::sleep_until(next_frametime);
 	}
 
@@ -103,7 +106,6 @@ void game::run(unique_ref<scene> s) {
 
 context game::ctx() {
 	return {
-	        .window          = &window_,
 	        .scene_scheduler = &scene_scheduler_,
 	        .textures        = &textures_,
 	};
@@ -117,7 +119,7 @@ void game::shutdown_() {
 	scene_scheduler_.cleanup_();
 	textures_.purge_all_();
 	soloud_.deinit();
-	window_.shutdown_();
+	_window_impl::close_();
 	is_initialized_ = false;
 
 	t.stop();

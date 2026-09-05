@@ -7,7 +7,7 @@ int main() {
 	game engine;
 	if (!engine.init({
 	            .window_title = "Aether Engine v0.0.1",
-	            .resolution   = size<int>(1280, 720),
+	            .resolution   = {1280, 720},
 	    })) {
 		return -1;
 	}

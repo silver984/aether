@@ -1,5 +1,6 @@
 #pragma once
 #include <aether/general.h>
+
 #if defined(__ae_anydebug__)
 	#include <fmt/format.h>
 	#include <source_location>
@@ -8,8 +9,8 @@
 
 namespace aether::_log_impl {
 
-void print(std::string_view str, std::string_view lvl, std::source_location const& loc);
-bool create_logfile();
+void print_(std::string_view str, std::string_view lvl, std::source_location const& loc);
+bool create_logfile_();
 
 } // namespace aether::_log_impl
 
@@ -18,28 +19,28 @@ namespace aether::log {
 	#if !defined(__ae_relwithdeb__)
 template <typename... Args>
 void trace(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "TRACE", loc);
+	_log_impl::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "TRACE", loc);
 }
 
 template <typename... Args>
 void debug(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "DEBUG", loc);
+	_log_impl::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "DEBUG", loc);
 }
 	#endif
 
 template <typename... Args>
 void info(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "INFO", loc);
+	_log_impl::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "INFO", loc);
 }
 
 template <typename... Args>
 void warn(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "WARN", loc);
+	_log_impl::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "WARN", loc);
 }
 
 template <typename... Args>
 void error(std::source_location&& loc, fmt::format_string<Args...> fmt_str, Args&&... args) {
-	_log_impl::print(fmt::format(fmt_str, std::forward<Args>(args)...), "ERROR", loc);
+	_log_impl::print_(fmt::format(fmt_str, std::forward<Args>(args)...), "ERROR", loc);
 }
 
 } // namespace aether::log

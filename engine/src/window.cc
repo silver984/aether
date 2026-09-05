@@ -1,52 +1,42 @@
 #include <aether/log.hh>
 #include <aether/math.hh>
 #include <aether/window.hh>
-#include <algorithm>
+
 #include <raylib.h>
 
-namespace aether {
+#include <stdexcept>
 
-window::window()
-        : target_fps_(0) {}
-window::~window() = default;
+namespace aether::_window_impl {
 
-std::string_view window::title() const { return title_; }
+size<uint32_t> bounds_;
+uint32_t fps_{0};
 
-size<int> window::target_size() const { return target_size_; }
-
-int window::target_fps() const { return target_fps_; }
-
-bool window::init_(std::string_view title, size<int> bounds, int fps) {
+void try_init_(std::string_view title, size<uint32_t> bounds, uint32_t fps) {
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
-	size<int> const minimum_size = size<int>(640, 360);
-	title_                       = std::string(title);
-	target_size_                 = max(minimum_size, bounds);
-	target_fps_                  = std::max(1, fps);
-	InitWindow(target_size_.width, target_size_.height, title_.c_str());
+
+	bounds_ = bounds;
+	fps_    = fps;
+
+	InitWindow(bounds.width, bounds.height, title.data());
 
 	if (!IsWindowReady()) {
-		ae_error("Not ready");
-		return false;
+		throw std::runtime_error("window not ready");
 	}
 
 	SetTargetFPS(0);
 	SetExitKey(KEY_NULL);
-	SetWindowMinSize(minimum_size.width, minimum_size.height);
-
-	ae_info("Initialized");
-	return true;
+	SetWindowMinSize(640, 360);
 }
 
-void window::shutdown_() { CloseWindow(); }
+void close_() { CloseWindow(); }
+bool should_close_() { return WindowShouldClose(); }
+bool is_minimized_() { return IsWindowMinimized(); }
 
-void window::update_() {
-	if (IsKeyPressed(KEY_F11)) {
-		ToggleBorderlessWindowed();
-	}
-}
+} // namespace aether::_window_impl
 
-bool window::should_close_() const { return WindowShouldClose(); }
+namespace aether::window {
 
-bool window::is_minimized_() const { return IsWindowMinimized(); }
+size<uint32_t> bounds() { return _window_impl::bounds_; }
+uint32_t fps() { return _window_impl::fps_; }
 
-} // namespace aether
+} // namespace aether::window

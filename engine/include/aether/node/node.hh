@@ -7,6 +7,7 @@
 #include <aether/rgba.hh>
 #include <aether/size.hh>
 #include <aether/vec2.hh>
+
 #include <cstddef>
 #include <string>
 #include <string_view>
@@ -39,22 +40,22 @@ public:
 
 	bool detach_from_parent();
 
-	template <_node_comp_impl::component T>
+	template <_node_comp_impl::comp_ T>
 	T* add_component() {
 		if (T* existing = component<T>()) {
 			return existing;
 		}
-		if constexpr (_node_comp_impl::has_dependencies<T>) {
-			ensure_dependency_components_(typename T::dependencies{});
+		if constexpr (_node_comp_impl::has_deps_<T>) {
+			ensure_dep_comps_(typename T::dependencies{});
 		}
 		unique_ref<T> c = node_component::create<T>(ctx_, this->strong_self_());
-		auto [it, _]    = components_.emplace(_node_comp_impl::type_id_v<T>, std::move(c));
+		auto [it, _]    = components_.emplace(_node_comp_impl::type_id_v_<T>, std::move(c));
 		return static_cast<T*>(it->second.get());
 	}
 
-	template <_node_comp_impl::component T>
+	template <_node_comp_impl::comp_ T>
 	bool remove_component() {
-		auto it = components_.find(_node_comp_impl::type_id_v<T>);
+		auto it = components_.find(_node_comp_impl::type_id_v_<T>);
 		if (it == components_.end()) {
 			return false;
 		}
@@ -62,9 +63,9 @@ public:
 		return false;
 	}
 
-	template <_node_comp_impl::component T>
+	template <_node_comp_impl::comp_ T>
 	[[nodiscard]] T* component() const {
-		auto it = components_.find(_node_comp_impl::type_id_v<T>);
+		auto it = components_.find(_node_comp_impl::type_id_v_<T>);
 		if (it == components_.end()) {
 			return nullptr;
 		}
@@ -94,8 +95,8 @@ private:
 
 	[[nodiscard]] bool has_ancestor_(strong_ref<node> n) const;
 
-	template <_node_comp_impl::component... T>
-	void ensure_dependency_components_(node_component_list<T...>) {
+	template <_node_comp_impl::comp_... T>
+	void ensure_dep_comps_(node_component_list<T...>) {
 		(add_component<T>(), ...);
 	}
 
@@ -107,8 +108,7 @@ private:
 	aether::scene* scene_;
 	weak_ref<node> parent_;
 	std::vector<strong_ref<node>> children_;
-
-	std::unordered_map<_node_comp_impl::type_id, unique_ref<node_component>> components_;
+	std::unordered_map<_node_comp_impl::type_id_, unique_ref<node_component>> components_;
 
 	std::string name_;
 

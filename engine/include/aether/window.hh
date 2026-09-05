@@ -1,32 +1,21 @@
 #pragma once
-#include <aether/general.h>
 #include <aether/size.hh>
-#include <aether/string.hh>
 
-namespace aether {
+#include <cstdint>
+#include <string_view>
 
-class game;
+namespace aether::_window_impl {
 
-class window final {
-	friend class game;
+void try_init_(std::string_view title, size<uint32_t> bounds, uint32_t fps);
+void close_();
+[[nodiscard]] bool should_close_();
+[[nodiscard]] bool is_minimized_();
 
-public:
-	~window();
-	[[nodiscard]] std::string_view title() const;
-	[[nodiscard]] size<int> target_size() const;
-	[[nodiscard]] int target_fps() const;
+} // namespace aether::_window_impl
 
-private:
-	window();
-	bool init_(std::string_view title, size<int> bounds, int fps);
-	void shutdown_();
-	void update_();
-	[[nodiscard]] bool should_close_() const;
-	[[nodiscard]] bool is_minimized_() const;
+namespace aether::window {
 
-	std::string title_;
-	size<int> target_size_;
-	int target_fps_;
-};
+[[nodiscard]] size<uint32_t> bounds();
+[[nodiscard]] uint32_t fps();
 
-} // namespace aether
+} // namespace aether::window
