@@ -26,6 +26,7 @@ bool sprite::set_texture(zip_archive const& pak, std::string_view file) {
 	float w = (float)texture_->width;
 	float h = (float)texture_->height;
 	set_texture_source_rect(rect<float>(0.f, 0.f, w, h));
+	update_transform_bounds();
 	return true;
 }
 
@@ -57,15 +58,15 @@ void sprite::set_texture_wrap(texture_wrap wrap_type) {
 	}
 }
 
-void sprite::set_texture_source_rect(rect<float> const& val, bool update_bounds) {
-	texture_source_rect_ = val;
-	if (update_bounds) {
-		int w = (uint32_t)std::abs(std::round(texture_source_rect_.width));
-		int h = (uint32_t)std::abs(std::round(texture_source_rect_.height));
-		if (transform* t = this->strong_node_()->component<transform>()) {
-			t->set_bounds(size<uint32_t>(w, h));
-		}
+bool sprite::update_transform_bounds() {
+	transform* t = this->strong_node_()->component<transform>();
+	if (!t) {
+		return false;
 	}
+	uint32_t w = (uint32_t)std::abs(std::round(texture_source_rect_.width));
+	uint32_t h = (uint32_t)std::abs(std::round(texture_source_rect_.height));
+	t->set_bounds(size<uint32_t>(w, h));
+	return true;
 }
 
 void sprite::draw_() {

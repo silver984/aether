@@ -172,9 +172,9 @@ mat3 renderer::calculate_projection_(size<int> render_size, size<int> target_siz
 	vec2<float> const offset         = vec2<float>(render_size.width - scaled_size.x, render_size.height - scaled_size.y);
 	vec2<float> const snapped_offset = round(offset / 2.f);
 
-	mat3 out    = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
-	out.m[0][2] = std::round(out.m[0][2]);
-	out.m[1][2] = std::round(out.m[1][2]);
+	mat3 out  = mat3::translation(snapped_offset) * mat3::scale(vec2<float>(scale_factor));
+	out[0][2] = std::round(out[0][2]);
+	out[1][2] = std::round(out[1][2]);
 
 	return out;
 }

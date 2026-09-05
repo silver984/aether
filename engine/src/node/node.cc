@@ -5,6 +5,11 @@
 
 namespace aether {
 
+strong_ref<node> node::create(context const& ctx) {
+	auto ptr = strong_ref<node>::create(ctx);
+	return strong_ref<node>::create(ctx);
+}
+
 bool node::add_child(strong_ref<node> child) {
 	if (!child) {
 		return false;
@@ -23,7 +28,7 @@ bool node::add_child(strong_ref<node> child) {
 	child->detach_from_parent();
 	children_.emplace_back(child);
 	child->parent_ = self;
-	for (auto& component : child->components_) {
+	for (auto& [_, component] : child->components_) {
 		component->node_parented_();
 	}
 
@@ -42,7 +47,7 @@ bool node::remove_child(strong_ref<node> child) {
 
 	(*it)->parent_.detach();
 	children_.erase(it);
-	for (auto& component : child->components_) {
+	for (auto& [_, component] : child->components_) {
 		component->node_detached_();
 	}
 
@@ -116,7 +121,7 @@ aether::scene* node::scene() const {
 }
 
 void node::update_(float dt) {
-	for (auto& component : components_) {
+	for (auto& [_, component] : components_) {
 		component->update_(dt);
 	}
 	for (auto& child : children_) {
@@ -133,10 +138,10 @@ void node::draw_() {
 	// 	return;
 	// }
 
-	for (auto& component : components_) {
+	for (auto& [_, component] : components_) {
 		component->visit_();
 	}
-	for (auto& component : components_) {
+	for (auto& [_, component] : components_) {
 		component->draw_();
 	}
 	for (auto& child : children_) {

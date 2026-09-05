@@ -27,13 +27,13 @@ concept has_dependencies = component<T> && requires {
 	typename T::dependencies::is_dependency_components_t;
 };
 
-using id = void const*;
+using type_id = void const*;
 
 template <typename T>
-constexpr char id_storage{};
+constexpr char id{};
 
 template <typename T>
-constexpr id id_v = &id_storage<T>;
+constexpr type_id type_id_v = &id<T>;
 
 } // namespace aether::_node_comp_impl
 

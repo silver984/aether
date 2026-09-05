@@ -6,7 +6,7 @@ namespace aether {
 bool scene::add_child(strong_ref<node> n) { return root_node_->add_child(n); }
 
 bool scene::init_() {
-	root_node_         = node::create<node>(ctx_);
+	root_node_         = node::create(ctx_);
 	root_node_->scene_ = this;
 	return true;
 }

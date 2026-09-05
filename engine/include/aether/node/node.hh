@@ -29,14 +29,9 @@ public:
 	        , parent_(nullptr) {}
 	~node() override = default;
 
-	template <typename... Args>
-	[[nodiscard]] static strong_ref<node> create(context const& ctx) {
-		auto ptr = strong_ref<node>::create(ctx);
-		return ptr;
-	}
+	[[nodiscard]] static strong_ref<node> create(context const& ctx);
 
 	// todo: fetch child
-
 	bool add_child(strong_ref<node> child);
 	bool remove_child(strong_ref<node> child);
 
@@ -49,47 +44,31 @@ public:
 		if (T* existing = component<T>()) {
 			return existing;
 		}
-
 		if constexpr (_node_comp_impl::has_dependencies<T>) {
 			ensure_dependency_components_(typename T::dependencies{});
 		}
-
 		unique_ref<T> c = node_component::create<T>(ctx_, this->strong_self_());
-		T* ptr          = c.get();
-
-		components_.emplace_back(std::move(c));
-		component_lookup_.emplace(_node_comp_impl::id_v<T>, static_cast<node_component*>(ptr));
-
-		return ptr;
+		auto [it, _]    = components_.emplace(_node_comp_impl::type_id_v<T>, std::move(c));
+		return static_cast<T*>(it->second.get());
 	}
 
 	template <_node_comp_impl::component T>
 	bool remove_component() {
-		auto it = component_lookup_.find(_node_comp_impl::id_v<T>);
-		if (it == component_lookup_.end()) {
+		auto it = components_.find(_node_comp_impl::type_id_v<T>);
+		if (it == components_.end()) {
 			return false;
 		}
-
-		node_component* ptr = it->second;
-		component_lookup_.erase(it);
-
-		for (auto comp = components_.begin(); comp != components_.end(); ++comp) {
-			if (comp->get() == ptr) {
-				components_.erase(comp);
-				return true;
-			}
-		}
-
+		components_.erase(it);
 		return false;
 	}
 
 	template <_node_comp_impl::component T>
 	[[nodiscard]] T* component() const {
-		auto it = component_lookup_.find(_node_comp_impl::id_v<T>);
-		if (it == component_lookup_.end()) {
+		auto it = components_.find(_node_comp_impl::type_id_v<T>);
+		if (it == components_.end()) {
 			return nullptr;
 		}
-		return static_cast<T*>(it->second);
+		return static_cast<T*>(it->second.get());
 	}
 
 	[[nodiscard]] size_t child_count() const { return children_.size(); }
@@ -126,12 +105,10 @@ private:
 	context const& ctx_;
 
 	aether::scene* scene_;
-
 	weak_ref<node> parent_;
 	std::vector<strong_ref<node>> children_;
 
-	std::vector<unique_ref<node_component>> components_;
-	std::unordered_map<_node_comp_impl::id, node_component*> component_lookup_;
+	std::unordered_map<_node_comp_impl::type_id, unique_ref<node_component>> components_;
 
 	std::string name_;
 

@@ -12,12 +12,12 @@ rlvec2 to_rlvec2(vec2<float> vec2) {
 
 rlmat4 to_rlmat4(mat3 const& matrix) {
 	rlmat4 r{};
-	r.m0  = matrix.m[0][0];
-	r.m4  = matrix.m[0][1];
-	r.m12 = matrix.m[0][2];
-	r.m1  = matrix.m[1][0];
-	r.m5  = matrix.m[1][1];
-	r.m13 = matrix.m[1][2];
+	r.m0  = matrix[0][0];
+	r.m4  = matrix[0][1];
+	r.m12 = matrix[0][2];
+	r.m1  = matrix[1][0];
+	r.m5  = matrix[1][1];
+	r.m13 = matrix[1][2];
 	r.m10 = 1.f;
 	r.m15 = 1.f;
 	return r;
