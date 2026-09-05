@@ -8,7 +8,7 @@
 #include <aether/zip_archive.hh>
 #include <utility>
 
-namespace aether {
+namespace aether::_res_impl {
 
 template <typename T>
 concept has_loader = requires {
@@ -16,9 +16,13 @@ concept has_loader = requires {
 	{ loader<T>::unload(std::declval<T const&>()) } -> std::same_as<void>;
 };
 
+} // namespace aether::_res_impl
+
+namespace aether {
+
 class game;
 
-template <has_loader T>
+template <_res_impl::has_loader T>
 class resources final {
 	friend class game;
 
