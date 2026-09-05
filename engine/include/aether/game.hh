@@ -2,7 +2,6 @@
 #include <aether/context.hh>
 #include <aether/general.h>
 #include <aether/ref.hh>
-#include <aether/renderer.hh>
 #include <aether/resources.hh>
 #include <aether/scene_scheduler.hh>
 #include <aether/size.hh>
@@ -21,7 +20,7 @@ struct game_init_args final {
 
 class game final {
 public:
-	game();
+	game()                       = default;
 	game(game&&)                 = delete;
 	game(game const&)            = delete;
 	game& operator=(game&&)      = delete;
@@ -36,11 +35,10 @@ private:
 	void shutdown_();
 
 	window window_;
-	renderer renderer_;
 	scene_scheduler scene_scheduler_;
 	resources<Texture> textures_;
 	SoLoud::Soloud soloud_;
-	bool is_initialized_;
+	bool is_initialized_ = false;
 };
 
 } // namespace aether

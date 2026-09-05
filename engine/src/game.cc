@@ -1,14 +1,12 @@
 #include <aether/game.hh>
 #include <aether/log.hh>
+#include <aether/renderer.hh>
 #include <aether/timer.hh>
 #include <chrono>
 #include <soloud_error.h>
 #include <thread>
 
 namespace aether {
-
-game::game()
-        : is_initialized_(false) {}
 
 game::~game() {
 	if (!is_initialized_) {
@@ -41,7 +39,7 @@ bool game::init(game_init_args const& args) {
 		ae_info("SoLoud initialized");
 	}
 
-	renderer_.setup2d_();
+	_renderer_impl::setup_2d();
 
 	ae_info("Initialized");
 	is_initialized_ = true;
@@ -57,21 +55,13 @@ void game::run(unique_ref<scene> s) {
 
 	scene_scheduler_.replace_scene(std::move(s));
 
-#if defined(__ae_anydebug__)
-	uint32_t framecount = 0;
-	uint32_t evalfps    = 0;
-	float accumulator   = 0.f;
-#endif
-
 	using namespace std::chrono;
-	using clock = steady_clock;
-
 	bool is_audio_paused = false;
-	auto last_frametime  = clock::now();
+	auto last_frametime  = steady_clock::now();
 	auto next_frametime  = last_frametime;
 
 	while (!window_.should_close_()) {
-		auto const now                 = clock::now();
+		auto const now                 = steady_clock::now();
 		float const dt                 = duration<float>(now - last_frametime).count();
 		last_frametime                 = now;
 		bool const is_window_minimized = window_.is_minimized_();
@@ -82,7 +72,6 @@ void game::run(unique_ref<scene> s) {
 				soloud_.setPauseAll(false);
 			}
 			window_.update_();
-			renderer_.update_viewport_(window_.target_size());
 			scene_scheduler_.update_scene_(dt);
 		} else {
 			if (!is_audio_paused) {
@@ -91,36 +80,22 @@ void game::run(unique_ref<scene> s) {
 			}
 		}
 
-		renderer_.start_draw_();
+		_renderer_impl::start_draw();
 
 		if (!is_window_minimized) {
 			scene_scheduler_.draw_scene_();
 		}
 
-#if defined(__ae_anydebug__)
-		renderer_.end_draw_(evalfps, dt);
-#else
-		renderer_.end_draw_();
-#endif
+		_renderer_impl::end_draw();
 
 		if (is_window_minimized) {
-			next_frametime = clock::now();
+			next_frametime = steady_clock::now();
 			std::this_thread::sleep_for(milliseconds(100));
 			continue;
 		}
 
-		next_frametime += duration_cast<clock::duration>(duration<float>(1.f / window_.target_fps()));
+		next_frametime += duration_cast<steady_clock::duration>(duration<float>(1.f / window_.target_fps()));
 		std::this_thread::sleep_until(next_frametime);
-
-#if defined(__ae_anydebug__)
-		++framecount;
-		accumulator += dt;
-		while (accumulator >= 1.f) {
-			evalfps    = framecount;
-			framecount = 0;
-			accumulator -= 1.f;
-		}
-#endif
 	}
 
 	shutdown_();
@@ -129,7 +104,6 @@ void game::run(unique_ref<scene> s) {
 context game::ctx() {
 	return {
 	        .window          = &window_,
-	        .renderer        = &renderer_,
 	        .scene_scheduler = &scene_scheduler_,
 	        .textures        = &textures_,
 	};
