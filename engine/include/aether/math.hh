@@ -1,5 +1,6 @@
 #pragma once
 #include <aether/numeric.hh>
+
 #include <algorithm>
 #include <cmath>
 #include <numbers>

@@ -1,9 +1,10 @@
 #include <aether/log.hh>
 
 #if defined(__ae_anydebug__)
+	#include <fmt/chrono.h>
+
 	#include <chrono>
 	#include <filesystem>
-	#include <fmt/chrono.h>
 	#include <fstream>
 	#include <string>
 

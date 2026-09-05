@@ -1,6 +1,7 @@
 #include <aether/math.hh>
 #include <aether/node/node.hh>
 #include <aether/scene.hh>
+
 #include <algorithm>
 
 namespace aether {

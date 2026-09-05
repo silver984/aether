@@ -1,6 +1,7 @@
 #include <aether/log.hh>
 #include <aether/scene.hh>
 #include <aether/scene_scheduler.hh>
+
 #include <utility>
 
 namespace aether {

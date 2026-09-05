@@ -1,7 +1,9 @@
 #include <aether/blob.hh>
 #include <aether/loader.hh>
 #include <aether/zip_archive.hh>
+
 #include <raylib.h>
+
 #include <string>
 
 namespace aether {
@@ -36,8 +38,6 @@ strong_ref<Texture> loader<Texture>::load(zip_archive const& arc, std::string_vi
 	return tex;
 };
 
-void loader<Texture>::unload(Texture const& texture) {
-	UnloadTexture(texture);
-}
+void loader<Texture>::unload(Texture const& texture) { UnloadTexture(texture); }
 
 } // namespace aether

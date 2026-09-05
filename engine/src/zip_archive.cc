@@ -1,8 +1,10 @@
 #include <aether/zip_archive.hh>
+
+#include <miniz/miniz.h>
+
 #include <cstddef>
 #include <cstring>
 #include <filesystem>
-#include <miniz/miniz.h>
 
 namespace aether {
 

@@ -1,5 +1,6 @@
 #include <aether/mat3.hh>
 #include <aether/math.hh>
+
 #include <cmath>
 #include <cstddef>
 

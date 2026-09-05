@@ -1,5 +1,6 @@
 #pragma once
 #include <aether/numeric.hh>
+
 #include <cstddef>
 #include <functional>
 #include <type_traits>

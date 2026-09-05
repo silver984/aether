@@ -1,5 +1,6 @@
 #pragma once
 #include <aether/node/components/component.hh>
+
 #include <algorithm>
 
 namespace aether {

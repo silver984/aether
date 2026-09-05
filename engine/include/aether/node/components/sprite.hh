@@ -2,6 +2,7 @@
 #include <aether/node/components/component.hh>
 #include <aether/node/components/transform.hh>
 #include <aether/rect.hh>
+
 #include <string_view>
 
 struct Texture;

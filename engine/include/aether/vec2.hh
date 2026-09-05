@@ -1,6 +1,7 @@
 #pragma once
 #include <aether/numeric.hh>
 #include <aether/operators.hh>
+
 #include <cstddef>
 #include <stdexcept>
 
