@@ -18,8 +18,8 @@ public:
 	[[nodiscard]] blob read(std::string_view file) const;
 
 private:
-	struct impl;
-	unique_ref<impl> impl_;
+	struct impl_;
+	unique_ref<impl_> ptr_impl_;
 };
 
 } // namespace aether

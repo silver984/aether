@@ -8,8 +8,8 @@ namespace aether {
 
 namespace fs = std::filesystem;
 
-struct zip_archive::impl final {
-	bool open(std::string_view file) {
+struct zip_archive::impl_ final {
+	bool open_(std::string_view file) {
 		if (!fs::exists(file) || is_open_) {
 			return false;
 		}
@@ -17,7 +17,7 @@ struct zip_archive::impl final {
 		return is_open_;
 	}
 
-	bool close() {
+	bool close_() {
 		if (!is_open_) {
 			return false;
 		}
@@ -28,7 +28,7 @@ struct zip_archive::impl final {
 		return closed;
 	}
 
-	bool contains(std::string_view file) {
+	bool contains_(std::string_view file) {
 		if (!is_open_) {
 			return false;
 		}
@@ -36,8 +36,8 @@ struct zip_archive::impl final {
 		return mz_zip_reader_locate_file(&archive_, file.data(), nullptr, 0) != INVALID_INDEX;
 	}
 
-	blob read(std::string_view file) {
-		if (!contains(file)) {
+	blob read_(std::string_view file) {
+		if (!contains_(file)) {
 			return {};
 		}
 
@@ -60,23 +60,20 @@ struct zip_archive::impl final {
 };
 
 zip_archive::zip_archive()
-        : impl_(unique_ref<impl>::create()) {}
+        : ptr_impl_(unique_ref<impl_>::create()) {}
 
 zip_archive::zip_archive(std::string_view file)
-        : impl_(unique_ref<impl>::create()) {
+        : ptr_impl_(unique_ref<impl_>::create()) {
 	open(file);
 }
 
 zip_archive::~zip_archive() { close(); }
 
-bool zip_archive::open(std::string_view file) const { return impl_->open(file); }
+bool zip_archive::open(std::string_view file) const { return ptr_impl_->open_(file); }
+bool zip_archive::close() const { return ptr_impl_->close_(); }
+bool zip_archive::is_open() const { return ptr_impl_->is_open_; }
+bool zip_archive::contains(std::string_view file) const { return ptr_impl_->contains_(file); }
 
-bool zip_archive::close() const { return impl_->close(); }
-
-bool zip_archive::is_open() const { return impl_->is_open_; }
-
-bool zip_archive::contains(std::string_view file) const { return impl_->contains(file); }
-
-blob zip_archive::read(std::string_view file) const { return impl_->read(file); }
+blob zip_archive::read(std::string_view file) const { return ptr_impl_->read_(file); }
 
 } // namespace aether
