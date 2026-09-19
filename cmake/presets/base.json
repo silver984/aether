@@ -5,7 +5,7 @@
       "name": "base",
       "hidden": true,
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
+      "binaryDir": "${sourceDir}\\build\\${presetName}",
       "cacheVariables": {
         "CMAKE_CXX_SCAN_FOR_MODULES": "OFF"
       }
