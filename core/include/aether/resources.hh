@@ -47,7 +47,7 @@ public:
 		}
 
 		t.stop();
-		log<trace>({"Done ({}ms) ? address: {}", t.duration(), fmt::ptr(out.get())});
+		log<trace>({"Done ({}ms) ? address: 0x{:X}", t.duration(), reinterpret_cast<uintptr_t>(out.get())});
 
 		purge_unused_();
 		auto [it, _] = cache_.emplace(std::string(file), std::move(out));
@@ -84,7 +84,7 @@ private:
 
 	void unload_(T& data) {
 		loader<T>::unload(data);
-		log<trace>({"Unloaded resource ? address: {}", fmt::ptr(&data)});
+		log<trace>({"Unloaded resource ? address: 0x{:X}", reinterpret_cast<uintptr_t>(&data)});
 	}
 
 	string_map<strong_ref<T>> cache_;

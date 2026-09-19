@@ -13,7 +13,7 @@ void scene_scheduler::replace_scene(unique_ref<scene> new_scene) {
 	}
 	pending_scene_ = std::move(new_scene);
 	log<debug>({"Replacing scene"});
-	log<trace>({"Pending scene: {}", fmt::ptr(pending_scene_.get())});
+	log<trace>({"Pending scene: 0x{:X}", reinterpret_cast<uintptr_t>(pending_scene_.get())});
 }
 
 void scene_scheduler::cleanup_() {
