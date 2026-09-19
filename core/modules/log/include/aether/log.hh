@@ -13,7 +13,10 @@
 
 namespace aether::_log_impl {
 void write_to_logfile_(std::string_view str);
-}
+#ifdef _WIN32
+void attach_console_once_present_();
+#endif
+} // namespace aether::_log_impl
 
 namespace aether {
 
@@ -36,6 +39,9 @@ void log(_log_impl::format_string_ const& str, std::source_location src = std::s
 	fmt::color constexpr LVL_COLOR          = _log_impl::lvl_attr_<T>::display_color();
 	std::string const colored_timestamp_str = fmt::format(fmt::fg(fmt::color::gray), fmt::runtime(timestamp_fmt_str), now);
 	std::string const colored_lvl_name_str  = fmt::format(fmt::fg(LVL_COLOR), LVL_NAME_STR);
+#ifdef _WIN32
+	_log_impl::attach_console_once_present_();
+#endif
 	fmt::print(fmt::runtime(fmt_str), colored_timestamp_str, colored_lvl_name_str, where_str, str_view);
 }
 

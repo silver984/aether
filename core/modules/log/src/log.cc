@@ -2,13 +2,23 @@
 
 #include <fstream>
 
+#ifdef _WIN32
+	#include <fcntl.h>
+	#include <io.h>
+	#include <windows.h>
+
+	#include <cstdio>
+#endif
+
 namespace aether::_log_impl {
 
 std::filesystem::path logfilepath_;
 
 bool create_logfile_once_() {
 	static bool once = false;
-	if (once) { return true; }
+	if (once) {
+		return true;
+	}
 	std::filesystem::create_directories("logs");
 	auto const now = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
 	logfilepath_   = fmt::format("logs/aether_{:%Y-%m-%d_%H-%M-%S}.log", now);
@@ -28,5 +38,24 @@ void write_to_logfile_(std::string_view str) {
 	}
 	logfile << str;
 }
+
+#ifdef _WIN32
+void attach_console_once_present_() {
+	static bool once = false;
+	if (once) {
+		return;
+	}
+	if (!AttachConsole(ATTACH_PARENT_PROCESS)) {
+		once = true;
+		return;
+	}
+	FILE* fp;
+	freopen_s(&fp, "CONOUT$", "w", stdout);
+	freopen_s(&fp, "CONOUT$", "w", stderr);
+	freopen_s(&fp, "CONIN$", "r", stdin);
+	std::ios::sync_with_stdio(true);
+	once = true;
+}
+#endif
 
 } // namespace aether::_log_impl
