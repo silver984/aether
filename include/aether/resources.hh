@@ -1,5 +1,4 @@
 #pragma once
-#include <aether/general.h>
 #include <aether/loader.hh>
 #include <aether/log.hh>
 #include <aether/ref.hh>
