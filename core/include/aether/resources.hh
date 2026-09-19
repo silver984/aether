@@ -1,12 +1,11 @@
 #pragma once
 
 #include <aether/loader.hh>
+#include <aether/log.hh>
 #include <aether/ref.hh>
 #include <aether/string.hh>
 #include <aether/timer.hh>
 #include <aether/zip_archive.hh>
-
-#include <aether/log.hh>
 
 #include <utility>
 
