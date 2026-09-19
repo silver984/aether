@@ -22,21 +22,8 @@ Play the game here:
 - [Google Play](https://play.google.com/store/apps/details?id=me.funkin.fnf)
 - [App Store](https://apps.apple.com/app/id6740428530)
 
-## What's Aether Engine?
+## What's Aether Engine (going to be)?
 
-_Aether Engine_ is a **non-official modding engine** for Friday Night Funkin'.
-
-Unlike traditional engines like [_Psych Engine_](https://github.com/ShadowMario/FNF-PsychEngine) or [_Kade Engine_](https://github.com/kadedev/kade-engine), Aether Engine is not a fork of Friday Night Funkin's code. Aether Engine is written in C++ without an official game engine like [_HaxeFlixel._](https://haxeflixel.com/)
+_Aether Engine_ is a partial reimplementation of Friday Night Funkin' for the purpose of loading community-made content. Unlike traditional engines like [_Psych Engine_](https://github.com/ShadowMario/FNF-PsychEngine) or [_Kade Engine_](https://github.com/kadedev/kade-engine), Aether Engine is written in C++ without an official game engine like [_HaxeFlixel._](https://haxeflixel.com/)
 
 > This engine is currently a work in progress. Its identity is not fully mature and is subject to change overtime.
-
-### My Ideas for This Engine:
-
-> These features are planned. The engine is early in development, and nothing is final.
-
-- Mods made with Aether Engine will be written purely in [Lua,](https://www.lua.org/) enabled by [Sol3.](https://github.com/ThePhD/sol2) These mods will be distributed as _packages,_ taking a form of a `.aether` archive.
-- Aether Engine will aim to modernize modding development by taking an SDK-like approach, making modding an easier process.
-
-## How to Build
-
-> This part of the README is yet to be acknowledged.
