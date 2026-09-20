@@ -1,6 +1,6 @@
 #include <aether/zip_archive.hh>
 
-#include <miniz/miniz.h>
+#include <miniz.h>
 
 #include <cstddef>
 #include <cstring>
