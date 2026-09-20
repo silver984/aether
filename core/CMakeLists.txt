@@ -1,18 +1,18 @@
 add_library(aether_engine_core STATIC)
 
-set(AE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
-set(AE_VENDOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
-set(AE_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(AE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(AE_VENDOR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
+set(AE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-file(GLOB_RECURSE AE_HEADERS CONFIGURE_DEPENDS "${AE_INCLUDE_DIR}/aether/*.h*")
-list(FILTER AE_HEADERS EXCLUDE REGEX "^${AE_INCLUDE_DIR}/aether/excluded/")
+file(GLOB_RECURSE AE_HEADERS CONFIGURE_DEPENDS ${AE_INCLUDE_DIR}/aether/*.h*)
+list(FILTER AE_HEADERS EXCLUDE REGEX ^${AE_INCLUDE_DIR}/aether/excluded/)
 
-file(GLOB_RECURSE AE_VENDOR_HEADERS CONFIGURE_DEPENDS "${AE_VENDOR_DIR}/*.h*")
+file(GLOB_RECURSE AE_VENDOR_HEADERS CONFIGURE_DEPENDS ${AE_VENDOR_DIR}/*.h*)
 # exclude this folder from `AE_VENDOR_HEADERS` since ive written soloud's lib inside vendor which should take care of it
-list(FILTER AE_VENDOR_HEADERS EXCLUDE REGEX "^${AE_VENDOR_DIR}/soloud/")
+list(FILTER AE_VENDOR_HEADERS EXCLUDE REGEX ^${AE_VENDOR_DIR}/soloud/)
 
-file(GLOB AE_SRC CONFIGURE_DEPENDS "${AE_SRC_DIR}/*.c*")
-file(GLOB AE_NODE_COMP_SRC CONFIGURE_DEPENDS "${AE_SRC_DIR}/node/components/*.c*")
+file(GLOB AE_SRC CONFIGURE_DEPENDS ${AE_SRC_DIR}/*.c*)
+file(GLOB AE_NODE_COMP_SRC CONFIGURE_DEPENDS ${AE_SRC_DIR}/node/components/*.c*)
 
 target_sources(
   aether_engine_core
@@ -25,13 +25,13 @@ target_sources(
       ${AE_HEADERS}
       ${AE_VENDOR_HEADERS}
   PRIVATE
-    "${AE_SRC_DIR}/node/node.cc"
+    ${AE_SRC_DIR}/node/node.cc
     ${AE_SRC}
     ${AE_NODE_COMP_SRC}
 )
 
 add_subdirectory(${AE_VENDOR_DIR})
-include("${CMAKE_SOURCE_DIR}/cmake/CPM.cmake")
+include(${CMAKE_SOURCE_DIR}/cmake/CPM.cmake)
 
 CPMAddPackage(
   NAME raylib
@@ -71,13 +71,13 @@ CPMAddPackage(
 
 add_library(lua STATIC)
 
-file(GLOB LUA_HEADERS "${lua_SOURCE_DIR}/*.h")
-file(GLOB LUA_SRC "${lua_SOURCE_DIR}/*.c")
+file(GLOB LUA_HEADERS ${lua_SOURCE_DIR}/*.h)
+file(GLOB LUA_SRC ${lua_SOURCE_DIR}/*.c)
 
 list(
   REMOVE_ITEM LUA_SRC
-    "${lua_SOURCE_DIR}/lua.c"
-    "${lua_SOURCE_DIR}/onelua.c"
+    ${lua_SOURCE_DIR}/lua.c
+    ${lua_SOURCE_DIR}/onelua.c
 )
 
 target_sources(
