@@ -51,38 +51,6 @@ target_compile_definitions(
   SUPPORT_MESH_GENERATION=0
 )
 
-# maybe todo: just vendor lua?
-CPMAddPackage(
-  NAME lua
-  GITHUB_REPOSITORY lua/lua
-  GIT_TAG v5.4.8
-  GIT_SHALLOW TRUE
-)
-
-add_library(lua STATIC)
-
-file(GLOB LUA_HEADERS ${lua_SOURCE_DIR}/*.h)
-file(GLOB LUA_SRC ${lua_SOURCE_DIR}/*.c)
-
-list(
-  REMOVE_ITEM LUA_SRC
-  ${lua_SOURCE_DIR}/lua.c
-  ${lua_SOURCE_DIR}/onelua.c
-)
-
-target_include_directories(lua PUBLIC ${lua_SOURCE_DIR})
-target_sources(lua PRIVATE ${LUA_SRC})
-
-set(SOL2_BUILD_LUA OFF)
-set(SOL2_LUA_VERSION "5.4.8")
-
-CPMAddPackage(
-  NAME sol2
-  GITHUB_REPOSITORY ThePhD/sol2
-  GIT_TAG v3.5.0
-  GIT_SHALLOW TRUE
-)
-
 CPMAddPackage(
   NAME fmt
   GITHUB_REPOSITORY fmtlib/fmt
@@ -90,7 +58,7 @@ CPMAddPackage(
   GIT_SHALLOW TRUE
 )
 
-target_link_libraries(aether.engine PUBLIC raylib lua sol2::sol2)
+target_link_libraries(aether.engine PUBLIC raylib)
 add_subdirectory(modules)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")

@@ -1,5 +1,5 @@
-target_include_directories(aether.engine PRIVATE miniz nlohmann tinyxml2)
-target_sources(aether.engine PRIVATE miniz/miniz.c tinyxml2/tinyxml2.cpp)
+target_include_directories(aether.engine PRIVATE miniz)
+target_sources(aether.engine PRIVATE miniz/miniz.c)
 
 add_library(soloud STATIC)
 
