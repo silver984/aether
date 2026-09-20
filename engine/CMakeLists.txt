@@ -22,6 +22,7 @@ target_sources(
 )
 
 add_subdirectory(vendor)
+
 include(${CMAKE_SOURCE_DIR}/cmake/CPM.cmake)
 
 CPMAddPackage(
@@ -58,6 +59,7 @@ CPMAddPackage(
 )
 
 target_link_libraries(aether.engine PUBLIC raylib)
+
 add_subdirectory(modules)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")

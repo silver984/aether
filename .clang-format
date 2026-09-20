@@ -11,6 +11,7 @@ NamespaceIndentation: None
 InsertBraces: true
 
 ColumnLimit: 140
+ReflowComments: true
 BreakBeforeBraces: Attach
 AlwaysBreakTemplateDeclarations: Yes
 

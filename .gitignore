@@ -1,13 +1,12 @@
 # Visual Studio
-.vs/
+/.vs/
 
 # Visual Studio Code
-.vscode/
+/.vscode/
 
 # Clang
-.cache/
-.clangd
+/.cache/
+/.clangd
 
 # CMake
-build/
-CMakeUserPresets.json
+/build/
