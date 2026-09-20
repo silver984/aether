@@ -21,7 +21,7 @@ bool create_logfile_once_() {
 	}
 	std::filesystem::create_directories("logs");
 	auto const now = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
-	logfilepath_   = fmt::format("logs/aether_{:%Y-%m-%d_%H-%M-%S}.log", now);
+	logfilepath_   = fmt::format("logs/aether.{:%Y-%m-%d.%H-%M-%S}.log", now);
 	std::ofstream const logfile(logfilepath_, std::ios::app);
 	return once = logfile.is_open();
 }
