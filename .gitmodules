@@ -1,3 +1,3 @@
-[submodule "core/vendor/soloud"]
-	path = core/vendor/soloud
+[submodule "engine/vendor/soloud"]
+	path = engine/vendor/soloud
 	url = https://github.com/jarikomppa/soloud.git
