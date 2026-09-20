@@ -1,33 +1,17 @@
-add_library(ae_core STATIC)
+target_include_directories(ae PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-set(AE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(AE_VENDOR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 set(AE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-
-file(GLOB_RECURSE AE_EXCLUDED_HEADERS CONFIGURE DEPENDS ${AE_INCLUDE_DIR}/aether/excluded/*.h*)
-list(REMOVE_ITEM AE_INCLUDE_DIR ${AE_EXCLUDED_HEADERS})
-
-# exclude soloud's headers since ive written its lib inside vendor (which should take care of it)
-file(GLOB_RECURSE AE_EXCLUDED_VENDOR_HEADERS CONFIGURE DEPENDS ${AE_VENDOR_DIR}/soloud/*.h*)
-list(REMOVE_ITEM AE_VENDOR_DIR ${AE_EXCLUDED_VENDOR_HEADERS})
-
 file(GLOB AE_SRC CONFIGURE_DEPENDS ${AE_SRC_DIR}/*.c*)
 file(GLOB AE_NODE_COMP_SRC CONFIGURE_DEPENDS ${AE_SRC_DIR}/node/components/*.c*)
 
-target_include_directories(
-  ae_core PUBLIC
-  ${AE_INCLUDE_DIR}
-  ${AE_VENDOR_DIR}
-)
-
 target_sources(
-  ae_core PRIVATE
+  ae PRIVATE
   ${AE_SRC_DIR}/node/node.cc
   ${AE_SRC}
   ${AE_NODE_COMP_SRC}
 )
 
-add_subdirectory(${AE_VENDOR_DIR})
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 include(${CMAKE_SOURCE_DIR}/cmake/CPM.cmake)
 
 CPMAddPackage(
@@ -96,12 +80,5 @@ CPMAddPackage(
   GIT_SHALLOW TRUE
 )
 
-target_link_libraries(
-  ae_core PUBLIC
-  soloud
-  raylib
-  lua
-  sol2::sol2
-)
-
+target_link_libraries(ae PUBLIC raylib lua sol2::sol2)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules)

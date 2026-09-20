@@ -1,12 +1,6 @@
-project(ae_log LANGUAGES CXX)
 add_library(ae_log STATIC)
 
-set(AE_LOG_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-file(GLOB_RECURSE AE_EXCLUDED_LOG_HEADERS CONFIGURE_DEPENDS ${AE_LOG_INCLUDE_DIR}/aether/log-impl/*.h*)
-list(REMOVE_ITEM AE_LOG_INCLUDE_DIR ${AE_EXCLUDED_LOG_HEADERS})
-
-target_include_directories(ae_log PUBLIC ${AE_LOG_INCLUDE_DIR})
+target_include_directories(ae_log PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_sources(ae_log PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/log.cc)
 
 target_link_libraries(ae_log PUBLIC fmt::fmt)

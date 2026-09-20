@@ -1,4 +1,4 @@
 set(AE_SAMPLES_DIR ${AE_BIN_DIR}/samples)
 option(AE_BUILD_ALL_MODULE_SAMPLES "Build all module samples" OFF)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/log)
-target_link_libraries(ae_core PUBLIC ae_log)
+target_link_libraries(ae PUBLIC ae_log)

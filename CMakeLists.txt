@@ -16,7 +16,6 @@ set_target_properties(
 )
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/core)
-target_link_libraries(ae PRIVATE ae_core)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set_target_properties(ae PROPERTIES WIN32_EXECUTABLE TRUE)

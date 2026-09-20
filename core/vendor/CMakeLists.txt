@@ -1,10 +1,16 @@
+target_include_directories(
+  ae PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/miniz
+  ${CMAKE_CURRENT_SOURCE_DIR}/nlohmann
+  ${CMAKE_CURRENT_SOURCE_DIR}/tinyxml2
+)
+
 target_sources(
   ae PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/miniz/miniz.c
   ${CMAKE_CURRENT_SOURCE_DIR}/tinyxml2/tinyxml2.cpp
 )
 
-project(soloud VERSION 20200207 LANGUAGES C CXX)
 add_library(soloud STATIC)
 
 set(SOLOUD_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/soloud/src)
@@ -24,3 +30,5 @@ target_sources(
   ${SOLOUD_CORE_SRC}
   ${SOLOUD_FILTER_SRC}
 )
+
+target_link_libraries(ae PUBLIC soloud)
