@@ -1,7 +1,7 @@
 #pragma once
 
-#include <aether/log_impl/format_string.hh>
-#include <aether/log_impl/levels.hh>
+#include "log-impl/format_string.hh"
+#include "log-impl/levels.hh"
 
 #include <fmt/base.h>
 #include <fmt/chrono.h>

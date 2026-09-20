@@ -1,15 +1,16 @@
 add_library(aether_engine_core STATIC)
 
 set(AE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+set(AE_VENDOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
+set(AE_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
 file(GLOB_RECURSE AE_HEADERS CONFIGURE_DEPENDS "${AE_INCLUDE_DIR}/aether/*.h*")
 list(FILTER AE_HEADERS EXCLUDE REGEX "^${AE_INCLUDE_DIR}/aether/excluded/")
 
-set(AE_VENDOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
 file(GLOB_RECURSE AE_VENDOR_HEADERS CONFIGURE_DEPENDS "${AE_VENDOR_DIR}/*.h*")
 # exclude this folder from `AE_VENDOR_HEADERS` since ive written soloud's lib inside vendor which should take care of it
 list(FILTER AE_VENDOR_HEADERS EXCLUDE REGEX "^${AE_VENDOR_DIR}/soloud/")
 
-set(AE_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 file(GLOB AE_SRC CONFIGURE_DEPENDS "${AE_SRC_DIR}/*.c*")
 file(GLOB AE_NODE_COMP_SRC CONFIGURE_DEPENDS "${AE_SRC_DIR}/node/components/*.c*")
 
