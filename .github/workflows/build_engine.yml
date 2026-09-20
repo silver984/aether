@@ -79,5 +79,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: aether${{ steps.git.outputs.sha }}-${{ matrix.target }}
+          name: aether-engine.${{ matrix.target }}.${{ steps.git.outputs.sha }}
           path: build/${{ matrix.cmake-preset }}-release/bin/engine
