@@ -4,14 +4,14 @@
 using namespace aether;
 
 int main() {
-	game ae;
-	if (!ae.init({
+	game aether;
+	if (!aether.init({
 	            .window_title = "Aether Engine v0.0.1",
 	            .resolution   = {1280, 720},
 	    })) {
 		return -1;
 	}
-	context ctx = ae.ctx();
-	ae.run(scene::create<testscene>(ctx));
+	context ctx = aether.ctx();
+	aether.run(scene::create<testscene>(ctx));
 	return 0;
 }

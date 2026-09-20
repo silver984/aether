@@ -1,4 +1,4 @@
-add_library(aether_engine_core STATIC)
+add_library(ae_core STATIC)
 
 set(AE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(AE_VENDOR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
@@ -15,18 +15,16 @@ file(GLOB AE_SRC CONFIGURE_DEPENDS ${AE_SRC_DIR}/*.c*)
 file(GLOB AE_NODE_COMP_SRC CONFIGURE_DEPENDS ${AE_SRC_DIR}/node/components/*.c*)
 
 target_include_directories(
-  aether_engine_core
-  PUBLIC
-    ${AE_INCLUDE_DIR}
-    ${AE_VENDOR_DIR}
+  ae_core PUBLIC
+  ${AE_INCLUDE_DIR}
+  ${AE_VENDOR_DIR}
 )
 
 target_sources(
-  aether_engine_core
-  PRIVATE
-    ${AE_SRC_DIR}/node/node.cc
-    ${AE_SRC}
-    ${AE_NODE_COMP_SRC}
+  ae_core PRIVATE
+  ${AE_SRC_DIR}/node/node.cc
+  ${AE_SRC}
+  ${AE_NODE_COMP_SRC}
 )
 
 add_subdirectory(${AE_VENDOR_DIR})
@@ -40,24 +38,23 @@ CPMAddPackage(
 )
 
 target_compile_definitions(
-  raylib
-  PRIVATE
-    SUPPORT_FILEFORMAT_JPG=1
-    SUPPORT_MODULE_RAUDIO=0
-    SUPPORT_TRACELOG=0
-    SUPPORT_SCREEN_CAPTURE=0
-    SUPPORT_CAMERA_SYSTEM=0
-    SUPPORT_GESTURES_SYSTEM=0
-    SUPPORT_RPRAND_GENERATOR=0
-    SUPPORT_WINMM_HIGHRES_TIMER=0
-    SUPPORT_CLIPBOARD_IMAGE=0
-    SUPPORT_FILEFORMAT_OBJ=0
-    SUPPORT_FILEFORMAT_MTL=0
-    SUPPORT_FILEFORMAT_IQM=0
-    SUPPORT_FILEFORMAT_GLTF=0
-    SUPPORT_FILEFORMAT_VOX=0
-    SUPPORT_FILEFORMAT_M3D=0
-    SUPPORT_MESH_GENERATION=0
+  raylib PRIVATE
+  SUPPORT_FILEFORMAT_JPG=1
+  SUPPORT_MODULE_RAUDIO=0
+  SUPPORT_TRACELOG=0
+  SUPPORT_SCREEN_CAPTURE=0
+  SUPPORT_CAMERA_SYSTEM=0
+  SUPPORT_GESTURES_SYSTEM=0
+  SUPPORT_RPRAND_GENERATOR=0
+  SUPPORT_WINMM_HIGHRES_TIMER=0
+  SUPPORT_CLIPBOARD_IMAGE=0
+  SUPPORT_FILEFORMAT_OBJ=0
+  SUPPORT_FILEFORMAT_MTL=0
+  SUPPORT_FILEFORMAT_IQM=0
+  SUPPORT_FILEFORMAT_GLTF=0
+  SUPPORT_FILEFORMAT_VOX=0
+  SUPPORT_FILEFORMAT_M3D=0
+  SUPPORT_MESH_GENERATION=0
 )
 
 # maybe todo: just vendor lua?
@@ -75,18 +72,12 @@ file(GLOB LUA_SRC ${lua_SOURCE_DIR}/*.c)
 
 list(
   REMOVE_ITEM LUA_SRC
-    ${lua_SOURCE_DIR}/lua.c
-    ${lua_SOURCE_DIR}/onelua.c
+  ${lua_SOURCE_DIR}/lua.c
+  ${lua_SOURCE_DIR}/onelua.c
 )
 
-target_sources(
-  lua
-  PUBLIC
-    FILE_SET HEADERS
-    BASE_DIRS ${lua_SOURCE_DIR}
-    FILES ${LUA_HEADERS}
-  PRIVATE ${LUA_SRC}
-)
+target_include_directories(lua PUBLIC ${lua_SOURCE_DIR})
+target_sources(lua PRIVATE ${LUA_SRC})
 
 set(SOL2_BUILD_LUA OFF)
 set(SOL2_LUA_VERSION "5.4.8")
@@ -105,5 +96,12 @@ CPMAddPackage(
   GIT_SHALLOW TRUE
 )
 
-target_link_libraries(aether_engine_core PUBLIC soloud raylib lua sol2::sol2)
+target_link_libraries(
+  ae_core PUBLIC
+  soloud
+  raylib
+  lua
+  sol2::sol2
+)
+
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules)
