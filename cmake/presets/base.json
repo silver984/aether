@@ -19,14 +19,6 @@
       }
     },
     {
-      "name": "relwithdeb",
-      "hidden": true,
-      "inherits": "base",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-      }
-    },
-    {
       "name": "debug",
       "hidden": true,
       "inherits": "base",

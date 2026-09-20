@@ -22,14 +22,6 @@
       ]
     },
     {
-      "name": "msvc-relwithdeb",
-      "displayName": "MSVC RelWithDeb",
-      "inherits": [
-        "msvc",
-        "relwithdeb"
-      ]
-    },
-    {
       "name": "msvc-debug",
       "displayName": "MSVC Debug",
       "inherits": [
@@ -42,10 +34,6 @@
     {
       "name": "msvc-release",
       "configurePreset": "msvc-release"
-    },
-    {
-      "name": "msvc-relwithdeb",
-      "configurePreset": "msvc-relwithdeb"
     },
     {
       "name": "msvc-debug",

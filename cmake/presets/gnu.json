@@ -22,14 +22,6 @@
       ]
     },
     {
-      "name": "gnu-relwithdeb",
-      "displayName": "GNU RelWithDeb",
-      "inherits": [
-        "gnu",
-        "relwithdeb"
-      ]
-    },
-    {
       "name": "gnu-debug",
       "displayName": "GNU Debug",
       "inherits": [
@@ -42,10 +34,6 @@
     {
       "name": "gnu-release",
       "configurePreset": "gnu-release"
-    },
-    {
-      "name": "gnu-relwithdeb",
-      "configurePreset": "gnu-relwithdeb"
     },
     {
       "name": "gnu-debug",

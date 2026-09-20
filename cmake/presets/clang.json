@@ -23,14 +23,6 @@
       ]
     },
     {
-      "name": "clang-relwithdeb",
-      "displayName": "Clang RelWithDeb",
-      "inherits": [
-        "clang",
-        "relwithdeb"
-      ]
-    },
-    {
       "name": "clang-debug",
       "displayName": "Clang Debug",
       "inherits": [
@@ -43,10 +35,6 @@
     {
       "name": "clang-release",
       "configurePreset": "clang-release"
-    },
-    {
-      "name": "clang-relwithdeb",
-      "configurePreset": "clang-relwithdeb"
     },
     {
       "name": "clang-debug",
