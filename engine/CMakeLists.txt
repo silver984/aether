@@ -58,7 +58,7 @@ CPMAddPackage(
   GIT_SHALLOW TRUE
 )
 
-target_link_libraries(aether.engine PUBLIC raylib)
+target_link_libraries(aether.engine PRIVATE raylib)
 
 add_subdirectory(modules)
 
