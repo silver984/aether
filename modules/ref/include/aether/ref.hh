@@ -1,30 +1,18 @@
 #pragma once
 
+#include "ref-impl/block.hh"
+
 #include <concepts>
 #include <cstddef>
 #include <cstdint>
 #include <new>
 #include <utility>
 
-// TODO: FIX MSVC AND ALSO MOVE THIS AS A MODULE
+// TODO: TEST MSVC
 
 namespace aether::_ref_impl {
-
-template <typename T>
-concept self_referenceable_ = requires(T a) { typename T::self_ref_ide_; };
-
-struct shared_block_ final {
-	void* ptr;
-	void (*deleter)(void*);
-	uint32_t strong_count;
-	uint32_t weak_count;
-};
-
-struct unique_block_ final {
-	void* ptr;
-	void (*deleter)(void*);
-};
-
+template <typename T_>
+concept self_referenceable_ = requires { typename T_::_self_referenceable; };
 } // namespace aether::_ref_impl
 
 namespace aether {
@@ -66,7 +54,7 @@ public:
 			return;
 		}
 
-		block_->deleter(block_->ptr);
+		block_->releaser(block_->ptr);
 		block_->ptr = nullptr;
 
 		delete block_;
@@ -116,15 +104,15 @@ private:
 			return;
 		}
 
-		ptr_            = ptr;
-		block_->ptr     = ptr;
-		block_->deleter = [](void* p) {
+		ptr_             = ptr;
+		block_->ptr      = ptr;
+		block_->releaser = [](void* p) {
 			delete static_cast<T*>(p);
 		};
 	}
 
-	template <std::derived_from<T> Other>
-	unique_ref& move_(unique_ref<Other>& other) {
+	template <std::derived_from<T> Other_>
+	unique_ref& move_(unique_ref<Other_>& other) {
 		release();
 		ptr_   = static_cast<T*>(std::exchange(other.ptr_, nullptr));
 		block_ = std::exchange(other.block_, nullptr);
@@ -137,9 +125,6 @@ private:
 
 template <typename>
 class weak_ref;
-
-template <typename>
-class self_ref;
 
 template <typename T>
 class strong_ref final {
@@ -199,7 +184,7 @@ public:
 			return;
 		}
 
-		old_block->deleter(old_block->ptr);
+		old_block->releaser(old_block->ptr);
 		old_block->ptr = nullptr;
 
 		if (--old_block->weak_count == 0) {
@@ -268,7 +253,7 @@ private:
 		block_->ptr          = ptr;
 		block_->strong_count = 1;
 		block_->weak_count   = 1; // implicit count
-		block_->deleter      = [](void* p) {
+		block_->releaser     = [](void* p) {
 			delete static_cast<T*>(p);
 		};
 
@@ -285,8 +270,8 @@ private:
 		}
 	}
 
-	template <std::derived_from<T> Other>
-	strong_ref& copy_(strong_ref<Other> const& other) {
+	template <std::derived_from<T> Other_>
+	strong_ref& copy_(strong_ref<Other_> const& other) {
 		release();
 		ptr_   = static_cast<T*>(other.ptr_);
 		block_ = other.block_;
@@ -294,8 +279,8 @@ private:
 		return *this;
 	}
 
-	template <std::derived_from<T> Other>
-	strong_ref& move_(strong_ref<Other>& other) {
+	template <std::derived_from<T> Other_>
+	strong_ref& move_(strong_ref<Other_>& other) {
 		release();
 		ptr_   = static_cast<T*>(std::exchange(other.ptr_, nullptr));
 		block_ = std::exchange(other.block_, nullptr);
@@ -306,6 +291,9 @@ private:
 	T* ptr_;
 	_ref_impl::shared_block_* block_;
 };
+
+template <typename>
+class self_ref;
 
 template <typename T>
 class weak_ref final {
@@ -406,6 +394,7 @@ public:
 	self_ref(self_ref&&) {}
 	self_ref& operator=(self_ref const&) {}
 	self_ref& operator=(self_ref&&) {}
+	using _self_referenceable = void;
 
 protected:
 	self_ref()          = default;
@@ -415,8 +404,6 @@ protected:
 	[[nodiscard]] weak_ref<T> weak_self_() const { return weak_; }
 
 private:
-	using self_ref_ide_ = void;
-
 	void init_self_ref_(strong_ref<T> const& ref) {
 		// its expected that this function is only called once
 		weak_ = ref;
