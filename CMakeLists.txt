@@ -3,26 +3,26 @@ cmake_minimum_required(VERSION 3.31.6)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(aether VERSION 1.0 LANGUAGES C CXX)
+project(aether-engine VERSION 1.0 LANGUAGES C CXX)
 
-add_executable(aether.engine)
+add_executable(app)
 
 set(AETHER_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
 set(AETHER_OUTPUT_DIR ${AETHER_BINARY_DIR}/engine)
 
 set_target_properties(
-  aether.engine PROPERTIES
+  app PROPERTIES
   OUTPUT_NAME "Aether Engine"
   RUNTIME_OUTPUT_DIRECTORY ${AETHER_OUTPUT_DIR}
 )
 
-target_include_directories(aether.engine PRIVATE include)
+target_include_directories(app PRIVATE include)
 
 file(GLOB AETHER_SOURCE CONFIGURE_DEPENDS src/*.c*)
 file(GLOB AETHER_NODE_COMPONENTS_SOURCE CONFIGURE_DEPENDS src/node/components/*.c*)
 
 target_sources(
-  aether.engine PRIVATE
+  app PRIVATE
   src/node/node.cc
   ${AETHER_SOURCE}
   ${AETHER_NODE_COMPONENTS_SOURCE}
@@ -65,56 +65,56 @@ CPMAddPackage(
   GIT_SHALLOW TRUE
 )
 
-target_link_libraries(aether.engine PRIVATE raylib)
+target_link_libraries(app PRIVATE raylib)
 
 add_subdirectory(modules)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  set_target_properties(aether.engine PROPERTIES WIN32_EXECUTABLE TRUE)
+  set_target_properties(app PROPERTIES WIN32_EXECUTABLE TRUE)
   if(MSVC)
-    target_link_options(aether.engine PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
+    target_link_options(app PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     if(CMAKE_LINKER MATCHES "lld-link|link.exe")
-      target_link_options(aether.engine PRIVATE -Wl,/subsystem:windows -Wl,/entry:mainCRTStartup)
+      target_link_options(app PRIVATE -Wl,/subsystem:windows -Wl,/entry:mainCRTStartup)
     else()
-      target_link_options(aether.engine PRIVATE -mwindows)
+      target_link_options(app PRIVATE -mwindows)
     endif()
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    target_link_options(aether.engine PRIVATE -mwindows)
+    target_link_options(app PRIVATE -mwindows)
   endif()
-  target_compile_definitions(aether.engine PRIVATE _WINDOWS)
+  target_compile_definitions(app PRIVATE _WINDOWS)
 endif()
 
 find_package(Python COMPONENTS Interpreter REQUIRED)
 
 add_custom_command(
-  TARGET aether.engine POST_BUILD
+  TARGET app POST_BUILD
   COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/resource_packer.py ${CMAKE_SOURCE_DIR}/resources ${AETHER_OUTPUT_DIR}/aether
   VERBATIM
 )
 
 if(IS_DIRECTORY ${AETHER_OUTPUT_DIR}/licenses)
   add_custom_command(
-    TARGET aether.engine POST_BUILD
+    TARGET app POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${AETHER_OUTPUT_DIR}/licenses
     VERBATIM
   )
 endif()
 
 add_custom_command(
-  TARGET aether.engine POST_BUILD
+  TARGET app POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/licenses ${AETHER_OUTPUT_DIR}/licenses
   VERBATIM
 )
 
 add_custom_command(
-  TARGET aether.engine POST_BUILD
+  TARGET app POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/LICENSE.md ${AETHER_OUTPUT_DIR}/LICENSE.md
   VERBATIM
 )
 
 add_custom_command(
-  TARGET aether.engine POST_BUILD
+  TARGET app POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/THIRD-PARTY-NOTICES.md ${AETHER_OUTPUT_DIR}/THIRD-PARTY-NOTICES.md
   VERBATIM
 )

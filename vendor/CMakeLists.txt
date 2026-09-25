@@ -1,5 +1,5 @@
-target_include_directories(aether.engine PRIVATE miniz)
-target_sources(aether.engine PRIVATE miniz/miniz.c)
+target_include_directories(app PRIVATE miniz)
+target_sources(app PRIVATE miniz/miniz.c)
 
 add_library(soloud STATIC)
 
@@ -19,4 +19,4 @@ target_sources(
   ${SOLOUD_FILTER_SOURCE}
 )
 
-target_link_libraries(aether.engine PUBLIC soloud)
+target_link_libraries(app PUBLIC soloud)
