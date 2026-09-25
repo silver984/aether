@@ -1,5 +1,6 @@
 #include <aether/log.hh>
 
+#include <cstdint>
 #include <fstream>
 
 #ifdef _WIN32
@@ -12,35 +13,37 @@
 
 namespace aether::_log_impl {
 
-std::filesystem::path logfilepath_;
+std::ofstream logfile_;
 
-bool create_logfile_once_() {
-	static bool once = false;
-	if (once) {
-		return true;
+enum class logfile_status_ : uint8_t {
+	none,
+	success,
+	failed
+};
+
+logfile_status_ create_logfile_once_() {
+	static logfile_status_ once = logfile_status_::none;
+	if (once != logfile_status_::none) {
+		return once;
 	}
 	std::filesystem::create_directories("logs");
-	auto const now = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
-	logfilepath_   = fmt::format("logs/aether.{:%Y-%m-%d.%H-%M-%S}.log", now);
-	std::ofstream const logfile(logfilepath_, std::ios::app);
-	return once = logfile.is_open();
+	auto const now                   = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
+	std::filesystem::path const path = fmt::format("logs/aether.{:%Y-%m-%d.%H-%M-%S}.log", now);
+	logfile_.open(path, std::ios::app);
+	return once = logfile_.is_open() ? logfile_status_::success : logfile_status_::failed;
 }
 
 void write_to_logfile_(std::string_view str) {
-	if (!create_logfile_once_()) {
+	if (create_logfile_once_() != logfile_status_::success) {
 		fmt::print(fmt::fg(fmt::color::gold), "failed to create logfile\n");
 		return;
 	}
-	std::ofstream logfile(logfilepath_, std::ios::app);
-	if (!logfile.is_open()) {
-		fmt::print(fmt::fg(fmt::color::gold), "failed to open logfile\n");
-		return;
-	}
-	logfile << str;
+	logfile_ << str;
+	logfile_.flush();
 }
 
 #ifdef _WIN32
-void attach_console_once_present_() {
+void attach_console_once_() {
 	static bool once = false;
 	if (once) {
 		return;
