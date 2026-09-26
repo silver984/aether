@@ -8,8 +8,6 @@
 #include <new>
 #include <utility>
 
-// TODO: TEST MSVC
-
 namespace aether::_ref_impl {
 template <typename T_>
 concept self_referenceable_ = requires { typename T_::_self_referenceable; };
