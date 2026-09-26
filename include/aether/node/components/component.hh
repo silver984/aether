@@ -74,7 +74,7 @@ protected:
 	weak_ref<node> weak_node_;
 
 private:
-	void init_interface_() { init_(); }
+	inline void init_interface_() { init_(); }
 };
 
 } // namespace aether

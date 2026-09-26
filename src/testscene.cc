@@ -49,7 +49,7 @@ void testscene::update_(float dt) {
 	scene::update_(dt);
 	constexpr float ROTATION_VAL = 22.5f;
 
-	for (auto& child : root_node().construct()->children()) {
+	for (auto& child : root_node()->children()) {
 		if (child->name() != "boy") {
 			return;
 		}

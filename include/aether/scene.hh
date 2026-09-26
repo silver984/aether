@@ -31,7 +31,7 @@ public:
 
 	bool add_child(strong_ref<node> n);
 
-	[[nodiscard]] weak_ref<node> root_node() const { return root_node_; }
+	[[nodiscard]] strong_ref<node> root_node() const { return root_node_; }
 
 protected:
 	virtual bool init_();
@@ -41,7 +41,7 @@ protected:
 	context const& ctx_;
 
 private:
-	bool init_interface_() { return init_(); }
+	inline bool init_interface_() { return init_(); }
 	void update_all_(float dt);
 	void draw_all_();
 
