@@ -22,9 +22,11 @@ bool node::add_child(strong_ref<node> child) {
 	}
 
 	child->detach_from_parent();
+
 	children_.emplace_back(child);
 	child->parent_ = self;
-	for (auto& [_, component] : child->components_) {
+
+	for (auto& component : child->components_) {
 		component->node_parented_();
 	}
 
@@ -43,7 +45,7 @@ bool node::remove_child(strong_ref<node> const& child) {
 
 	(*it)->parent_.detach();
 	children_.erase(it);
-	for (auto& [_, component] : child->components_) {
+	for (auto& component : child->components_) {
 		component->node_detached_();
 	}
 
@@ -52,38 +54,27 @@ bool node::remove_child(strong_ref<node> const& child) {
 
 void node::destroy_all() {
 	detach_from_parent();
-	// recursive destroy
 	while (!children_.empty()) {
-		auto child = children_.back();
+		strong_ref<node> child = children_.back(); // intentional copy
 		children_.pop_back();
-		child->parent_ = nullptr;
+		child->parent_.detach();
 		child->destroy_all();
 	}
 }
 
 bool node::detach_from_parent() {
-	if (strong_ref<node> p = parent_.construct()) {
+	if (strong_ref<node> p = parent()) {
 		return p->remove_child(this->strong_self_());
 	}
 	return false;
 }
 
 size_t node::recursed_child_count() const {
-	size_t c = children_.size();
+	size_t c = child_count();
 	for (auto const& child : children_) {
-		if (!child) {
-			continue;
-		}
 		c += child->recursed_child_count();
 	}
 	return c;
-}
-
-void node::set_name(std::string_view name) {
-	if (name_ == name) {
-		return;
-	}
-	name_ = std::string(name);
 }
 
 // void node::set_color(rgba val) {
@@ -112,12 +103,12 @@ aether::scene* node::scene() const {
 	if (scene_) {
 		return scene_;
 	}
-	auto p = parent_.construct();
+	strong_ref<node> p = parent();
 	return p ? p->scene() : nullptr;
 }
 
 void node::update_(float dt) {
-	for (auto& [_, component] : components_) {
+	for (auto& component : components_) {
 		component->update_(dt);
 	}
 	for (auto& child : children_) {
@@ -134,10 +125,10 @@ void node::draw_() {
 	// 	return;
 	// }
 
-	for (auto& [_, component] : components_) {
+	for (auto& component : components_) {
 		component->visit_();
 	}
-	for (auto& [_, component] : components_) {
+	for (auto& component : components_) {
 		component->draw_();
 	}
 	for (auto& child : children_) {
@@ -145,13 +136,13 @@ void node::draw_() {
 	}
 }
 
-bool node::has_ancestor_(strong_ref<node> child) const {
-	strong_ref<node> p = parent_.construct();
+bool node::has_ancestor_(strong_ref<node> const& child) const {
+	strong_ref<node> p = parent();
 	while (p) {
 		if (p == child) {
 			return true;
 		}
-		p = p->parent_.construct();
+		p = p->parent();
 	}
 	return false;
 }

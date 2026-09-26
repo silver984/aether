@@ -13,68 +13,49 @@ class context;
 } // namespace aether
 
 namespace aether::_node_comp_impl {
-
 template <typename T>
-concept comp_ = std::derived_from<T, node_component> && !std::same_as<T, node_component> &&
-                std::constructible_from<T, context const&, strong_ref<node>>;
-
-template <_node_comp_impl::comp_... T>
-struct dep_comps_ final {
-	using dep_comps_ide_ = void;
-};
-
-template <typename T>
-concept has_deps_ = comp_<T> && requires {
-	typename T::dependencies;
-	typename T::dependencies::dep_comps_ide_;
-};
-
-using type_id_ = void const*;
-
-template <typename T>
-constexpr char id_{};
-
-template <typename T>
-constexpr type_id_ type_id_v_ = &id_<T>;
-
+concept component_type_ =
+        std::derived_from<T, node_component> && !std::same_as<T, node_component> && std::constructible_from<T, context const&, node*>;
 } // namespace aether::_node_comp_impl
 
 namespace aether {
-
-template <_node_comp_impl::comp_... T>
-using node_component_list = _node_comp_impl::dep_comps_<T...>;
 
 class node_component {
 	friend class node;
 
 public:
-	node_component(context const& ctx, strong_ref<node> const& parent)
+	node_component(context const& ctx, aether::node* node)
 	        : ctx_(ctx)
-	        , weak_node_(parent) {}
+	        , node_(node) {}
+
 	virtual ~node_component() = default;
 
-	template <_node_comp_impl::comp_ T>
-	[[nodiscard]] static unique_ref<T> create(context const& ctx, strong_ref<node> const& parent) {
-		unique_ref<T> out = ref::unique<T>(ctx, parent);
-		out->init_interface_();
+	template <_node_comp_impl::component_type_ T>
+	[[nodiscard]] static unique_ref<T> create(context const& ctx, aether::node* node) {
+		unique_ref<T> out = ref::unique<T>(ctx, node);
+		if (!out || !out->init_interface_()) {
+			return nullptr;
+		}
 		return out;
 	}
+
+	[[nodiscard]] aether::node* node() const { return node_; }
 
 protected:
 	virtual void node_parented_() {}
 	virtual void node_detached_() {}
-	virtual void init_() {}
+
+	virtual bool init_() { return true; }
 	virtual void update_(float dt) {}
 	virtual void visit_() {}
 	virtual void draw_() {}
 
-	[[nodiscard]] strong_ref<node> strong_node_() const { return weak_node_.construct(); }
-
 	context const& ctx_;
-	weak_ref<node> weak_node_;
 
 private:
-	inline void init_interface_() { init_(); }
+	bool init_interface_() { return init_(); }
+
+	aether::node* node_;
 };
 
 } // namespace aether

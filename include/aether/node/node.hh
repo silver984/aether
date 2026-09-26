@@ -10,9 +10,6 @@
 #include <aether/vec2.hh>
 
 #include <cstddef>
-#include <string>
-#include <string_view>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -26,9 +23,7 @@ class node final : public self_referenceable<node> {
 
 public:
 	node(context const& ctx)
-	        : ctx_(ctx)
-	        , scene_(nullptr)
-	        , parent_(nullptr) {}
+	        : ctx_(ctx) {}
 
 	[[nodiscard]] static strong_ref<node> create(context const& ctx) { return ref::strong<node>(ctx); }
 
@@ -40,45 +35,42 @@ public:
 
 	bool detach_from_parent();
 
-	template <_node_comp_impl::comp_ T>
+	template <_node_comp_impl::component_type_ T>
 	T* add_component() {
 		if (T* existing = component<T>()) {
 			return existing;
 		}
-		if constexpr (_node_comp_impl::has_deps_<T>) {
-			ensure_dep_comps_(typename T::dependencies{});
-		}
-		unique_ref<T> c = node_component::create<T>(ctx_, this->strong_self_());
-		auto [it, _]    = components_.emplace(_node_comp_impl::type_id_v_<T>, std::move(c));
-		return static_cast<T*>(it->second.get());
-	}
-
-	template <_node_comp_impl::comp_ T>
-	bool remove_component() {
-		auto it = components_.find(_node_comp_impl::type_id_v_<T>);
-		if (it == components_.end()) {
-			return false;
-		}
-		components_.erase(it);
-		return false;
-	}
-
-	template <_node_comp_impl::comp_ T>
-	[[nodiscard]] T* component() const {
-		auto it = components_.find(_node_comp_impl::type_id_v_<T>);
-		if (it == components_.end()) {
+		unique_ref<T> c = node_component::create<T>(ctx_, this);
+		if (!c) {
 			return nullptr;
 		}
-		return static_cast<T*>(it->second.get());
+		auto& out = components_.emplace_back(std::move(c));
+		return static_cast<T*>(out.get());
+	}
+
+	template <_node_comp_impl::component_type_ T>
+	void remove_component() {
+		std::erase_if(components_, [](unique_ref<node_component> const& component) {
+			return dynamic_cast<T*>(component.get()) != nullptr;
+		});
+	}
+
+	template <_node_comp_impl::component_type_ T>
+	[[nodiscard]] T* component() const {
+		for (auto& component : components_) {
+			if (T* ptr = dynamic_cast<T*>(component.get())) {
+				return ptr;
+			}
+		}
+		return nullptr;
 	}
 
 	[[nodiscard]] size_t child_count() const { return children_.size(); }
 	[[nodiscard]] size_t recursed_child_count() const;
 
-	[[nodiscard]] weak_ref<node> parent() const { return parent_; }
+	[[nodiscard]] strong_ref<node> parent() const { return parent_.construct(); }
 
-	void set_name(std::string_view name); // todo: better naming system
-	[[nodiscard]] std::string_view name() const { return name_; }
+	// todo: naming system
 
 	// void set_color(rgba val);
 	// [[nodiscard]] rgba color() const;
@@ -93,12 +85,7 @@ private:
 	void update_(float dt);
 	void draw_();
 
-	[[nodiscard]] bool has_ancestor_(strong_ref<node> n) const;
-
-	template <_node_comp_impl::comp_... T>
-	void ensure_dep_comps_(node_component_list<T...>) {
-		(add_component<T>(), ...);
-	}
+	[[nodiscard]] bool has_ancestor_(strong_ref<node> const& n) const;
 
 	// void mark_rgba_dirty_();
 	// [[nodiscard]] rgba calculate_combined_rgba_() const;
@@ -108,9 +95,7 @@ private:
 	aether::scene* scene_;
 	weak_ref<node> parent_;
 	std::vector<strong_ref<node>> children_;
-	std::unordered_map<_node_comp_impl::type_id_, unique_ref<node_component>> components_;
-
-	std::string name_;
+	std::vector<unique_ref<node_component>> components_;
 
 	// rgba color_;
 	// rgba combined_color_;

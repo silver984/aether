@@ -1,7 +1,6 @@
 #pragma once
 
 #include "component.hh"
-#include "transform.hh"
 
 #include <aether/rect.hh>
 
@@ -23,7 +22,6 @@ enum class texture_wrap : uint8_t {
 
 class sprite final : public node_component {
 public:
-	using dependencies = node_component_list<transform>;
 	using node_component::node_component;
 
 	void set_antialiasing(bool val);
@@ -36,6 +34,7 @@ public:
 	[[nodiscard]] weak_ref<Texture> texture() const { return texture_; }
 
 protected:
+	bool init_() override;
 	void draw_() override;
 
 private:

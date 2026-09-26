@@ -40,7 +40,7 @@ public:
 
 protected:
 	void node_parented_() override;
-	void node_detached_() override;
+
 	void visit_() override;
 
 private:

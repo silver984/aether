@@ -68,15 +68,10 @@ void transform::node_parented_() {
 	mark_transform_dirty_();
 }
 
-void transform::node_detached_() {
-	node_component::node_detached_();
-	mark_transform_dirty_();
-}
-
 void transform::visit_() {
 	node_component::visit_();
-	visibility* v = this->strong_node_()->component<visibility>();
-	if (v && !v->is_visible()) {
+	visibility* vc = this->node()->component<visibility>();
+	if (vc && !vc->is_visible()) {
 		return;
 	}
 	if (is_transform_dirty_) {
@@ -91,9 +86,9 @@ void transform::mark_transform_dirty_() {
 		return;
 	}
 	is_transform_dirty_ = true;
-	for (auto& child : this->strong_node_()->children()) {
-		if (transform* t = child->component<transform>()) {
-			t->mark_transform_dirty_();
+	for (auto& child : this->node()->children()) {
+		if (transform* tc = child->component<transform>()) {
+			tc->mark_transform_dirty_();
 		}
 	}
 }
@@ -122,15 +117,15 @@ void transform::update_matrix_() {
 	mat3 const k = mat3::skew(shear_rad);
 	mat3 const a = mat3::translation(-anchor_position);
 
-	matrix_            = t * r * s * k * a;
-	strong_ref<node> p = this->strong_node_()->parent().construct();
+	matrix_                    = t * r * s * k * a;
+	strong_ref<aether::node> p = this->node()->parent();
 
 	if (!p) {
 		return;
 	}
 
-	if (transform* t = p->component<transform>()) {
-		matrix_ = t->matrix_ * matrix_;
+	if (transform* tc = p->component<transform>()) {
+		matrix_ = tc->matrix_ * matrix_;
 	}
 }
 

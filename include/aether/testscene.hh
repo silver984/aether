@@ -8,5 +8,4 @@ public:
 
 protected:
 	bool init_() override;
-	void update_(float dt) override;
 };
