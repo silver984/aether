@@ -8,8 +8,12 @@
 
 namespace aether {
 
+struct ref;
+
 template <typename T>
 class unique_ref final {
+	friend class ref;
+
 	template <typename>
 	friend class unique_ref;
 
@@ -34,11 +38,6 @@ public:
 	        , block_(std::exchange(other.block_, nullptr)) {}
 
 	~unique_ref() { release(); }
-
-	template <typename... Args>
-	[[nodiscard]] static unique_ref create(Args&&... args) {
-		return new (std::nothrow) T(std::forward<Args>(args)...);
-	}
 
 	void release() {
 		if (!block_) {
@@ -74,21 +73,21 @@ public:
 		return move_(other);
 	}
 
-	bool operator==(std::nullptr_t) const { return get() == nullptr; }
-	bool operator!=(std::nullptr_t) const { return !(*this == nullptr); }
+	[[nodiscard]] bool operator==(std::nullptr_t) const { return get() == nullptr; }
+	[[nodiscard]] bool operator!=(std::nullptr_t) const { return !(*this == nullptr); }
 
 	template <std::derived_from<T> Other>
-	bool operator==(unique_ref<Other> const& other) const {
+	[[nodiscard]] bool operator==(unique_ref<Other> const& other) const {
 		return get() == other.get();
 	}
 
 	template <std::derived_from<T> Other>
-	bool operator!=(unique_ref<Other> const& other) const {
+	[[nodiscard]] bool operator!=(unique_ref<Other> const& other) const {
 		return !(*this == other);
 	}
 
 private:
-	unique_ref(T* ptr) {
+	explicit unique_ref(T* ptr) {
 		block_ = new (std::nothrow) _ref_impl::unique_block_;
 
 		if (!block_) {

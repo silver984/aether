@@ -21,7 +21,7 @@ namespace aether {
 class scene;
 class context;
 
-class node final : public self_ref<node> {
+class node final : public self_referenceable<node> {
 	friend class scene;
 
 public:
@@ -29,13 +29,12 @@ public:
 	        : ctx_(ctx)
 	        , scene_(nullptr)
 	        , parent_(nullptr) {}
-	~node() override = default;
 
-	[[nodiscard]] static strong_ref<node> create(context const& ctx);
+	[[nodiscard]] static strong_ref<node> create(context const& ctx) { return ref::strong<node>(ctx); }
 
 	// todo: fetch child
 	bool add_child(strong_ref<node> child);
-	bool remove_child(strong_ref<node> child);
+	bool remove_child(strong_ref<node> const& child);
 
 	void destroy_all();
 

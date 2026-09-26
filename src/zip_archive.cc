@@ -62,10 +62,10 @@ struct zip_archive::impl_ final {
 };
 
 zip_archive::zip_archive()
-        : ptr_impl_(unique_ref<impl_>::create()) {}
+        : ptr_impl_(ref::unique<impl_>()) {}
 
 zip_archive::zip_archive(std::string_view file)
-        : ptr_impl_(unique_ref<impl_>::create()) {
+        : ptr_impl_(ref::unique<impl_>()) {
 	open(file);
 }
 

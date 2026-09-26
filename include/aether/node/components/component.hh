@@ -48,14 +48,14 @@ class node_component {
 	friend class node;
 
 public:
-	node_component(context const& ctx, strong_ref<node> n)
+	node_component(context const& ctx, strong_ref<node> const& parent)
 	        : ctx_(ctx)
-	        , weak_node_(n) {}
+	        , weak_node_(parent) {}
 	virtual ~node_component() = default;
 
 	template <_node_comp_impl::comp_ T>
-	[[nodiscard]] static unique_ref<T> create(context const& ctx, strong_ref<node> n) {
-		auto out = unique_ref<T>::create(ctx, n);
+	[[nodiscard]] static unique_ref<T> create(context const& ctx, strong_ref<node> const& parent) {
+		unique_ref<T> out = ref::unique<T>(ctx, parent);
 		out->init_interface_();
 		return out;
 	}

@@ -28,7 +28,7 @@ strong_ref<Texture> loader<Texture>::load(zip_archive const& arc, std::string_vi
 		return nullptr;
 	}
 
-	auto tex = strong_ref<Texture>::create(LoadTextureFromImage(img));
+	strong_ref<Texture> tex = ref::strong<Texture>(LoadTextureFromImage(img));
 
 	if (!IsTextureValid(*tex)) {
 		return nullptr;

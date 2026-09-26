@@ -17,7 +17,7 @@ public:
 
 	weak_ref(weak_ref const& other)
 	        : block_(other.block_) {
-		inc_weak_();
+		increment_weak_count_();
 	}
 
 	weak_ref(weak_ref&& other)
@@ -27,7 +27,7 @@ public:
 
 	weak_ref(strong_ref<T> const& other)
 	        : block_(other.block_) {
-		inc_weak_();
+		increment_weak_count_();
 	}
 
 	~weak_ref() { detach(); }
@@ -49,7 +49,7 @@ public:
 		strong_ref<T> out;
 		out.ptr_   = static_cast<T*>(block_->ptr);
 		out.block_ = block_;
-		out.inc_strong_();
+		out.increment_strong_count_();
 		return out;
 	}
 
@@ -78,7 +78,7 @@ public:
 	}
 
 private:
-	void inc_weak_() {
+	void increment_weak_count_() {
 		if (block_) {
 			++block_->weak_count;
 		}
@@ -86,7 +86,7 @@ private:
 
 	weak_ref& copy_(_ref_impl::shared_block_* block) {
 		block_ = block;
-		inc_weak_();
+		increment_weak_count_();
 		return *this;
 	}
 

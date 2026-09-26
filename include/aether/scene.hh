@@ -22,11 +22,11 @@ public:
 
 	template <std::derived_from<scene> T, typename... Args>
 	[[nodiscard]] static unique_ref<T> create(context const& ctx, Args&&... args) {
-		auto ptr = unique_ref<T>::create(ctx, std::forward<Args>(args)...);
-		if (!ptr->init_interface_()) {
+		unique_ref<T> out = ref::unique<T>(ctx, std::forward<Args>(args)...);
+		if (!out->init_interface_()) {
 			return nullptr;
 		}
-		return ptr;
+		return out;
 	}
 
 	bool add_child(strong_ref<node> n);

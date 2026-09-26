@@ -6,11 +6,6 @@
 
 namespace aether {
 
-strong_ref<node> node::create(context const& ctx) {
-	auto ptr = strong_ref<node>::create(ctx);
-	return strong_ref<node>::create(ctx);
-}
-
 bool node::add_child(strong_ref<node> child) {
 	if (!child) {
 		return false;
@@ -36,7 +31,7 @@ bool node::add_child(strong_ref<node> child) {
 	return true;
 }
 
-bool node::remove_child(strong_ref<node> child) {
+bool node::remove_child(strong_ref<node> const& child) {
 	if (!child) {
 		return false;
 	}
